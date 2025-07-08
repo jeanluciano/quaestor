@@ -18,17 +18,18 @@ class TestInitCommand:
     """Tests for the init command."""
 
     def test_init_creates_quaestor_directory(self, runner, temp_dir):
-        """Test that init creates .quaestor directory."""
+        """Test that init creates .quaestor directory and installs commands to ~/.claude."""
         # Patch package resources to return test content
         with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
             mock_read.side_effect = [
                 "# CLAUDE.md test content",  # CLAUDE.md
                 "# ARCHITECTURE manifest",  # manifest/ARCHITECTURE.md
                 "# MEMORY manifest",  # manifest/MEMORY.md
-                "# project-init.md",  # commands/init.md
-                "# task.md",  # commands/task.md
+                "# project-init.md",  # commands/project-init.md
+                "# task-py.md",  # commands/task-py.md
+                "# task-rs.md",  # commands/task-rs.md
                 "# check.md",  # commands/check.md
-                "# dispatch.md",  # commands/dispatch.md
+                "# compose.md",  # commands/compose.md
             ]
 
             result = runner.invoke(app, ["init", str(temp_dir)])
@@ -38,7 +39,8 @@ class TestInitCommand:
             assert (temp_dir / "CLAUDE.md").exists()
             assert (temp_dir / ".quaestor" / "ARCHITECTURE.md").exists()
             assert (temp_dir / ".quaestor" / "MEMORY.md").exists()
-            assert (temp_dir / ".quaestor" / "commands").exists()
+            # Commands are now installed to ~/.claude/commands
+            assert "Installing command files to ~/.claude/commands" in result.output
 
     def test_init_with_existing_directory_prompts_user(self, runner, temp_dir):
         """Test that init prompts when .quaestor already exists."""
@@ -65,16 +67,17 @@ class TestInitCommand:
                 "# ARCHITECTURE manifest",
                 "# MEMORY manifest",
                 "# project-init.md",
-                "# task.md",
+                "# task-py.md",
+                "# task-rs.md",
                 "# check.md",
-                "# dispatch.md",
+                "# compose.md",
             ]
 
             result = runner.invoke(app, ["init", str(temp_dir), "--force"])
 
             assert result.exit_code == 0
             assert (temp_dir / ".quaestor").exists()
-            assert "Successfully initialized" in result.output
+            assert "Initialization complete!" in result.output
 
     def test_init_handles_missing_manifest_files(self, runner, temp_dir):
         """Test fallback to AI templates when manifest files are missing."""
@@ -125,9 +128,10 @@ class TestInitCommand:
                 "# ARCHITECTURE manifest",
                 "# MEMORY manifest",
                 "# project-init.md",
-                "# task.md",
+                "# task-py.md",
+                "# task-rs.md",
                 "# check.md",
-                "# dispatch.md",
+                "# compose.md",
             ]
 
             result = runner.invoke(app, ["init", str(custom_dir)])
@@ -137,8 +141,8 @@ class TestInitCommand:
             assert (custom_dir / "CLAUDE.md").exists()
 
     def test_init_copies_all_command_files(self, runner, temp_dir):
-        """Test that all command files are copied."""
-        expected_commands = ["project-init.md", "task.md", "check.md", "dispatch.md"]
+        """Test that all command files are installed to ~/.claude/commands."""
+        expected_commands = ["project-init.md", "task-py.md", "task-rs.md", "check.md", "compose.md"]
 
         with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
             mock_read.side_effect = [
@@ -151,11 +155,11 @@ class TestInitCommand:
             result = runner.invoke(app, ["init", str(temp_dir)])
 
             assert result.exit_code == 0
-            commands_dir = temp_dir / ".quaestor" / "commands"
+            # Commands are now installed globally
+            assert "Commands installed to ~/.claude/commands" in result.output
 
             for cmd in expected_commands:
-                assert (commands_dir / cmd).exists()
-                assert f"Copied {cmd}" in result.output
+                assert f"Installed {cmd}" in result.output
 
 
 class TestCLIApp:
