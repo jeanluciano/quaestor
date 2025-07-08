@@ -3,7 +3,7 @@
 <!-- CRITICAL:rules:enforcement:START -->
 ## ⚠️ CRITICAL: MANDATORY RULES ENFORCEMENT
 
-**BEFORE READING FURTHER**: Load and validate [CRITICAL_RULES.md](./CRITICAL_RULES.md)
+**BEFORE READING FURTHER**: Load and validate [CRITICAL_RULES.md](./.quaestor/CRITICAL_RULES.md)
 
 <!-- DATA:rule-validation:START -->
 ```yaml
@@ -33,7 +33,7 @@ rule_enforcement:
 - **Mandatory Compliance**: ALL instructions within this document MUST BE FOLLOWED, these are not optional unless explicitly stated.
 - **Ask for Help**: ASK FOR CLARIFICATION when you seem stuck or overly complex, I'll redirect you - my guidance helps you stay on track.
 - **Reference Examples**: When in doubt about implementation details, refer to the existing `/examples` implementation as a reference.
-- **CRITICAL**: Rules in [CRITICAL_RULES.md](./CRITICAL_RULES.md) override everything else.
+- **CRITICAL**: Rules in [CRITICAL_RULES.md](./.quaestor/CRITICAL_RULES.md) override everything else.
 
 ## CRITICAL WORKFLOW
 

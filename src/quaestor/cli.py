@@ -229,6 +229,15 @@ def init(
     except Exception as e:
         console.print(f"  [yellow]⚠[/yellow] Could not copy CLAUDE.md: {e}")
 
+    # Copy CRITICAL_RULES.md to .quaestor directory
+    try:
+        critical_rules_content = pkg_resources.read_text("quaestor", "CRITICAL_RULES.md")
+        (quaestor_dir / "CRITICAL_RULES.md").write_text(critical_rules_content)
+        copied_files.append("CRITICAL_RULES.md")
+        console.print("  [blue]✓[/blue] Copied CRITICAL_RULES.md")
+    except Exception as e:
+        console.print(f"  [yellow]⚠[/yellow] Could not copy CRITICAL_RULES.md: {e}")
+
     # Copy and convert manifest files
     console.print("[blue]Converting manifest files to AI format[/blue]")
 
