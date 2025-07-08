@@ -18,6 +18,9 @@ var/
 wheels/
 *.egg-info/
 .installed.cfg
+
+# PyPI
+.pypirc
 *.egg
 
 # Virtual environments
@@ -46,3 +49,4 @@ test_project/
 .claude/
 
 examples/
+.pypirc

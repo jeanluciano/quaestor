@@ -191,10 +191,14 @@ def init(
     path: Path | None = typer.Argument(None, help="Directory to initialize (default: current directory)"),
     force: bool = typer.Option(False, "--force", "-f", help="Overwrite existing .quaestor directory"),
 ):
-    """Initialize a .quaestor directory with context templates."""
+    """Initialize a .quaestor directory with context templates and install commands to ~/.claude."""
     # Determine target directory
     target_dir = path or Path.cwd()
     quaestor_dir = target_dir / ".quaestor"
+
+    # Set up .claude directory in user's home
+    claude_dir = Path.home() / ".claude"
+    claude_commands_dir = claude_dir / "commands"
 
     # Check if .quaestor already exists
     if (
@@ -205,9 +209,13 @@ def init(
         console.print("[red]Initialization cancelled.[/red]")
         raise typer.Exit()
 
-    # Create .quaestor directory
+    # Create directories
     quaestor_dir.mkdir(exist_ok=True)
     console.print(f"[green]Created .quaestor directory in {target_dir}[/green]")
+
+    # Create .claude/commands if it doesn't exist
+    claude_commands_dir.mkdir(parents=True, exist_ok=True)
+    console.print(f"[green]Using .claude directory at {claude_dir}[/green]")
 
     # Copy files using package resources
     copied_files = []
@@ -258,26 +266,36 @@ def init(
         except Exception as e2:
             console.print(f"  [yellow]⚠[/yellow] Could not copy MEMORY.md: {e2}")
 
-    # Copy commands directory
-    commands_dest = quaestor_dir / "commands"
-    commands_dest.mkdir(exist_ok=True)
+    # Copy commands to ~/.claude/commands
+    console.print("\n[blue]Installing command files to ~/.claude/commands:[/blue]")
+    command_files = ["project-init.md", "task-py.md", "task-rs.md", "check.md", "compose.md"]
+    commands_copied = 0
 
-    console.print("\n[blue]Copying command files:[/blue]")
-    command_files = ["project-init.md", "task.md", "check.md", "dispatch.md"]
     for cmd_file in command_files:
         try:
             cmd_content = pkg_resources.read_text("quaestor.commands", cmd_file)
-            (commands_dest / cmd_file).write_text(cmd_content)
-            console.print(f"  [blue]✓[/blue] Copied {cmd_file}")
-            copied_files.append(f"commands/{cmd_file}")
+            (claude_commands_dir / cmd_file).write_text(cmd_content)
+            console.print(f"  [blue]✓[/blue] Installed {cmd_file}")
+            commands_copied += 1
         except Exception as e:
-            console.print(f"  [yellow]⚠[/yellow] Could not copy {cmd_file}: {e}")
+            console.print(f"  [yellow]⚠[/yellow] Could not install {cmd_file}: {e}")
 
     # Summary
-    if copied_files:
-        console.print(f"\n[green]Successfully initialized .quaestor with {len(copied_files)} template files:[/green]")
-        for file in copied_files:
-            console.print(f"  • {file}")
+    if copied_files or commands_copied > 0:
+        console.print("\n[green]✅ Initialization complete![/green]")
+
+        if copied_files:
+            console.print(f"\n[blue]Project files ({len(copied_files)}):[/blue]")
+            for file in copied_files:
+                console.print(f"  • {file}")
+
+        if commands_copied > 0:
+            console.print(f"\n[blue]Commands installed to ~/.claude/commands ({commands_copied}):[/blue]")
+            for cmd in command_files[:commands_copied]:
+                console.print(f"  • {cmd}")
+
+        console.print("\n[dim]Claude will automatically discover CLAUDE.md in your project root[/dim]")
+        console.print("[dim]Commands are globally available from ~/.claude/commands[/dim]")
     else:
         console.print("[red]No files were copied. Please check the source files exist.[/red]")
         raise typer.Exit(1)

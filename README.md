@@ -152,7 +152,7 @@ This lets AI make precise edits without breaking your docs.
 
 ## 🔗 Part of something bigger
 
-Quaestor is part of Praetor - tools for engineers who actually like coding but want AI to handle the boring stuff. You stay in control, AI does the grunt work.
+Quaestor is part of Praetor - tools for engineers who actually like coding but want AI to handle the boring stuff. You stay in control, AI does the grunt work. It's just that most of it is my head.
 
 ## 💻 Contributing
 
@@ -173,19 +173,12 @@ uv run python main.py init
 
 ## 📚 Command Templates
 
-The commands that actually work:
 
 - **`project-init.md`** - Analyzes your project and sets everything up
 - **`task-py.md`** - Python implementation with all the checks
 - **`task-rs.md`** - Rust implementation with clippy and all
 - **`check.md`** - Fix all the things
 - **`compose.md`** - Combine templates for complex operations
-
-These aren't just templates - they're battle-tested workflows that enforce quality.
-
-## 📜 About the name
-
-Quaestor was a Roman official who kept the books straight. Our Quaestor keeps your project context straight. Same idea, less togas.
 
 ## 📄 License
 
@@ -194,12 +187,3 @@ Quaestor was a Roman official who kept the books straight. Our Quaestor keeps yo
 ## 🤝 Contributing
 
 PRs welcome! Just make sure tests pass and linters are happy.
-
-## 📬 Contact
-
-- GitHub: [@jeanluciano](https://github.com/jeanluciano)
-- Part of the Praetor suite
-
----
-
-Built for engineers who'd rather be coding than prompting
