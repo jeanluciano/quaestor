@@ -1,0 +1,94 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quaestor"
+version = "0.1.0"
+description = "AI-assisted development context management tool for maintaining consistency and productivity"
+authors = [{name = "Jean Luciano", email = "jeanluciano@example.com"}]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.12"
+keywords = ["ai", "development", "context", "claude", "project-management", "ai-tools"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Quality Assurance",
+]
+dependencies = [
+    "typer>=0.16.0",
+    "rich>=13.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/jeanluciano/quaestor"
+Repository = "https://github.com/jeanluciano/quaestor"
+Issues = "https://github.com/jeanluciano/quaestor/issues"
+
+[project.scripts]
+quaestor = "quaestor.cli:app"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
+    "pytest-mock>=3.14.1",
+    "ruff>=0.12.2",
+    "pre-commit>=3.5.0",
+]
+
+[tool.setuptools]
+packages = ["quaestor", "quaestor.commands", "quaestor.manifest"]
+package-dir = {"" = "src"}
+
+[tool.setuptools.package-data]
+quaestor = [
+    "*.md",
+    "commands/*.md",
+    "manifest/*.md",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.coverage.run]
+source = ["src/quaestor"]
+omit = ["*/tests/*", "*/__pycache__/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+    "SIM", # flake8-simplify
+]
+ignore = ["B008"]  # Allow function calls in argument defaults (needed for Typer)
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"

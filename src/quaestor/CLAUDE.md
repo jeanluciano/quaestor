@@ -1,0 +1,212 @@
+
+
+<!-- CRITICAL:rules:enforcement:START -->
+## ⚠️ CRITICAL: MANDATORY RULES ENFORCEMENT
+
+**BEFORE READING FURTHER**: Load and validate [CRITICAL_RULES.md](./CRITICAL_RULES.md)
+
+<!-- DATA:rule-validation:START -->
+```yaml
+rule_enforcement:
+  status: "ACTIVE"
+  mode: "STRICT"
+  validation_required: "BEFORE_EVERY_ACTION"
+  violations_allowed: 0
+  consequences: "IMMEDIATE_STOP"
+```
+<!-- DATA:rule-validation:END -->
+
+### Pre-Action Checklist (MANDATORY)
+
+<!-- CHECKLIST:pre-action:START -->
+- [ ] Have I loaded CRITICAL_RULES.md?
+- [ ] Am I following Research → Plan → Implement?
+- [ ] Have I checked complexity triggers?
+- [ ] Am I using multiple agents when appropriate?
+- [ ] Is my approach production-quality?
+<!-- CHECKLIST:pre-action:END -->
+
+<!-- CRITICAL:rules:enforcement:END -->
+
+## Important
+- **Production Quality**: We're building production-quality code together. Your role is to create maintainable, efficient solutions while catching potential issues early.
+- **Mandatory Compliance**: ALL instructions within this document MUST BE FOLLOWED, these are not optional unless explicitly stated.
+- **Ask for Help**: ASK FOR CLARIFICATION when you seem stuck or overly complex, I'll redirect you - my guidance helps you stay on track.
+- **Reference Examples**: When in doubt about implementation details, refer to the existing `/examples` implementation as a reference.
+- **CRITICAL**: Rules in [CRITICAL_RULES.md](./CRITICAL_RULES.md) override everything else.
+
+## CRITICAL WORKFLOW
+
+### Research → Plan → Implement [ENFORCED BY CRITICAL_RULES.md]
+
+<!-- WORKFLOW:validation:START -->
+```yaml
+workflow_enforcement:
+  rule_ref: "NEVER_SKIP_RESEARCH"
+  validation:
+    before_code: "Must show research summary"
+    before_implementation: "Must have approved plan"
+    deviation_allowed: false
+```
+<!-- WORKFLOW:validation:END -->
+
+**NEVER JUMP STRAIGHT TO CODING!** Always follow this sequence:
+
+<!-- WORKFLOW:implementation:START -->
+1. **Research**: Explore the codebase, understand existing patterns
+   - MANDATORY: Examine at least 5 relevant files
+   - MANDATORY: Document patterns found
+   
+2. **Plan**: Create a detailed implementation plan and verify it with me
+   - MANDATORY: Present structured plan
+   - MANDATORY: Wait for approval
+   
+3. **Implement**: Execute the plan with validation checkpoints
+   - MANDATORY: Follow plan exactly
+   - MANDATORY: Validate after each step
+<!-- WORKFLOW:implementation:END -->
+
+**Required Response**: When asked to implement any feature, you MUST say: "Let me research the codebase and create a plan before implementing."
+
+**Ultrathink Trigger**: For complex architectural decisions or challenging problems, use **"ultrathink"** to engage maximum reasoning capacity.
+
+**Required Response**: "Let me ultrathink about this architecture before proposing a solution."
+
+### USE MULTIPLE AGENTS! [ENFORCED BY CRITICAL_RULES.md]
+
+<!-- DATA:agent-enforcement:START -->
+```yaml
+agent_usage:
+  rule_ref: "ALWAYS_USE_AGENTS"
+  mandatory_triggers:
+    - "multiple_files_to_analyze"
+    - "complex_refactoring"
+    - "new_feature_implementation"
+    - "performance_optimization"
+  minimum_agents: 2
+  validation: "Must show agent delegation"
+```
+<!-- DATA:agent-enforcement:END -->
+
+**Leverage subagents aggressively for better results:**
+
+- MANDATORY: Spawn agents to explore different parts of the codebase in parallel
+- MANDATORY: Use one agent to write tests while another implements features
+- MANDATORY: Delegate research tasks: "I'll have an agent investigate the database schema while I analyze the API structure"
+- MANDATORY: For complex refactors: One agent identifies changes, another implements them
+
+**Required Response**: You MUST say: "I'll spawn agents to tackle different aspects of this problem" whenever a task has multiple independent parts.
+
+### Reality Checkpoints
+**Stop and validate** at these moments:
+- After implementing a complete feature
+- Before starting a new major component
+- When something feels wrong
+- Before declaring "done"
+
+Run your project's test suite regularly (see Testing section below).
+
+## Working Memory Management
+
+### When context gets long:
+- Re-read this CLAUDE.md file
+- Check MEMORY.md for current project status
+- Document current state before major changes
+
+### Maintain MEMORY.md:
+Track progress in [MEMORY.md](./.quaestor/MEMORY.md) with sections for:
+- **Current Status**: What phase/milestone you're in
+- **Active Work**: Current approach and tasks
+- **Timeline**: Goals and progress
+- **Next Actions**: Immediate, short-term, and long-term tasks
+
+### Problem-Solving Together
+
+<!-- WORKFLOW:problem-solving:START -->
+When you're stuck or confused:
+1. **Stop** - Don't spiral into complex solutions
+2. **Delegate** - Consider spawning agents for parallel investigation
+3. **Ultrathink** - For complex problems, say "I need to ultrathink through this challenge" to engage deeper reasoning
+4. **Step back** - Re-read the requirements
+5. **Simplify** - The simple solution is usually correct
+6. **Ask** - "I see two approaches: [A] vs [B]. Which do you prefer?"
+<!-- WORKFLOW:problem-solving:END -->
+
+**Remember**: My insights on better approaches are valued - please ask for them!
+
+# PROJECT OVERVIEW
+
+### Project Context
+[Describe your project here - what it does, key features, main components]
+
+### Current Status
+[Describe current state, any ongoing migrations or major work]
+
+### Project Documentation
+For detailed information about the project:
+- **[MEMORY.md](./.quaestor/MEMORY.md)**: Current project state and progress tracking
+- **[ARCHITECTURE.md](./.quaestor/ARCHITECTURE.md)**: Technical architecture and design principles
+
+# ARCHITECTURE & CODE GUIDELINES
+
+See **[ARCHITECTURE.md](./.quaestor/ARCHITECTURE.md)** for:
+- Architecture patterns and principles
+- Layer responsibilities and boundaries
+- External integrations overview
+
+### Code Style Guidelines
+- **Language**: [Specify your language and version]
+- **Focused changes**: Only implement explicitly requested or fully understood changes
+- **Type Safety**: [Your type safety approach, e.g., TypeScript, Python type hints]
+- **Documentation**: [Your documentation style, e.g., JSDoc, Google-style docstrings]
+- **Formatting**: [Your formatting tool, e.g., Prettier, Black, Ruff]
+- **Imports**: 
+  - Order: standard library, third-party, local imports
+  - Use absolute imports from project root
+- **Naming Conventions**:
+  - Functions/variables: `snake_case` or `camelCase` (choose one)
+  - Classes: `PascalCase`
+  - Constants: `UPPER_SNAKE_CASE`
+  - Files: [Your file naming convention]
+- **Best Practices**:
+  - [Add your project-specific best practices]
+  - [e.g., "Prefer composition over inheritance"]
+  - [e.g., "Keep functions small and focused"]
+
+# AVAILABLE COMMANDS
+
+The following command templates are available in [.quaestor/commands/](./.quaestor/commands/):
+- **[project-init.md](./.quaestor/commands/project-init.md)**: Analyze project and initialize Quaestor framework
+- **[task.md](./.quaestor/commands/task.md)**: Structured approach for implementing tasks
+- **[check.md](./.quaestor/commands/check.md)**: Validation and quality checks
+- **[dispatch.md](./.quaestor/commands/dispatch.md)**: Dispatch complex tasks to multiple agents
+
+Use these commands to maintain consistency and follow best practices.
+
+# DEVELOPMENT WORKFLOW
+
+### Testing and Linting
+- Run tests: `[your test command, e.g., npm test, pytest tests/]`
+- Run specific test: `[your specific test command]`
+- Run tests with coverage: `[your coverage command]`
+- Run linter: `[your lint command, e.g., eslint src/, ruff check src/]`
+- Format code: `[your format command, e.g., prettier --write ., ruff format src/]`
+
+### Working with the Codebase
+
+<!-- CHECKLIST:codebase-work:START -->
+1. Check `/examples` for reference implementations
+2. Follow established patterns in the codebase
+3. Ensure backward compatibility when making changes
+4. Use feature flags for gradual rollout of new features
+<!-- CHECKLIST:codebase-work:END -->
+
+### Development Process
+
+<!-- CHECKLIST:dev-process:START -->
+1. Always create a new branch for features
+2. Write tests before implementing features (TDD)
+3. Keep commits small and focused
+4. Write clear commit messages
+5. Update documentation as you go
+<!-- CHECKLIST:dev-process:END -->
