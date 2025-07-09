@@ -347,7 +347,13 @@ def _format_timeline_section(title: str, content: list[str]) -> str:
         if line.strip().startswith(("### Week", "### Phase")):
             if current_milestone:
                 milestones.append(current_milestone)
-            current_milestone = {"name": line.strip()[4:], "status": "planned"}
+            milestone_line = line.strip()[4:]
+            status = "planned"
+            if "CURRENT" in milestone_line:
+                status = "current"
+            elif "Complete" in milestone_line:
+                status = "completed"
+            current_milestone = {"name": milestone_line, "status": status}
         elif current_milestone:
             if "CURRENT" in line:
                 current_milestone["status"] = "current"

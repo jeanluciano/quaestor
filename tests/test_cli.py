@@ -162,6 +162,55 @@ class TestInitCommand:
             for cmd in expected_commands:
                 assert f"Installed {cmd}" in result.output
 
+    def test_init_converts_manifest_files_to_ai_format(self, runner, temp_dir, sample_architecture_manifest, sample_memory_manifest):
+        """Test that init properly converts manifest files to AI format."""
+        with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
+            def side_effect(package, filename):
+                if package == "quaestor" and filename == "CLAUDE.md":
+                    return "# CLAUDE.md test content"
+                elif package == "quaestor" and filename == "CRITICAL_RULES.md":
+                    return "# CRITICAL_RULES.md test content"
+                elif package == "quaestor.manifest" and filename == "ARCHITECTURE.md":
+                    return sample_architecture_manifest
+                elif package == "quaestor.manifest" and filename == "MEMORY.md":
+                    return sample_memory_manifest
+                elif package == "quaestor.commands":
+                    return f"# {filename} content"
+                raise FileNotFoundError(f"Unknown file: {package}/{filename}")
+
+            mock_read.side_effect = side_effect
+
+            result = runner.invoke(app, ["init", str(temp_dir)])
+
+            assert result.exit_code == 0
+            assert "Converting manifest files to AI format" in result.output
+            assert "Converted and copied ARCHITECTURE.md" in result.output
+            assert "Converted and copied MEMORY.md" in result.output
+
+            # Check ARCHITECTURE.md was converted properly
+            arch_content = (temp_dir / ".quaestor" / "ARCHITECTURE.md").read_text()
+            assert "<!-- META:document:architecture -->" in arch_content
+            assert "<!-- META:version:1.0 -->" in arch_content
+            assert "<!-- META:ai-optimized:true -->" in arch_content
+            assert "<!-- SECTION:architecture:overview:START -->" in arch_content
+            assert "<!-- DATA:architecture-pattern:START -->" in arch_content
+            assert 'pattern: "Domain-Driven Design (DDD)"' in arch_content
+            assert "Domain Layer" in arch_content  # Original content preserved
+            assert "Infrastructure Layer" in arch_content
+
+            # Check MEMORY.md was converted properly
+            mem_content = (temp_dir / ".quaestor" / "MEMORY.md").read_text()
+            assert "<!-- META:document:memory -->" in mem_content
+            assert "<!-- META:version:1.0 -->" in mem_content
+            assert "<!-- META:ai-optimized:true -->" in mem_content
+            assert "<!-- SECTION:memory:status:START -->" in mem_content
+            assert "<!-- DATA:project-status:START -->" in mem_content
+            assert 'last_updated: "2024-01-15"' in mem_content
+            assert 'current_phase: "Development"' in mem_content
+            assert 'overall_progress: "60%"' in mem_content
+            assert "Milestone 1: Core Features" in mem_content  # Original content preserved
+            assert "Payment integration" in mem_content
+
 
 class TestCLIApp:
     """Tests for the CLI app itself."""
