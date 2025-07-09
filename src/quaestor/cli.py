@@ -1,10 +1,11 @@
 import importlib.resources as pkg_resources
-import re
 from pathlib import Path
 
 import typer
 from rich.console import Console
 from rich.prompt import Confirm
+
+from .converters import convert_manifest_to_ai_format
 
 app = typer.Typer(
     name="quaestor",
@@ -12,172 +13,6 @@ app = typer.Typer(
     add_completion=False,
 )
 console = Console()
-
-
-def convert_manifest_to_ai_format(content: str, filename: str) -> str:
-    """Convert human-readable manifest markdown to AI-optimized format."""
-    if filename == "ARCHITECTURE.md":
-        return convert_architecture_to_ai_format(content)
-    elif filename == "MEMORY.md":
-        return convert_memory_to_ai_format(content)
-    return content
-
-
-def convert_architecture_to_ai_format(content: str) -> str:
-    """Convert ARCHITECTURE.md from manifest to AI format."""
-    # This is a simplified conversion - in practice you'd want more sophisticated parsing
-    ai_content = """<!-- META:document:architecture -->
-<!-- META:version:1.0 -->
-<!-- META:ai-optimized:true -->
-
-# Project Architecture
-
-<!-- SECTION:architecture:overview:START -->
-## Architecture Overview
-
-<!-- DATA:architecture-pattern:START -->
-```yaml
-pattern:
-  selected: "[Choose: MVC, DDD, Microservices, Monolithic, etc.]"
-  description: "Brief description of why this pattern was chosen"
-```
-<!-- DATA:architecture-pattern:END -->
-<!-- SECTION:architecture:overview:END -->
-
-"""
-
-    # Extract and convert sections from the manifest content
-    # This is a basic implementation - enhance as needed
-    sections = re.split(r"^##\s+", content, flags=re.MULTILINE)
-
-    for section in sections[1:]:  # Skip the first split (before any ##)
-        lines = section.strip().split("\n")
-        if not lines:
-            continue
-
-        section_title = lines[0].strip()
-
-        if "layer" in section_title.lower() or "structure" in section_title.lower():
-            ai_content += """
-<!-- SECTION:architecture:organization:START -->
-## Code Organization
-
-<!-- DATA:directory-structure:START -->
-```yaml
-structure:
-  - path: "src/"
-    contains: []
-```
-<!-- DATA:directory-structure:END -->
-<!-- SECTION:architecture:organization:END -->
-"""
-        elif "concept" in section_title.lower() or "component" in section_title.lower():
-            ai_content += """
-<!-- SECTION:architecture:core-concepts:START -->
-## Core Concepts
-
-<!-- DATA:key-components:START -->
-```yaml
-components:
-  - name: "[Component Name]"
-    responsibility: "[Description]"
-    dependencies: []
-```
-<!-- DATA:key-components:END -->
-<!-- SECTION:architecture:core-concepts:END -->
-"""
-
-    ai_content += (
-        "\n---\n"
-        "*This document describes the technical architecture of the project. "
-        "Update it as architectural decisions are made or changed.*"
-    )
-
-    return ai_content
-
-
-def convert_memory_to_ai_format(content: str) -> str:
-    """Convert MEMORY.md from manifest to AI format."""
-    ai_content = """<!-- META:document:memory -->
-<!-- META:version:1.0 -->
-<!-- META:ai-optimized:true -->
-
-# Project Memory & Progress Tracking
-
-<!-- SECTION:memory:purpose:START -->
-## Document Purpose
-This file tracks the current state, progress, and future plans for the project.
-It serves as the "memory" of what has been done, what's in progress, and what's planned.
-<!-- SECTION:memory:purpose:END -->
-
-<!-- SECTION:memory:status:START -->
-## Current Status
-
-<!-- DATA:project-status:START -->
-```yaml
-status:
-  last_updated: "[Date]"
-  current_phase: "[Phase name]"
-  current_milestone: "[Milestone name]"
-  overall_progress: "[Percentage or description]"
-```
-<!-- DATA:project-status:END -->
-<!-- SECTION:memory:status:END -->
-
-"""
-
-    # Extract and convert sections from the manifest content
-    sections = re.split(r"^##\s+", content, flags=re.MULTILINE)
-
-    for section in sections[1:]:  # Skip the first split
-        lines = section.strip().split("\n")
-        if not lines:
-            continue
-
-        section_title = lines[0].strip()
-
-        if "timeline" in section_title.lower() or "milestone" in section_title.lower():
-            ai_content += """
-<!-- SECTION:memory:timeline:START -->
-## Project Timeline
-
-<!-- DATA:milestones:START -->
-```yaml
-milestones:
-  - id: "milestone_1"
-    name: "[Name]"
-    status: "[Status]"
-    progress: "[X]%"
-    goal: "[Description]"
-```
-<!-- DATA:milestones:END -->
-<!-- SECTION:memory:timeline:END -->
-"""
-        elif "action" in section_title.lower() or "next" in section_title.lower():
-            ai_content += """
-<!-- SECTION:memory:actions:START -->
-## Next Actions
-
-<!-- DATA:next-actions:START -->
-```yaml
-actions:
-  immediate:
-    timeframe: "This Week"
-    tasks:
-      - id: "immediate_1"
-        task: "[High priority task]"
-```
-<!-- DATA:next-actions:END -->
-<!-- SECTION:memory:actions:END -->
-"""
-
-    ai_content += (
-        "\n---\n"
-        "*This document serves as the living memory of current progress. "
-        "Update it regularly as you complete tasks and learn new insights.*"
-    )
-
-    return ai_content
 
 
 @app.callback()

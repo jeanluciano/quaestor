@@ -147,6 +147,7 @@ class TestInitCommand:
         with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
             mock_read.side_effect = [
                 "# CLAUDE.md",
+                "# CRITICAL_RULES.md",
                 "# ARCHITECTURE",
                 "# MEMORY",
                 *[f"# {cmd}" for cmd in expected_commands],

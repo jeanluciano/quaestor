@@ -296,6 +296,34 @@ enforcement: "INCOMPLETE = CONTINUE WORKING"
 ```
 <!-- DATA:completion-checklist:END -->
 
+## POST-COMPLETION HOOKS
+
+<!-- DATA:workflow-hooks:START -->
+```yaml
+automatic_actions:
+  on_task_complete:
+    trigger: "All checklist items pass"
+    actions:
+      - update_todo_status: "Mark as completed"
+      - update_memory: "Sync progress to MEMORY.md"
+      - run_milestone_commit: "Auto-commit if enabled"
+    
+  milestone_commit_hook:
+    enabled: true
+    conditions:
+      - "Task marked complete"
+      - "All quality checks pass"
+      - "Changes saved to files"
+    command: "/quaestor:milestone-commit"
+    message: "Task completed - triggering milestone commit"
+  
+  workflow_integration:
+    with_claude_md: "Follow workflow_hooks configuration"
+    automatic_pr: "When milestone complete"
+    quality_gates: "Enforced before commit"
+```
+<!-- DATA:workflow-hooks:END -->
+
 **BEGIN IMMEDIATELY WITH RESEARCH PHASE.**
 
 **NO EXCUSES. NO SHORTCUTS. PRODUCTION QUALITY ONLY.**

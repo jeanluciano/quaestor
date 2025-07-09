@@ -81,26 +81,94 @@ deep_analysis:
       - runtime_version
   
   architecture_pattern_detection:
+    vertical_slice_indicators:
+      # Jimmy Bogard's Vertical Slice Architecture
+      - "Features/"
+      - "Slices/"
+      - "**/Features/**/*.cs"
+      - "**/Features/**/*.ts"
+      - "MediatR"  # Common in VSA
+      - "Feature-based folders"
+      patterns:
+        - "Each feature contains its own stack"
+        - "Commands and Queries co-located"
+        - "Minimal shared abstractions"
+      benefits_for_llms:
+        - "Self-contained feature context"
+        - "Reduced cognitive load"
+        - "Clear feature boundaries"
+    
     mvc_indicators:
       - "controllers/"
       - "models/"
       - "views/"
       - "routes/"
+    
     ddd_indicators:
-      - "domain/"
-      - "application/"
-      - "infrastructure/"
-      - "entities/"
+      # Enhanced Domain-Driven Design detection
+      domain_layer:
+        - "domain/"
+        - "Domain/"
+        - "**/Domain/**"
+        - "entities/"
+        - "valueobjects/"
+        - "aggregates/"
+      application_layer:
+        - "application/"
+        - "Application/"
+        - "usecases/"
+        - "services/"
+      infrastructure_layer:
+        - "infrastructure/"
+        - "Infrastructure/"
+        - "persistence/"
+        - "repositories/"
+      domain_concepts:
+        - "AggregateRoot"
+        - "Entity"
+        - "ValueObject"
+        - "DomainEvent"
+        - "DomainService"
+        - "Repository"
+        - "Specification"
+      bounded_contexts:
+        - "separate service folders"
+        - "context-specific models"
+        - "anti-corruption layers"
+    
     microservices_indicators:
       - "services/*/"
       - "docker-compose*.yml"
       - "kubernetes/"
       - "api-gateway/"
+    
     clean_architecture_indicators:
       - "usecases/"
       - "entities/"
       - "adapters/"
       - "frameworks/"
+    
+    # Martin Fowler's Enterprise Patterns
+    enterprise_patterns:
+      service_layer:
+        - "ServiceLayer/"
+        - "Services/"
+        - "*Service.cs"
+        - "*Service.ts"
+        - "application services"
+      repository_pattern:
+        - "Repositories/"
+        - "*Repository"
+        - "IRepository"
+        - "data access abstraction"
+      unit_of_work:
+        - "UnitOfWork"
+        - "IUnitOfWork"
+        - "transaction management"
+      data_mapper:
+        - "Mappers/"
+        - "AutoMapper"
+        - "mapping profiles"
   
   dependency_analysis:
     extract_from:
@@ -153,6 +221,96 @@ deep_analysis:
       - "coverage/"
       - ".coverage"
       - "lcov.info"
+  
+  # Code Smell Detection Engine (Martin Fowler's Refactoring)
+  code_smell_detection:
+    bloaters:
+      long_method:
+        indicators:
+          - "Functions > 20 lines"
+          - "Multiple levels of indentation"
+          - "Comments explaining sections"
+        refactoring: "Extract Method"
+      
+      large_class:
+        indicators:
+          - "Classes > 200 lines"
+          - "Too many instance variables"
+          - "Too many methods"
+        refactoring: "Extract Class, Extract Subclass"
+      
+      primitive_obsession:
+        indicators:
+          - "Groups of primitives used together"
+          - "String constants for type codes"
+          - "Arrays used instead of objects"
+        refactoring: "Replace Data Value with Object, Extract Class"
+      
+      long_parameter_list:
+        indicators:
+          - "Functions with > 3 parameters"
+          - "Parameter objects passed separately"
+        refactoring: "Introduce Parameter Object, Preserve Whole Object"
+    
+    object_orientation_abusers:
+      switch_statements:
+        indicators:
+          - "switch/case on type codes"
+          - "if/else chains checking types"
+          - "Repeated switch statements"
+        refactoring: "Replace Conditional with Polymorphism, Replace Type Code with State/Strategy"
+      
+      refused_bequest:
+        indicators:
+          - "Subclass doesn't use parent methods"
+          - "Overriding with empty methods"
+        refactoring: "Replace Inheritance with Delegation"
+    
+    change_preventers:
+      divergent_change:
+        indicators:
+          - "Class changed for multiple reasons"
+          - "Unrelated methods in same class"
+        refactoring: "Extract Class"
+      
+      shotgun_surgery:
+        indicators:
+          - "One change requires many class updates"
+          - "Similar changes in multiple places"
+        refactoring: "Move Method, Move Field, Inline Class"
+    
+    dispensables:
+      lazy_class:
+        indicators:
+          - "Classes with minimal functionality"
+          - "Classes that just hold data"
+        refactoring: "Inline Class, Collapse Hierarchy"
+      
+      dead_code:
+        indicators:
+          - "Unused variables/methods"
+          - "Unreachable code"
+          - "Commented out code"
+        refactoring: "Remove Dead Code"
+    
+    couplers:
+      feature_envy:
+        indicators:
+          - "Method uses another class more than its own"
+          - "Accessing data from another object repeatedly"
+        refactoring: "Move Method, Extract Method"
+      
+      inappropriate_intimacy:
+        indicators:
+          - "Classes accessing private members"
+          - "Bidirectional associations"
+        refactoring: "Move Method, Change Bidirectional to Unidirectional"
+      
+      message_chains:
+        indicators:
+          - "object.getA().getB().getC()"
+          - "Law of Demeter violations"
+        refactoring: "Hide Delegate, Extract Method"
 ```
 <!-- DATA:deep-analysis-engine:END -->
 <!-- SECTION:init:scan-project:END -->
@@ -235,9 +393,133 @@ states:
 ```
 <!-- WORKFLOW:document-creation:END -->
 
+<!-- DATA:refactoring-suggestions-generator:START -->
+```yaml
+refactoring_engine:
+  pattern_based_refactoring:
+    from_procedural_to_oo:
+      detect: "transaction_script_pattern"
+      suggest:
+        - step: "Identify data clumps"
+          action: "Extract into classes"
+          example: "Group user data into User class"
+        - step: "Find feature envy"
+          action: "Move methods to data classes"
+        - step: "Replace conditionals"
+          action: "Use polymorphism"
+    
+    to_vertical_slices:
+      detect: "layered_architecture"
+      suggest:
+        - step: "Identify features"
+          action: "Group by business capability"
+          example: "OrderPlacement, OrderFulfillment, OrderCancellation"
+        - step: "Create feature folders"
+          action: "Move all related code together"
+          structure: |
+            Features/
+              OrderPlacement/
+                PlaceOrderCommand.cs
+                PlaceOrderHandler.cs
+                OrderPlacedEvent.cs
+                PlaceOrderValidator.cs
+        - step: "Remove layer abstractions"
+          action: "Inline unnecessary interfaces"
+    
+    to_domain_driven_design:
+      detect: "anemic_domain_model"
+      suggest:
+        - step: "Identify aggregates"
+          action: "Group related entities"
+          example: "Order with OrderItems"
+        - step: "Move logic to entities"
+          action: "From services to domain objects"
+        - step: "Create value objects"
+          action: "Replace primitives"
+          example: "Money, Email, PhoneNumber"
+        - step: "Define bounded contexts"
+          action: "Separate domain models"
+    
+    enterprise_pattern_application:
+      repository_pattern:
+        when: "data_access_in_services"
+        suggest:
+          - "Extract data access to repositories"
+          - "Create repository interfaces"
+          - "Implement concrete repositories"
+      
+      service_layer:
+        when: "business_logic_in_controllers"
+        suggest:
+          - "Extract to application services"
+          - "Keep controllers thin"
+          - "Services orchestrate domain objects"
+      
+      unit_of_work:
+        when: "multiple_repository_calls"
+        suggest:
+          - "Implement transaction boundaries"
+          - "Group related operations"
+  
+  smell_specific_refactorings:
+    long_method:
+      steps:
+        - identify: "Logical sections with comments"
+        - extract: "Each section to method"
+        - name: "Methods by what they do, not how"
+    
+    feature_envy:
+      steps:
+        - identify: "Methods using other class data"
+        - move: "Method to data owner class"
+        - alternative: "Extract and move partial method"
+    
+    primitive_obsession:
+      steps:
+        - identify: "Related primitive parameters"
+        - create: "Value object or parameter object"
+        - benefits: "Type safety, validation, behavior"
+  
+  architecture_migration_paths:
+    monolith_to_modular:
+      steps:
+        - "Identify seams in the code"
+        - "Extract modules with clear interfaces"
+        - "Reduce coupling between modules"
+        - "Consider separate deployments"
+    
+    layers_to_vertical_slices:
+      steps:
+        - "Map features to use cases"
+        - "Create feature folders"
+        - "Move cross-layer code together"
+        - "Remove unnecessary abstractions"
+    
+    crud_to_ddd:
+      steps:
+        - "Identify business operations"
+        - "Model domain concepts explicitly"
+        - "Separate read and write models"
+        - "Implement domain events"
+```
+<!-- DATA:refactoring-suggestions-generator:END -->
+
 <!-- DATA:intelligent-question-generation:START -->
 ```yaml
 question_engine:
+  pattern_specific_questions:
+    vertical_slice_detected:
+      - "How do you organize features within slices?"
+      - "Do you use MediatR or similar for handlers?"
+      - "How do you handle cross-cutting concerns?"
+      - "What's your approach to shared code between slices?"
+    
+    ddd_detected:
+      - "How are your bounded contexts defined?"
+      - "Do you use domain events?"
+      - "How do you handle eventual consistency?"
+      - "What's your aggregate design strategy?"
+  
   context_based_questions:
     - trigger: "web_framework_detected"
       framework_specific:
@@ -293,6 +575,93 @@ question_engine:
 <!-- DATA:yaml-structure-generators:START -->
 ```yaml
 generators:
+  # Enhanced Domain Model Extraction
+  domain_model_extractor:
+    entity_detection:
+      patterns:
+        - "class_with_id_property"
+        - "mutable_state_objects"
+        - "business_lifecycle_objects"
+      indicators:
+        - "Has unique identifier"
+        - "Mutable properties"
+        - "Business behavior methods"
+      example_entities:
+        - "Order, Customer, Product"
+    
+    value_object_detection:
+      patterns:
+        - "immutable_data_classes"
+        - "no_identity_objects"
+        - "measurement_or_description"
+      indicators:
+        - "No ID property"
+        - "Immutable after creation"
+        - "Equality by value"
+      example_value_objects:
+        - "Money, Address, DateRange, Email"
+    
+    aggregate_detection:
+      patterns:
+        - "entity_clusters"
+        - "consistency_boundaries"
+        - "transaction_boundaries"
+      rules:
+        - "Root entity controls access"
+        - "Consistency within boundary"
+        - "Referenced by ID outside"
+      example_aggregates:
+        - "Order (root) with OrderItems"
+        - "Customer (root) with Addresses"
+    
+    domain_service_detection:
+      patterns:
+        - "stateless_operations"
+        - "cross_aggregate_logic"
+        - "domain_specific_calculations"
+      indicators:
+        - "No state"
+        - "Domain logic that doesn't fit entities"
+        - "Orchestrates multiple aggregates"
+    
+    bounded_context_detection:
+      linguistic_analysis:
+        - "Different meanings for same term"
+        - "Separate teams/modules"
+        - "Independent deployment units"
+      integration_patterns:
+        - "Shared kernel"
+        - "Customer/Supplier"
+        - "Anti-corruption layer"
+    
+    output_format:
+      domain_model:
+        entities:
+          - name: "{{entity_name}}"
+            properties: "{{detected_properties}}"
+            behaviors: "{{detected_methods}}"
+            aggregate_root: "{{true|false}}"
+        
+        value_objects:
+          - name: "{{vo_name}}"
+            properties: "{{immutable_properties}}"
+            validation_rules: "{{inferred_rules}}"
+        
+        aggregates:
+          - root: "{{root_entity}}"
+            members: "{{child_entities}}"
+            invariants: "{{business_rules}}"
+        
+        domain_services:
+          - name: "{{service_name}}"
+            operations: "{{domain_operations}}"
+            dependencies: "{{required_aggregates}}"
+        
+        bounded_contexts:
+          - name: "{{context_name}}"
+            entities: "{{context_entities}}"
+            integration_points: "{{external_dependencies}}"
+  
   architecture_pattern_generator:
     inputs:
       - detected_structure
@@ -557,6 +926,162 @@ validation:
 <!-- DATA:validation-workflow:END -->
 <!-- SECTION:init:validation-phase:END -->
 
+<!-- SECTION:init:architecture-evolution:START -->
+## Architecture Evolution Guidance
+
+<!-- DATA:evolution-patterns:START -->
+```yaml
+evolution_roadmaps:
+  transaction_script_evolution:
+    current_state: "Procedural code with business logic in scripts"
+    evolution_path:
+      - phase: "Extract Data Structures"
+        actions:
+          - "Group related data into classes"
+          - "Create data access objects"
+          - "Centralize validation"
+        milestone: "Data encapsulation achieved"
+      
+      - phase: "Introduce Domain Model"
+        actions:
+          - "Move behavior to domain objects"
+          - "Replace primitives with value objects"
+          - "Implement business rules in entities"
+        milestone: "Rich domain model"
+      
+      - phase: "Apply Service Layer"
+        actions:
+          - "Extract orchestration logic"
+          - "Define application boundaries"
+          - "Implement use cases"
+        milestone: "Clear separation of concerns"
+  
+  mvc_to_vertical_slices:
+    current_state: "Traditional MVC with shared models"
+    evolution_path:
+      - phase: "Identify Features"
+        actions:
+          - "Map controllers to business capabilities"
+          - "Group related actions"
+          - "Define feature boundaries"
+      
+      - phase: "Create Feature Folders"
+        actions:
+          - "Move controller/model/view together"
+          - "Colocate related code"
+          - "Reduce shared dependencies"
+      
+      - phase: "Implement CQRS"
+        actions:
+          - "Separate commands and queries"
+          - "Create feature-specific models"
+          - "Remove shared abstractions"
+  
+  monolith_to_ddd:
+    current_state: "Large monolithic application"
+    evolution_path:
+      - phase: "Strategic Design"
+        actions:
+          - "Identify bounded contexts"
+          - "Map domain language"
+          - "Define context boundaries"
+          - "Create context map"
+      
+      - phase: "Tactical Design"
+        actions:
+          - "Model aggregates"
+          - "Design entities and value objects"
+          - "Implement domain services"
+          - "Create repositories"
+      
+      - phase: "Extract Contexts"
+        actions:
+          - "Build anti-corruption layers"
+          - "Implement domain events"
+          - "Separate databases"
+          - "Deploy independently"
+  
+  crud_to_task_based:
+    current_state: "CRUD-focused architecture"
+    evolution_path:
+      - phase: "Identify Tasks"
+        actions:
+          - "Map user intentions"
+          - "Define business operations"
+          - "Create command objects"
+      
+      - phase: "Implement Commands"
+        actions:
+          - "Replace generic updates"
+          - "Model specific operations"
+          - "Add business validation"
+      
+      - phase: "Event Sourcing (Optional)"
+        actions:
+          - "Store events not state"
+          - "Build projections"
+          - "Implement event handlers"
+
+maturity_indicators:
+  low_maturity:
+    signs:
+      - "Business logic in UI"
+      - "Database-centric design"
+      - "Anemic domain model"
+      - "Procedural code"
+    recommendations:
+      - "Start with Service Layer"
+      - "Extract business rules"
+      - "Introduce value objects"
+  
+  medium_maturity:
+    signs:
+      - "Layered architecture"
+      - "Some domain modeling"
+      - "Service abstractions"
+      - "Basic testing"
+    recommendations:
+      - "Consider vertical slices"
+      - "Strengthen domain model"
+      - "Improve test coverage"
+  
+  high_maturity:
+    signs:
+      - "Clear bounded contexts"
+      - "Rich domain model"
+      - "Event-driven design"
+      - "Comprehensive testing"
+    recommendations:
+      - "Optimize for change"
+      - "Consider event sourcing"
+      - "Focus on observability"
+
+refactoring_priority_matrix:
+  high_impact_low_effort:
+    - "Extract value objects"
+    - "Create service layer"
+    - "Group related code"
+    - "Remove dead code"
+  
+  high_impact_high_effort:
+    - "Implement bounded contexts"
+    - "Migrate to vertical slices"
+    - "Extract microservices"
+    - "Implement event sourcing"
+  
+  low_impact_low_effort:
+    - "Rename variables"
+    - "Format code"
+    - "Update comments"
+  
+  low_impact_high_effort:
+    - "Premature optimization"
+    - "Over-engineering"
+    - "Unnecessary abstractions"
+```
+<!-- DATA:evolution-patterns:END -->
+<!-- SECTION:init:architecture-evolution:END -->
+
 <!-- SECTION:init:fallback-strategies:START -->
 ## Fallback Strategies
 
@@ -602,24 +1127,195 @@ when_analysis_insufficient:
 <!-- DATA:fallback-logic:END -->
 <!-- SECTION:init:fallback-strategies:END -->
 
+<!-- SECTION:init:ai-comprehension-optimization:START -->
+## AI Comprehension Optimization
+
+<!-- DATA:ai-friendly-patterns:START -->
+```yaml
+code_patterns_for_llms:
+  naming_conventions:
+    explicit_names:
+      bad: "process(d)"
+      good: "processOrderPayment(orderData)"
+      reason: "Clear intent and parameters"
+    
+    domain_language:
+      bad: "updateStatus(3)"
+      good: "transitionToShippedState()"
+      reason: "Express business intent"
+    
+    avoid_abbreviations:
+      bad: "calcTotWTax(amt, tx)"
+      good: "calculateTotalWithTax(amount, taxRate)"
+      reason: "Full words improve understanding"
+  
+  structural_patterns:
+    single_responsibility:
+      principle: "One class, one reason to change"
+      benefits:
+        - "Clear context boundaries"
+        - "Predictable behavior"
+        - "Easier to understand purpose"
+    
+    explicit_dependencies:
+      bad: "Hidden dependencies via globals"
+      good: "Constructor injection"
+      example: |
+        # Good for LLMs
+        class OrderService:
+          def __init__(self, repository: OrderRepository, 
+                       payment: PaymentGateway):
+            self.repository = repository
+            self.payment = payment
+    
+    consistent_patterns:
+      - "Use same pattern throughout codebase"
+      - "Predictable file locations"
+      - "Standard naming conventions"
+  
+  documentation_for_llms:
+    method_documentation:
+      template: |
+        /**
+         * Brief description of what method does
+         * @param paramName - What this parameter represents
+         * @returns What the method returns and why
+         * @throws When this exception is thrown
+         * @example
+         * // How to use this method
+         * const result = methodName(param);
+         */
+    
+    class_documentation:
+      include:
+        - "Purpose and responsibility"
+        - "Key relationships"
+        - "Invariants maintained"
+        - "Usage examples"
+    
+    architecture_documentation:
+      structure:
+        - "High-level overview"
+        - "Key concepts and terms"
+        - "Component relationships"
+        - "Data flow diagrams"
+        - "Decision rationale"
+  
+  vertical_slice_benefits:
+    for_llm_comprehension:
+      - "Complete feature in one location"
+      - "Minimal context switching"
+      - "Clear boundaries"
+      - "Self-contained logic"
+    
+    example_structure: |
+      Features/
+        PlaceOrder/
+          PlaceOrderCommand.cs      # Intent
+          PlaceOrderHandler.cs      # Logic
+          PlaceOrderValidator.cs    # Rules
+          OrderPlacedEvent.cs       # Outcome
+          PlaceOrderTests.cs        # Behavior
+  
+  ddd_benefits:
+    ubiquitous_language:
+      - "Consistent terminology"
+      - "Business-aligned naming"
+      - "Clear domain boundaries"
+    
+    explicit_models:
+      - "Rich domain objects"
+      - "Clear aggregates"
+      - "Explicit value objects"
+  
+  anti_patterns_to_avoid:
+    god_classes:
+      problem: "Too much context for LLM"
+      solution: "Break into focused classes"
+    
+    implicit_behavior:
+      problem: "Hidden side effects"
+      solution: "Make operations explicit"
+    
+    magic_values:
+      problem: "Unclear intent"
+      solution: "Named constants or enums"
+    
+    deep_inheritance:
+      problem: "Complex context chains"
+      solution: "Composition over inheritance"
+
+architecture_recommendations:
+  for_new_projects:
+    preferred: "Vertical Slice Architecture"
+    reasons:
+      - "Minimal cognitive load"
+      - "Clear feature boundaries"
+      - "Easy to understand scope"
+    
+    secondary: "Domain-Driven Design"
+    reasons:
+      - "Rich domain models"
+      - "Clear business alignment"
+      - "Explicit boundaries"
+  
+  for_existing_projects:
+    identify_seams:
+      - "Find natural boundaries"
+      - "Group related functionality"
+      - "Extract cohesive modules"
+    
+    incremental_improvement:
+      - "Start with high-value areas"
+      - "Apply patterns gradually"
+      - "Maintain consistency"
+
+generated_documentation_optimization:
+  yaml_structure:
+    benefits:
+      - "Machine parseable"
+      - "Clear hierarchy"
+      - "Explicit relationships"
+    
+    guidelines:
+      - "Use consistent indentation"
+      - "Group related concepts"
+      - "Avoid deep nesting"
+  
+  markdown_formatting:
+    - "Clear section headers"
+    - "Code examples with language tags"
+    - "Bullet points for lists"
+    - "Tables for comparisons"
+```
+<!-- DATA:ai-friendly-patterns:END -->
+<!-- SECTION:init:ai-comprehension-optimization:END -->
+
 <!-- SECTION:init:implementation-notes:START -->
 ## Implementation Notes for AI Agents
 
 <!-- DATA:agent-instructions:START -->
 ```yaml
 for_ai_agents:
+  pattern_recognition_priority:
+    1_vertical_slices: "Check for feature-based organization first"
+    2_ddd: "Look for domain modeling patterns"
+    3_traditional: "Fall back to MVC/layered patterns"
+  
   code_analysis_phase:
     - scan_all_files: "Use glob patterns from deep_analysis_engine"
     - identify_entry_points: "main.*, index.*, app.*, server.*"
     - trace_dependencies: "Build import graph"
     - detect_patterns: "Match against pattern indicators"
     - confidence_scoring: "Rate pattern match confidence"
+    - detect_code_smells: "Use code_smell_detection rules"
   
   question_generation_phase:
     - prioritize_questions: "Most important first"
     - limit_questions: "Max 5-7 per session"
     - use_context: "Reference detected components in questions"
     - natural_language: "Conversational, not robotic"
+    - pattern_specific: "Ask about detected patterns"
   
   document_generation_phase:
     - populate_all_fields: "No placeholder text"
@@ -627,12 +1323,15 @@ for_ai_agents:
     - calculate_progress: "From git history or estimates"
     - infer_relationships: "From import statements"
     - generate_descriptions: "Based on code analysis"
+    - apply_ai_optimization: "Use ai-friendly patterns"
+    - suggest_refactorings: "Based on detected smells"
   
   validation_phase:
     - present_clearly: "Use formatting and structure"
     - highlight_uncertain: "Mark low-confidence items"
     - allow_iteration: "User can regenerate sections"
     - save_preferences: "Learn from user corrections"
+    - suggest_evolution_path: "Based on maturity indicators"
 ```
 <!-- DATA:agent-instructions:END -->
 <!-- SECTION:init:implementation-notes:END -->

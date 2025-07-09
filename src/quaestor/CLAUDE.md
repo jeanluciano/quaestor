@@ -183,6 +183,81 @@ The following command templates are available in [.quaestor/commands/](./.quaest
 
 Use these commands to maintain consistency and follow best practices.
 
+# WORKFLOW HOOKS
+
+### Automated Milestone Commits
+
+<!-- SECTION:workflow-hooks:START -->
+## Workflow Automation Hooks
+
+<!-- DATA:hook-configuration:START -->
+```yaml
+workflow_hooks:
+  after_memory_update:
+    trigger: "MEMORY.md modified"
+    conditions:
+      - "Contains completed TODO items"
+      - "Milestone progress changed"
+    actions:
+      - scan_for_completed_todos: "Check TODO status"
+      - run_milestone_commit: "Auto-commit completed work"
+    command: "/quaestor:milestone-commit"
+  
+  after_todo_completion:
+    trigger: "TodoWrite marks item as completed"
+    conditions:
+      - "All related changes saved"
+      - "Quality checks passing"
+    actions:
+      - update_memory_progress: "Sync to MEMORY.md"
+      - trigger_milestone_commit: "Create atomic commit"
+    automatic: true
+  
+  after_task_success:
+    trigger: "Task command completes successfully"
+    conditions:
+      - "All checks green"
+      - "TODO marked complete"
+    actions:
+      - commit_changes: "Create commit for task"
+      - update_tracking: "Update progress"
+    prompt_user: false
+  
+  milestone_completion:
+    trigger: "All TODOs in milestone done"
+    conditions:
+      - "All items completed"
+      - "Quality gates passed"
+    actions:
+      - create_pr: "Generate pull request"
+      - notify_completion: "Update status"
+    require_confirmation: true
+```
+<!-- DATA:hook-configuration:END -->
+
+### Hook Usage
+
+**Automatic Triggers**:
+- Completing a TODO automatically triggers commit workflow
+- Updating MEMORY.md with progress runs milestone checks
+- Finishing all items in a milestone creates a PR
+
+**Manual Override**:
+```bash
+# Disable hooks temporarily
+/quaestor:milestone-commit --no-hooks
+
+# Run hooks manually
+/quaestor:milestone-commit --trigger
+```
+
+**Benefits**:
+- 🎯 Atomic commits for each completed task
+- 📊 Automatic progress tracking
+- 🔍 Quality enforcement before commits
+- 🚀 PRs created at milestone boundaries
+<!-- SECTION:workflow-hooks:END -->
+
 # DEVELOPMENT WORKFLOW
 
 ### Testing and Linting

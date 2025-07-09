@@ -106,6 +106,7 @@ your-project/
   - `task-py` / `task-rs` - Language-specific workflows  
   - `check` - Make sure everything's clean
   - `compose` - Combine templates for complex stuff
+  - `milestone-commit` - Auto-commit completed work with PRs
 
 ### Coming soon
 
@@ -173,12 +174,26 @@ uv run python main.py init
 
 ## 📚 Command Templates
 
-
 - **`project-init.md`** - Analyzes your project and sets everything up
 - **`task-py.md`** - Python implementation with all the checks
 - **`task-rs.md`** - Rust implementation with clippy and all
 - **`check.md`** - Fix all the things
 - **`compose.md`** - Combine templates for complex operations
+- **`milestone-commit.md`** - Auto-commit completed TODOs and create PRs
+
+### 🔄 Workflow Hooks
+
+Quaestor now includes automatic workflow hooks that trigger after certain events:
+
+- **After completing a TODO**: Automatically commits your work
+- **After updating MEMORY.md**: Checks for completed items and commits them
+- **When milestone is complete**: Creates a pull request automatically
+
+These hooks are configured in `CLAUDE.md` and integrated into the task commands. They ensure:
+- Clean git history with atomic commits
+- Automatic quality checks before commits
+- Progress tracking stays in sync
+- PRs are created when milestones are done
 
 ## 📄 License
 

@@ -176,22 +176,6 @@ universal_requirements:
 <!-- DATA:linting-commands:END -->
 <!-- SECTION:check:step2-linting:END -->
 
-<!-- SECTION:check:go-requirements:START -->
-### Go-Specific Requirements
-
-<!-- DATA:go-checklist:START -->
-```yaml
-requirements:
-  - "ZERO warnings from golangci-lint (all checks enabled)"
-  - "No disabled linter rules without explicit justification"
-  - "No use of interface{} or any{} types"
-  - "No nolint comments unless absolutely necessary with explanation"
-  - "Proper error wrapping with context"
-  - "No naked returns in functions over 5 lines"
-  - "Consistent naming following Go conventions"
-```
-<!-- DATA:go-checklist:END -->
-<!-- SECTION:check:go-requirements:END -->
 
 <!-- SECTION:check:step3-testing:START -->
 ### Step 3: Test Verification
@@ -212,22 +196,6 @@ ensure:
 
 <!-- SECTION:check:quality-checklists:START -->
 ## Quality Checklists
-
-<!-- DATA:go-quality-checklist:START -->
-```yaml
-go_quality:
-  - "[ ] No interface{} or any{} - concrete types everywhere"
-  - "[ ] Simple error handling - no custom error hierarchies"
-  - "[ ] Early returns to reduce nesting"
-  - "[ ] Meaningful variable names (userID not id)"
-  - "[ ] Proper context propagation"
-  - "[ ] No goroutine leaks"
-  - "[ ] Deferred cleanup where appropriate"
-  - "[ ] No race conditions (run with -race flag)"
-  - "[ ] No time.Sleep() for synchronization - channels used instead"
-  - "[ ] Select with timeouts instead of polling loops"
-```
-<!-- DATA:go-quality-checklist:END -->
 
 <!-- DATA:code-hygiene-checklist:START -->
 ```yaml
