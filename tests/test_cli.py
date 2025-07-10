@@ -21,22 +21,32 @@ class TestInitCommand:
         """Test that init creates .quaestor directory and installs commands to ~/.claude."""
         # Patch package resources to return test content
         with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
-            mock_read.side_effect = [
-                "# CLAUDE.md test content",  # CLAUDE.md
-                "# ARCHITECTURE manifest",  # manifest/ARCHITECTURE.md
-                "# MEMORY manifest",  # manifest/MEMORY.md
-                "# project-init.md",  # commands/project-init.md
-                "# task-py.md",  # commands/task-py.md
-                "# task-rs.md",  # commands/task-rs.md
-                "# check.md",  # commands/check.md
-                "# compose.md",  # commands/compose.md
-            ]
+            def mock_read_text(package, resource):
+                files = {
+                    ("quaestor.templates", "CLAUDE_INCLUDE.md"): (
+                        "<!-- BEGIN QUAESTOR CONFIG -->\nQuaestor config\n<!-- END QUAESTOR CONFIG -->"
+                    ),
+                    ("quaestor", "QUAESTOR_CLAUDE.md"): "# QUAESTOR_CLAUDE.md test content",
+                    ("quaestor", "CRITICAL_RULES.md"): "# CRITICAL_RULES test content",
+                    ("quaestor.manifest", "ARCHITECTURE.md"): "# ARCHITECTURE manifest",
+                    ("quaestor.manifest", "MEMORY.md"): "# MEMORY manifest",
+                    ("quaestor.commands", "project-init.md"): "# project-init.md",
+                    ("quaestor.commands", "task-py.md"): "# task-py.md",
+                    ("quaestor.commands", "task-rs.md"): "# task-rs.md",
+                    ("quaestor.commands", "check.md"): "# check.md",
+                    ("quaestor.commands", "compose.md"): "# compose.md",
+                    ("quaestor.commands", "milestone-commit.md"): "# milestone-commit.md",
+                }
+                return files.get((package, resource), f"# {resource} content")
+
+            mock_read.side_effect = mock_read_text
 
             result = runner.invoke(app, ["init", str(temp_dir)])
 
             assert result.exit_code == 0
             assert (temp_dir / ".quaestor").exists()
             assert (temp_dir / "CLAUDE.md").exists()
+            assert (temp_dir / ".quaestor" / "QUAESTOR_CLAUDE.md").exists()
             assert (temp_dir / ".quaestor" / "ARCHITECTURE.md").exists()
             assert (temp_dir / ".quaestor" / "MEMORY.md").exists()
             # Commands are now installed to ~/.claude/commands
@@ -147,16 +157,26 @@ class TestInitCommand:
 
     def test_init_copies_all_command_files(self, runner, temp_dir):
         """Test that all command files are installed to ~/.claude/commands."""
-        expected_commands = ["project-init.md", "task-py.md", "task-rs.md", "check.md", "compose.md"]
+        expected_commands = [
+            "project-init.md", "task-py.md", "task-rs.md", "check.md", "compose.md", "milestone-commit.md"
+        ]
 
         with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
-            mock_read.side_effect = [
-                "# CLAUDE.md",
-                "# CRITICAL_RULES.md",
-                "# ARCHITECTURE",
-                "# MEMORY",
-                *[f"# {cmd}" for cmd in expected_commands],
-            ]
+            def mock_read_text(package, resource):
+                files = {
+                    ("quaestor.templates", "CLAUDE_INCLUDE.md"): (
+                        "<!-- BEGIN QUAESTOR CONFIG -->\nQuaestor config\n<!-- END QUAESTOR CONFIG -->"
+                    ),
+                    ("quaestor", "QUAESTOR_CLAUDE.md"): "# QUAESTOR_CLAUDE.md",
+                    ("quaestor", "CRITICAL_RULES.md"): "# CRITICAL_RULES.md",
+                    ("quaestor.templates", "ai_architecture.md"): "# ARCHITECTURE",
+                    ("quaestor.templates", "ai_memory.md"): "# MEMORY",
+                }
+                if package == "quaestor.commands":
+                    return f"# {resource}"
+                return files.get((package, resource), f"# {resource} content")
+
+            mock_read.side_effect = mock_read_text
 
             result = runner.invoke(app, ["init", str(temp_dir)])
 
@@ -218,6 +238,45 @@ class TestInitCommand:
             assert 'overall_progress: "60%"' in mem_content
             assert "Milestone 1: Core Features" in mem_content  # Original content preserved
             assert "Payment integration" in mem_content
+
+
+    def test_init_merges_with_existing_claude_md(self, runner, temp_dir):
+        """Test that init merges with existing CLAUDE.md instead of overwriting."""
+        # Create existing CLAUDE.md with custom content
+        existing_claude = temp_dir / "CLAUDE.md"
+        existing_claude.write_text("# My Custom Claude Config\n\nThis is my custom content.")
+
+        with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
+            def mock_read_text(package, resource):
+                files = {
+                    ("quaestor.templates", "CLAUDE_INCLUDE.md"): (
+                        "<!-- BEGIN QUAESTOR CONFIG -->\nQuaestor config\n"
+                        "<!-- END QUAESTOR CONFIG -->\n\n<!-- Your custom content below -->"
+                    ),
+                    ("quaestor", "QUAESTOR_CLAUDE.md"): "# QUAESTOR_CLAUDE.md test content",
+                    ("quaestor", "CRITICAL_RULES.md"): "# CRITICAL_RULES test content",
+                    ("quaestor.templates", "ai_architecture.md"): "# AI ARCHITECTURE template",
+                    ("quaestor.templates", "ai_memory.md"): "# AI MEMORY template",
+                }
+                if package == "quaestor.commands":
+                    return f"# {resource} content"
+                return files.get((package, resource), f"# {resource} content")
+
+            mock_read.side_effect = mock_read_text
+
+            result = runner.invoke(app, ["init", str(temp_dir)])
+
+            assert result.exit_code == 0
+
+            # Check that CLAUDE.md exists and contains both Quaestor config and original content
+            updated_content = existing_claude.read_text()
+            assert "<!-- BEGIN QUAESTOR CONFIG -->" in updated_content
+            assert "<!-- END QUAESTOR CONFIG -->" in updated_content
+            assert "My Custom Claude Config" in updated_content
+            assert "This is my custom content." in updated_content
+
+            # Ensure Quaestor config is at the beginning
+            assert updated_content.startswith("<!-- BEGIN QUAESTOR CONFIG -->")
 
 
 class TestCLIApp:

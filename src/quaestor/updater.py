@@ -14,7 +14,7 @@ from rich.console import Console
 from rich.table import Table
 
 from . import __version__
-from .constants import COMMAND_FILES
+from .constants import COMMAND_FILES, QUAESTOR_CONFIG_END, QUAESTOR_CONFIG_START
 from .manifest import FileManifest, FileType, categorize_file, extract_version_from_content
 
 console = Console()
@@ -91,7 +91,7 @@ class QuaestorUpdater:
     def _check_quaestor_files(self, updates: dict[str, Any]):
         """Check .quaestor directory files."""
         files_to_check = [
-            ("CLAUDE.md", self.target_dir / "CLAUDE.md"),
+            ("QUAESTOR_CLAUDE.md", self.quaestor_dir / "QUAESTOR_CLAUDE.md"),
             ("CRITICAL_RULES.md", self.quaestor_dir / "CRITICAL_RULES.md"),
             ("manifest/ARCHITECTURE.md", self.quaestor_dir / "ARCHITECTURE.md"),
             ("manifest/MEMORY.md", self.quaestor_dir / "MEMORY.md"),
@@ -218,6 +218,7 @@ class QuaestorUpdater:
         # Update files
         self._update_quaestor_files(result, force, dry_run)
         self._update_command_files(result, dry_run)
+        self._update_claude_md_include(result, dry_run)
 
         # Save manifest
         if not dry_run:
@@ -260,7 +261,7 @@ class QuaestorUpdater:
     def _update_quaestor_files(self, result: UpdateResult, force: bool, dry_run: bool):
         """Update files in .quaestor directory."""
         files_to_process = [
-            ("CLAUDE.md", self.target_dir / "CLAUDE.md"),
+            ("QUAESTOR_CLAUDE.md", self.quaestor_dir / "QUAESTOR_CLAUDE.md"),
             ("CRITICAL_RULES.md", self.quaestor_dir / "CRITICAL_RULES.md"),
             ("templates/ai_architecture.md", self.quaestor_dir / "ARCHITECTURE.md"),
             ("templates/ai_memory.md", self.quaestor_dir / "MEMORY.md"),
@@ -317,6 +318,52 @@ class QuaestorUpdater:
 
             except Exception as e:
                 result.failed.append((f"commands/{cmd_file}", str(e)))
+
+    def _update_claude_md_include(self, result: UpdateResult, dry_run: bool):
+        """Update CLAUDE.md include section if needed."""
+        claude_path = self.target_dir / "CLAUDE.md"
+
+        if not claude_path.exists():
+            return
+
+        try:
+            # Read current content
+            current_content = claude_path.read_text()
+
+            # Check if has Quaestor config
+            if QUAESTOR_CONFIG_START not in current_content:
+                # No config section, skip (user may have removed it intentionally)
+                return
+
+            # Get latest include template
+            import importlib.resources as pkg_resources
+            include_content = pkg_resources.read_text("quaestor.templates", "CLAUDE_INCLUDE.md")
+
+            # Extract config section from template
+            config_start_idx = include_content.find(QUAESTOR_CONFIG_START)
+            config_end_idx = include_content.find(QUAESTOR_CONFIG_END) + len(QUAESTOR_CONFIG_END)
+            new_config = include_content[config_start_idx:config_end_idx]
+
+            # Extract current config section
+            current_start = current_content.find(QUAESTOR_CONFIG_START)
+            current_end = current_content.find(QUAESTOR_CONFIG_END) + len(QUAESTOR_CONFIG_END)
+            current_config = current_content[current_start:current_end]
+
+            # Check if update needed
+            if new_config != current_config:
+                if not dry_run:
+                    # Replace config section
+                    new_content = (
+                        current_content[:current_start] +
+                        new_config +
+                        current_content[current_end:]
+                    )
+                    claude_path.write_text(new_content)
+
+                result.updated.append("CLAUDE.md (config section)")
+
+        except Exception as e:
+            result.failed.append(("CLAUDE.md", str(e)))
 
     def _should_update_file(self, target_path: Path, file_type: FileType, force: bool) -> bool:
         """Determine if a file should be updated.

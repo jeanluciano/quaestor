@@ -13,8 +13,8 @@ COMMAND_FILES = [
 ]
 
 # File categorization for update logic
-SYSTEM_FILES = ["CRITICAL_RULES.md", "hooks.json", "CLAUDE.md"]
-USER_EDITABLE_FILES = ["ARCHITECTURE.md", "MEMORY.md", "MANIFEST.yaml"]
+SYSTEM_FILES = ["CRITICAL_RULES.md", "hooks.json", "QUAESTOR_CLAUDE.md"]
+USER_EDITABLE_FILES = ["ARCHITECTURE.md", "MEMORY.md", "MANIFEST.yaml", "CLAUDE.md"]
 
 # Version extraction patterns
 VERSION_PATTERNS = [
@@ -30,9 +30,13 @@ QUAESTOR_DIR_NAME = ".quaestor"
 
 # File mappings for init command
 INIT_FILES = {
-    "CLAUDE.md": "CLAUDE.md",  # Source -> Target
+    "QUAESTOR_CLAUDE.md": f"{QUAESTOR_DIR_NAME}/QUAESTOR_CLAUDE.md",  # Source -> Target
     "CRITICAL_RULES.md": f"{QUAESTOR_DIR_NAME}/CRITICAL_RULES.md",
 }
+
+# Quaestor config markers for CLAUDE.md
+QUAESTOR_CONFIG_START = "<!-- BEGIN QUAESTOR CONFIG -->"
+QUAESTOR_CONFIG_END = "<!-- END QUAESTOR CONFIG -->"
 
 # Manifest file mappings (source package -> target path in .quaestor)
 MANIFEST_FILES = {

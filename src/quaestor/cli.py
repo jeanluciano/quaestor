@@ -8,7 +8,13 @@ from rich.console import Console
 from rich.prompt import Confirm
 
 from . import __version__
-from .constants import COMMAND_FILES, DEFAULT_COMMANDS_DIR, QUAESTOR_DIR_NAME
+from .constants import (
+    COMMAND_FILES,
+    DEFAULT_COMMANDS_DIR,
+    QUAESTOR_CONFIG_END,
+    QUAESTOR_CONFIG_START,
+    QUAESTOR_DIR_NAME,
+)
 from .converters import convert_manifest_to_ai_format
 from .manifest import FileManifest, FileType, extract_version_from_content
 from .updater import QuaestorUpdater, print_update_result
@@ -25,6 +31,71 @@ console = Console()
 def callback():
     """Quaestor - Context management for AI-assisted development."""
     pass
+
+
+def merge_claude_md(target_dir: Path) -> bool:
+    """Merge Quaestor include section with existing CLAUDE.md or create new one.
+
+    Args:
+        target_dir: Project root directory
+
+    Returns:
+        True if successful, False otherwise
+    """
+    claude_path = target_dir / "CLAUDE.md"
+
+    try:
+        # Get the include template
+        include_content = pkg_resources.read_text("quaestor.templates", "CLAUDE_INCLUDE.md")
+
+        if claude_path.exists():
+            # Read existing content
+            existing_content = claude_path.read_text()
+
+            # Check if already has Quaestor config
+            if QUAESTOR_CONFIG_START in existing_content:
+                # Update existing config section
+                start_idx = existing_content.find(QUAESTOR_CONFIG_START)
+                end_idx = existing_content.find(QUAESTOR_CONFIG_END)
+
+                if end_idx == -1:
+                    console.print("[yellow]⚠ CLAUDE.md has invalid Quaestor markers. Creating backup...[/yellow]")
+                    claude_path.rename(target_dir / "CLAUDE.md.backup")
+                    claude_path.write_text(include_content)
+                else:
+                    # Extract config section from template
+                    config_start = include_content.find(QUAESTOR_CONFIG_START)
+                    config_end = include_content.find(QUAESTOR_CONFIG_END) + len(QUAESTOR_CONFIG_END)
+                    new_config = include_content[config_start:config_end]
+
+                    # Replace old config with new
+                    new_content = (
+                        existing_content[:start_idx] +
+                        new_config +
+                        existing_content[end_idx + len(QUAESTOR_CONFIG_END):]
+                    )
+                    claude_path.write_text(new_content)
+                    console.print("  [blue]↻[/blue] Updated Quaestor config in existing CLAUDE.md")
+            else:
+                # Prepend Quaestor config to existing content
+                # Remove the "Your custom content below" line from template
+                template_lines = include_content.strip().split('\n')
+                if template_lines[-1] == "<!-- Your custom content below -->":
+                    template_lines = template_lines[:-1]
+
+                merged_content = '\n'.join(template_lines) + '\n\n' + existing_content
+                claude_path.write_text(merged_content)
+                console.print("  [blue]✓[/blue] Added Quaestor config to existing CLAUDE.md")
+        else:
+            # Create new file
+            claude_path.write_text(include_content)
+            console.print("  [blue]✓[/blue] Created CLAUDE.md with Quaestor config")
+
+        return True
+
+    except Exception as e:
+        console.print(f"  [red]✗[/red] Failed to handle CLAUDE.md: {e}")
+        return False
 
 
 def generate_hooks_json(target_dir: Path, quaestor_dir: Path, project_type: str) -> Path | None:
@@ -142,20 +213,28 @@ def init(
     # Copy files using package resources
     copied_files = []
 
-    # Copy CLAUDE.md to project root
-    try:
-        claude_content = pkg_resources.read_text("quaestor", "CLAUDE.md")
+    # Handle CLAUDE.md smartly
+    if merge_claude_md(target_dir):
+        # Track in manifest as user-editable since users can modify it
         claude_path = target_dir / "CLAUDE.md"
-        claude_path.write_text(claude_content)
+        if claude_path.exists():
+            manifest.track_file(claude_path, FileType.USER_EDITABLE, "1.0", target_dir)
+            copied_files.append("CLAUDE.md")
+
+    # Copy QUAESTOR_CLAUDE.md to .quaestor directory
+    try:
+        quaestor_claude_content = pkg_resources.read_text("quaestor", "QUAESTOR_CLAUDE.md")
+        quaestor_claude_path = quaestor_dir / "QUAESTOR_CLAUDE.md"
+        quaestor_claude_path.write_text(quaestor_claude_content)
 
         # Track in manifest
-        version = extract_version_from_content(claude_content) or "1.0"
-        manifest.track_file(claude_path, FileType.SYSTEM, version, target_dir)
+        version = extract_version_from_content(quaestor_claude_content) or "1.0"
+        manifest.track_file(quaestor_claude_path, FileType.SYSTEM, version, target_dir)
 
-        copied_files.append("CLAUDE.md")
-        console.print("  [blue]✓[/blue] Copied CLAUDE.md")
+        copied_files.append("QUAESTOR_CLAUDE.md")
+        console.print("  [blue]✓[/blue] Copied QUAESTOR_CLAUDE.md")
     except Exception as e:
-        console.print(f"  [yellow]⚠[/yellow] Could not copy CLAUDE.md: {e}")
+        console.print(f"  [yellow]⚠[/yellow] Could not copy QUAESTOR_CLAUDE.md: {e}")
 
     # Copy CRITICAL_RULES.md to .quaestor directory
     try:

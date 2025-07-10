@@ -212,8 +212,8 @@ class TestUpdateIntegration:
         quaestor_dir.mkdir()
 
         # Create initial files
-        claude_md = temp_dir / "CLAUDE.md"
-        claude_md.write_text("<!-- QUAESTOR:version:1.0 -->\nOriginal content")
+        quaestor_claude_md = quaestor_dir / "QUAESTOR_CLAUDE.md"
+        quaestor_claude_md.write_text("<!-- QUAESTOR:version:1.0 -->\nOriginal content")
 
         arch_md = quaestor_dir / "ARCHITECTURE.md"
         arch_md.write_text("<!-- QUAESTOR:version:1.0 -->\nOriginal architecture")
@@ -221,7 +221,7 @@ class TestUpdateIntegration:
         # Create and populate manifest
         manifest = FileManifest(quaestor_dir / "manifest.json")
         manifest.set_quaestor_version("0.2.3")
-        manifest.track_file(claude_md, FileType.SYSTEM, "1.0", temp_dir)
+        manifest.track_file(quaestor_claude_md, FileType.SYSTEM, "1.0", temp_dir)
         manifest.track_file(arch_md, FileType.USER_EDITABLE, "1.0", temp_dir)
         manifest.save()
 
@@ -238,8 +238,8 @@ class TestUpdateIntegration:
         with patch("quaestor.updater.pkg_resources.read_text") as mock_read:
             # Need to handle multiple calls to read_text for different files
             def read_text_side_effect(package, resource):
-                if resource == "CLAUDE.md":
-                    return "<!-- QUAESTOR:version:1.1 -->\nUpdated CLAUDE content"
+                if resource == "QUAESTOR_CLAUDE.md":
+                    return "<!-- QUAESTOR:version:1.1 -->\nUpdated QUAESTOR_CLAUDE content"
                 elif resource == "CRITICAL_RULES.md":
                     return "<!-- QUAESTOR:version:1.1 -->\nUpdated CRITICAL_RULES content"
                 elif resource == "ai_architecture.md":
@@ -255,8 +255,8 @@ class TestUpdateIntegration:
                 result = updater.update()
 
         # Verify results
-        assert "CLAUDE.md" in result.updated  # System file updated
+        assert ".quaestor/QUAESTOR_CLAUDE.md" in result.updated  # System file updated
         assert ".quaestor/ARCHITECTURE.md" in result.skipped  # User file skipped
-        assert claude_md.read_text() == "<!-- QUAESTOR:version:1.1 -->\nUpdated CLAUDE content"
+        assert quaestor_claude_md.read_text() == "<!-- QUAESTOR:version:1.1 -->\nUpdated QUAESTOR_CLAUDE content"
         assert "User customized" in arch_md.read_text()  # User changes preserved
 
