@@ -70,20 +70,20 @@ def merge_claude_md(target_dir: Path) -> bool:
 
                     # Replace old config with new
                     new_content = (
-                        existing_content[:start_idx] +
-                        new_config +
-                        existing_content[end_idx + len(QUAESTOR_CONFIG_END):]
+                        existing_content[:start_idx]
+                        + new_config
+                        + existing_content[end_idx + len(QUAESTOR_CONFIG_END) :]
                     )
                     claude_path.write_text(new_content)
                     console.print("  [blue]↻[/blue] Updated Quaestor config in existing CLAUDE.md")
             else:
                 # Prepend Quaestor config to existing content
                 # Remove the "Your custom content below" line from template
-                template_lines = include_content.strip().split('\n')
+                template_lines = include_content.strip().split("\n")
                 if template_lines[-1] == "<!-- Your custom content below -->":
                     template_lines = template_lines[:-1]
 
-                merged_content = '\n'.join(template_lines) + '\n\n' + existing_content
+                merged_content = "\n".join(template_lines) + "\n\n" + existing_content
                 claude_path.write_text(merged_content)
                 console.print("  [blue]✓[/blue] Added Quaestor config to existing CLAUDE.md")
         else:

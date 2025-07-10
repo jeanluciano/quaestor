@@ -337,6 +337,7 @@ class QuaestorUpdater:
 
             # Get latest include template
             import importlib.resources as pkg_resources
+
             include_content = pkg_resources.read_text("quaestor.templates", "CLAUDE_INCLUDE.md")
 
             # Extract config section from template
@@ -353,11 +354,7 @@ class QuaestorUpdater:
             if new_config != current_config:
                 if not dry_run:
                     # Replace config section
-                    new_content = (
-                        current_content[:current_start] +
-                        new_config +
-                        current_content[current_end:]
-                    )
+                    new_content = current_content[:current_start] + new_config + current_content[current_end:]
                     claude_path.write_text(new_content)
 
                 result.updated.append("CLAUDE.md (config section)")
@@ -424,4 +421,3 @@ def print_update_result(result: UpdateResult):
             console.print(f"  ✗ {file}: {error}")
 
     console.print(f"\n[bold]Result: {result.summary()}[/bold]")
-

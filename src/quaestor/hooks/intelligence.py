@@ -382,7 +382,7 @@ def analyze_complexity(context: dict[str, Any]) -> HookResult:
     for i, func_body in enumerate(functions):
         lines = func_body.strip().split("\n")
         if len(lines) > 30:
-            complexity_issues.append(f"Function {i+1}: {len(lines)} lines (limit: 30)")
+            complexity_issues.append(f"Function {i + 1}: {len(lines)} lines (limit: 30)")
 
     # Check nesting depth
     max_indent = 0
@@ -399,7 +399,7 @@ def analyze_complexity(context: dict[str, Any]) -> HookResult:
     for i, class_body in enumerate(classes):
         lines = class_body.strip().split("\n")
         if len(lines) > 200:
-            complexity_issues.append(f"Class {i+1}: {len(lines)} lines (limit: 200)")
+            complexity_issues.append(f"Class {i + 1}: {len(lines)} lines (limit: 200)")
 
     if complexity_issues:
         suggestions = [
@@ -411,10 +411,7 @@ def analyze_complexity(context: dict[str, Any]) -> HookResult:
 
         return HookResult(
             False,
-            f"⚠️ Complexity Issues in {file_path}:\n"
-            + "\n".join(complexity_issues)
-            + "\n\n"
-            + "\n".join(suggestions),
+            f"⚠️ Complexity Issues in {file_path}:\n" + "\n".join(complexity_issues) + "\n\n" + "\n".join(suggestions),
             {"issues": complexity_issues},
         )
 

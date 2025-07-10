@@ -21,6 +21,7 @@ class TestInitCommand:
         """Test that init creates .quaestor directory and installs commands to ~/.claude."""
         # Patch package resources to return test content
         with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
+
             def mock_read_text(package, resource):
                 files = {
                     ("quaestor.templates", "CLAUDE_INCLUDE.md"): (
@@ -158,10 +159,16 @@ class TestInitCommand:
     def test_init_copies_all_command_files(self, runner, temp_dir):
         """Test that all command files are installed to ~/.claude/commands."""
         expected_commands = [
-            "project-init.md", "task-py.md", "task-rs.md", "check.md", "compose.md", "milestone-commit.md"
+            "project-init.md",
+            "task-py.md",
+            "task-rs.md",
+            "check.md",
+            "compose.md",
+            "milestone-commit.md",
         ]
 
         with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
+
             def mock_read_text(package, resource):
                 files = {
                     ("quaestor.templates", "CLAUDE_INCLUDE.md"): (
@@ -239,7 +246,6 @@ class TestInitCommand:
             assert "Milestone 1: Core Features" in mem_content  # Original content preserved
             assert "Payment integration" in mem_content
 
-
     def test_init_merges_with_existing_claude_md(self, runner, temp_dir):
         """Test that init merges with existing CLAUDE.md instead of overwriting."""
         # Create existing CLAUDE.md with custom content
@@ -247,6 +253,7 @@ class TestInitCommand:
         existing_claude.write_text("# My Custom Claude Config\n\nThis is my custom content.")
 
         with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
+
             def mock_read_text(package, resource):
                 files = {
                     ("quaestor.templates", "CLAUDE_INCLUDE.md"): (

@@ -261,4 +261,3 @@ def categorize_file(file_path: Path, relative_path: str) -> FileType:
 
     # Default to template
     return FileType.TEMPLATE
-

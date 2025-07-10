@@ -259,4 +259,3 @@ class TestUpdateIntegration:
         assert ".quaestor/ARCHITECTURE.md" in result.skipped  # User file skipped
         assert quaestor_claude_md.read_text() == "<!-- QUAESTOR:version:1.1 -->\nUpdated QUAESTOR_CLAUDE content"
         assert "User customized" in arch_md.read_text()  # User changes preserved
-

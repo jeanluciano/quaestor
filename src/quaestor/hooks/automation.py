@@ -108,7 +108,7 @@ def generate_progress_section(completed_todos: list[dict[str, str]]) -> str:
 
 <!-- DATA:project-status:START -->
 ```yaml
-last_updated: "{datetime.now().strftime('%Y-%m-%d')}"
+last_updated: "{datetime.now().strftime("%Y-%m-%d")}"
 completed_today: {len(completed_todos)}
 recent_completions:
 {chr(10).join(f'  - "{todo["task"]}"' for todo in completed_todos[:5])}

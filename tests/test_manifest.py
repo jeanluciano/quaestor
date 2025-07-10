@@ -105,4 +105,3 @@ Just regular content here"""
         assert extract_version_from_content(content1) == "1.0.0"
         assert extract_version_from_content(content2) == "2.1.3"
         assert extract_version_from_content(content3) == "0.0.1"
-

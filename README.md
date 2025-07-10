@@ -1,142 +1,178 @@
 # Quaestor
 
-> 🏛️ Keep your AI assistant on track and actually useful
+> 🏛️ AI context management that respects your existing setup
 
-[![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
+[![PyPI Version](https://img.shields.io/pypi/v/quaestor.svg)](https://pypi.org/project/quaestor/)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![PyPI](https://img.shields.io/pypi/v/quaestor.svg)](https://pypi.org/project/quaestor/)
 
-Quaestor gives your AI assistant the context it needs to actually help you code. It analyzes your project, generates smart documentation, and keeps Claude from going off the rails.
+**Quaestor** gives Claude (and other AI assistants) the context they need without messing with your existing configuration. It's smart enough to enhance your workflow, not replace it.
 
-## 🎯 Why?
+## 🚀 Quick Start (30 seconds)
 
-Ever had Claude forget what you were working on? Or suggest patterns that don't match your codebase? Yeah, us too.
-
-Quaestor fixes that by:
-
-- **🧠 Understanding your code**: Detects your stack, patterns, and architecture automatically
-- **📚 Keeping context**: Maintains what's been done and what's next across sessions
-- **🎮 Enforcing standards**: Makes sure AI follows YOUR project's patterns, not generic ones
-- **📊 Tracking progress**: Knows what's done, what's in progress, what's next
-- **✅ Quality gates**: Won't let AI claim "done" until tests pass and linters are happy
-
-## 📦 Installation
-
-### Quickest (no install needed)
 ```bash
-# Just run it
+# In your project directory:
 uvx quaestor init
+
+# That's it! Your AI assistant now understands your project.
 ```
 
-### If you want it installed
+### What just happened?
+
+Quaestor scanned your project and:
+- ✅ **Preserved your existing CLAUDE.md** (if you had one)
+- 📁 Created `.quaestor/` with your project's context
+- 🎯 Installed smart commands to `~/.claude/commands/`
+- 🔧 Generated hooks for automated workflows
+
+**Your existing setup is intact.** Quaestor just made it better.
+
+## 🎯 What It Does (Under the Hood)
+
+### 1. **Non-Intrusive CLAUDE.md Integration** 🆕
+
+Instead of overwriting your CLAUDE.md, Quaestor adds a small managed section:
+
+**Before:**
+```markdown
+# My Custom Claude Config
+My specific instructions...
+```
+
+**After:**
+```markdown
+<!-- BEGIN QUAESTOR CONFIG -->
+## 📋 Quaestor Framework Active
+[Links to context files]
+<!-- END QUAESTOR CONFIG -->
+
+# My Custom Claude Config
+My specific instructions...
+```
+
+Your content stays exactly where it was. Quaestor just adds pointers to its context files.
+
+### 2. **Smart Project Analysis**
+
+When you run `init`, Quaestor:
+- Detects your tech stack from `package.json`, `pyproject.toml`, `Cargo.toml`, etc.
+- Identifies frameworks from imports and dependencies
+- Maps your architecture from directory structure
+- Extracts progress from git history
+
+### 3. **Intelligent Update System**
+
 ```bash
-# Global install with uv
-uv tool install quaestor
-
-# Or add to your project
-uv add quaestor
-
-# Old school pip works too
-pip install quaestor
+quaestor update --check  # See what would change
+quaestor update          # Update only what's needed
 ```
 
-## 🚀 Getting Started
+- **System files** (CRITICAL_RULES.md) - Always updated
+- **User files** (ARCHITECTURE.md) - Never overwritten if modified
+- **Config sections** - Surgically updated without touching your content
 
-### 1. Initialize in your project:
-```bash
-quaestor init
-```
-
-This will:
-- 🔍 Scan your code to figure out what you're building
-- 💬 Ask a few smart questions based on what it finds
-- 📝 Generate context files that AI assistants actually understand
-- ✨ Set you up for success
-
-### 2. What you get:
-- `CLAUDE.md` - Instructions for your AI assistant (root dir so Claude auto-reads it)
-- `.quaestor/ARCHITECTURE.md` - Your actual architecture (not hallucinated)
-- `.quaestor/MEMORY.md` - What's been done, what's next
-- `.quaestor/commands/` - Battle-tested workflows
-
-### 3. Just start coding:
-When you open your project with Claude, it automatically reads these files and knows:
-- Your project structure
-- Your coding standards
-- What you're working on
-- How to test and validate changes
-
-## 📁 What goes where
+### 4. **File Structure**
 
 ```
 your-project/
-├── CLAUDE.md              # AI reads this first
+├── CLAUDE.md                    # Your existing config + Quaestor section
 └── .quaestor/
-    ├── ARCHITECTURE.md    # Your real architecture
-    ├── MEMORY.md          # Progress tracking
-    └── commands/          # Workflows that work
-        ├── project-init.md # Smart project analysis
-        ├── task-py.md     # Python workflows
-        ├── task-rs.md     # Rust workflows
-        ├── check.md       # Quality checks
-        └── compose.md     # Template combos
+    ├── QUAESTOR_CLAUDE.md       # Full framework instructions
+    ├── CRITICAL_RULES.md        # Enforcement rules
+    ├── ARCHITECTURE.md          # Your detected architecture
+    ├── MEMORY.md                # Progress tracking
+    ├── manifest.json            # Tracks files and modifications
+    └── hooks.json               # Automation configuration
 ```
 
-## 🌟 What it does
+## 📚 Commands
 
-### Right now
+| Command | What it does | Example |
+|---------|--------------|---------|
+| `init` | Set up Quaestor in your project | `quaestor init` |
+| `update` | Smart update that preserves your changes | `quaestor update --check` |
+| **Claude Commands** (in `~/.claude/commands/`) | | |
+| `project-init` | Analyze and set up project management | `/project-init` |
+| `task-py` | Python implementation workflow | `/task-py implement user auth` |
+| `task-rs` | Rust implementation workflow | `/task-rs add error handling` |
+| `check` | Run quality checks | `/check` |
+| `compose` | Combine commands | `/compose task-py + check` |
+| `milestone-commit` | Auto-commit completed work | `/milestone-commit` |
 
-- **🔍 Smart Analysis**: 
-  - Figures out your stack (React? Django? FastAPI? etc.)
-  - Detects your patterns (MVC? DDD? Microservices?)
-  - Finds your tools (PostgreSQL? Redis? Docker?)
-  
-- **🤖 Context Generation**:
-  - Writes docs FROM your code, not assumptions
-  - Tracks progress from git history
-  - Asks the right questions
-  
-- **📝 AI-Friendly Format**: 
-  - Special markers for precise edits
-  - Structured data that won't get mangled
-  - Designed for LLMs, not humans
-  
-- **🎯 Command System**: 
-  - `init` - Smart setup with code analysis
-  - `task-py` / `task-rs` - Language-specific workflows  
-  - `check` - Make sure everything's clean
-  - `compose` - Combine templates for complex stuff
-  - `milestone-commit` - Auto-commit completed work with PRs
+## 🔥 Key Features
 
-### Coming soon
+### Smart Context Management
+- **Preserves your configs** - Never overwrites your CLAUDE.md
+- **Tracks modifications** - Knows which files you've customized
+- **Surgical updates** - Updates only Quaestor sections
+- **Version tracking** - Every file has version headers
 
-- **Git Review**: Automated PR reviews that actually understand your code
-- **Auto Docs**: Keep docs in sync with code automatically
-- **More Languages**: task-js, task-go, etc.
-- **Team Sync**: Share context across your team
+### Automated Workflows
+- **Progress tracking** - Updates MEMORY.md automatically
+- **Quality gates** - Won't commit until tests pass
+- **Atomic commits** - Each task gets a clean commit
+- **PR generation** - Creates PRs when milestones complete
 
-## 🏗️ How it actually works
+### Project Intelligence
+- **Stack detection** - Knows if you're using React, Django, FastAPI, etc.
+- **Pattern recognition** - Identifies MVC, DDD, microservices patterns
+- **Tool awareness** - Finds PostgreSQL, Redis, Docker usage
+- **Convention learning** - Adapts to your project's style
 
-### When you run `quaestor init`:
+## 🛠️ Installation Options
 
-1. **Scans your project**:
-   - Looks for package.json, requirements.txt, Cargo.toml, etc.
-   - Detects frameworks from imports and dependencies
-   - Figures out your architecture from folder structure
+```bash
+# Recommended - No install needed
+uvx quaestor init
 
-2. **Asks smart questions**:
-   - Only asks what it can't figure out
-   - Questions based on what it found
-   - Skips the obvious stuff
+# Global install
+uv tool install quaestor
 
-3. **Generates real docs**:
-   - Architecture based on your actual code
-   - Progress from your git history
-   - Standards from your existing patterns
+# Add to project
+uv add quaestor
 
-### The special format
+# Traditional pip
+pip install quaestor
+```
 
-We use a markdown format that LLMs can reliably parse and edit:
+## 🎓 How It Works
+
+### The Manifest System
+
+Quaestor uses a manifest (`manifest.json`) to track every file it manages:
+
+```json
+{
+  "version": "1.0",
+  "quaestor_version": "0.2.4",
+  "files": {
+    "CLAUDE.md": {
+      "type": "user-editable",
+      "version": "1.0",
+      "user_modified": true,
+      "original_checksum": "...",
+      "current_checksum": "..."
+    }
+  }
+}
+```
+
+This enables:
+- **Smart updates** - Only update what's changed
+- **Modification detection** - Via checksums
+- **Version tracking** - Know which version of each file
+- **Categorization** - Different update strategies per file type
+
+### File Categories
+
+1. **SYSTEM** - Always updated (CRITICAL_RULES.md, QUAESTOR_CLAUDE.md)
+2. **USER_EDITABLE** - Never auto-overwritten (ARCHITECTURE.md, MEMORY.md, CLAUDE.md)
+3. **COMMAND** - Added if missing (task-py.md, check.md, etc.)
+4. **TEMPLATE** - Updated if unmodified
+
+### AI-Optimized Format
+
+Special markers enable precise AI edits:
 
 ```markdown
 <!-- SECTION:architecture:database:START -->
@@ -144,182 +180,66 @@ We use a markdown format that LLMs can reliably parse and edit:
 database:
   type: PostgreSQL
   orm: SQLAlchemy
-  migrations: Alembic
 ```
 <!-- SECTION:architecture:database:END -->
 ```
 
-This lets AI make precise edits without breaking your docs.
+AI can update sections without breaking your documentation.
 
-## 🔗 Part of something bigger
+## 🪝 Claude Hooks
 
-Quaestor is part of Praetor - tools for engineers who actually like coding but want AI to handle the boring stuff. You stay in control, AI does the grunt work. It's just that most of it is my head.
+Generate automation with:
+```bash
+quaestor init  # Creates .quaestor/hooks.json
+```
 
-## 💻 Contributing
+Copy to Claude settings:
+```bash
+cp .quaestor/hooks.json ~/.claude/settings/claude_code_hooks.json
+```
+
+### What Hooks Do
+
+- **Enforce** - Block coding without research
+- **Automate** - Update progress, create commits
+- **Assist** - Refresh context, suggest next steps
+
+## 🔄 Updating Quaestor
 
 ```bash
-# Get the code
-git clone https://github.com/jeanluciano/quaestor.git
-cd quaestor
+# Check what would change
+quaestor update --check
 
-# Setup
-uv sync
+# Update with backup
+quaestor update --backup
 
-# Test it
-uv run pytest
-
-# Try it
-uv run python main.py init
+# Force update everything
+quaestor update --force
 ```
-
-## 📚 Command Templates
-
-- **`project-init.md`** - Analyzes your project and sets everything up
-- **`task-py.md`** - Python implementation with all the checks
-- **`task-rs.md`** - Rust implementation with clippy and all
-- **`check.md`** - Fix all the things
-- **`compose.md`** - Combine templates for complex operations
-- **`milestone-commit.md`** - Auto-commit completed TODOs and create PRs
-
-### 🔄 Workflow Hooks
-
-Quaestor now includes automatic workflow hooks that trigger after certain events:
-
-- **After completing a TODO**: Automatically commits your work
-- **After updating MEMORY.md**: Checks for completed items and commits them
-- **When milestone is complete**: Creates a pull request automatically
-
-These hooks are configured in `CLAUDE.md` and integrated into the task commands. They ensure:
-- Clean git history with atomic commits
-- Automatic quality checks before commits
-- Progress tracking stays in sync
-- PRs are created when milestones are done
-
-### 🎯 How Milestones & Project Management Work
-
-When you run `/quaestor:project:init`, the system creates a complete project management framework:
-
-```yaml
-.quaestor/
-├── MANIFEST.yaml        # Project metadata and milestone tracking
-├── milestones/          # Detailed milestone documentation
-│   └── foundation/      # Current milestone directory
-│       └── README.md    # Milestone details and tasks
-├── ARCHITECTURE.md      # AI-optimized architecture
-└── MEMORY.md           # Progress tracking
-```
-
-The system uses **THREE synchronized tracking systems**:
-
-1. **MANIFEST.yaml** - High-level milestone state
-   - Current milestone, progress percentages
-   - Project metadata and dependencies
-   - Links to all documentation
-
-2. **milestones/[name]/README.md** - Detailed task lists
-   - Checkbox task lists (✅ completed, 🔄 in progress, 📋 to do)
-   - Success criteria and technical requirements
-   - Milestone-specific documentation
-
-3. **MEMORY.md** - Daily progress and context
-   - What's been done, what's in progress
-   - Lessons learned and blockers
-   - Next immediate actions
-
-#### How It All Works Together
-
-```
-compose.md loads task template
-         ↓
-task.md reads MANIFEST.yaml → finds current: "foundation"
-         ↓
-task.md reads .quaestor/milestones/foundation/README.md
-         ↓
-Executes work → Updates task checkboxes
-         ↓
-Updates MEMORY.md progress → Updates MANIFEST.yaml progress
-         ↓
-milestone-commit creates atomic commits
-         ↓
-When all tasks complete → PR for milestone
-```
-
-This provides:
-- **Strategic view** (MANIFEST.yaml) - Where are we overall?
-- **Tactical view** (milestone READMEs) - What needs to be done?
-- **Operational view** (MEMORY.md) - What are we doing today?
-
-The commands stay milestone-aware by reading this context, ensuring your AI assistant always knows where you are in the project!
-
-## 🪝 Claude Code Hooks Integration
-
-Quaestor now includes powerful Claude Code hooks that transform static instructions into enforceable workflows. When you run `quaestor init`, it generates a `hooks.json` configuration file that can automate and enforce best practices.
-
-### What are Claude Hooks?
-
-Claude Code hooks are user-defined shell commands that execute at specific points in Claude's lifecycle. They provide deterministic control over Claude's actions, ensuring critical workflows are followed automatically.
-
-### Generated Hooks Include:
-
-1. **Enforcement Hooks** - Ensure CRITICAL_RULES compliance
-   - Block code writing without research
-   - Detect complexity and require ultrathinking
-   - Enforce multi-agent usage for complex tasks
-
-2. **Automation Hooks** - Handle repetitive tasks
-   - Auto-update MEMORY.md when TODOs complete
-   - Run quality checks before commits
-   - Create atomic commits with proper messages
-   - Generate PRs when milestones complete
-
-3. **Intelligence Hooks** - Provide smart assistance
-   - Refresh context when conversations get long
-   - Learn patterns from your code
-   - Suggest next actions based on project state
-
-### Using the Hooks
-
-After running `quaestor init`:
-
-1. Find the generated `hooks.json` in `.quaestor/hooks.json`
-2. Copy it to your Claude settings:
-   ```bash
-   cp .quaestor/hooks.json ~/.claude/settings/claude_code_hooks.json
-   ```
-3. Or use project-specific hooks by placing in your project root
-
-### Hook Commands
-
-Quaestor provides CLI commands to interact with hooks:
-
-```bash
-# Enforcement commands
-quaestor hooks enforce-research    # Check research before implementation
-quaestor hooks quality-check       # Run project-appropriate quality checks
-
-# Automation commands  
-quaestor hooks update-memory       # Update MEMORY.md from TODOs
-quaestor hooks check-milestone     # Check milestone completion
-
-# Intelligence commands
-quaestor hooks refresh-context     # Refresh Claude's context
-quaestor hooks suggest-next        # Get intelligent next action suggestions
-```
-
-### Benefits
-
-- **Enforced Best Practices**: No more forgetting to research before coding
-- **Automatic Progress Tracking**: TODOs and milestones update themselves
-- **Quality Gates**: Code must pass checks before committing
-- **Intelligent Assistance**: Context-aware help when you need it
-- **Clean Git History**: Atomic commits with meaningful messages
-
-The hooks transform Quaestor from a passive framework into an active development companion that guides and enforces best practices throughout your workflow!
-
-## 📄 License
-
-[MIT](LICENSE) - Use it however you want.
 
 ## 🤝 Contributing
 
-PRs welcome! Just make sure tests pass and linters are happy.
+```bash
+git clone https://github.com/jeanluciano/quaestor.git
+cd quaestor
+uv sync
+uv run pytest
+```
+
+## 📊 Project Status
+
+- ✅ Non-intrusive CLAUDE.md integration
+- ✅ Smart update system with manifest tracking
+- ✅ Command templates for Python/Rust
+- ✅ Claude hooks integration
+- ✅ Automated milestone workflows
+- 🚧 JavaScript/TypeScript commands
+- 🚧 Team synchronization features
+
+## 📄 License
+
+MIT - Use it however you want.
+
+---
+
+**Remember:** Quaestor enhances your workflow without replacing it. Your configs, your rules, just better AI understanding.
