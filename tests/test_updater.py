@@ -2,8 +2,6 @@
 
 from unittest.mock import patch
 
-import pytest
-
 from quaestor.manifest import FileManifest, FileType
 from quaestor.updater import QuaestorUpdater, UpdateResult
 
@@ -250,7 +248,7 @@ class TestUpdateIntegration:
                     return "<!-- QUAESTOR:version:1.1 -->\nUpdated memory"
                 else:
                     raise FileNotFoundError(f"Resource {resource} not found")
-            
+
             mock_read.side_effect = read_text_side_effect
 
             with patch("quaestor.updater.__version__", "0.2.4"):

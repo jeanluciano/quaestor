@@ -47,7 +47,7 @@ class TestInitCommand:
         # Create existing .quaestor directory and manifest
         quaestor_dir = temp_dir / ".quaestor"
         quaestor_dir.mkdir()
-        
+
         # Create a manifest to simulate existing installation
         manifest_path = quaestor_dir / "manifest.json"
         manifest_path.write_text('{"version": "1.0", "files": {}}')

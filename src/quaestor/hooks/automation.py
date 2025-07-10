@@ -376,11 +376,7 @@ def check_milestone_completion(milestone: str | None, auto_pr: bool = False) -> 
             content = f.read()
 
         # Find milestone section
-        if milestone:
-            pattern = rf"###\s*{re.escape(milestone)}.*?(?=###|\Z)"
-        else:
-            # Find current milestone
-            pattern = r"###.*?\(CURRENT\).*?(?=###|\Z)"
+        pattern = rf"###\s*{re.escape(milestone)}.*?(?=###|\Z)" if milestone else r"###.*?\(CURRENT\).*?(?=###|\Z)"
 
         match = re.search(pattern, content, re.DOTALL | re.IGNORECASE)
         if not match:
@@ -476,11 +472,7 @@ def create_atomic_commit(message: str | None, files: list[str] | None = None) ->
     """Create an atomic commit with proper message."""
     try:
         # Stage files
-        if files:
-            cmd = ["git", "add"] + files
-        else:
-            # Stage all modified files
-            cmd = ["git", "add", "-A"]
+        cmd = ["git", "add"] + files if files else ["git", "add", "-A"]
 
         subprocess.run(cmd, check=True)
 

@@ -96,10 +96,7 @@ class FileManifest:
             version: Version of the file
             relative_to: Base path to make file_path relative to
         """
-        if relative_to:
-            key = str(file_path.relative_to(relative_to))
-        else:
-            key = str(file_path)
+        key = str(file_path.relative_to(relative_to)) if relative_to else str(file_path)
 
         checksum = self.calculate_checksum(file_path)
 
