@@ -112,7 +112,7 @@ def init(
 
     # Copy commands to ~/.claude/commands
     console.print("\n[blue]Installing command files to ~/.claude/commands:[/blue]")
-    command_files = ["project-init.md", "task-py.md", "task-rs.md", "check.md", "compose.md"]
+    command_files = ["project-init.md", "task-py.md", "task-rs.md", "check.md", "compose.md", "milestone-commit.md"]
     commands_copied = 0
 
     for cmd_file in command_files:
