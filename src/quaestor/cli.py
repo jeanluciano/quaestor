@@ -1,4 +1,6 @@
 import importlib.resources as pkg_resources
+import re
+import sys
 from pathlib import Path
 
 import typer
@@ -19,6 +21,59 @@ console = Console()
 def callback():
     """Quaestor - Context management for AI-assisted development."""
     pass
+
+
+def generate_hooks_json(target_dir: Path, quaestor_dir: Path, project_type: str) -> Path | None:
+    """Generate hooks.json from template."""
+    try:
+        # Try to use Jinja2 if available
+        try:
+            from jinja2 import Template
+
+            template_content = pkg_resources.read_text("quaestor.templates", "hooks.json.jinja2")
+            template = Template(template_content)
+
+            # Render template with context
+            hooks_content = template.render(
+                project_type=project_type,
+                python_path=sys.executable,
+                project_root=str(target_dir),
+            )
+        except ImportError:
+            # Fallback to basic string replacement if Jinja2 not available
+            template_content = pkg_resources.read_text("quaestor.templates", "hooks.json.jinja2")
+
+            # Basic replacements
+            hooks_content = template_content.replace("{{ project_type }}", project_type)
+            hooks_content = hooks_content.replace("{{ python_path }}", sys.executable)
+            hooks_content = hooks_content.replace("{{ project_root }}", str(target_dir))
+
+            # Remove Jinja2 conditionals for simplicity in fallback
+            if project_type != "python":
+                # Remove Python-specific hooks
+                hooks_content = re.sub(
+                    r'{% if project_type == "python" %}.*?{% endif %}', "", hooks_content, flags=re.DOTALL
+                )
+            if project_type != "rust":
+                # Remove Rust-specific hooks
+                hooks_content = re.sub(
+                    r'{% elif project_type == "rust" %}.*?{% endif %}', "", hooks_content, flags=re.DOTALL
+                )
+            if project_type != "javascript":
+                # Remove JavaScript-specific hooks
+                hooks_content = re.sub(
+                    r'{% elif project_type == "javascript" %}.*?{% endif %}', "", hooks_content, flags=re.DOTALL
+                )
+
+        # Write hooks.json
+        hooks_path = quaestor_dir / "hooks.json"
+        hooks_path.write_text(hooks_content)
+
+        return hooks_path
+
+    except Exception as e:
+        console.print(f"[yellow]Failed to generate hooks.json: {e}[/yellow]")
+        return None
 
 
 @app.command(name="init")
@@ -124,6 +179,24 @@ def init(
         except Exception as e:
             console.print(f"  [yellow]⚠[/yellow] Could not install {cmd_file}: {e}")
 
+    # Generate hooks.json
+    console.print("\n[blue]Generating Claude hooks configuration:[/blue]")
+    try:
+        from .hooks import detect_project_type
+
+        project_type = detect_project_type(target_dir)
+        hooks_json_path = generate_hooks_json(target_dir, quaestor_dir, project_type)
+        if hooks_json_path:
+            console.print("  [blue]✓[/blue] Generated hooks.json")
+            console.print(f"    [dim]Location: {hooks_json_path}[/dim]")
+            console.print(
+                "    [yellow]To use: Copy to ~/.claude/settings/claude_code_hooks.json "
+                "or project-specific location[/yellow]"
+            )
+            copied_files.append("hooks.json")
+    except Exception as e:
+        console.print(f"  [yellow]⚠[/yellow] Could not generate hooks.json: {e}")
+
     # Summary
     if copied_files or commands_copied > 0:
         console.print("\n[green]✅ Initialization complete![/green]")
@@ -143,6 +216,16 @@ def init(
     else:
         console.print("[red]No files were copied. Please check the source files exist.[/red]")
         raise typer.Exit(1)
+
+
+# Add hooks subcommand
+try:
+    from .hooks import app as hooks_app
+
+    app.add_typer(hooks_app, name="hooks", help="Claude Code hooks management")
+except ImportError:
+    # Hooks module not available
+    pass
 
 
 if __name__ == "__main__":

@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "hooks": [
+    {
+      "description": "Enforce Research → Plan → Implement workflow",
+      "hook": "PreToolUse",
+      "match": {
+        "tool": ["Write", "Edit", "MultiEdit"]
+      },
+      "command": "{{ python_path }} -m quaestor.hooks enforce-research ${tool}"
+    },
+    {
+      "description": "Update MEMORY.md after TODO completion",
+      "hook": "PostToolUse",
+      "match": {
+        "tool": "TodoWrite"
+      },
+      "command": "{{ python_path }} -m quaestor.hooks update-memory --from-todos"
+    },
+    {
+      "description": "Run quality checks before commits",
+      "hook": "PreToolUse",
+      "match": {
+        "tool": "Bash",
+        "args": {
+          "command": "git commit"
+        }
+      },
+      "command": "{{ python_path }} -m quaestor.hooks quality-check --block-on-fail"
+    },
+    {
+      "description": "Check milestone completion after file updates",
+      "hook": "PostToolUse",
+      "match": {
+        "tool": ["Write", "Edit", "MultiEdit"],
+        "args": {
+          "file_path": "MEMORY.md"
+        }
+      },
+      "command": "{{ python_path }} -m quaestor.hooks check-milestone"
+    },
+    {
+      "description": "Refresh context when conversation gets long",
+      "hook": "Notification",
+      "match": {
+        "type": "conversation_length"
+      },
+      "command": "{{ python_path }} -m quaestor.hooks refresh-context"
+    },
+    {
+      "description": "Learn patterns from written code",
+      "hook": "PostToolUse",
+      "match": {
+        "tool": ["Write", "Edit", "MultiEdit"]
+      },
+      "command": "{{ python_path }} -m quaestor.hooks learn-patterns --file ${file_path}"
+    },
+{% if project_type == "python" %}
+    {
+      "description": "Format Python code after edits",
+      "hook": "PostToolUse",
+      "match": {
+        "tool": ["Write", "Edit", "MultiEdit"],
+        "args": {
+          "file_path": "*.py"
+        }
+      },
+      "command": "ruff format ${file_path}"
+    },
+    {
+      "description": "Check Python imports after edits",
+      "hook": "PostToolUse",
+      "match": {
+        "tool": ["Write", "Edit", "MultiEdit"],
+        "args": {
+          "file_path": "*.py"
+        }
+      },
+      "command": "ruff check --select I --fix ${file_path}"
+    },
+{% elif project_type == "rust" %}
+    {
+      "description": "Format Rust code after edits",
+      "hook": "PostToolUse",
+      "match": {
+        "tool": ["Write", "Edit", "MultiEdit"],
+        "args": {
+          "file_path": "*.rs"
+        }
+      },
+      "command": "rustfmt ${file_path}"
+    },
+    {
+      "description": "Run clippy after Rust edits",
+      "hook": "PostToolUse",
+      "match": {
+        "tool": ["Write", "Edit", "MultiEdit"],
+        "args": {
+          "file_path": "*.rs"
+        }
+      },
+      "command": "cargo clippy --fix --allow-dirty"
+    },
+{% elif project_type == "javascript" %}
+    {
+      "description": "Format JavaScript/TypeScript after edits",
+      "hook": "PostToolUse",
+      "match": {
+        "tool": ["Write", "Edit", "MultiEdit"],
+        "args": {
+          "file_path": ["*.js", "*.jsx", "*.ts", "*.tsx"]
+        }
+      },
+      "command": "npx prettier --write ${file_path}"
+    },
+    {
+      "description": "Lint JavaScript/TypeScript after edits",
+      "hook": "PostToolUse",
+      "match": {
+        "tool": ["Write", "Edit", "MultiEdit"],
+        "args": {
+          "file_path": ["*.js", "*.jsx", "*.ts", "*.tsx"]
+        }
+      },
+      "command": "npx eslint --fix ${file_path}"
+    },
+{% endif %}
+    {
+      "description": "Prevent modifications to critical files",
+      "hook": "PreToolUse",
+      "match": {
+        "tool": ["Write", "Edit", "MultiEdit", "Bash"],
+        "args": {
+          "file_path": [".quaestor/CRITICAL_RULES.md", ".git/*", ".github/workflows/*"]
+        }
+      },
+      "command": "echo '❌ BLOCKED: Cannot modify critical system files' && exit 1"
+    },
+    {
+      "description": "Log all bash commands for audit",
+      "hook": "PostToolUse",
+      "match": {
+        "tool": "Bash"
+      },
+      "command": "echo \"[$(date)] ${command}\" >> .quaestor/.command_history"
+    },
+    {
+      "description": "Suggest next actions periodically",
+      "hook": "Stop",
+      "command": "{{ python_path }} -m quaestor.hooks suggest-next"
+    }
+  ],
+  "settings": {
+    "project_type": "{{ project_type }}",
+    "python_path": "{{ python_path }}",
+    "project_root": "{{ project_root }}",
+    "quality_tools": {
+{% if project_type == "python" %}
+      "linter": "ruff",
+      "formatter": "ruff format",
+      "test_runner": "pytest"
+{% elif project_type == "rust" %}
+      "linter": "cargo clippy",
+      "formatter": "rustfmt",
+      "test_runner": "cargo test"
+{% elif project_type == "javascript" %}
+      "linter": "eslint",
+      "formatter": "prettier",
+      "test_runner": "npm test"
+{% else %}
+      "linter": "none",
+      "formatter": "none",
+      "test_runner": "none"
+{% endif %}
+    }
+  }
+}

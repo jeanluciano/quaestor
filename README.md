@@ -251,6 +251,71 @@ This provides:
 
 The commands stay milestone-aware by reading this context, ensuring your AI assistant always knows where you are in the project!
 
+## 🪝 Claude Code Hooks Integration
+
+Quaestor now includes powerful Claude Code hooks that transform static instructions into enforceable workflows. When you run `quaestor init`, it generates a `hooks.json` configuration file that can automate and enforce best practices.
+
+### What are Claude Hooks?
+
+Claude Code hooks are user-defined shell commands that execute at specific points in Claude's lifecycle. They provide deterministic control over Claude's actions, ensuring critical workflows are followed automatically.
+
+### Generated Hooks Include:
+
+1. **Enforcement Hooks** - Ensure CRITICAL_RULES compliance
+   - Block code writing without research
+   - Detect complexity and require ultrathinking
+   - Enforce multi-agent usage for complex tasks
+
+2. **Automation Hooks** - Handle repetitive tasks
+   - Auto-update MEMORY.md when TODOs complete
+   - Run quality checks before commits
+   - Create atomic commits with proper messages
+   - Generate PRs when milestones complete
+
+3. **Intelligence Hooks** - Provide smart assistance
+   - Refresh context when conversations get long
+   - Learn patterns from your code
+   - Suggest next actions based on project state
+
+### Using the Hooks
+
+After running `quaestor init`:
+
+1. Find the generated `hooks.json` in `.quaestor/hooks.json`
+2. Copy it to your Claude settings:
+   ```bash
+   cp .quaestor/hooks.json ~/.claude/settings/claude_code_hooks.json
+   ```
+3. Or use project-specific hooks by placing in your project root
+
+### Hook Commands
+
+Quaestor provides CLI commands to interact with hooks:
+
+```bash
+# Enforcement commands
+quaestor hooks enforce-research    # Check research before implementation
+quaestor hooks quality-check       # Run project-appropriate quality checks
+
+# Automation commands  
+quaestor hooks update-memory       # Update MEMORY.md from TODOs
+quaestor hooks check-milestone     # Check milestone completion
+
+# Intelligence commands
+quaestor hooks refresh-context     # Refresh Claude's context
+quaestor hooks suggest-next        # Get intelligent next action suggestions
+```
+
+### Benefits
+
+- **Enforced Best Practices**: No more forgetting to research before coding
+- **Automatic Progress Tracking**: TODOs and milestones update themselves
+- **Quality Gates**: Code must pass checks before committing
+- **Intelligent Assistance**: Context-aware help when you need it
+- **Clean Git History**: Atomic commits with meaningful messages
+
+The hooks transform Quaestor from a passive framework into an active development companion that guides and enforces best practices throughout your workflow!
+
 ## 📄 License
 
 [MIT](LICENSE) - Use it however you want.
