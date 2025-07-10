@@ -44,15 +44,20 @@ class TestInitCommand:
 
     def test_init_with_existing_directory_prompts_user(self, runner, temp_dir):
         """Test that init prompts when .quaestor already exists."""
-        # Create existing .quaestor directory
-        (temp_dir / ".quaestor").mkdir()
+        # Create existing .quaestor directory and manifest
+        quaestor_dir = temp_dir / ".quaestor"
+        quaestor_dir.mkdir()
+        
+        # Create a manifest to simulate existing installation
+        manifest_path = quaestor_dir / "manifest.json"
+        manifest_path.write_text('{"version": "1.0", "files": {}}')
 
-        # Simulate user saying no
+        # Simulate user saying no to update
         result = runner.invoke(app, ["init", str(temp_dir)], input="n\n")
 
         assert result.exit_code == 0
-        assert "already exists" in result.output
-        assert "Initialization cancelled" in result.output
+        assert "Checking for updates" in result.output or "already exists" in result.output
+        assert "cancelled" in result.output
 
     def test_init_with_force_flag_overwrites(self, runner, temp_dir):
         """Test that --force flag overwrites existing directory."""
@@ -187,8 +192,8 @@ class TestInitCommand:
 
             assert result.exit_code == 0
             assert "Converting manifest files to AI format" in result.output
-            assert "Converted and copied ARCHITECTURE.md" in result.output
-            assert "Converted and copied MEMORY.md" in result.output
+            assert "Copied ARCHITECTURE.md" in result.output
+            assert "Copied MEMORY.md" in result.output
 
             # Check ARCHITECTURE.md was converted properly
             arch_content = (temp_dir / ".quaestor" / "ARCHITECTURE.md").read_text()

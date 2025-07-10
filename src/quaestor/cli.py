@@ -7,7 +7,10 @@ import typer
 from rich.console import Console
 from rich.prompt import Confirm
 
+from . import __version__
 from .converters import convert_manifest_to_ai_format
+from .manifest import FileManifest, FileType, extract_version_from_content
+from .updater import QuaestorUpdater, print_update_result
 
 app = typer.Typer(
     name="quaestor",
@@ -85,19 +88,44 @@ def init(
     # Determine target directory
     target_dir = path or Path.cwd()
     quaestor_dir = target_dir / ".quaestor"
+    manifest_path = quaestor_dir / "manifest.json"
 
     # Set up .claude directory in user's home
     claude_dir = Path.home() / ".claude"
     claude_commands_dir = claude_dir / "commands"
 
-    # Check if .quaestor already exists
-    if (
-        quaestor_dir.exists()
-        and not force
-        and not Confirm.ask(f"[yellow].quaestor directory already exists in {target_dir}. Overwrite?[/yellow]")
-    ):
-        console.print("[red]Initialization cancelled.[/red]")
+    # Load or create manifest
+    manifest = FileManifest(manifest_path)
+
+    # Check if this is an update scenario
+    if quaestor_dir.exists() and not force:
+        # Use updater for existing installations
+        updater = QuaestorUpdater(target_dir, manifest)
+
+        # Check what would be updated
+        console.print("[blue]Checking for updates...[/blue]")
+        updates = updater.check_for_updates(show_diff=True)
+
+        if not updates["needs_update"] and not any(updates["files"].values()):
+            console.print("\n[green]✓ Everything is up to date![/green]")
+            raise typer.Exit()
+
+        if not Confirm.ask("\n[yellow]Proceed with update?[/yellow]"):
+            console.print("[red]Update cancelled.[/red]")
+            raise typer.Exit()
+
+        # Perform update
+        result = updater.update(backup=True)
+        print_update_result(result)
+
+        # Save manifest
+        manifest.save()
+        console.print("\n[green]✅ Update complete![/green]")
         raise typer.Exit()
+
+    # Fresh installation
+    if quaestor_dir.exists() and force:
+        console.print("[yellow]Force flag set - overwriting existing installation[/yellow]")
 
     # Create directories
     quaestor_dir.mkdir(exist_ok=True)
@@ -107,13 +135,22 @@ def init(
     claude_commands_dir.mkdir(parents=True, exist_ok=True)
     console.print(f"[green]Using .claude directory at {claude_dir}[/green]")
 
+    # Set quaestor version in manifest
+    manifest.set_quaestor_version(__version__)
+
     # Copy files using package resources
     copied_files = []
 
     # Copy CLAUDE.md to project root
     try:
         claude_content = pkg_resources.read_text("quaestor", "CLAUDE.md")
-        (target_dir / "CLAUDE.md").write_text(claude_content)
+        claude_path = target_dir / "CLAUDE.md"
+        claude_path.write_text(claude_content)
+
+        # Track in manifest
+        version = extract_version_from_content(claude_content) or "1.0"
+        manifest.track_file(claude_path, FileType.SYSTEM, version, target_dir)
+
         copied_files.append("CLAUDE.md")
         console.print("  [blue]✓[/blue] Copied CLAUDE.md")
     except Exception as e:
@@ -122,7 +159,13 @@ def init(
     # Copy CRITICAL_RULES.md to .quaestor directory
     try:
         critical_rules_content = pkg_resources.read_text("quaestor", "CRITICAL_RULES.md")
-        (quaestor_dir / "CRITICAL_RULES.md").write_text(critical_rules_content)
+        critical_rules_path = quaestor_dir / "CRITICAL_RULES.md"
+        critical_rules_path.write_text(critical_rules_content)
+
+        # Track in manifest
+        version = extract_version_from_content(critical_rules_content) or "1.0"
+        manifest.track_file(critical_rules_path, FileType.SYSTEM, version, target_dir)
+
         copied_files.append("CRITICAL_RULES.md")
         console.print("  [blue]✓[/blue] Copied CRITICAL_RULES.md")
     except Exception as e:
@@ -133,37 +176,45 @@ def init(
 
     # ARCHITECTURE.md
     try:
-        arch_content = pkg_resources.read_text("quaestor.manifest", "ARCHITECTURE.md")
-        ai_arch_content = convert_manifest_to_ai_format(arch_content, "ARCHITECTURE.md")
-        (quaestor_dir / "ARCHITECTURE.md").write_text(ai_arch_content)
-        copied_files.append("ARCHITECTURE.md")
-        console.print("  [blue]✓[/blue] Converted and copied ARCHITECTURE.md")
-    except Exception:
-        # Fallback to AI template if manifest not found
+        arch_path = quaestor_dir / "ARCHITECTURE.md"
         try:
+            arch_content = pkg_resources.read_text("quaestor.manifest", "ARCHITECTURE.md")
+            ai_arch_content = convert_manifest_to_ai_format(arch_content, "ARCHITECTURE.md")
+        except Exception:
+            # Fallback to AI template if manifest not found
             ai_arch_content = pkg_resources.read_text("quaestor", "templates_ai_architecture.md")
-            (quaestor_dir / "ARCHITECTURE.md").write_text(ai_arch_content)
-            copied_files.append("ARCHITECTURE.md")
-            console.print("  [blue]✓[/blue] Copied ARCHITECTURE.md (AI format)")
-        except Exception as e2:
-            console.print(f"  [yellow]⚠[/yellow] Could not copy ARCHITECTURE.md: {e2}")
+
+        arch_path.write_text(ai_arch_content)
+
+        # Track in manifest
+        version = extract_version_from_content(ai_arch_content) or "1.0"
+        manifest.track_file(arch_path, FileType.USER_EDITABLE, version, target_dir)
+
+        copied_files.append("ARCHITECTURE.md")
+        console.print("  [blue]✓[/blue] Copied ARCHITECTURE.md")
+    except Exception as e:
+        console.print(f"  [yellow]⚠[/yellow] Could not copy ARCHITECTURE.md: {e}")
 
     # MEMORY.md
     try:
-        mem_content = pkg_resources.read_text("quaestor.manifest", "MEMORY.md")
-        ai_mem_content = convert_manifest_to_ai_format(mem_content, "MEMORY.md")
-        (quaestor_dir / "MEMORY.md").write_text(ai_mem_content)
-        copied_files.append("MEMORY.md")
-        console.print("  [blue]✓[/blue] Converted and copied MEMORY.md")
-    except Exception:
-        # Fallback to AI template if manifest not found
+        mem_path = quaestor_dir / "MEMORY.md"
         try:
+            mem_content = pkg_resources.read_text("quaestor.manifest", "MEMORY.md")
+            ai_mem_content = convert_manifest_to_ai_format(mem_content, "MEMORY.md")
+        except Exception:
+            # Fallback to AI template if manifest not found
             ai_mem_content = pkg_resources.read_text("quaestor", "templates_ai_memory.md")
-            (quaestor_dir / "MEMORY.md").write_text(ai_mem_content)
-            copied_files.append("MEMORY.md")
-            console.print("  [blue]✓[/blue] Copied MEMORY.md (AI format)")
-        except Exception as e2:
-            console.print(f"  [yellow]⚠[/yellow] Could not copy MEMORY.md: {e2}")
+
+        mem_path.write_text(ai_mem_content)
+
+        # Track in manifest
+        version = extract_version_from_content(ai_mem_content) or "1.0"
+        manifest.track_file(mem_path, FileType.USER_EDITABLE, version, target_dir)
+
+        copied_files.append("MEMORY.md")
+        console.print("  [blue]✓[/blue] Copied MEMORY.md")
+    except Exception as e:
+        console.print(f"  [yellow]⚠[/yellow] Could not copy MEMORY.md: {e}")
 
     # Copy commands to ~/.claude/commands
     console.print("\n[blue]Installing command files to ~/.claude/commands:[/blue]")
@@ -197,6 +248,9 @@ def init(
     except Exception as e:
         console.print(f"  [yellow]⚠[/yellow] Could not generate hooks.json: {e}")
 
+    # Save manifest
+    manifest.save()
+
     # Summary
     if copied_files or commands_copied > 0:
         console.print("\n[green]✅ Initialization complete![/green]")
@@ -216,6 +270,68 @@ def init(
     else:
         console.print("[red]No files were copied. Please check the source files exist.[/red]")
         raise typer.Exit(1)
+
+
+@app.command(name="update")
+def update(
+    path: Path | None = typer.Argument(None, help="Directory to update (default: current directory)"),
+    check: bool = typer.Option(False, "--check", "-c", help="Check what would be updated without making changes"),
+    backup: bool = typer.Option(True, "--backup/--no-backup", help="Backup files before updating"),
+    force: bool = typer.Option(False, "--force", "-f", help="Force update all files (ignore user modifications)"),
+):
+    """Update Quaestor files to the latest version while preserving user customizations."""
+    # Determine target directory
+    target_dir = path or Path.cwd()
+    quaestor_dir = target_dir / ".quaestor"
+    manifest_path = quaestor_dir / "manifest.json"
+
+    # Check if .quaestor exists
+    if not quaestor_dir.exists():
+        console.print(f"[red]No .quaestor directory found in {target_dir}[/red]")
+        console.print("[yellow]Run 'quaestor init' first to initialize[/yellow]")
+        raise typer.Exit(1)
+
+    # Load manifest
+    manifest = FileManifest(manifest_path)
+
+    # Create updater
+    updater = QuaestorUpdater(target_dir, manifest)
+
+    if check:
+        # Just check what would be updated
+        console.print("[blue]Checking for updates...[/blue]")
+        updates = updater.check_for_updates(show_diff=True)
+
+        if not updates["needs_update"] and not any(updates["files"].values()):
+            console.print("\n[green]✓ Everything is up to date![/green]")
+        else:
+            console.print("\n[yellow]Updates available. Run 'quaestor update' to apply.[/yellow]")
+    else:
+        # Perform update
+        console.print("[blue]Updating Quaestor files...[/blue]")
+
+        # Show preview first
+        updates = updater.check_for_updates(show_diff=True)
+
+        if not updates["needs_update"] and not any(updates["files"].values()):
+            console.print("\n[green]✓ Everything is up to date![/green]")
+            raise typer.Exit()
+
+        if not force and not Confirm.ask("\n[yellow]Proceed with update?[/yellow]"):
+            console.print("[red]Update cancelled.[/red]")
+            raise typer.Exit()
+
+        # Do the update
+        result = updater.update(backup=backup, force=force)
+        print_update_result(result)
+
+        # Save manifest
+        manifest.save()
+
+        console.print("\n[green]✅ Update complete![/green]")
+
+        if backup and result.backed_up:
+            console.print("[dim]Backup created in .quaestor/.backup/[/dim]")
 
 
 # Add hooks subcommand
