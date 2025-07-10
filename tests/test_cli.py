@@ -162,9 +162,12 @@ class TestInitCommand:
             for cmd in expected_commands:
                 assert f"Installed {cmd}" in result.output
 
-    def test_init_converts_manifest_files_to_ai_format(self, runner, temp_dir, sample_architecture_manifest, sample_memory_manifest):
+    def test_init_converts_manifest_files_to_ai_format(
+        self, runner, temp_dir, sample_architecture_manifest, sample_memory_manifest
+    ):
         """Test that init properly converts manifest files to AI format."""
         with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
+
             def side_effect(package, filename):
                 if package == "quaestor" and filename == "CLAUDE.md":
                     return "# CLAUDE.md test content"

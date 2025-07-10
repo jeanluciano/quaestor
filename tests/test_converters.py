@@ -1,7 +1,5 @@
 """Tests for the converter functions."""
 
-import pytest
-
 from quaestor.converters import (
     convert_architecture_to_ai_format,
     convert_manifest_to_ai_format,
@@ -228,7 +226,7 @@ class TestManifestConverter:
     def test_convert_manifest_routes_architecture(self, sample_architecture_manifest):
         """Test that manifest converter routes to architecture converter."""
         result = convert_manifest_to_ai_format(sample_architecture_manifest, "ARCHITECTURE.md")
-        
+
         # Should have architecture-specific markers
         assert "<!-- META:document:architecture -->" in result
         assert "<!-- SECTION:architecture:" in result
@@ -236,7 +234,7 @@ class TestManifestConverter:
     def test_convert_manifest_routes_memory(self, sample_memory_manifest):
         """Test that manifest converter routes to memory converter."""
         result = convert_manifest_to_ai_format(sample_memory_manifest, "MEMORY.md")
-        
+
         # Should have memory-specific markers
         assert "<!-- META:document:memory -->" in result
         assert "<!-- SECTION:memory:" in result
@@ -245,7 +243,7 @@ class TestManifestConverter:
         """Test that unknown files are returned as-is."""
         content = "# Unknown File\n\nSome content here."
         result = convert_manifest_to_ai_format(content, "UNKNOWN.md")
-        
+
         # Should return content unchanged
         assert result == content
 
@@ -262,7 +260,7 @@ class TestEdgeCases:
 - **Component "Quoted"**: Has quotes
 """
         result = convert_architecture_to_ai_format(content)
-        
+
         # Should handle special characters properly
         assert "```yaml" in result
         assert "name:" in result
@@ -276,12 +274,12 @@ class TestEdgeCases:
 - **Phase**: Development
   - Subphase: Testing
   - Progress: 80%
-- **Team**: 
+- **Team**:
   - Frontend: 2 developers
   - Backend: 3 developers
 """
         result = convert_memory_to_ai_format(content)
-        
+
         # Should preserve structure
         assert "Development" in result
 
@@ -294,7 +292,7 @@ class TestEdgeCases:
 Some content here.
 """
         result = convert_architecture_to_ai_format(content)
-        
+
         # Should create valid section ID
         assert "<!-- SECTION:architecture:" in result
         assert ":START -->" in result
@@ -311,7 +309,7 @@ Some content here.
 - 📝 Documentation needed
 """
         result = convert_memory_to_ai_format(content)
-        
+
         # Should preserve unicode/emojis
         assert "🧠" in result
         assert "✅" in result
