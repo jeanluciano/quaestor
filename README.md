@@ -195,6 +195,62 @@ These hooks are configured in `CLAUDE.md` and integrated into the task commands.
 - Progress tracking stays in sync
 - PRs are created when milestones are done
 
+### 🎯 How Milestones & Project Management Work
+
+When you run `/quaestor:project:init`, the system creates a complete project management framework:
+
+```yaml
+.quaestor/
+├── MANIFEST.yaml        # Project metadata and milestone tracking
+├── milestones/          # Detailed milestone documentation
+│   └── foundation/      # Current milestone directory
+│       └── README.md    # Milestone details and tasks
+├── ARCHITECTURE.md      # AI-optimized architecture
+└── MEMORY.md           # Progress tracking
+```
+
+The system uses **THREE synchronized tracking systems**:
+
+1. **MANIFEST.yaml** - High-level milestone state
+   - Current milestone, progress percentages
+   - Project metadata and dependencies
+   - Links to all documentation
+
+2. **milestones/[name]/README.md** - Detailed task lists
+   - Checkbox task lists (✅ completed, 🔄 in progress, 📋 to do)
+   - Success criteria and technical requirements
+   - Milestone-specific documentation
+
+3. **MEMORY.md** - Daily progress and context
+   - What's been done, what's in progress
+   - Lessons learned and blockers
+   - Next immediate actions
+
+#### How It All Works Together
+
+```
+compose.md loads task template
+         ↓
+task.md reads MANIFEST.yaml → finds current: "foundation"
+         ↓
+task.md reads .quaestor/milestones/foundation/README.md
+         ↓
+Executes work → Updates task checkboxes
+         ↓
+Updates MEMORY.md progress → Updates MANIFEST.yaml progress
+         ↓
+milestone-commit creates atomic commits
+         ↓
+When all tasks complete → PR for milestone
+```
+
+This provides:
+- **Strategic view** (MANIFEST.yaml) - Where are we overall?
+- **Tactical view** (milestone READMEs) - What needs to be done?
+- **Operational view** (MEMORY.md) - What are we doing today?
+
+The commands stay milestone-aware by reading this context, ensuring your AI assistant always knows where you are in the project!
+
 ## 📄 License
 
 [MIT](LICENSE) - Use it however you want.
