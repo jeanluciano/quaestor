@@ -8,6 +8,7 @@ from rich.console import Console
 from rich.prompt import Confirm
 
 from . import __version__
+from .constants import COMMAND_FILES, DEFAULT_COMMANDS_DIR, QUAESTOR_DIR_NAME
 from .converters import convert_manifest_to_ai_format
 from .manifest import FileManifest, FileType, extract_version_from_content
 from .updater import QuaestorUpdater, print_update_result
@@ -87,11 +88,11 @@ def init(
     """Initialize a .quaestor directory with context templates and install commands to ~/.claude."""
     # Determine target directory
     target_dir = path or Path.cwd()
-    quaestor_dir = target_dir / ".quaestor"
+    quaestor_dir = target_dir / QUAESTOR_DIR_NAME
     manifest_path = quaestor_dir / "manifest.json"
 
     # Set up .claude directory in user's home
-    claude_dir = Path.home() / ".claude"
+    claude_dir = DEFAULT_COMMANDS_DIR.parent
     claude_commands_dir = claude_dir / "commands"
 
     # Load or create manifest
@@ -182,7 +183,7 @@ def init(
             ai_arch_content = convert_manifest_to_ai_format(arch_content, "ARCHITECTURE.md")
         except Exception:
             # Fallback to AI template if manifest not found
-            ai_arch_content = pkg_resources.read_text("quaestor", "templates_ai_architecture.md")
+            ai_arch_content = pkg_resources.read_text("quaestor.templates", "ai_architecture.md")
 
         arch_path.write_text(ai_arch_content)
 
@@ -203,7 +204,7 @@ def init(
             ai_mem_content = convert_manifest_to_ai_format(mem_content, "MEMORY.md")
         except Exception:
             # Fallback to AI template if manifest not found
-            ai_mem_content = pkg_resources.read_text("quaestor", "templates_ai_memory.md")
+            ai_mem_content = pkg_resources.read_text("quaestor.templates", "ai_memory.md")
 
         mem_path.write_text(ai_mem_content)
 
@@ -218,7 +219,7 @@ def init(
 
     # Copy commands to ~/.claude/commands
     console.print("\n[blue]Installing command files to ~/.claude/commands:[/blue]")
-    command_files = ["project-init.md", "task-py.md", "task-rs.md", "check.md", "compose.md", "milestone-commit.md"]
+    command_files = COMMAND_FILES
     commands_copied = 0
 
     for cmd_file in command_files:
@@ -282,7 +283,7 @@ def update(
     """Update Quaestor files to the latest version while preserving user customizations."""
     # Determine target directory
     target_dir = path or Path.cwd()
-    quaestor_dir = target_dir / ".quaestor"
+    quaestor_dir = target_dir / QUAESTOR_DIR_NAME
     manifest_path = quaestor_dir / "manifest.json"
 
     # Check if .quaestor exists

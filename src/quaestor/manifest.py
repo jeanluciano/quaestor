@@ -11,6 +11,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
+from .constants import SYSTEM_FILES, USER_EDITABLE_FILES, VERSION_PATTERNS
+
 
 class FileType(Enum):
     """Categories of files for update logic."""
@@ -228,11 +230,7 @@ def extract_version_from_content(content: str) -> str | None:
     """
     import re
 
-    patterns = [
-        r"<!--\s*QUAESTOR:version:([0-9.]+)\s*-->",
-        r"<!--\s*META:version:([0-9.]+)\s*-->",
-        r"<!--\s*VERSION:([0-9.]+)\s*-->",
-    ]
+    patterns = VERSION_PATTERNS
 
     for pattern in patterns:
         match = re.search(pattern, content)
@@ -257,13 +255,11 @@ def categorize_file(file_path: Path, relative_path: str) -> FileType:
         return FileType.COMMAND
 
     # System files (always update)
-    system_files = ["CRITICAL_RULES.md", "hooks.json", "CLAUDE.md"]
-    if any(relative_path.endswith(f) for f in system_files):
+    if any(relative_path.endswith(f) for f in SYSTEM_FILES):
         return FileType.SYSTEM
 
     # User-editable files (never auto-overwrite)
-    user_files = ["ARCHITECTURE.md", "MEMORY.md", "MANIFEST.yaml"]
-    if any(relative_path.endswith(f) for f in user_files):
+    if any(relative_path.endswith(f) for f in USER_EDITABLE_FILES):
         return FileType.USER_EDITABLE
 
     # Default to template

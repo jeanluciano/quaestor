@@ -244,9 +244,9 @@ class TestUpdateIntegration:
                     return "<!-- QUAESTOR:version:1.1 -->\nUpdated CLAUDE content"
                 elif resource == "CRITICAL_RULES.md":
                     return "<!-- QUAESTOR:version:1.1 -->\nUpdated CRITICAL_RULES content"
-                elif resource == "templates_ai_architecture.md":
+                elif resource == "ai_architecture.md":
                     return "<!-- QUAESTOR:version:1.1 -->\nUpdated architecture"
-                elif resource == "templates_ai_memory.md":
+                elif resource == "ai_memory.md":
                     return "<!-- QUAESTOR:version:1.1 -->\nUpdated memory"
                 else:
                     raise FileNotFoundError(f"Resource {resource} not found")

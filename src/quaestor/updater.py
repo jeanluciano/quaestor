@@ -14,6 +14,7 @@ from rich.console import Console
 from rich.table import Table
 
 from . import __version__
+from .constants import COMMAND_FILES
 from .manifest import FileManifest, FileType, categorize_file, extract_version_from_content
 
 console = Console()
@@ -123,7 +124,7 @@ class QuaestorUpdater:
 
     def _check_command_files(self, updates: dict[str, Any]):
         """Check command files in ~/.claude/commands."""
-        command_files = ["project-init.md", "task-py.md", "task-rs.md", "check.md", "compose.md", "milestone-commit.md"]
+        command_files = COMMAND_FILES
 
         for cmd_file in command_files:
             target_path = self.claude_commands_dir / cmd_file
@@ -261,8 +262,8 @@ class QuaestorUpdater:
         files_to_process = [
             ("CLAUDE.md", self.target_dir / "CLAUDE.md"),
             ("CRITICAL_RULES.md", self.quaestor_dir / "CRITICAL_RULES.md"),
-            ("templates_ai_architecture.md", self.quaestor_dir / "ARCHITECTURE.md"),
-            ("templates_ai_memory.md", self.quaestor_dir / "MEMORY.md"),
+            ("templates/ai_architecture.md", self.quaestor_dir / "ARCHITECTURE.md"),
+            ("templates/ai_memory.md", self.quaestor_dir / "MEMORY.md"),
         ]
 
         for resource_name, target_path in files_to_process:
@@ -271,8 +272,8 @@ class QuaestorUpdater:
 
             try:
                 # Read new content
-                if "templates_ai" in resource_name:
-                    new_content = pkg_resources.read_text("quaestor", resource_name)
+                if resource_name.startswith("templates/"):
+                    new_content = pkg_resources.read_text("quaestor.templates", resource_name.replace("templates/", ""))
                 else:
                     new_content = pkg_resources.read_text("quaestor", resource_name)
 
@@ -300,7 +301,7 @@ class QuaestorUpdater:
 
     def _update_command_files(self, result: UpdateResult, dry_run: bool):
         """Update command files in ~/.claude/commands."""
-        command_files = ["project-init.md", "task-py.md", "task-rs.md", "check.md", "compose.md", "milestone-commit.md"]
+        command_files = COMMAND_FILES
 
         for cmd_file in command_files:
             target_path = self.claude_commands_dir / cmd_file
