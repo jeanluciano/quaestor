@@ -4,15 +4,10 @@ This module provides automated enforcement and assistance through Claude Code ho
 """
 
 import json
-import os
-import subprocess
-import sys
-from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 import typer
-from rich.console import Console
 
 from ..cli import console
 
