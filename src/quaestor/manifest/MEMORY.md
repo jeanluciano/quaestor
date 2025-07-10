@@ -1,3 +1,5 @@
+<!-- QUAESTOR:version:1.0 -->
+
 # Project Memory & Progress Tracking
 
 ## Document Purpose

@@ -1,5 +1,6 @@
 <!-- META:command:project:init -->
 <!-- META:description="Analyze Project and Initialize Quaestor Framework" -->
+<!-- META:version:1.0 -->
 
 # Project Init - Analyze and Initialize Quaestor
 

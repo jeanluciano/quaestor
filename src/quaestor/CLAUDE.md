@@ -1,4 +1,5 @@
 
+<!-- QUAESTOR:version:1.0 -->
 
 <!-- CRITICAL:rules:enforcement:START -->
 ## ⚠️ CRITICAL: MANDATORY RULES ENFORCEMENT

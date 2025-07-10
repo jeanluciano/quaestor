@@ -1,6 +1,7 @@
 <!-- META:document:critical-rules -->
 <!-- META:priority:MAXIMUM -->
 <!-- META:enforcement:MANDATORY -->
+<!-- QUAESTOR:version:1.0 -->
 
 # CRITICAL RULES - MUST BE FOLLOWED AT ALL COSTS
 
