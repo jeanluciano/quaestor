@@ -1,19 +1,11 @@
-<!-- BEGIN QUAESTOR CONFIG -->
-<!-- This section is managed by Quaestor. Do not edit between the markers. -->
-
-<!-- Include Quaestor's comprehensive Claude configuration -->
-<!-- See [.quaestor/QUAESTOR_CLAUDE.md](./.quaestor/QUAESTOR_CLAUDE.md) for details -->
-
-## 📋 Quaestor Framework Active
-
-This project uses the Quaestor framework for AI-assisted development.
-
-**Key files:**
-- [CRITICAL_RULES.md](./.quaestor/CRITICAL_RULES.md) - Mandatory rules (MUST READ FIRST)
-- [QUAESTOR_CLAUDE.md](./.quaestor/QUAESTOR_CLAUDE.md) - Full framework instructions
-- [MEMORY.md](./.quaestor/MEMORY.md) - Project state tracking
-- [ARCHITECTURE.md](./.quaestor/ARCHITECTURE.md) - Technical architecture
-
-<!-- END QUAESTOR CONFIG -->
+<!-- QUAESTOR CONFIG START -->
+> [!IMPORTANT]
+> **Claude:** This project uses Quaestor for AI context management.
+> Please read the following files in order:
+> 1. `.quaestor/QUAESTOR_CLAUDE.md` - How to work with this project effectively
+> 2. `.quaestor/CRITICAL_RULES.md` - Critical rules you must follow
+> 3. `.quaestor/ARCHITECTURE.md` - System design and structure (if available)
+> 4. `.quaestor/MEMORY.md` - Implementation patterns and decisions (if available)
+<!-- QUAESTOR CONFIG END -->
 
 <!-- Your custom content below -->

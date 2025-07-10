@@ -35,8 +35,8 @@ INIT_FILES = {
 }
 
 # Quaestor config markers for CLAUDE.md
-QUAESTOR_CONFIG_START = "<!-- BEGIN QUAESTOR CONFIG -->"
-QUAESTOR_CONFIG_END = "<!-- END QUAESTOR CONFIG -->"
+QUAESTOR_CONFIG_START = "<!-- QUAESTOR CONFIG START -->"
+QUAESTOR_CONFIG_END = "<!-- QUAESTOR CONFIG END -->"
 
 # Manifest file mappings (source package -> target path in .quaestor)
 MANIFEST_FILES = {

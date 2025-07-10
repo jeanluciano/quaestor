@@ -30,7 +30,7 @@ rule_enforcement:
 <!-- CRITICAL:rules:enforcement:END -->
 
 ## Important
-- **Production Quality**: We're building production-quality code together. Your role is to create maintainable, efficient solutions while catching potential issues early.
+- **Production Quality**: We're building production-quality code TOGETHER. Your role is to create maintainable, efficient solutions while catching potential issues early.
 - **Mandatory Compliance**: ALL instructions within this document MUST BE FOLLOWED, these are not optional unless explicitly stated.
 - **Ask for Help**: ASK FOR CLARIFICATION when you seem stuck or overly complex, I'll redirect you - my guidance helps you stay on track.
 - **Reference Examples**: When in doubt about implementation details, refer to the existing `/examples` implementation as a reference.
@@ -40,32 +40,7 @@ rule_enforcement:
 
 ### Research → Plan → Implement [ENFORCED BY CRITICAL_RULES.md]
 
-<!-- WORKFLOW:validation:START -->
-```yaml
-workflow_enforcement:
-  rule_ref: "NEVER_SKIP_RESEARCH"
-  validation:
-    before_code: "Must show research summary"
-    before_implementation: "Must have approved plan"
-    deviation_allowed: false
-```
-<!-- WORKFLOW:validation:END -->
-
-**NEVER JUMP STRAIGHT TO CODING!** Always follow this sequence:
-
-<!-- WORKFLOW:implementation:START -->
-1. **Research**: Explore the codebase, understand existing patterns
-   - MANDATORY: Examine at least 5 relevant files
-   - MANDATORY: Document patterns found
-   
-2. **Plan**: Create a detailed implementation plan and verify it with me
-   - MANDATORY: Present structured plan
-   - MANDATORY: Wait for approval
-   
-3. **Implement**: Execute the plan with validation checkpoints
-   - MANDATORY: Follow plan exactly
-   - MANDATORY: Validate after each step
-<!-- WORKFLOW:implementation:END -->
+**NEVER JUMP STRAIGHT TO CODING!** See CRITICAL_RULES.md for the mandatory Research → Plan → Implement workflow.
 
 **Required Response**: When asked to implement any feature, you MUST say: "Let me research the codebase and create a plan before implementing."
 
@@ -75,26 +50,7 @@ workflow_enforcement:
 
 ### USE MULTIPLE AGENTS! [ENFORCED BY CRITICAL_RULES.md]
 
-<!-- DATA:agent-enforcement:START -->
-```yaml
-agent_usage:
-  rule_ref: "ALWAYS_USE_AGENTS"
-  mandatory_triggers:
-    - "multiple_files_to_analyze"
-    - "complex_refactoring"
-    - "new_feature_implementation"
-    - "performance_optimization"
-  minimum_agents: 2
-  validation: "Must show agent delegation"
-```
-<!-- DATA:agent-enforcement:END -->
-
-**Leverage subagents aggressively for better results:**
-
-- MANDATORY: Spawn agents to explore different parts of the codebase in parallel
-- MANDATORY: Use one agent to write tests while another implements features
-- MANDATORY: Delegate research tasks: "I'll have an agent investigate the database schema while I analyze the API structure"
-- MANDATORY: For complex refactors: One agent identifies changes, another implements them
+See CRITICAL_RULES.md for mandatory agent usage triggers and requirements.
 
 **Required Response**: You MUST say: "I'll spawn agents to tackle different aspects of this problem" whenever a task has multiple independent parts.
 

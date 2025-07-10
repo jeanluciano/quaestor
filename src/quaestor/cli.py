@@ -46,7 +46,22 @@ def merge_claude_md(target_dir: Path) -> bool:
 
     try:
         # Get the include template
-        include_content = pkg_resources.read_text("quaestor.templates", "CLAUDE_INCLUDE.md")
+        try:
+            include_content = pkg_resources.read_text("quaestor.templates", "CLAUDE_INCLUDE.md")
+        except Exception:
+            # Fallback if template is missing - create minimal include content
+            include_content = """<!-- QUAESTOR CONFIG START -->
+> [!IMPORTANT]
+> **Claude:** This project uses Quaestor for AI context management.
+> Please read the following files in order:
+> 1. `.quaestor/QUAESTOR_CLAUDE.md` - How to work with this project effectively
+> 2. `.quaestor/CRITICAL_RULES.md` - Critical rules you must follow
+> 3. `.quaestor/ARCHITECTURE.md` - System design and structure (if available)
+> 4. `.quaestor/MEMORY.md` - Implementation patterns and decisions (if available)
+<!-- QUAESTOR CONFIG END -->
+
+<!-- Your custom content below -->
+"""
 
         if claude_path.exists():
             # Read existing content
@@ -98,14 +113,19 @@ def merge_claude_md(target_dir: Path) -> bool:
         return False
 
 
-def generate_hooks_json(target_dir: Path, quaestor_dir: Path, project_type: str) -> Path | None:
-    """Generate hooks.json from template."""
+def generate_hooks_json(target_dir: Path, project_type: str) -> Path | None:
+    """Generate hooks.json from template and install to .claude/settings."""
     try:
         # Try to use Jinja2 if available
         try:
             from jinja2 import Template
 
             template_content = pkg_resources.read_text("quaestor.templates", "hooks.json.jinja2")
+            # Remove Jinja2 comment line if present
+            template_lines = template_content.split("\n")
+            if template_lines[0].strip().startswith("{#") and template_lines[0].strip().endswith("#}"):
+                template_content = "\n".join(template_lines[1:])
+
             template = Template(template_content)
 
             # Render template with context
@@ -117,6 +137,11 @@ def generate_hooks_json(target_dir: Path, quaestor_dir: Path, project_type: str)
         except ImportError:
             # Fallback to basic string replacement if Jinja2 not available
             template_content = pkg_resources.read_text("quaestor.templates", "hooks.json.jinja2")
+
+            # Remove Jinja2 comment line if present
+            template_lines = template_content.split("\n")
+            if template_lines[0].strip().startswith("{#") and template_lines[0].strip().endswith("#}"):
+                template_content = "\n".join(template_lines[1:])
 
             # Basic replacements
             hooks_content = template_content.replace("{{ project_type }}", project_type)
@@ -140,8 +165,12 @@ def generate_hooks_json(target_dir: Path, quaestor_dir: Path, project_type: str)
                     r'{% elif project_type == "javascript" %}.*?{% endif %}', "", hooks_content, flags=re.DOTALL
                 )
 
-        # Write hooks.json
-        hooks_path = quaestor_dir / "hooks.json"
+        # Create .claude/settings directory in project root
+        claude_settings_dir = target_dir / ".claude" / "settings"
+        claude_settings_dir.mkdir(parents=True, exist_ok=True)
+
+        # Write hooks to .claude/settings/claude_code_hooks.json
+        hooks_path = claude_settings_dir / "claude_code_hooks.json"
         hooks_path.write_text(hooks_content)
 
         return hooks_path
@@ -251,50 +280,66 @@ def init(
     except Exception as e:
         console.print(f"  [yellow]⚠[/yellow] Could not copy CRITICAL_RULES.md: {e}")
 
-    # Copy and convert manifest files
+    # Copy and convert manifest files (optional)
     console.print("[blue]Converting manifest files to AI format[/blue]")
 
-    # ARCHITECTURE.md
+    # ARCHITECTURE.md (optional)
     try:
         arch_path = quaestor_dir / "ARCHITECTURE.md"
         try:
             arch_content = pkg_resources.read_text("quaestor.manifest", "ARCHITECTURE.md")
             ai_arch_content = convert_manifest_to_ai_format(arch_content, "ARCHITECTURE.md")
         except Exception:
-            # Fallback to AI template if manifest not found
-            ai_arch_content = pkg_resources.read_text("quaestor.templates", "ai_architecture.md")
+            # Try fallback to AI template
+            try:
+                ai_arch_content = pkg_resources.read_text("quaestor.templates", "ai_architecture.md")
+            except Exception:
+                # Skip if neither source exists
+                ai_arch_content = None
 
-        arch_path.write_text(ai_arch_content)
+        if ai_arch_content:
+            arch_path.write_text(ai_arch_content)
 
-        # Track in manifest
-        version = extract_version_from_content(ai_arch_content) or "1.0"
-        manifest.track_file(arch_path, FileType.USER_EDITABLE, version, target_dir)
+            # Track in manifest
+            version = extract_version_from_content(ai_arch_content) or "1.0"
+            manifest.track_file(arch_path, FileType.USER_EDITABLE, version, target_dir)
 
-        copied_files.append("ARCHITECTURE.md")
-        console.print("  [blue]✓[/blue] Copied ARCHITECTURE.md")
-    except Exception as e:
-        console.print(f"  [yellow]⚠[/yellow] Could not copy ARCHITECTURE.md: {e}")
+            copied_files.append("ARCHITECTURE.md")
+            console.print("  [blue]✓[/blue] Copied ARCHITECTURE.md")
+        else:
+            console.print("  [dim]○[/dim] ARCHITECTURE.md (optional - not found)")
+    except Exception:
+        # Silently skip on any other errors
+        pass
 
-    # MEMORY.md
+    # MEMORY.md (optional)
     try:
         mem_path = quaestor_dir / "MEMORY.md"
         try:
             mem_content = pkg_resources.read_text("quaestor.manifest", "MEMORY.md")
             ai_mem_content = convert_manifest_to_ai_format(mem_content, "MEMORY.md")
         except Exception:
-            # Fallback to AI template if manifest not found
-            ai_mem_content = pkg_resources.read_text("quaestor.templates", "ai_memory.md")
+            # Try fallback to AI template
+            try:
+                ai_mem_content = pkg_resources.read_text("quaestor.templates", "ai_memory.md")
+            except Exception:
+                # Skip if neither source exists
+                ai_mem_content = None
 
-        mem_path.write_text(ai_mem_content)
+        if ai_mem_content:
+            mem_path.write_text(ai_mem_content)
 
-        # Track in manifest
-        version = extract_version_from_content(ai_mem_content) or "1.0"
-        manifest.track_file(mem_path, FileType.USER_EDITABLE, version, target_dir)
+            # Track in manifest
+            version = extract_version_from_content(ai_mem_content) or "1.0"
+            manifest.track_file(mem_path, FileType.USER_EDITABLE, version, target_dir)
 
-        copied_files.append("MEMORY.md")
-        console.print("  [blue]✓[/blue] Copied MEMORY.md")
-    except Exception as e:
-        console.print(f"  [yellow]⚠[/yellow] Could not copy MEMORY.md: {e}")
+            copied_files.append("MEMORY.md")
+            console.print("  [blue]✓[/blue] Copied MEMORY.md")
+        else:
+            console.print("  [dim]○[/dim] MEMORY.md (optional - not found)")
+    except Exception:
+        # Silently skip on any other errors
+        pass
 
     # Copy commands to ~/.claude/commands
     console.print("\n[blue]Installing command files to ~/.claude/commands:[/blue]")
@@ -310,23 +355,20 @@ def init(
         except Exception as e:
             console.print(f"  [yellow]⚠[/yellow] Could not install {cmd_file}: {e}")
 
-    # Generate hooks.json
-    console.print("\n[blue]Generating Claude hooks configuration:[/blue]")
+    # Generate and install hooks
+    console.print("\n[blue]Installing Claude hooks configuration:[/blue]")
     try:
         from .hooks import detect_project_type
 
         project_type = detect_project_type(target_dir)
-        hooks_json_path = generate_hooks_json(target_dir, quaestor_dir, project_type)
+        hooks_json_path = generate_hooks_json(target_dir, project_type)
         if hooks_json_path:
-            console.print("  [blue]✓[/blue] Generated hooks.json")
+            console.print("  [blue]✓[/blue] Installed claude_code_hooks.json")
             console.print(f"    [dim]Location: {hooks_json_path}[/dim]")
-            console.print(
-                "    [yellow]To use: Copy to ~/.claude/settings/claude_code_hooks.json "
-                "or project-specific location[/yellow]"
-            )
-            copied_files.append("hooks.json")
+            console.print("    [green]Hooks are now active for this project![/green]")
+            copied_files.append("claude_code_hooks.json")
     except Exception as e:
-        console.print(f"  [yellow]⚠[/yellow] Could not generate hooks.json: {e}")
+        console.print(f"  [yellow]⚠[/yellow] Could not install hooks: {e}")
 
     # Save manifest
     manifest.save()

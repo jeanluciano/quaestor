@@ -51,6 +51,7 @@ quaestor = [
     "commands/*.md",
     "manifest/*.md",
     "templates/*.jinja2",
+    "templates/*.md",
     "hooks/*.py",
 ]
 
