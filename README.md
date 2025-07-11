@@ -6,7 +6,19 @@
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Quaestor** gives Claude (and other AI assistants) the context they need without messing with your existing configuration. It's smart enough to enhance your workflow, not replace it.
+**Quaestor** helps Claude (and other AI assistants) understand your project without messing with your existing configuration.
+
+> ⚠️ **Work in Progress**: Quaestor is under active development. While core features are stable, you may encounter bugs or breaking changes between versions.
+
+## 🤔 Why Quaestor?
+
+**The Problem:** AI assistants like Claude are powerful, but they lack context about your project. You end up:
+- 🔄 Repeatedly explaining your architecture
+- 📋 Copy-pasting the same instructions
+- 🤯 Getting inconsistent implementations
+- ⚠️ Fighting with conflicting configurations
+
+**The Solution:** Quaestor provides structured context that AI assistants can understand, while respecting your existing setup.
 
 ## 🚀 Quick Start (30 seconds)
 
@@ -19,107 +31,28 @@ uvx quaestor init
 
 ### What just happened?
 
-Quaestor scanned your project and:
-- ✅ **Preserved your existing CLAUDE.md** (if you had one)
-- 📁 Created `.quaestor/` with your project's context
-- 🎯 Installed smart commands to `~/.claude/commands/`
-- 🔧 Generated hooks for automated workflows
-
-**Your existing setup is intact.** Quaestor just made it better.
-
-## 🎯 What It Does (Under the Hood)
-
-### 1. **Non-Intrusive CLAUDE.md Integration** 🆕
-
-Instead of overwriting your CLAUDE.md, Quaestor adds a small managed section:
-
-**Before:**
-```markdown
-# My Custom Claude Config
-My specific instructions...
+```
+✅ Preserved your existing CLAUDE.md
+📁 Created .quaestor/ with:
+   - ARCHITECTURE.md (your project structure)
+   - MEMORY.md (progress tracking)
+   - CRITICAL_RULES.md (quality standards)
+🎯 Installed commands to ~/.claude/commands/
+🔧 Set up automated hooks in .claude/settings/
 ```
 
-**After:**
-```markdown
-<!-- BEGIN QUAESTOR CONFIG -->
-## 📋 Quaestor Framework Active
-[Links to context files]
-<!-- END QUAESTOR CONFIG -->
-
-# My Custom Claude Config
-My specific instructions...
+Now try this in Claude:
+```
+/task: implement user authentication with JWT tokens
 ```
 
-Your content stays exactly where it was. Quaestor just adds pointers to its context files.
+Claude will:
+- Research your existing auth patterns
+- Follow your project's conventions
+- Run quality checks
+- Track progress in MEMORY.md
 
-### 2. **Smart Project Analysis**
-
-When you run `init`, Quaestor:
-- Detects your tech stack from `package.json`, `pyproject.toml`, `Cargo.toml`, etc.
-- Identifies frameworks from imports and dependencies
-- Maps your architecture from directory structure
-- Extracts progress from git history
-
-### 3. **Intelligent Update System**
-
-```bash
-quaestor update --check  # See what would change
-quaestor update          # Update only what's needed
-```
-
-- **System files** (CRITICAL_RULES.md) - Always updated
-- **User files** (ARCHITECTURE.md) - Never overwritten if modified
-- **Config sections** - Surgically updated without touching your content
-
-### 4. **File Structure**
-
-```
-your-project/
-├── CLAUDE.md                    # Your existing config + Quaestor section
-└── .quaestor/
-    ├── QUAESTOR_CLAUDE.md       # Full framework instructions
-    ├── CRITICAL_RULES.md        # Enforcement rules
-    ├── ARCHITECTURE.md          # Your detected architecture
-    ├── MEMORY.md                # Progress tracking
-    ├── manifest.json            # Tracks files and modifications
-    └── hooks.json               # Automation configuration
-```
-
-## 📚 Commands
-
-| Command | What it does | Example |
-|---------|--------------|---------|
-| `init` | Set up Quaestor in your project | `quaestor init` |
-| `update` | Smart update that preserves your changes | `quaestor update --check` |
-| **Claude Commands** (in `~/.claude/commands/`) | | |
-| `project-init` | Analyze and set up project management | `/project-init` |
-| `task-py` | Python implementation workflow | `/task-py implement user auth` |
-| `task-rs` | Rust implementation workflow | `/task-rs add error handling` |
-| `check` | Run quality checks | `/check` |
-| `compose` | Combine commands | `/compose task-py + check` |
-| `milestone-commit` | Auto-commit completed work | `/milestone-commit` |
-
-## 🔥 Key Features
-
-### Smart Context Management
-- **Preserves your configs** - Never overwrites your CLAUDE.md
-- **Tracks modifications** - Knows which files you've customized
-- **Surgical updates** - Updates only Quaestor sections
-- **Version tracking** - Every file has version headers
-
-### Automated Workflows
-- **Progress tracking** - Updates MEMORY.md automatically
-- **Quality gates** - Won't commit until tests pass
-- **Atomic commits** - Each task gets a clean commit
-- **PR generation** - Creates PRs when milestones complete
-
-### Project Intelligence
-- **Stack detection** - Knows if you're using React, Django, FastAPI, etc.
-- **Pattern recognition** - Identifies MVC, DDD, microservices patterns
-- **Tool awareness** - Finds PostgreSQL, Redis, Docker usage
-- **Convention learning** - Adapts to your project's style
-
-## 🛠️ Installation Options
+## 🛠️ Installation
 
 ```bash
 # Recommended - No install needed
@@ -128,81 +61,190 @@ uvx quaestor init
 # Global install
 uv tool install quaestor
 
-# Add to project
-uv add quaestor
-
 # Traditional pip
 pip install quaestor
 ```
+
+## 📚 Commands
+
+### CLI Commands
+| Command | What it does | Example |
+|---------|--------------|---------|
+| `init` | Set up Quaestor in your project | `quaestor init` |
+| `update` | Smart update that preserves your changes | `quaestor update --check` |
+
+### Claude Commands (Auto-installed to `~/.claude/commands/`)
+| Command | What it does | Example |
+|---------|--------------|---------|
+| `/help` | Show all available commands | `/help` |
+| `/task` | Smart implementation workflow | `/task: add user authentication` |
+| `/status` | Check project progress | `/status` |
+| `/milestone` | Manage project phases | `/milestone: complete phase 1` |
+| `/project-init` | Analyze and document your project | `/project-init` |
+| `/check` | Run quality checks | `/check` |
+| `/milestone-commit` | Create atomic commits | `/milestone-commit` |
+
+## 🎯 Key Features
+
+### 1. **Non-Intrusive Integration**
+
+Your existing CLAUDE.md stays untouched. Quaestor adds a small managed section:
+
+```markdown
+<!-- QUAESTOR CONFIG START -->
+> [!IMPORTANT]
+> **Claude:** This project uses Quaestor. Please read:
+> 1. `.quaestor/QUAESTOR_CLAUDE.md` - Framework instructions
+> 2. `.quaestor/CRITICAL_RULES.md` - Quality standards
+> 3. `.quaestor/ARCHITECTURE.md` - Project structure
+> 4. `.quaestor/MEMORY.md` - Progress tracking
+<!-- QUAESTOR CONFIG END -->
+
+# Your existing content remains here...
+```
+
+### 2. **Project Analysis**
+
+Quaestor detects:
+- **Tech Stack** - Python, Rust, JavaScript, TypeScript, Go
+- **Common Frameworks** - Django, FastAPI, React, Next.js
+- **Project Structure** - Directories and file organization
+- **Dependencies** - From package.json, pyproject.toml, etc.
+
+### 3. **Quality Workflow**
+
+Encourages a Research → Plan → Implement workflow:
+
+```
+┌─────────────┐     ┌──────────┐     ┌─────────────┐
+│   Research  │ --> │   Plan   │ --> │ Implement   │
+│ (Read/Grep) │     │ (Design) │     │ (Write/Edit)│
+└─────────────┘     └──────────┘     └─────────────┘
+```
+
+Optional hooks can enforce this workflow when enabled.
+
+### 4. **Smart Updates**
+
+```bash
+# See what would change
+quaestor update --check
+
+# Update with backup
+quaestor update --backup
+```
+
+- **System files** - Always updated (CRITICAL_RULES.md)
+- **Your files** - Never overwritten if modified
+- **Tracked changes** - Every modification is logged
+
+## 📁 Project Structure
+
+After initialization:
+```
+your-project/
+├── CLAUDE.md                    # Your config + Quaestor section
+├── .quaestor/
+│   ├── QUAESTOR_CLAUDE.md       # AI instructions
+│   ├── CRITICAL_RULES.md        # Quality standards
+│   ├── ARCHITECTURE.md          # Project structure
+│   ├── MEMORY.md                # Progress tracking
+│   ├── manifest.json            # File tracking
+│   └── hooks/                   # Portable hook scripts
+│       ├── enforce-research.py
+│       ├── quality-check.py
+│       └── update-memory.py
+└── .claude/
+    └── settings/
+        └── claude_code_hooks.json # Auto-installed hooks
+```
+
+## 🔥 Real-World Examples
+
+### Example 1: Adding a Feature
+```
+You: /task: add password reset functionality
+
+Claude will:
+1. Research existing auth implementation
+2. Check email service configuration  
+3. Follow your naming conventions
+4. Implement with proper error handling
+5. Update progress in MEMORY.md
+```
+
+### Example 2: Refactoring
+```
+You: /task: refactor user service to use dependency injection
+
+Claude will:
+1. Analyze current service structure
+2. Identify all dependencies
+3. Plan refactoring approach
+4. Implement following your patterns
+5. Ensure tests still pass
+```
+
+### Example 3: New Milestone
+```
+You: /milestone: start MVP phase 2
+
+Claude will:
+1. Archive current progress
+2. Create new milestone section
+3. Set up tracking for phase 2
+4. Suggest initial tasks
+```
+
+## 🪝 Automated Hooks
+
+Hooks are automatically installed to `.claude/settings/` and use local scripts for portability:
+
+### What Hooks Do
+
+- **🚫 Enforce Standards** - Block code without research
+- **📊 Track Progress** - Auto-update MEMORY.md
+- **✅ Quality Checks** - Run tests before commits
+- **🎯 Smart Context** - Refresh on long conversations
+
+### Hook Portability
+
+Hooks work with any installation method (uvx, pip, etc.) by using local Python scripts in `.quaestor/hooks/`.
 
 ## 🎓 How It Works
 
 ### The Manifest System
 
-Quaestor uses a manifest (`manifest.json`) to track every file it manages:
+Every file is tracked with checksums and versions:
 
 ```json
 {
-  "version": "1.0",
-  "quaestor_version": "0.2.4",
   "files": {
     "CLAUDE.md": {
       "type": "user-editable",
-      "version": "1.0",
       "user_modified": true,
-      "original_checksum": "...",
-      "current_checksum": "..."
+      "original_checksum": "abc123...",
+      "current_checksum": "def456..."
     }
   }
 }
 ```
-
-This enables:
-- **Smart updates** - Only update what's changed
-- **Modification detection** - Via checksums
-- **Version tracking** - Know which version of each file
-- **Categorization** - Different update strategies per file type
-
-### File Categories
-
-1. **SYSTEM** - Always updated (CRITICAL_RULES.md, QUAESTOR_CLAUDE.md)
-2. **USER_EDITABLE** - Never auto-overwritten (ARCHITECTURE.md, MEMORY.md, CLAUDE.md)
-3. **COMMAND** - Added if missing (task-py.md, check.md, etc.)
-4. **TEMPLATE** - Updated if unmodified
 
 ### AI-Optimized Format
 
 Special markers enable precise AI edits:
 
 ```markdown
-<!-- SECTION:architecture:database:START -->
+<!-- SECTION:database:config:START -->
 ```yaml
 database:
   type: PostgreSQL
-  orm: SQLAlchemy
+  version: 15
 ```
-<!-- SECTION:architecture:database:END -->
+<!-- SECTION:database:config:END -->
 ```
 
 AI can update sections without breaking your documentation.
-
-## 🪝 Claude Hooks
-
-Generate automation with:
-```bash
-quaestor init  # Creates .quaestor/hooks.json
-```
-
-Copy to Claude settings:
-```bash
-cp .quaestor/hooks.json ~/.claude/settings/claude_code_hooks.json
-```
-
-### What Hooks Do
-
-- **Enforce** - Block coding without research
-- **Automate** - Update progress, create commits
-- **Assist** - Refresh context, suggest next steps
 
 ## 🔄 Updating Quaestor
 
@@ -226,15 +268,36 @@ uv sync
 uv run pytest
 ```
 
+### Development Workflow
+1. Create feature branch
+2. Add tests for new functionality
+3. Run `uv run pytest`
+4. Submit PR with description
+
 ## 📊 Project Status
 
-- ✅ Non-intrusive CLAUDE.md integration
-- ✅ Smart update system with manifest tracking
-- ✅ Command templates for Python/Rust
-- ✅ Claude hooks integration
-- ✅ Automated milestone workflows
-- 🚧 JavaScript/TypeScript commands
-- 🚧 Team synchronization features
+### ✅ Completed
+- Non-intrusive CLAUDE.md integration
+- Smart update system with manifest tracking
+- Unified `/task` command for all languages
+- Claude hooks with portable scripts
+- Automated milestone workflows
+- Project status tracking
+- Command discovery with `/help`
+
+### 🚧 In Progress
+- Team synchronization features
+- Extended language support
+- Plugin system
+
+### 🎯 Planned
+- VS Code extension
+- Web dashboard
+- Team analytics
+
+## 🙏 Acknowledgments
+
+Built with feedback from the Claude community.
 
 ## 📄 License
 
@@ -242,4 +305,11 @@ MIT - Use it however you want.
 
 ---
 
-**Remember:** Quaestor enhances your workflow without replacing it. Your configs, your rules, just better AI understanding.
+<div align="center">
+
+**Remember:** Quaestor enhances your workflow without replacing it.  
+Your configs, your rules, just better AI understanding.
+
+[Report Bug](https://github.com/jeanluciano/quaestor/issues) · [Request Feature](https://github.com/jeanluciano/quaestor/issues)
+
+</div>
