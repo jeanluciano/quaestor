@@ -1,6 +1,5 @@
 import importlib.resources as pkg_resources
 import re
-import sys
 from pathlib import Path
 
 import typer
@@ -113,9 +112,43 @@ def merge_claude_md(target_dir: Path) -> bool:
         return False
 
 
+def copy_hook_scripts(target_dir: Path) -> bool:
+    """Copy hook scripts to .quaestor/hooks directory."""
+    try:
+        hooks_dir = target_dir / ".quaestor" / "hooks"
+        hooks_dir.mkdir(parents=True, exist_ok=True)
+
+        # List of hook scripts to copy
+        hook_scripts = [
+            "enforce-research.py",
+            "update-memory.py",
+            "quality-check.py",
+            "check-milestone.py",
+            "refresh-context.py",
+        ]
+
+        for script in hook_scripts:
+            try:
+                content = pkg_resources.read_text("quaestor.templates.hooks", script)
+                script_path = hooks_dir / script
+                script_path.write_text(content)
+                # Make executable
+                script_path.chmod(0o755)
+            except Exception as e:
+                console.print(f"  [yellow]⚠[/yellow] Could not copy {script}: {e}")
+
+        return True
+    except Exception as e:
+        console.print(f"  [red]✗[/red] Failed to copy hook scripts: {e}")
+        return False
+
+
 def generate_hooks_json(target_dir: Path, project_type: str) -> Path | None:
     """Generate hooks.json from template and install to .claude/settings."""
     try:
+        # First copy the hook scripts
+        copy_hook_scripts(target_dir)
+
         # Try to use Jinja2 if available
         try:
             from jinja2 import Template
@@ -131,7 +164,7 @@ def generate_hooks_json(target_dir: Path, project_type: str) -> Path | None:
             # Render template with context
             hooks_content = template.render(
                 project_type=project_type,
-                python_path=sys.executable,
+                python_path="python3",
                 project_root=str(target_dir),
             )
         except ImportError:
@@ -145,7 +178,7 @@ def generate_hooks_json(target_dir: Path, project_type: str) -> Path | None:
 
             # Basic replacements
             hooks_content = template_content.replace("{{ project_type }}", project_type)
-            hooks_content = hooks_content.replace("{{ python_path }}", sys.executable)
+            hooks_content = hooks_content.replace("{{ python_path }}", "python3")
             hooks_content = hooks_content.replace("{{ project_root }}", str(target_dir))
 
             # Remove Jinja2 conditionals for simplicity in fallback
@@ -292,7 +325,7 @@ def init(
         except Exception:
             # Try fallback to AI template
             try:
-                ai_arch_content = pkg_resources.read_text("quaestor.templates", "ai_architecture.md")
+                ai_arch_content = pkg_resources.read_text("quaestor.templates", "ARCHITECTURE.template.md")
             except Exception:
                 # Skip if neither source exists
                 ai_arch_content = None
@@ -321,7 +354,7 @@ def init(
         except Exception:
             # Try fallback to AI template
             try:
-                ai_mem_content = pkg_resources.read_text("quaestor.templates", "ai_memory.md")
+                ai_mem_content = pkg_resources.read_text("quaestor.templates", "MEMORY.template.md")
             except Exception:
                 # Skip if neither source exists
                 ai_mem_content = None

@@ -40,8 +40,8 @@ class TestCategorizeFile:
 
     def test_categorize_command_files(self):
         """Test categorization of command files."""
-        assert categorize_file(Path("commands/task-py.md"), "commands/task-py.md") == FileType.COMMAND
-        assert categorize_file(Path("task-rs.md"), "task-rs.md") == FileType.COMMAND
+        assert categorize_file(Path("commands/task.md"), "commands/task.md") == FileType.COMMAND
+        assert categorize_file(Path("commands/help.md"), "commands/help.md") == FileType.COMMAND
         assert categorize_file(Path(".claude/commands/check.md"), ".claude/commands/check.md") == FileType.COMMAND
 
     def test_categorize_template_files(self):

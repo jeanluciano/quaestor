@@ -102,8 +102,8 @@ class TestInitCommand:
             def side_effect(package, filename):
                 files = {
                     ("quaestor", "CLAUDE.md"): "# CLAUDE.md content",
-                    ("quaestor", "templates_ai_architecture.md"): "# AI ARCHITECTURE template",
-                    ("quaestor", "templates_ai_memory.md"): "# AI MEMORY template",
+                    ("quaestor.templates", "ARCHITECTURE.template.md"): "# AI ARCHITECTURE template",
+                    ("quaestor.templates", "MEMORY.template.md"): "# AI MEMORY template",
                 }
                 if (package, filename) in files:
                     return files[(package, filename)]
@@ -159,11 +159,12 @@ class TestInitCommand:
     def test_init_copies_all_command_files(self, runner, temp_dir):
         """Test that all command files are installed to ~/.claude/commands."""
         expected_commands = [
+            "help.md",
             "project-init.md",
-            "task-py.md",
-            "task-rs.md",
+            "task.md",
+            "status.md",
             "check.md",
-            "compose.md",
+            "milestone.md",
             "milestone-commit.md",
         ]
 
@@ -172,12 +173,12 @@ class TestInitCommand:
             def mock_read_text(package, resource):
                 files = {
                     ("quaestor.templates", "CLAUDE_INCLUDE.md"): (
-                        "<!-- BEGIN QUAESTOR CONFIG -->\nQuaestor config\n<!-- END QUAESTOR CONFIG -->"
+                        "<!-- QUAESTOR CONFIG START -->\nQuaestor config\n<!-- QUAESTOR CONFIG END -->"
                     ),
                     ("quaestor", "QUAESTOR_CLAUDE.md"): "# QUAESTOR_CLAUDE.md",
                     ("quaestor", "CRITICAL_RULES.md"): "# CRITICAL_RULES.md",
-                    ("quaestor.templates", "ai_architecture.md"): "# ARCHITECTURE",
-                    ("quaestor.templates", "ai_memory.md"): "# MEMORY",
+                    ("quaestor.templates", "ARCHITECTURE.template.md"): "# ARCHITECTURE",
+                    ("quaestor.templates", "MEMORY.template.md"): "# MEMORY",
                 }
                 if package == "quaestor.commands":
                     return f"# {resource}"
@@ -262,8 +263,8 @@ class TestInitCommand:
                     ),
                     ("quaestor", "QUAESTOR_CLAUDE.md"): "# QUAESTOR_CLAUDE.md test content",
                     ("quaestor", "CRITICAL_RULES.md"): "# CRITICAL_RULES test content",
-                    ("quaestor.templates", "ai_architecture.md"): "# AI ARCHITECTURE template",
-                    ("quaestor.templates", "ai_memory.md"): "# AI MEMORY template",
+                    ("quaestor.templates", "ARCHITECTURE.template.md"): "# AI ARCHITECTURE template",
+                    ("quaestor.templates", "MEMORY.template.md"): "# AI MEMORY template",
                 }
                 if package == "quaestor.commands":
                     return f"# {resource} content"

@@ -336,10 +336,14 @@ on_decline: "abort_setup"
 <!-- DATA:scan-existing:START -->
 ```yaml
 scan_paths:
-  - ".quaestor/ARCHITECTURE.md"
-  - ".quaestor/MEMORY.md"
+  - ".quaestor/ARCHITECTURE.md"  # Actual project architecture (not .template.md)
+  - ".quaestor/MEMORY.md"       # Actual project memory (not .template.md)
   - ".quaestor/commands/"
   - "CLAUDE.md"
+
+validation_rules:
+  - ignore_templates: "*.template.md"  # Skip template files
+  - require_content: true             # Must have actual content, not placeholders
   
 interactive_decisions:
   if_found:
@@ -348,6 +352,9 @@ interactive_decisions:
       - use_existing
       - extend_existing
       - start_fresh
+  if_only_templates:
+    message: "I found only template files (*.template.md). These are just templates - let me generate actual project documentation."
+    action: "generate_from_analysis"
   if_not_found:
     message: "No Quaestor documents found yet. Do you have any existing project documentation you'd like to copy in before we continue?"
     options:

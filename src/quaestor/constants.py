@@ -4,12 +4,13 @@ from pathlib import Path
 
 # Command files that get installed to ~/.claude/commands
 COMMAND_FILES = [
-    "project-init.md",
-    "task-py.md",
-    "task-rs.md",
-    "check.md",
-    "compose.md",
-    "milestone-commit.md",
+    "help.md",  # Show available commands
+    "project-init.md",  # Initialize project documentation
+    "task.md",  # Unified task command (auto-detects language)
+    "status.md",  # Show project status
+    "check.md",  # Run quality validation
+    "milestone.md",  # Manage project milestones
+    "milestone-commit.md",  # Create atomic commits
 ]
 
 # File categorization for update logic
@@ -46,6 +47,6 @@ MANIFEST_FILES = {
 
 # Template file mappings
 TEMPLATE_FILES = {
-    "ai_architecture.md": "ARCHITECTURE.md",
-    "ai_memory.md": "MEMORY.md",
+    "ARCHITECTURE.template.md": "ARCHITECTURE.md",
+    "MEMORY.template.md": "MEMORY.md",
 }

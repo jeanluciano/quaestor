@@ -263,8 +263,8 @@ class QuaestorUpdater:
         files_to_process = [
             ("QUAESTOR_CLAUDE.md", self.quaestor_dir / "QUAESTOR_CLAUDE.md"),
             ("CRITICAL_RULES.md", self.quaestor_dir / "CRITICAL_RULES.md"),
-            ("templates/ai_architecture.md", self.quaestor_dir / "ARCHITECTURE.md"),
-            ("templates/ai_memory.md", self.quaestor_dir / "MEMORY.md"),
+            ("templates/ARCHITECTURE.template.md", self.quaestor_dir / "ARCHITECTURE.md"),
+            ("templates/MEMORY.template.md", self.quaestor_dir / "MEMORY.md"),
         ]
 
         for resource_name, target_path in files_to_process:

@@ -8,7 +8,7 @@
       "match": {
         "tool": ["Write", "Edit", "MultiEdit"]
       },
-      "command": "{{ python_path }} -m quaestor.hooks enforce-research ${tool}"
+      "command": "{{ python_path }} {{ project_root }}/.quaestor/hooks/enforce-research.py ${tool}"
     },
     {
       "description": "Update MEMORY.md after TODO completion",
@@ -16,7 +16,7 @@
       "match": {
         "tool": "TodoWrite"
       },
-      "command": "{{ python_path }} -m quaestor.hooks update-memory --from-todos"
+      "command": "{{ python_path }} {{ project_root }}/.quaestor/hooks/update-memory.py --from-todos"
     },
     {
       "description": "Run quality checks before commits",
@@ -27,7 +27,7 @@
           "command": "git commit"
         }
       },
-      "command": "{{ python_path }} -m quaestor.hooks quality-check --block-on-fail"
+      "command": "{{ python_path }} {{ project_root }}/.quaestor/hooks/quality-check.py --block-on-fail"
     },
     {
       "description": "Check milestone completion after file updates",
@@ -38,7 +38,7 @@
           "file_path": "MEMORY.md"
         }
       },
-      "command": "{{ python_path }} -m quaestor.hooks check-milestone"
+      "command": "{{ python_path }} {{ project_root }}/.quaestor/hooks/check-milestone.py"
     },
     {
       "description": "Refresh context when conversation gets long",
@@ -46,15 +46,7 @@
       "match": {
         "type": "conversation_length"
       },
-      "command": "{{ python_path }} -m quaestor.hooks refresh-context"
-    },
-    {
-      "description": "Learn patterns from written code",
-      "hook": "PostToolUse",
-      "match": {
-        "tool": ["Write", "Edit", "MultiEdit"]
-      },
-      "command": "{{ python_path }} -m quaestor.hooks learn-patterns --file ${file_path}"
+      "command": "{{ python_path }} {{ project_root }}/.quaestor/hooks/refresh-context.py"
     },
 {% if project_type == "python" %}
     {
@@ -144,11 +136,6 @@
         "tool": "Bash"
       },
       "command": "echo \"[$(date)] ${command}\" >> .quaestor/.command_history"
-    },
-    {
-      "description": "Suggest next actions periodically",
-      "hook": "Stop",
-      "command": "{{ python_path }} -m quaestor.hooks suggest-next"
     }
   ],
   "settings": {
