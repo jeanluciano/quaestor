@@ -13,6 +13,18 @@ description: Execute production-quality implementation with auto-detected langua
 
 **TASK ASSIGNMENT:** $ARGUMENTS
 
+<!-- IF NO ARGUMENTS PROVIDED -->
+{% if not ARGUMENTS or ARGUMENTS == "" %}
+**NO TASK SPECIFIED - CHECKING FOR NEXT TASK:**
+1. First, check .quaestor/MEMORY.md for pending tasks or next logical step
+2. Look for sections like "next_task:", "pending:", "TODO:", or incomplete items
+3. If found, announce the task and proceed with it
+4. If no pending tasks found, ask the user what they'd like to work on
+
+Example response:
+"I'll check MEMORY.md for the next task... Found pending task: 'implement user authentication'. Starting research phase for this task."
+{% endif %}
+
 **YOU MUST:** Begin with research phase. No exceptions.
 
 ## AUTO-DETECTION PHASE
@@ -42,6 +54,17 @@ mandatory_workflow:
   enforcement: IMMEDIATE
   
 phases:
+  - phase: TASK_DISCOVERY
+    order: 0
+    action: "Find next task if none specified"
+    only_if: "No arguments provided"
+    steps:
+      - "Read .quaestor/MEMORY.md"
+      - "Look for: next_task, pending items, incomplete milestones"
+      - "Check current_milestone progress"
+      - "Find TODOs or unfinished features"
+    required_output: "Found task: [describe task] OR No pending tasks found"
+    
   - phase: RESEARCH
     order: 1
     action: "Analyze codebase exhaustively"

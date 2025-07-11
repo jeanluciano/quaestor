@@ -45,6 +45,24 @@ progress:
 <!-- SECTION:memory:summary:END -->
 <!-- SECTION:memory:status:END -->
 
+<!-- SECTION:memory:next-tasks:START -->
+## Next Tasks
+
+<!-- DATA:next-tasks:START -->
+```yaml
+next_task: "[The immediate next task to work on when /task is called without arguments]"
+
+pending_tasks:
+  - task: "[High priority task 1]"
+    context: "[Why this is important]"
+    estimate: "[Time estimate]"
+  - task: "[Task 2]"
+    context: "[Context]"
+    estimate: "[Time estimate]"
+```
+<!-- DATA:next-tasks:END -->
+<!-- SECTION:memory:next-tasks:END -->
+
 <!-- SECTION:memory:active-work:START -->
 ## Active Work
 
