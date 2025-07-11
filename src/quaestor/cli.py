@@ -1,5 +1,4 @@
 import importlib.resources as pkg_resources
-import re
 from pathlib import Path
 
 import typer
@@ -168,35 +167,34 @@ def generate_hooks_json(target_dir: Path, project_type: str) -> Path | None:
                 project_root=str(target_dir),
             )
         except ImportError:
-            # Fallback to basic string replacement if Jinja2 not available
-            template_content = pkg_resources.read_text("quaestor.templates", "hooks.json.jinja2")
+            # Fallback to basic template without Jinja2
+            template_content = pkg_resources.read_text("quaestor.templates", "hooks_base.json")
 
-            # Remove Jinja2 comment line if present
-            template_lines = template_content.split("\n")
-            if template_lines[0].strip().startswith("{#") and template_lines[0].strip().endswith("#}"):
-                template_content = "\n".join(template_lines[1:])
+            # Determine quality tools based on project type
+            if project_type == "python":
+                linter = "ruff"
+                formatter = "ruff format"
+                test_runner = "pytest"
+            elif project_type == "rust":
+                linter = "cargo clippy"
+                formatter = "rustfmt"
+                test_runner = "cargo test"
+            elif project_type == "javascript":
+                linter = "eslint"
+                formatter = "prettier"
+                test_runner = "npm test"
+            else:
+                linter = "none"
+                formatter = "none"
+                test_runner = "none"
 
-            # Basic replacements
-            hooks_content = template_content.replace("{{ project_type }}", project_type)
-            hooks_content = hooks_content.replace("{{ python_path }}", "python3")
-            hooks_content = hooks_content.replace("{{ project_root }}", str(target_dir))
-
-            # Remove Jinja2 conditionals for simplicity in fallback
-            if project_type != "python":
-                # Remove Python-specific hooks
-                hooks_content = re.sub(
-                    r'{% if project_type == "python" %}.*?{% endif %}', "", hooks_content, flags=re.DOTALL
-                )
-            if project_type != "rust":
-                # Remove Rust-specific hooks
-                hooks_content = re.sub(
-                    r'{% elif project_type == "rust" %}.*?{% endif %}', "", hooks_content, flags=re.DOTALL
-                )
-            if project_type != "javascript":
-                # Remove JavaScript-specific hooks
-                hooks_content = re.sub(
-                    r'{% elif project_type == "javascript" %}.*?{% endif %}', "", hooks_content, flags=re.DOTALL
-                )
+            # Basic string replacements
+            hooks_content = template_content.replace("{project_type}", project_type)
+            hooks_content = hooks_content.replace("{python_path}", "python3")
+            hooks_content = hooks_content.replace("{project_root}", str(target_dir))
+            hooks_content = hooks_content.replace("{linter}", linter)
+            hooks_content = hooks_content.replace("{formatter}", formatter)
+            hooks_content = hooks_content.replace("{test_runner}", test_runner)
 
         # Create .claude/settings directory in project root
         claude_settings_dir = target_dir / ".claude" / "settings"
