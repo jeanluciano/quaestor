@@ -1,80 +1,44 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "hooks": [
-    {
-      "description": "Enforce Research → Plan → Implement workflow",
-      "hook": "PreToolUse",
-      "match": {
-        "tool": ["Write", "Edit", "MultiEdit"]
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{python_path} {project_root}/.quaestor/hooks/enforce-research.py {project_root}"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Read|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{python_path} {project_root}/.quaestor/hooks/track-research.py {project_root}"
+          }
+        ]
       },
-      "command": "{python_path} {project_root}/.quaestor/hooks/enforce-research.py ${tool}"
-    },
-    {
-      "description": "Update MEMORY.md after TODO completion",
-      "hook": "PostToolUse",
-      "match": {
-        "tool": "TodoWrite"
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{python_path} {project_root}/.quaestor/hooks/track-implementation.py {project_root}"
+          }
+        ]
       },
-      "command": "{python_path} {project_root}/.quaestor/hooks/update-memory.py --from-todos"
-    },
-    {
-      "description": "Run quality checks before commits",
-      "hook": "PreToolUse",
-      "match": {
-        "tool": "Bash",
-        "args": {
-          "command": "git commit"
-        }
-      },
-      "command": "{python_path} {project_root}/.quaestor/hooks/quality-check.py --block-on-fail"
-    },
-    {
-      "description": "Check milestone completion after file updates",
-      "hook": "PostToolUse",
-      "match": {
-        "tool": ["Write", "Edit", "MultiEdit"],
-        "args": {
-          "file_path": "MEMORY.md"
-        }
-      },
-      "command": "{python_path} {project_root}/.quaestor/hooks/check-milestone.py"
-    },
-    {
-      "description": "Refresh context when conversation gets long",
-      "hook": "Notification",
-      "match": {
-        "type": "conversation_length"
-      },
-      "command": "{python_path} {project_root}/.quaestor/hooks/refresh-context.py"
-    },
-    {
-      "description": "Prevent modifications to critical files",
-      "hook": "PreToolUse",
-      "match": {
-        "tool": ["Write", "Edit", "MultiEdit", "Bash"],
-        "args": {
-          "file_path": [".quaestor/CRITICAL_RULES.md", ".git/*", ".github/workflows/*"]
-        }
-      },
-      "command": "echo '❌ BLOCKED: Cannot modify critical system files' && exit 1"
-    },
-    {
-      "description": "Log all bash commands for audit",
-      "hook": "PostToolUse",
-      "match": {
-        "tool": "Bash"
-      },
-      "command": "echo \"[$(date)] ${command}\" >> .quaestor/.command_history"
-    }
-  ],
-  "settings": {
-    "project_type": "{project_type}",
-    "python_path": "{python_path}",
-    "project_root": "{project_root}",
-    "quality_tools": {
-      "linter": "{linter}",
-      "formatter": "{formatter}",
-      "test_runner": "{test_runner}"
-    }
+      {
+        "matcher": "TodoWrite",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{python_path} {project_root}/.quaestor/hooks/update-memory.py --from-todos"
+          }
+        ]
+      }
+    ]
   }
 }

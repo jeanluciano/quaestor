@@ -120,6 +120,8 @@ def copy_hook_scripts(target_dir: Path) -> bool:
         # List of hook scripts to copy
         hook_scripts = [
             "enforce-research.py",
+            "track-research.py",
+            "track-implementation.py",
             "update-memory.py",
             "quality-check.py",
             "check-milestone.py",
@@ -196,12 +198,12 @@ def generate_hooks_json(target_dir: Path, project_type: str) -> Path | None:
             hooks_content = hooks_content.replace("{formatter}", formatter)
             hooks_content = hooks_content.replace("{test_runner}", test_runner)
 
-        # Create .claude/settings directory in project root
-        claude_settings_dir = target_dir / ".claude" / "settings"
-        claude_settings_dir.mkdir(parents=True, exist_ok=True)
+        # Create .claude directory in project root
+        claude_dir = target_dir / ".claude"
+        claude_dir.mkdir(parents=True, exist_ok=True)
 
-        # Write hooks to .claude/settings/claude_code_hooks.json
-        hooks_path = claude_settings_dir / "claude_code_hooks.json"
+        # Write hooks to .claude/settings.json
+        hooks_path = claude_dir / "settings.json"
         hooks_path.write_text(hooks_content)
 
         return hooks_path
@@ -394,10 +396,10 @@ def init(
         project_type = detect_project_type(target_dir)
         hooks_json_path = generate_hooks_json(target_dir, project_type)
         if hooks_json_path:
-            console.print("  [blue]✓[/blue] Installed claude_code_hooks.json")
+            console.print("  [blue]✓[/blue] Installed hooks in .claude/settings.json")
             console.print(f"    [dim]Location: {hooks_json_path}[/dim]")
             console.print("    [green]Hooks are now active for this project![/green]")
-            copied_files.append("claude_code_hooks.json")
+            copied_files.append(".claude/settings.json")
     except Exception as e:
         console.print(f"  [yellow]⚠[/yellow] Could not install hooks: {e}")
 
