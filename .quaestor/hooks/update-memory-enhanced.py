@@ -19,9 +19,6 @@ class MilestoneTracker:
 
     def find_active_milestone(self):
         """Find the currently active milestone and task."""
-        if not self.milestones_dir.exists():
-            return None, None
-
         # Look for tasks.yaml files with in_progress tasks
         for tasks_file in self.milestones_dir.rglob("tasks.yaml"):
             try:
@@ -41,10 +38,8 @@ class MilestoneTracker:
         completed = []
 
         # Check for new files in src/ and tests/
-        src_files = list((self.project_root / "src").rglob("*.py")) if (self.project_root / "src").exists() else []
-        test_files = (
-            list((self.project_root / "tests").rglob("test_*.py")) if (self.project_root / "tests").exists() else []
-        )
+        src_files = list((self.project_root / "src").rglob("*.py"))
+        test_files = list((self.project_root / "tests").rglob("test_*.py"))
 
         # This is simplified - in reality would check git status
         if src_files or test_files:
@@ -70,15 +65,14 @@ class MilestoneTracker:
                     # Mark first incomplete subtask as complete
                     if "subtasks" in t:
                         for i, subtask in enumerate(t["subtasks"]):
-                            if "# COMPLETED" not in str(subtask):
+                            if "# COMPLETED" not in subtask:
                                 t["subtasks"][i] = f"{subtask} # COMPLETED"
                                 break
 
                     # Update progress
-                    completed_subtasks = sum(1 for s in t.get("subtasks", []) if "# COMPLETED" in str(s))
+                    completed_subtasks = sum(1 for s in t.get("subtasks", []) if "# COMPLETED" in s)
                     total_subtasks = len(t.get("subtasks", []))
-                    if total_subtasks > 0:
-                        t["progress"] = f"{int(completed_subtasks / total_subtasks * 100)}%"
+                    t["progress"] = f"{int(completed_subtasks / total_subtasks * 100)}%"
 
                     # Add notes
                     if "notes" not in t:
@@ -98,49 +92,7 @@ class MilestoneTracker:
             print(f"Error updating milestone: {e}")
             return False
 
-    def update_memory_simple(self):
-        """Simple memory update for backwards compatibility."""
-        if not self.memory_file.exists():
-            print("⚠️  MEMORY.md not found")
-            return True
-
-        try:
-            content = self.memory_file.read_text()
-            today = datetime.now().strftime("%Y-%m-%d")
-
-            # Remove duplicate generic entries
-            lines = content.split("\n")
-            filtered_lines = []
-
-            for i, line in enumerate(lines):
-                if line.strip() == "- Completed tasks from TODO list":
-                    # Skip this generic line and check if we should skip the date header too
-                    if i > 0 and lines[i - 1].startswith("### ") and lines[i - 1].strip() == f"### {today}":
-                        # Also remove the date header if it only has this generic entry
-                        filtered_lines = filtered_lines[:-1]
-                    continue
-                filtered_lines.append(line)
-
-            content = "\n".join(filtered_lines)
-
-            # Add to existing progress log
-            if "## Progress Log" in content:
-                progress_marker = "## Progress Log"
-                insert_pos = content.find(progress_marker) + len(progress_marker)
-                new_entry = f"\n\n### {today}\n- ✅ TodoWrite tasks completed\n"
-                content = content[:insert_pos] + new_entry + content[insert_pos:]
-            else:
-                content += f"\n\n## Progress Log\n\n### {today}\n- ✅ TodoWrite tasks completed\n"
-
-            self.memory_file.write_text(content)
-            print(f"✅ Updated MEMORY.md with progress for {today}")
-            return True
-
-        except Exception as e:
-            print(f"❌ Error updating memory: {e}")
-            return False
-
-    def update_memory_enhanced(self, task, completed_work):
+    def update_memory(self, task, completed_work):
         """Add meaningful progress entry to MEMORY.md."""
         try:
             content = self.memory_file.read_text()
@@ -153,32 +105,15 @@ class MilestoneTracker:
             if completed_work:
                 for work in completed_work:
                     if work["type"] == "implementation":
-                        if work["src_files"]:
-                            entry += f"  - Created {len(work['src_files'])} source files\n"
-                            for f in work["src_files"][:3]:  # Show first 3
-                                entry += f"    - `{f}`\n"
-                        if work["test_files"]:
-                            entry += f"  - Added {len(work['test_files'])} test files\n"
-                            for f in work["test_files"][:3]:
-                                entry += f"    - `{f}`\n"
+                        entry += f"  - Created {len(work['src_files'])} source files\n"
+                        for f in work["src_files"][:3]:  # Show first 3
+                            entry += f"    - `{f}`\n"
+                        entry += f"  - Added {len(work['test_files'])} test files\n"
+                        for f in work["test_files"][:3]:
+                            entry += f"    - `{f}`\n"
 
             entry += f"  - Status: {task.get('progress', '0%')} complete\n"
             entry += "  - Next: Continue with remaining subtasks\n"
-
-            # Remove duplicate progress log entries
-            lines = content.split("\n")
-            filtered_lines = []
-
-            for i, line in enumerate(lines):
-                if line.strip() == "- Completed tasks from TODO list":
-                    # Skip this generic line and check if we should skip the date header too
-                    if i > 0 and lines[i - 1].startswith("### "):
-                        # Also remove the date header if it only has this generic entry
-                        filtered_lines = filtered_lines[:-1]
-                    continue
-                filtered_lines.append(line)
-
-            content = "\n".join(filtered_lines)
 
             # Insert after Progress Log header
             if "## Progress Log" in content:
@@ -196,18 +131,14 @@ class MilestoneTracker:
             print(f"Error updating memory: {e}")
             return False
 
-    def run_enhanced(self):
-        """Enhanced tracking logic."""
-        print("🔗 Enhanced milestone tracking hook triggered")
-
+    def run(self):
+        """Main tracking logic."""
         # Find active milestone
         tasks_file, task = self.find_active_milestone()
 
         if not task:
             print("💡 No active milestone task found")
             print("   Tip: Update a task status to 'in_progress' in .quaestor/milestones/*/tasks.yaml")
-            # Fall back to simple update
-            self.update_memory_simple()
             return
 
         print(f"📋 Active task: {task.get('name')}")
@@ -220,7 +151,7 @@ class MilestoneTracker:
             print(f"✅ Updated milestone: {tasks_file.parent.name}")
 
         # Update memory
-        self.update_memory_enhanced(task, completed_work)
+        self.update_memory(task, completed_work)
 
         # Provide next steps
         print("\n🎯 Next steps:")
@@ -231,16 +162,8 @@ class MilestoneTracker:
 
 def main():
     project_root = sys.argv[1] if len(sys.argv) > 1 else "."
-
-    # Check if --from-todos flag is passed (existing behavior)
-    if "--from-todos" in sys.argv:
-        tracker = MilestoneTracker(project_root)
-        tracker.run_enhanced()
-    else:
-        # Fallback to simple behavior
-        tracker = MilestoneTracker(project_root)
-        tracker.update_memory_simple()
-
+    tracker = MilestoneTracker(project_root)
+    tracker.run()
     sys.exit(0)
 
 

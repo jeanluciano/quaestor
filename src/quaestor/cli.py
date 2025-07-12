@@ -126,6 +126,11 @@ def copy_hook_scripts(target_dir: Path) -> bool:
             "quality-check.py",
             "check-milestone.py",
             "refresh-context.py",
+            "pre-implementation-declaration.py",
+            "todo-milestone-connector.py",
+            "file-change-tracker.py",
+            "milestone-validator.py",
+            "comprehensive-compliance-check.py",
         ]
 
         for script in hook_scripts:

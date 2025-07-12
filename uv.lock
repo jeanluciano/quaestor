@@ -262,7 +262,7 @@ wheels = [
 
 [[package]]
 name = "quaestor"
-version = "0.3.3"
+version = "0.3.42"
 source = { editable = "." }
 dependencies = [
     { name = "rich" },

@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "{python_path} {project_root}/.quaestor/hooks/enforce-research.py {project_root}"
+            "command": "{python_path} {project_root}/.quaestor/hooks/pre-implementation-declaration.py"
           }
         ]
       }
@@ -35,7 +35,16 @@
         "hooks": [
           {
             "type": "command",
-            "command": "{python_path} {project_root}/.quaestor/hooks/update-memory.py --from-todos"
+            "command": "{python_path} {project_root}/.quaestor/hooks/update-memory.py {project_root} --from-todos"
+          }
+        ]
+      },
+      {
+        "matcher": "TodoWrite",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{python_path} {project_root}/.quaestor/hooks/todo-milestone-connector.py {project_root}"
           }
         ]
       }

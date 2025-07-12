@@ -5,6 +5,52 @@ All notable changes to Quaestor will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.42] - 2025-01-12
+
+### Major Improvements
+
+#### 🔧 Claude Code Integration Fixes
+- Fixed hooks format to match new Claude Code requirements
+- Updated hooks location from .claude/settings/claude_code_hooks.json to .claude/settings.json
+- Changed matcher format from object to string patterns
+
+#### 📋 Comprehensive Milestone Tracking
+- Added 7 new hooks for complete workflow compliance
+- Enhanced update-memory.py with intelligent milestone detection
+- Added mandatory milestone awareness to task command
+- Created CRITICAL_RULES.md with enforcement guidelines
+
+#### 🧪 Workflow Validation System
+- New comprehensive-compliance-check.py for full system validation
+- Enhanced workflow state tracking
+- Multi-layer compliance verification
+- Automatic milestone progress detection
+
+#### 📚 Documentation Updates
+- Simplified README while maintaining accuracy (50% reduction)
+- Enhanced task command documentation
+- Added critical rules for milestone tracking
+
+### New Hooks Added
+- track-research.py - Research phase tracking
+- track-implementation.py - Implementation phase tracking  
+- pre-implementation-declaration.py - Mandatory milestone declaration
+- todo-milestone-connector.py - Links todos to milestones
+- file-change-tracker.py - Detects untracked changes
+- milestone-validator.py - Validates compliance
+- comprehensive-compliance-check.py - Full system validation
+
+### Fixed
+- Fixed hooks generation bug with Jinja2 templates
+- Fixed all ruff linting issues (36 errors resolved)
+- Fixed bare except clauses and missing newlines in hook scripts
+- Fixed hook configuration format to match Claude Code documentation
+
+## [0.3.3] - 2024-07-11
+
+### Fixed
+- Various bug fixes and improvements
+
 ## [0.3.0] - 2024-07-10
 
 ### Added

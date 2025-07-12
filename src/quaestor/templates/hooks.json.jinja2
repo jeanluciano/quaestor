@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "{{ python_path }} {{ project_root }}/.quaestor/hooks/enforce-research.py {{ project_root }}"
+            "command": "{{ python_path }} {{ project_root }}/.quaestor/hooks/pre-implementation-declaration.py"
           }
         ]
       }
@@ -36,10 +36,20 @@
         "hooks": [
           {
             "type": "command",
-            "command": "{{ python_path }} {{ project_root }}/.quaestor/hooks/update-memory.py --from-todos"
+            "command": "{{ python_path }} {{ project_root }}/.quaestor/hooks/update-memory.py {{ project_root }} --from-todos"
           }
         ]
-      }{% if project_type == "python" %},
+      },
+      {
+        "matcher": "TodoWrite",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{ python_path }} {{ project_root }}/.quaestor/hooks/todo-milestone-connector.py {{ project_root }}"
+          }
+        ]
+      },
+{% if project_type == "python" %}
       {
         "matcher": "Write|Edit|MultiEdit",
         "hooks": [
@@ -48,7 +58,8 @@
             "command": "if [[ \"${file_path}\" == *.py ]]; then cd {{ project_root }} && ruff format \"${file_path}\" 2>/dev/null || true; fi"
           }
         ]
-      }{% elif project_type == "rust" %},
+      },
+{% elif project_type == "rust" %}
       {
         "matcher": "Write|Edit|MultiEdit",
         "hooks": [
@@ -57,7 +68,8 @@
             "command": "if [[ \"${file_path}\" == *.rs ]]; then cd {{ project_root }} && rustfmt \"${file_path}\" 2>/dev/null || true; fi"
           }
         ]
-      }{% elif project_type == "javascript" %},
+      },
+{% elif project_type == "javascript" %}
       {
         "matcher": "Write|Edit|MultiEdit",
         "hooks": [
@@ -66,7 +78,26 @@
             "command": "if [[ \"${file_path}\" =~ \\.(js|jsx|ts|tsx)$ ]]; then cd {{ project_root }} && npx prettier --write \"${file_path}\" 2>/dev/null || true; fi"
           }
         ]
-      }{% endif %}
+      },
+{% endif %}
+      {
+        "matcher": "BashTool",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{ python_path }} {{ project_root }}/.quaestor/hooks/file-change-tracker.py"
+          }
+        ]
+      },
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{ python_path }} {{ project_root }}/.quaestor/hooks/comprehensive-compliance-check.py {{ project_root }}"
+          }
+        ]
+      }
     ]
   }
 }
