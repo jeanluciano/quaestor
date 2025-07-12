@@ -131,6 +131,7 @@ def copy_hook_scripts(target_dir: Path) -> bool:
             "file-change-tracker.py",
             "milestone-validator.py",
             "comprehensive-compliance-check.py",
+            "auto-commit-trigger.py",
         ]
 
         for script in hook_scripts:

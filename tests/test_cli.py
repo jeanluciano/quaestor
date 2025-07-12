@@ -165,7 +165,8 @@ class TestInitCommand:
             "status.md",
             "check.md",
             "milestone.md",
-            "milestone-commit.md",
+            "auto-commit.md",
+            "milestone-pr.md",
         ]
 
         with patch("quaestor.cli.pkg_resources.read_text") as mock_read:

@@ -49,6 +49,15 @@
           }
         ]
       },
+      {
+        "matcher": "TodoWrite",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{ python_path }} {{ project_root }}/.quaestor/hooks/auto-commit-trigger.py {{ project_root }}"
+          }
+        ]
+      },
 {% if project_type == "python" %}
       {
         "matcher": "Write|Edit|MultiEdit",

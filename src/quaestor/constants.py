@@ -10,7 +10,8 @@ COMMAND_FILES = [
     "status.md",  # Show project status
     "check.md",  # Run quality validation
     "milestone.md",  # Manage project milestones
-    "milestone-commit.md",  # Create atomic commits
+    "auto-commit.md",  # Auto-commit completed TODO items
+    "milestone-pr.md",  # Create PR for completed milestones
 ]
 
 # File categorization for update logic

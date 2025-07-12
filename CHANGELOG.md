@@ -5,6 +5,28 @@ All notable changes to Quaestor will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.43] - 2025-01-12
+
+### Changed
+- **BREAKING**: Replaced `milestone-commit` command with two separate commands:
+  - `auto-commit`: Automatically creates atomic commits for individual completed TODO items
+  - `milestone-pr`: Creates pull requests for completed milestones
+- Updated workflow to support one commit per task instead of batch commits
+- All commits now follow conventional commit specification
+
+### Added
+- New `auto-commit` command for atomic commits per TODO completion
+- New `milestone-pr` command for creating comprehensive PRs
+- Auto-commit trigger hook that runs after TodoWrite operations
+- Automatic conventional commit message generation
+- Intelligent file staging based on TODO context
+
+### Improved
+- Better separation of concerns: commits for items, PRs for milestones
+- Cleaner git history with atomic, focused commits
+- Enhanced PR descriptions with all milestone commits included
+- Updated help documentation to reflect new workflow
+
 ## [0.3.42] - 2025-01-12
 
 ### Major Improvements

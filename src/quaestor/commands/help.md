@@ -37,11 +37,17 @@ description: Show available Quaestor commands and their usage
   - Reports any issues found
 
 ### Project Management
-- **`/milestone-commit`** - Create atomic commits for completed work
-  - Groups related changes
-  - Generates clear commit messages
-  - Updates progress tracking
-  - Prepares for PR if configured
+- **`/auto-commit`** - Automatically commit completed TODO items
+  - One commit per completed task
+  - Uses conventional commit spec
+  - Updates milestone progress
+  - Triggers on TODO completion
+
+- **`/milestone-pr`** - Create PR for completed milestone
+  - Collects all atomic commits
+  - Generates comprehensive PR description
+  - Links related issues
+  - Ready for team review
 
 - **`/status`** - Show current project state
   - Current milestone progress
@@ -71,17 +77,23 @@ description: Show available Quaestor commands and their usage
    /check
    ```
 
-3. **When ready to commit:**
+3. **When tasks are completed:**
    ```
-   /milestone-commit
+   Tasks are auto-committed via /auto-commit (automatic)
+   ```
+   
+4. **When milestone is complete:**
+   ```
+   /milestone-pr
    ```
 
 ## 📋 Workflow Best Practices
 
 1. **Always start with a task:** Don't jump straight to coding
-2. **Use atomic commits:** Let /milestone-commit group related changes
+2. **Complete TODOs atomically:** Each TODO completion triggers an auto-commit
 3. **Run checks frequently:** Use /check after major changes
-4. **Update progress:** Keep MEMORY.md current with your progress
+4. **Create PRs per milestone:** Use /milestone-pr when all tasks are done
+5. **Update progress:** Keep MEMORY.md current with your progress
 
 ## 🔧 Configuration
 
@@ -104,10 +116,17 @@ Your project's Quaestor configuration lives in:
 [Claude will run all configured quality tools]
 ```
 
-### Creating a commit:
+### Auto-commit on TODO completion:
 ```
-> /milestone-commit
-[Claude will analyze changes and create atomic commits]
+> [Complete a TODO via TodoWrite]
+> /auto-commit
+[Automatically creates conventional commit for the completed task]
+```
+
+### Creating a PR:
+```
+> /milestone-pr
+[Claude will create a PR with all milestone commits]
 ```
 
 ## ❓ Need More Help?
