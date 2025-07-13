@@ -5,6 +5,43 @@ All notable changes to Quaestor will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2025-01-13
+
+### Added
+- **Dual-mode installation** with personal mode as default
+  - Personal mode: All files local to project in `.claude/`
+  - Team mode: Shared global commands with project rules
+- **Context-aware rule generation** based on project complexity
+  - ProjectAnalyzer detects language, tests, team markers
+  - RuleEngine generates appropriate rules (minimal/standard/strict)
+  - Ambient rule enforcement in CLAUDE.md
+- **Command configuration system** (`.quaestor/command-config.yaml`)
+  - Configure enforcement levels (strict/default/relaxed)
+  - Override command parameters
+  - Add project-specific custom rules
+- **Command override capability** (`.quaestor/commands/`)
+  - Full command replacement with custom implementations
+  - Project-specific command behavior
+- **Smart .gitignore generation** based on mode
+- **New `configure` command** for managing customizations
+  - `--init`: Create command configuration
+  - `--command <name> --create-override`: Create command override
+
+### Changed
+- **BREAKING**: Default mode is now "personal" instead of "team"
+  - Use `--mode team` for previous behavior
+- Commands in personal mode are installed to `.claude/commands/`
+- CLAUDE.md location depends on mode:
+  - Personal: `.claude/CLAUDE.md` (gitignored)
+  - Team: `CLAUDE.md` in project root (committed)
+- Enhanced init output with next steps guidance
+
+### Improved
+- Rule enforcement now works ambiently, not just in commands
+- Progressive rule complexity based on project analysis
+- Better separation of personal vs shared project files
+- More flexible command customization options
+
 ## [0.3.43] - 2025-01-12
 
 ### Changed

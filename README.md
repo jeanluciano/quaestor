@@ -6,33 +6,52 @@
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Quaestor** helps AI assistants understand your project and maintain quality standards without disrupting your existing setup.
+**Quaestor** provides intelligent context management and quality enforcement for AI assistants, with flexible modes for personal and team projects.
 
 ## Why Quaestor?
 
 AI assistants like Claude are powerful but need context. Quaestor provides:
-- 📋 Project structure and conventions 
-- ✅ Automated quality checks
-- 📊 Progress tracking
-- 🔄 Smart workflow enforcement
+- 🧠 **Smart Context** - Automatically adjusts rules based on project complexity
+- 🎯 **Flexible Modes** - Personal mode for solo work, team mode for collaboration
+- ⚙️ **Command Customization** - Override and configure commands per project
+- 📊 **Progress Tracking** - Maintain project memory and milestones
+- ✅ **Quality Enforcement** - Ambient rules that work outside commands
 
 ## Quick Start
 
 ```bash
-# In your project directory:
+# Personal mode (default) - Everything local to your project
 uvx quaestor init
+
+# Team mode - Shared commands, committed rules
+uvx quaestor init --mode team
 ```
 
-This creates:
-- `.quaestor/` - Project documentation and rules
-- `~/.claude/commands/` - AI assistant commands
-- `.claude/settings/` - Automated hooks (optional)
+### Personal Mode (Default)
+Creates a self-contained setup in your project:
+```
+project/
+├── .claude/           # All AI files (gitignored)
+│   ├── CLAUDE.md     # Context-aware rules
+│   ├── commands/     # Local commands
+│   └── settings.json # Hooks
+└── .quaestor/        # Architecture & memory
+```
 
-Now Claude can use commands like:
+### Team Mode
+For shared projects with consistent standards:
+```
+project/
+├── CLAUDE.md         # Team rules (committed)
+├── .quaestor/        # Shared documentation
+└── ~/.claude/        # Global commands
+```
+
+Now Claude can use commands with project-specific behavior:
 ```
 /task: implement user authentication
 /status
-/help
+/configure
 ```
 
 ## Installation
@@ -48,82 +67,194 @@ pip install quaestor
 ## Commands
 
 **CLI Commands:**
-- `quaestor init` - Set up in your project
+- `quaestor init` - Initialize with smart defaults
+  - `--mode personal` (default) - Local, self-contained setup
+  - `--mode team` - Shared commands and rules
+  - `--contextual` (default) - Analyze project complexity
+- `quaestor configure` - Customize command behavior
+  - `--init` - Create command configuration
+  - `--command <name> --create-override` - Override specific commands
 - `quaestor update` - Update while preserving your changes
 
-**AI Assistant Commands** (in `~/.claude/commands/`):
+**AI Assistant Commands**:
 - `/task` - Implement features with quality checks
 - `/status` - Show project progress
 - `/help` - List all commands
 - `/milestone` - Manage project phases
 - `/check` - Run quality validation
+- `/auto-commit` - Commit completed TODOs
+- `/milestone-pr` - Create PR for milestones
 
 ## Key Features
 
-### Non-Intrusive
-- Preserves existing CLAUDE.md files
-- Adds managed section without disrupting your content
-- All configuration in `.quaestor/` directory
+### 🧠 Context-Aware Rules
+Quaestor analyzes your project and applies appropriate rules:
+- **Simple projects** → Basic quality checks
+- **Standard projects** → Progressive workflow suggestions
+- **Complex/Team projects** → Strict enforcement
 
-### Smart Project Analysis
-- Auto-detects language (Python, Rust, JS/TS, Go)
-- Identifies frameworks and project structure
-- Configures appropriate quality tools
+Rules work ambiently in CLAUDE.md, not just in commands!
 
-### Quality Workflow
-Enforces Research → Plan → Implement pattern:
-- Research existing code before changes
-- Plan implementation approach
-- Apply language-specific quality standards
+### ⚙️ Command Customization
+Configure commands per project with `.quaestor/command-config.yaml`:
+```yaml
+commands:
+  task:
+    enforcement: strict
+    parameters:
+      minimum_test_coverage: 90
+      max_function_lines: 30
+    custom_rules:
+      - "All APIs must have OpenAPI specs"
+      - "Database changes require migrations"
+```
 
-### Intelligent Updates
-- System files auto-update
-- User modifications preserved
-- All changes tracked in manifest
+Or create full overrides in `.quaestor/commands/task.md`.
+
+### 🎯 Flexible Modes
+
+**Personal Mode (Default)**:
+- Everything local in `.claude/`
+- Perfect for personal projects
+- Commands and context in one place
+- Fully gitignored
+
+**Team Mode**:
+- Shared standards in `.quaestor/`
+- Global commands in `~/.claude/`
+- Consistent across team
+- Version controlled rules
+
+### 📊 Smart Project Analysis
+- Auto-detects language (Python, Rust, JS/TS, Go, Java, etc.)
+- Identifies test frameworks and CI/CD
+- Recognizes team markers (CODEOWNERS, PR templates)
+- Calculates complexity score
+
+### 🔄 Intelligent Workflow
+Progressive enforcement based on context:
+- Simple tasks → Direct implementation
+- Complex tasks → Research → Plan → Implement
+- Multi-file changes → Automatic agent delegation
+- Continuous validation after every few edits
 
 ## Project Structure
 
+### Personal Mode (Default)
 ```
 your-project/
-├── .quaestor/
-│   ├── QUAESTOR_CLAUDE.md  # AI instructions
-│   ├── CRITICAL_RULES.md   # Quality standards
-│   ├── ARCHITECTURE.md     # Your project structure
-│   ├── MEMORY.md          # Progress tracking
-│   └── hooks/             # Automation scripts
-├── ~/.claude/commands/    # AI assistant commands
-└── CLAUDE.md             # Your existing + Quaestor section
+├── .claude/                    # All AI files (gitignored)
+│   ├── CLAUDE.md              # Context-aware rules
+│   ├── commands/              # Local command copies
+│   │   ├── task.md
+│   │   ├── status.md
+│   │   └── ...
+│   └── settings.json          # Hooks configuration
+├── .quaestor/                 # Optional, for docs
+│   ├── ARCHITECTURE.md        # Project structure
+│   ├── MEMORY.md             # Progress tracking
+│   ├── command-config.yaml   # Command customization
+│   └── commands/             # Command overrides
+│       └── task.md          # Custom task command
+└── .gitignore                # Auto-updated
+```
+
+### Team Mode
+```
+your-project/
+├── CLAUDE.md                  # Team rules (committed)
+├── .quaestor/                 # Shared documentation
+│   ├── QUAESTOR_CLAUDE.md    # AI instructions
+│   ├── CRITICAL_RULES.md     # Quality standards
+│   ├── ARCHITECTURE.md       # Project structure
+│   ├── MEMORY.md            # Progress tracking
+│   ├── command-config.yaml  # Command config
+│   └── hooks/               # Automation scripts
+├── ~/.claude/commands/       # Global commands
+└── .claude/settings.json    # Local hooks only
 ```
 
 ## How It Works
 
-1. **Project Analysis** - Detects your tech stack and structure
-2. **Documentation Generation** - Creates AI-readable project docs
-3. **Command Installation** - Adds powerful commands for Claude
-4. **Hook Automation** - Optional quality enforcement
-5. **Smart Updates** - Preserves your customizations
+1. **Project Analysis** - Scans for language, tests, complexity
+2. **Context Generation** - Creates appropriate CLAUDE.md rules
+3. **Command Setup** - Installs commands (local or global)
+4. **Customization** - Allows per-project overrides
+5. **Smart Updates** - Preserves your changes
 
-### Example: Using /task
+### Example Workflows
 
+**Simple Project (Personal Mode)**:
 ```
-You: /task: add user authentication
+You: /task: add config parser
 
-Claude will:
-1. Research your existing patterns
-2. Plan the implementation
-3. Follow your code style
-4. Run quality checks
-5. Update progress tracking
+Claude thinks: "Simple project, basic rules"
+- Writes clean code with tests
+- Follows language idioms
+- Updates documentation
 ```
+
+**Complex Project (Team Mode)**:
+```
+You: /task: refactor authentication system
+
+Claude thinks: "Complex task, strict rules apply"
+1. "I'll research the current auth implementation..."
+2. "Here's my plan: [detailed plan]"
+3. "I'll spawn agents for parallel work"
+4. Validates every 3 edits
+5. Updates milestone tracking
+```
+
+### Command Customization Example
+
+Create project-specific rules:
+```bash
+quaestor configure --init
+```
+
+Edit `.quaestor/command-config.yaml`:
+```yaml
+commands:
+  task:
+    enforcement: strict
+    custom_rules:
+      - "All endpoints must have rate limiting"
+      - "Use dependency injection pattern"
+```
+
+Now `/task` enforces your project standards!
 
 ## Automated Hooks
 
-Optional hooks that enforce quality:
+Optional hooks enforce quality automatically:
 - **Pre-edit** - Ensure research before changes
 - **Post-edit** - Format code, update progress
 - **Pre-commit** - Run tests and quality checks
+- **Milestone** - Track progress, create PRs
 
-Hooks use portable Python scripts in `.quaestor/hooks/`.
+Configure in `.claude/settings.json` (created during init).
+
+## Ambient Rule Enforcement
+
+Unlike command-only systems, Quaestor's rules work everywhere:
+
+```markdown
+<!-- In your CLAUDE.md -->
+## 🧠 THINKING PATTERNS
+
+Before EVERY response, I'll consider:
+1. **Complexity Check**: 
+   - Simple request? → Direct implementation
+   - Multiple components? → "Let me research and plan this"
+   
+2. **Delegation Triggers**:
+   if (files_to_modify > 3) {
+     say("I'll spawn agents to handle this efficiently")
+   }
+```
+
+Claude follows these patterns even outside `/task` commands!
 
 ## Updating
 
@@ -133,7 +264,12 @@ quaestor update --check
 
 # Update with backup
 quaestor update --backup
+
+# Force update all files
+quaestor update --force
 ```
+
+Updates preserve your customizations in user-editable files.
 
 ## Contributing
 
