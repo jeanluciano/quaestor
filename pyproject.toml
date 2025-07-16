@@ -43,19 +43,26 @@ dev = [
 ]
 
 [tool.setuptools]
-packages = ["quaestor", "quaestor.commands", "quaestor.manifest", "quaestor.hooks", "quaestor.templates"]
+packages = [
+    "quaestor", 
+    "quaestor.commands", 
+    "quaestor.core", 
+    "quaestor.automation", 
+    "quaestor.cli",
+    "quaestor.utils",
+    "quaestor.assets"
+]
 package-dir = {"" = "src"}
 
 [tool.setuptools.package-data]
 quaestor = [
     "*.md",
     "commands/*.md",
-    "manifest/*.md",
-    "templates/*.jinja2",
-    "templates/*.md",
-    "templates/*.json",
-    "templates/hooks/*.py",
-    "hooks/*.py",
+    "assets/templates/*.md",
+    "assets/templates/**/*.md",
+    "assets/configuration/*.yaml",
+    "assets/configuration/*.json",
+    "assets/scripts/**/*.py",
 ]
 
 [tool.pytest.ini_options]
