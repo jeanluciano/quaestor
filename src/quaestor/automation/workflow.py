@@ -272,7 +272,7 @@ def run_python_tests(root: Path) -> dict[str, Any]:
             capture_output=True,
             text=True,
             timeout=300,  # 5 minutes for tests
-            cwd=root
+            cwd=root,
         )
         success = result.returncode == 0
 
@@ -348,7 +348,7 @@ def run_rust_tests(root: Path) -> dict[str, Any]:
             capture_output=True,
             text=True,
             cwd=root,
-            timeout=300  # 5 minutes
+            timeout=300,  # 5 minutes
         )
         success = result.returncode == 0
 
@@ -424,7 +424,7 @@ def run_js_tests(root: Path) -> dict[str, Any]:
             capture_output=True,
             text=True,
             cwd=root,
-            timeout=300  # 5 minutes
+            timeout=300,  # 5 minutes
         )
         success = result.returncode == 0
 
@@ -572,10 +572,7 @@ def create_atomic_commit(message: str | None, files: list[str] | None = None) ->
         if not message:
             # Get staged changes
             diff_result = subprocess.run(
-                ["git", "diff", "--cached", "--name-only"],
-                capture_output=True,
-                text=True,
-                timeout=10
+                ["git", "diff", "--cached", "--name-only"], capture_output=True, text=True, timeout=10
             )
             changed_files = [f for f in diff_result.stdout.strip().split("\n") if f]
 

@@ -147,7 +147,7 @@ class ContextManager:
                     capture_output=True,
                     text=True,
                     cwd=self.root,
-                    timeout=10
+                    timeout=10,
                 )
 
                 if result.returncode == 0:
@@ -371,13 +371,7 @@ def suggest_next_action(context: dict[str, Any]) -> HookResult:
         import subprocess
 
         # Check for uncommitted changes
-        result = subprocess.run(
-            ["git", "status", "--porcelain"],
-            capture_output=True,
-            text=True,
-            cwd=root,
-            timeout=10
-        )
+        result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, cwd=root, timeout=10)
         if result.returncode == 0 and result.stdout.strip():
             suggestions.append("💾 Uncommitted changes detected - consider committing completed work")
     except subprocess.TimeoutExpired:

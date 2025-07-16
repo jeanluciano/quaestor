@@ -49,6 +49,7 @@ class TestBaseHook:
 
     def test_retry_decorator_exhausted(self):
         """Test retry decorator when attempts are exhausted."""
+
         @retry(max_attempts=3, delay=0.1, backoff=1.0)
         def always_fails():
             raise ValueError("Always fails")
@@ -131,7 +132,7 @@ class TestBaseHook:
             assert file_path.read_text() == content
 
             # Temp file should not exist
-            temp_path = file_path.with_suffix('.tmp')
+            temp_path = file_path.with_suffix(".tmp")
             assert not temp_path.exists()
 
 
@@ -140,15 +141,11 @@ class TestHookUtilsImprovement:
 
     def test_subprocess_timeout(self):
         """Test subprocess calls have timeout protection."""
+
         # This would normally be in hook_utils.py
         def run_command_with_timeout(cmd, timeout_seconds=30):
             try:
-                result = subprocess.run(
-                    cmd,
-                    capture_output=True,
-                    text=True,
-                    timeout=timeout_seconds
-                )
+                result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout_seconds)
                 return result.returncode == 0, result.stdout, result.stderr
             except subprocess.TimeoutExpired:
                 return False, "", f"Command timed out after {timeout_seconds} seconds"
@@ -216,7 +213,7 @@ class TestIntelligenceHooksImprovement:
             mock_run.side_effect = [
                 subprocess.TimeoutExpired(["git", "log"], 10),
                 subprocess.TimeoutExpired(["git", "log"], 10),
-                MagicMock(returncode=0, stdout="file1.py\nfile2.py\n")
+                MagicMock(returncode=0, stdout="file1.py\nfile2.py\n"),
             ]
 
             with patch("quaestor.automation.intelligence.get_project_root", return_value=Path(tmpdir)):
@@ -260,7 +257,7 @@ class TestWorkflowStateImprovement:
 
             # Check file exists and temp file doesn't
             state_file = Path(tmpdir) / ".quaestor" / ".workflow_state"
-            temp_file = state_file.with_suffix('.tmp')
+            temp_file = state_file.with_suffix(".tmp")
 
             assert state_file.exists()
             assert not temp_file.exists()

@@ -26,27 +26,27 @@ LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(LOG_DIR / f"hooks_{datetime.now().strftime('%Y%m%d')}.log"),
-        logging.StreamHandler()
-    ]
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.FileHandler(LOG_DIR / f"hooks_{datetime.now().strftime('%Y%m%d')}.log"), logging.StreamHandler()],
 )
 
 
 class TimeoutError(Exception):
     """Raised when a hook execution times out."""
+
     pass
 
 
 class ValidationError(Exception):
     """Raised when input validation fails."""
+
     pass
 
 
 @contextmanager
 def timeout(seconds: int):
     """Context manager for timeout protection."""
+
     def timeout_handler(signum, frame):
         raise TimeoutError(f"Operation timed out after {seconds} seconds")
 
@@ -64,6 +64,7 @@ def timeout(seconds: int):
 
 def retry(max_attempts: int = 3, delay: float = 1.0, backoff: float = 2.0):
     """Decorator for retry logic with exponential backoff."""
+
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -84,6 +85,7 @@ def retry(max_attempts: int = 3, delay: float = 1.0, backoff: float = 2.0):
             raise last_exception
 
         return wrapper
+
     return decorator
 
 
@@ -160,7 +162,7 @@ class BaseHook:
             data["_metadata"] = {
                 "hook": self.hook_name,
                 "execution_time": time.time() - self.start_time,
-                "timestamp": datetime.now().isoformat()
+                "timestamp": datetime.now().isoformat(),
             }
 
             # Log output
@@ -180,10 +182,7 @@ class BaseHook:
     def output_error(self, message: str, blocking: bool = False):
         """Output error response."""
         exit_code = 2 if blocking else 1
-        self.output_json({
-            "error": message,
-            "blocking": blocking
-        }, exit_code)
+        self.output_json({"error": message, "blocking": blocking}, exit_code)
 
     def output_success(self, message: str = "Success", data: dict[str, Any] | None = None):
         """Output success response."""
@@ -228,6 +227,7 @@ class BaseHook:
 
 # Utility functions for common operations
 
+
 def sanitize_command(cmd: list[str]) -> list[str]:
     """Sanitize command arguments to prevent injection."""
     sanitized = []
@@ -240,10 +240,10 @@ def sanitize_command(cmd: list[str]) -> list[str]:
 
 def atomic_write(file_path: Path, content: str):
     """Write file atomically to prevent corruption."""
-    temp_path = file_path.with_suffix('.tmp')
+    temp_path = file_path.with_suffix(".tmp")
     try:
         # Write to temporary file
-        temp_path.write_text(content, encoding='utf-8')
+        temp_path.write_text(content, encoding="utf-8")
 
         # Atomic rename
         temp_path.replace(file_path)
@@ -261,5 +261,5 @@ def get_claude_session_info(input_data: dict[str, Any]) -> dict[str, Any]:
         "session_id": input_data.get("sessionId", "unknown"),
         "tool_name": input_data.get("toolName", "unknown"),
         "event_type": input_data.get("eventType", "unknown"),
-        "timestamp": input_data.get("timestamp", datetime.now().isoformat())
+        "timestamp": input_data.get("timestamp", datetime.now().isoformat()),
     }

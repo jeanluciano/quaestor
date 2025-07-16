@@ -41,7 +41,7 @@ class WorkflowState:
             self.state_file.parent.mkdir(exist_ok=True, parents=True)
 
             # Write to temp file first
-            temp_file = self.state_file.with_suffix('.tmp')
+            temp_file = self.state_file.with_suffix(".tmp")
             with open(temp_file, "w") as f:
                 json.dump(self.state, f, indent=2)
 
@@ -50,7 +50,7 @@ class WorkflowState:
         except Exception as e:
             print(f"Warning: Could not save workflow state: {e}")
             # Clean up temp file if it exists
-            temp_file = self.state_file.with_suffix('.tmp')
+            temp_file = self.state_file.with_suffix(".tmp")
             if temp_file.exists():
                 temp_file.unlink()
 
@@ -115,8 +115,9 @@ def detect_project_type(project_root="."):
     return "unknown"
 
 
-def run_command(cmd: list[str], description: str | None = None, capture_output: bool = True,
-                timeout_seconds: int = 30) -> tuple[bool, str, str]:
+def run_command(
+    cmd: list[str], description: str | None = None, capture_output: bool = True, timeout_seconds: int = 30
+) -> tuple[bool, str, str]:
     """Run a command with timeout and return success status and output.
 
     Args:
@@ -129,12 +130,7 @@ def run_command(cmd: list[str], description: str | None = None, capture_output: 
         Tuple of (success, stdout, stderr)
     """
     try:
-        result = subprocess.run(
-            cmd,
-            capture_output=capture_output,
-            text=True,
-            timeout=timeout_seconds
-        )
+        result = subprocess.run(cmd, capture_output=capture_output, text=True, timeout=timeout_seconds)
         if description:
             if result.returncode == 0:
                 print(f"✅ {description} passed")

@@ -64,7 +64,7 @@ class ResearchTracker(BaseHook):
         response_data = {
             "phase": state["phase"],
             "files_examined": files_examined,
-            "research_files": state.get("research_files", [])
+            "research_files": state.get("research_files", []),
         }
 
         # Check if ready to move to planning phase
@@ -77,8 +77,8 @@ class ResearchTracker(BaseHook):
                 data={
                     **response_data,
                     "phase": "planning",
-                    "next_action": "Create an implementation plan based on research"
-                }
+                    "next_action": "Create an implementation plan based on research",
+                },
             )
         else:
             # Success with progress update
@@ -88,12 +88,7 @@ class ResearchTracker(BaseHook):
                 message += f" Need to examine {remaining} more files."
 
             self.output_success(
-                message,
-                data={
-                    **response_data,
-                    "remaining_files": remaining,
-                    "ready_for_planning": False
-                }
+                message, data={**response_data, "remaining_files": remaining, "ready_for_planning": False}
             )
 
 
