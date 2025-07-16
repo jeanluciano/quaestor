@@ -20,7 +20,7 @@ class TestInitCommand:
     def test_init_creates_quaestor_directory(self, runner, temp_dir):
         """Test that init creates .quaestor directory and installs commands to ~/.claude."""
         # Patch package resources to return test content
-        with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
+        with patch("quaestor.cli.init.pkg_resources.read_text") as mock_read:
 
             def mock_read_text(package, resource):
                 files = {
@@ -35,11 +35,13 @@ class TestInitCommand:
                     ("quaestor.templates", "VALIDATION.template.md"): "# VALIDATION template",
                     ("quaestor.templates", "AUTOMATION.template.md"): "# AUTOMATION template",
                     ("quaestor.commands", "project-init.md"): "# project-init.md",
-                    ("quaestor.commands", "task-py.md"): "# task-py.md",
-                    ("quaestor.commands", "task-rs.md"): "# task-rs.md",
+                    ("quaestor.commands", "task.md"): "# task.md",
                     ("quaestor.commands", "check.md"): "# check.md",
-                    ("quaestor.commands", "compose.md"): "# compose.md",
-                    ("quaestor.commands", "milestone-commit.md"): "# milestone-commit.md",
+                    ("quaestor.commands", "analyze.md"): "# analyze.md",
+                    ("quaestor.commands", "milestone.md"): "# milestone.md",
+                    ("quaestor.commands", "milestone-pr.md"): "# milestone-pr.md",
+                    ("quaestor.commands", "auto-commit.md"): "# auto-commit.md",
+                    ("quaestor.commands", "status.md"): "# status.md",
                 }
                 return files.get((package, resource), f"# {resource} content")
 
@@ -54,7 +56,7 @@ class TestInitCommand:
             assert (temp_dir / ".quaestor" / "ARCHITECTURE.md").exists()
             assert (temp_dir / ".quaestor" / "MEMORY.md").exists()
             # Commands are now installed to ~/.claude/commands
-            assert "Installing command files to ~/.claude/commands" in result.output
+            assert "Installing to ~/.claude/commands" in result.output
 
     def test_init_with_existing_directory_prompts_user(self, runner, temp_dir):
         """Test that init prompts when .quaestor already exists."""
@@ -80,7 +82,7 @@ class TestInitCommand:
         quaestor_dir.mkdir()
         (quaestor_dir / "existing.txt").write_text("existing content")
 
-        with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
+        with patch("quaestor.cli.init.pkg_resources.read_text") as mock_read:
             mock_read.side_effect = [
                 "# CLAUDE.md test content",
                 "# ARCHITECTURE template",
@@ -103,7 +105,7 @@ class TestInitCommand:
 
     def test_init_handles_missing_manifest_files(self, runner, temp_dir):
         """Test fallback to AI templates when manifest files are missing."""
-        with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
+        with patch("quaestor.cli.init.pkg_resources.read_text") as mock_read:
             # Simulate manifest files not found, but AI templates exist
             def side_effect(package, filename):
                 files = {
@@ -130,7 +132,7 @@ class TestInitCommand:
 
     def test_init_handles_resource_errors_gracefully(self, runner, temp_dir):
         """Test that init handles missing resources gracefully."""
-        with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
+        with patch("quaestor.cli.init.pkg_resources.read_text") as mock_read:
             # All reads fail
             mock_read.side_effect = FileNotFoundError("Resource not found")
 
@@ -145,7 +147,7 @@ class TestInitCommand:
         custom_dir = temp_dir / "my-project"
         custom_dir.mkdir()
 
-        with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
+        with patch("quaestor.cli.init.pkg_resources.read_text") as mock_read:
             mock_read.side_effect = [
                 "# CLAUDE.md test content",
                 "# ARCHITECTURE template",
@@ -170,17 +172,17 @@ class TestInitCommand:
     def test_init_copies_all_command_files(self, runner, temp_dir):
         """Test that all command files are installed to ~/.claude/commands."""
         expected_commands = [
-            "help.md",
             "project-init.md",
             "task.md",
             "status.md",
             "check.md",
+            "analyze.md",
             "milestone.md",
             "auto-commit.md",
             "milestone-pr.md",
         ]
 
-        with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
+        with patch("quaestor.cli.init.pkg_resources.read_text") as mock_read:
 
             def mock_read_text(package, resource):
                 files = {
@@ -205,7 +207,7 @@ class TestInitCommand:
 
             assert result.exit_code == 0
             # Personal mode installs commands locally
-            assert "Installing command files to .claude/commands" in result.output
+            assert "Installing to .claude/commands" in result.output
 
             for cmd in expected_commands:
                 assert f"Installed {cmd}" in result.output
@@ -214,7 +216,7 @@ class TestInitCommand:
         self, runner, temp_dir, sample_architecture_manifest, sample_memory_manifest
     ):
         """Test that init properly processes template files."""
-        with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
+        with patch("quaestor.cli.init.pkg_resources.read_text") as mock_read:
 
             def side_effect(package, filename):
                 if package == "quaestor" and filename == "CLAUDE.md":
@@ -259,7 +261,7 @@ class TestInitCommand:
         existing_claude = temp_dir / "CLAUDE.md"
         existing_claude.write_text("# My Custom Claude Config\n\nThis is my custom content.")
 
-        with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
+        with patch("quaestor.cli.init.pkg_resources.read_text") as mock_read:
 
             def mock_read_text(package, resource):
                 files = {

@@ -4,11 +4,11 @@ from pathlib import Path
 
 # Command files that get installed to ~/.claude/commands
 COMMAND_FILES = [
-    "help.md",  # Show available commands
     "project-init.md",  # Initialize project documentation
     "task.md",  # Unified task command (auto-detects language)
     "status.md",  # Show project status
     "check.md",  # Run quality validation
+    "analyze.md",  # Multi-dimensional code analysis
     "milestone.md",  # Manage project milestones
     "auto-commit.md",  # Auto-commit completed TODO items
     "milestone-pr.md",  # Create PR for completed milestones
