@@ -77,21 +77,23 @@ pip install quaestor
 - `quaestor update` - Update while preserving your changes
 
 **AI Assistant Commands**:
-- `/task` - Implement features with quality checks
-- `/status` - Show project progress
-- `/help` - List all commands
-- `/milestone` - Manage project phases
-- `/check` - Run quality validation
-- `/auto-commit` - Commit completed TODOs
-- `/milestone-pr` - Create PR for milestones
+- `/task` - Implement features with orchestration
+- `/status` - Show progress with velocity tracking
+- `/analyze` - Code analysis across multiple dimensions
+- `/milestone` - Manage phases with completion detection
+- `/check` - Quality validation and fixing
+- `/auto-commit` - Conventional commits for TODOs
+- `/milestone-pr` - Automated PR creation
+- `/project-init` - Framework detection and project setup
 
 ## Key Features
 
-### 🧠 Context-Aware Rules
-Quaestor analyzes your project and applies appropriate rules:
-- **Simple projects** → Basic quality checks
-- **Standard projects** → Progressive workflow suggestions
-- **Complex/Team projects** → Strict enforcement
+### 🧠 Context-Aware Commands
+Quaestor commands use patterns for better Claude integration:
+- **Auto-activation** → Context-aware triggers and thresholds
+- **Performance profiling** → Standard, optimization, and complex execution modes  
+- **Quality gates** → Error fixing with parallel agents
+- **Token efficiency** → Reduction through symbol system
 
 Rules work ambiently in CLAUDE.md, not just in commands!
 
@@ -131,12 +133,13 @@ Or create full overrides in `.quaestor/commands/task.md`.
 - Recognizes team markers (CODEOWNERS, PR templates)
 - Calculates complexity score
 
-### 🔄 Intelligent Workflow
-Progressive enforcement based on context:
-- Simple tasks → Direct implementation
-- Complex tasks → Research → Plan → Implement
-- Multi-file changes → Automatic agent delegation
-- Continuous validation after every few edits
+### 🔄 Workflow Orchestration
+Adaptive workflow based on scope:
+- **Direct execution**: <10 files → Read + Edit operations
+- **Parallel agents**: 10-50 files → Multi-agent coordination  
+- **Complex systems**: >50 files → Systematic agent delegation
+- **Quality cycles**: Execute → Validate → Fix → Complete
+- **Auto-escalation**: Complexity threshold triggers
 
 ## Project Structure
 
@@ -188,22 +191,21 @@ your-project/
 ```
 You: /task: add config parser
 
-Claude thinks: "Simple project, basic rules"
-- Writes clean code with tests
-- Follows language idioms
-- Updates documentation
+Claude: Auto-detects Python project, applies ruff+pytest standards
+- Direct implementation with quality validation (standard profile)
+- Updates milestone progress automatically
+- Conventional commit with smart scope detection
 ```
 
 **Complex Project (Team Mode)**:
 ```
 You: /task: refactor authentication system
 
-Claude thinks: "Complex task, strict rules apply"
-1. "I'll research the current auth implementation..."
-2. "Here's my plan: [detailed plan]"
-3. "I'll spawn agents for parallel work"
-4. Validates every 3 edits
-5. Updates milestone tracking
+Claude: Complex threshold 0.7+ → orchestration mode
+1. "Analyzing current auth architecture..." 🔍
+2. "Using agents for parallel refactoring..." ⚡
+3. "Quality gates: tests, linting, security validation" ✅
+4. "Milestone tracking updated, PR ready" 🚀
 ```
 
 ### Command Customization Example
