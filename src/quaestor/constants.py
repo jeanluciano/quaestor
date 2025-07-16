@@ -51,4 +51,4 @@ TEMPLATE_FILES = {
 }
 
 # Template base path within assets
-TEMPLATE_BASE_PATH = "quaestor.assets.templates.documentation"
+TEMPLATE_BASE_PATH = "quaestor.assets.templates"

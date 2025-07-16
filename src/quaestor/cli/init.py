@@ -218,7 +218,7 @@ def _merge_claude_md(target_dir: Path, use_rule_engine: bool = False) -> bool:
 
         # Get the include template
         try:
-            include_content = pkg_resources.read_text("quaestor.assets.templates.documentation", "claude_include.md")
+            include_content = pkg_resources.read_text("quaestor.assets.templates", "claude_include.md")
         except Exception:
             # Fallback if template is missing
             include_content = """<!-- QUAESTOR CONFIG START -->
@@ -291,7 +291,7 @@ def _copy_system_files(quaestor_dir: Path, manifest: FileManifest, target_dir: P
     # Copy QUAESTOR_CLAUDE.md
     try:
         quaestor_claude_content = pkg_resources.read_text(
-            "quaestor.assets.templates.documentation", "quaestor_claude.md"
+            "quaestor.assets.templates", "quaestor_claude.md"
         )
         quaestor_claude_path = quaestor_dir / "QUAESTOR_CLAUDE.md"
         quaestor_claude_path.write_text(quaestor_claude_content)
@@ -305,7 +305,7 @@ def _copy_system_files(quaestor_dir: Path, manifest: FileManifest, target_dir: P
 
     # Copy CRITICAL_RULES.md
     try:
-        critical_rules_content = pkg_resources.read_text("quaestor.assets.templates.documentation", "critical_rules.md")
+        critical_rules_content = pkg_resources.read_text("quaestor.assets.templates", "critical_rules.md")
         critical_rules_path = quaestor_dir / "CRITICAL_RULES.md"
         critical_rules_path.write_text(critical_rules_content)
 

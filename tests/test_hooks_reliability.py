@@ -245,7 +245,7 @@ class TestWorkflowStateImprovement:
     def test_atomic_state_save(self):
         """Test that workflow state is saved atomically."""
         # Import shared utils from assets
-        from quaestor.assets.scripts.shared_utils import WorkflowState
+        from quaestor.assets.hooks.shared_utils import WorkflowState
 
         with tempfile.TemporaryDirectory() as tmpdir:
             state = WorkflowState(tmpdir)

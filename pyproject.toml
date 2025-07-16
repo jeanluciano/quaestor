@@ -62,7 +62,7 @@ quaestor = [
     "assets/templates/**/*.md",
     "assets/configuration/*.yaml",
     "assets/configuration/*.json",
-    "assets/scripts/**/*.py",
+    "assets/hooks/**/*.py",
 ]
 
 [tool.pytest.ini_options]
