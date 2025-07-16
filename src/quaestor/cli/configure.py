@@ -6,7 +6,7 @@ import typer
 from rich.console import Console
 from rich.prompt import Confirm
 
-from ..command_config import CommandConfig
+from quaestor.command_config import CommandConfig
 
 console = Console()
 

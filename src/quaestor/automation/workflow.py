@@ -9,7 +9,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from . import HookResult, detect_project_type, get_project_root
+from quaestor.automation import HookResult, detect_project_type, get_project_root
 
 
 def run_automation_hook(hook_name: str, context: dict[str, Any]) -> HookResult:

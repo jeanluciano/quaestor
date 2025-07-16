@@ -1,6 +1,6 @@
 """Shared utilities for Quaestor."""
 
-from .file_utils import (
+from quaestor.utils.file_utils import (
     clean_empty_directories,
     copy_file_with_processing,
     create_directory,
@@ -10,13 +10,13 @@ from .file_utils import (
     safe_write_text,
     update_gitignore,
 )
-from .project_detection import (
+from quaestor.utils.project_detection import (
     detect_project_type,
     get_project_complexity_indicators,
     get_project_files_by_type,
     is_test_file,
 )
-from .yaml_utils import (
+from quaestor.utils.yaml_utils import (
     YAMLConfig,
     convert_json_to_yaml,
     extract_yaml_section,

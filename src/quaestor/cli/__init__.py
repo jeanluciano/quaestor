@@ -1,5 +1,5 @@
 """Modular CLI for Quaestor."""
 
-from .main import app
+from quaestor.cli.main import app
 
 __all__ = ["app"]

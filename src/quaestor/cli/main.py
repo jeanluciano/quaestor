@@ -3,9 +3,9 @@
 import typer
 from rich.console import Console
 
-from .configure import configure_command
-from .init import init_command
-from .update import update_command
+from quaestor.cli.configure import configure_command
+from quaestor.cli.init import init_command
+from quaestor.cli.update import update_command
 
 console = Console()
 

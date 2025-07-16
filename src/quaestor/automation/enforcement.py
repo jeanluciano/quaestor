@@ -8,7 +8,7 @@ import re
 from datetime import datetime, timedelta
 from typing import Any
 
-from . import HookResult, get_project_root
+from quaestor.automation import HookResult, get_project_root
 
 # Track workflow state
 WORKFLOW_STATE_FILE = ".quaestor/.workflow_state"

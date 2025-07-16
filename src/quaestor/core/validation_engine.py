@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Any
 
-from .project_analysis import ProjectAnalyzer
+from quaestor.core.project_analysis import ProjectAnalyzer
 
 
 class RuleEngine:

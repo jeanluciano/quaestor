@@ -6,16 +6,16 @@ This module contains the fundamental business logic components:
 - Configuration management
 """
 
-from .configuration import QuaestorConfig, get_project_config
-from .project_analysis import ProjectAnalyzer
-from .project_metadata import (
+from quaestor.core.configuration import QuaestorConfig, get_project_config
+from quaestor.core.project_analysis import ProjectAnalyzer
+from quaestor.core.project_metadata import (
     FileManifest,
     FileType,
     categorize_file,
     extract_version_from_content,
 )
-from .template_engine import get_project_data, process_template
-from .validation_engine import RuleEngine
+from quaestor.core.template_engine import get_project_data, process_template
+from quaestor.core.validation_engine import RuleEngine
 
 __all__ = [
     "QuaestorConfig",
