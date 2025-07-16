@@ -3,6 +3,10 @@
 import typer
 from rich.console import Console
 
+from .configure import configure_command
+from .init import init_command
+from .update import update_command
+
 console = Console()
 
 app = typer.Typer(
@@ -18,26 +22,19 @@ def callback():
     pass
 
 
-# Import and register commands at module level
-from .init import init_command
-
 # Add commands to app
 app.command(name="init")(init_command)
-
-# Register other commands
-from .configure import configure_command
-from .update import update_command
 
 app.command(name="configure")(configure_command)
 app.command(name="update")(update_command)
 
-# Add hooks subcommand if available
+# Add automation subcommand if available
 try:
-    from ..hooks import app as hooks_app
+    from quaestor.automation import app as automation_app
 
-    app.add_typer(hooks_app, name="hooks", help="Claude Code hooks management")
+    app.add_typer(automation_app, name="automation", help="Claude Code automation management")
 except ImportError:
-    # Hooks module not available
+    # Automation module not available
     pass
 
 

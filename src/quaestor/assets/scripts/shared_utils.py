@@ -7,7 +7,6 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
 
 
 class WorkflowState:
@@ -40,12 +39,12 @@ class WorkflowState:
         """Save workflow state to file atomically."""
         try:
             self.state_file.parent.mkdir(exist_ok=True, parents=True)
-            
+
             # Write to temp file first
             temp_file = self.state_file.with_suffix('.tmp')
             with open(temp_file, "w") as f:
                 json.dump(self.state, f, indent=2)
-            
+
             # Atomic rename
             temp_file.replace(self.state_file)
         except Exception as e:
@@ -116,23 +115,23 @@ def detect_project_type(project_root="."):
     return "unknown"
 
 
-def run_command(cmd: List[str], description: Optional[str] = None, capture_output: bool = True, 
-                timeout_seconds: int = 30) -> Tuple[bool, str, str]:
+def run_command(cmd: list[str], description: str | None = None, capture_output: bool = True,
+                timeout_seconds: int = 30) -> tuple[bool, str, str]:
     """Run a command with timeout and return success status and output.
-    
+
     Args:
         cmd: Command and arguments as a list
         description: Optional description for logging
         capture_output: Whether to capture stdout/stderr
         timeout_seconds: Maximum execution time in seconds
-        
+
     Returns:
         Tuple of (success, stdout, stderr)
     """
     try:
         result = subprocess.run(
-            cmd, 
-            capture_output=capture_output, 
+            cmd,
+            capture_output=capture_output,
             text=True,
             timeout=timeout_seconds
         )
@@ -187,12 +186,12 @@ def get_quality_commands(project_type):
 
 def run_quality_checks(project_root: str = ".", block_on_fail: bool = False, timeout_per_check: int = 60) -> bool:
     """Run quality checks for the detected project type with timeout protection.
-    
+
     Args:
         project_root: Project root directory
         block_on_fail: Whether to exit if checks fail
         timeout_per_check: Timeout for each individual check
-        
+
     Returns:
         True if all checks passed, False otherwise
     """
@@ -205,7 +204,7 @@ def run_quality_checks(project_root: str = ".", block_on_fail: bool = False, tim
 
     all_passed = True
     failed_checks = []
-    
+
     for description, cmd in commands:
         # Change to project root for command execution
         original_cwd = Path.cwd()

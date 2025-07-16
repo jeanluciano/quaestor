@@ -3,8 +3,8 @@
 from pathlib import Path
 from typing import Any
 
-from .utils.project_detection import detect_project_type
-from .utils.yaml_utils import YAMLConfig, load_yaml
+from quaestor.utils.project_detection import detect_project_type
+from quaestor.utils.yaml_utils import YAMLConfig, load_yaml
 
 
 class QuaestorConfig:
@@ -47,8 +47,8 @@ class QuaestorConfig:
         if self._language_configs is not None:
             return self._language_configs
 
-        # Load from templates/config/languages.yaml
-        languages_path = Path(__file__).parent / "templates" / "config" / "languages.yaml"
+        # Load from assets/configuration/languages.yaml
+        languages_path = Path(__file__).parent.parent / "assets" / "configuration" / "languages.yaml"
 
         self._language_configs = load_yaml(languages_path, {})
         return self._language_configs

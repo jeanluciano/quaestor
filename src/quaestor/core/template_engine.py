@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from ..utils import detect_project_type, get_project_complexity_indicators, load_yaml
+from quaestor.utils import detect_project_type, get_project_complexity_indicators, load_yaml
 
 
 def get_project_data(project_dir: Path) -> dict[str, Any]:
@@ -21,7 +21,7 @@ def get_project_data(project_dir: Path) -> dict[str, Any]:
     complexity_info = get_project_complexity_indicators(project_dir, project_type)
 
     # Load language-specific configuration
-    config_path = Path(__file__).parent / "config" / "languages.yaml"
+    config_path = Path(__file__).parent.parent / "assets" / "configuration" / "languages.yaml"
     language_configs = load_yaml(config_path, {})
 
     # Get config for this project type, fallback to unknown

@@ -10,15 +10,15 @@ This module provides a robust foundation for all Quaestor hooks with:
 
 import json
 import logging
-import os
 import signal
 import sys
 import time
+from collections.abc import Callable
 from contextlib import contextmanager
 from datetime import datetime
 from functools import wraps
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional
+from typing import Any
 
 # Configure logging
 LOG_DIR = Path.home() / ".quaestor" / "logs"
@@ -49,11 +49,11 @@ def timeout(seconds: int):
     """Context manager for timeout protection."""
     def timeout_handler(signum, frame):
         raise TimeoutError(f"Operation timed out after {seconds} seconds")
-    
+
     # Set the signal handler and alarm
     old_handler = signal.signal(signal.SIGALRM, timeout_handler)
     signal.alarm(seconds)
-    
+
     try:
         yield
     finally:
@@ -69,7 +69,7 @@ def retry(max_attempts: int = 3, delay: float = 1.0, backoff: float = 2.0):
         def wrapper(*args, **kwargs):
             last_exception = None
             current_delay = delay
-            
+
             for attempt in range(max_attempts):
                 try:
                     return func(*args, **kwargs)
@@ -80,80 +80,80 @@ def retry(max_attempts: int = 3, delay: float = 1.0, backoff: float = 2.0):
                         current_delay *= backoff
                     else:
                         raise
-            
+
             raise last_exception
-        
+
         return wrapper
     return decorator
 
 
 class BaseHook:
     """Base class for all Quaestor hooks."""
-    
+
     def __init__(self, hook_name: str):
         self.hook_name = hook_name
         self.logger = logging.getLogger(f"quaestor.hooks.{hook_name}")
         self.start_time = time.time()
-        self.input_data: Dict[str, Any] = {}
-        self.output_data: Dict[str, Any] = {}
-        
-    def read_input(self) -> Dict[str, Any]:
+        self.input_data: dict[str, Any] = {}
+        self.output_data: dict[str, Any] = {}
+
+    def read_input(self) -> dict[str, Any]:
         """Read and validate JSON input from stdin."""
         try:
             # Read from stdin with timeout
             with timeout(5):  # 5 second timeout for reading input
                 raw_input = sys.stdin.read()
-            
+
             if not raw_input:
                 self.logger.warning("No input received from stdin")
                 return {}
-            
+
             # Parse JSON
             data = json.loads(raw_input)
-            
+
             # Validate basic structure
             if not isinstance(data, dict):
                 raise ValidationError("Input must be a JSON object")
-            
+
             # Log received input (sanitized)
             self.logger.info(f"Received input for {self.hook_name}")
             self.input_data = data
-            
+
             return data
-            
+
         except json.JSONDecodeError as e:
             self.logger.error(f"Invalid JSON input: {e}")
-            raise ValidationError(f"Invalid JSON input: {e}")
+            raise ValidationError(f"Invalid JSON input: {e}") from e
         except TimeoutError:
             self.logger.error("Timeout reading input")
             raise
         except Exception as e:
             self.logger.error(f"Error reading input: {e}")
             raise
-    
+
     def validate_path(self, path: str) -> Path:
         """Validate and sanitize file paths."""
         try:
             # Convert to Path object
             p = Path(path).resolve()
-            
+
             # Check for path traversal attempts
             if ".." in path:
                 raise ValidationError(f"Path traversal detected: {path}")
-            
+
             # Ensure path is within project or home directory
             cwd = Path.cwd()
             home = Path.home()
-            
+
             if not (p.is_relative_to(cwd) or p.is_relative_to(home)):
                 raise ValidationError(f"Path outside allowed directories: {path}")
-            
+
             return p
-            
+
         except Exception as e:
-            raise ValidationError(f"Invalid path: {path} - {e}")
-    
-    def output_json(self, data: Dict[str, Any], exit_code: int = 0):
+            raise ValidationError(f"Invalid path: {path} - {e}") from e
+
+    def output_json(self, data: dict[str, Any], exit_code: int = 0):
         """Output JSON response and exit."""
         try:
             # Add execution metadata
@@ -162,21 +162,21 @@ class BaseHook:
                 "execution_time": time.time() - self.start_time,
                 "timestamp": datetime.now().isoformat()
             }
-            
+
             # Log output
             self.logger.info(f"Hook {self.hook_name} completed with exit code {exit_code}")
-            
+
             # Output JSON
             json.dump(data, sys.stdout, indent=2)
             sys.stdout.flush()
-            
+
             # Exit with appropriate code
             sys.exit(exit_code)
-            
+
         except Exception as e:
             self.logger.error(f"Error outputting JSON: {e}")
             sys.exit(1)
-    
+
     def output_error(self, message: str, blocking: bool = False):
         """Output error response."""
         exit_code = 2 if blocking else 1
@@ -184,14 +184,14 @@ class BaseHook:
             "error": message,
             "blocking": blocking
         }, exit_code)
-    
-    def output_success(self, message: str = "Success", data: Optional[Dict[str, Any]] = None):
+
+    def output_success(self, message: str = "Success", data: dict[str, Any] | None = None):
         """Output success response."""
         response = {"message": message}
         if data:
             response.update(data)
         self.output_json(response, 0)
-    
+
     def run_with_timeout(self, func: Callable, timeout_seconds: int = 60) -> Any:
         """Run a function with timeout protection."""
         try:
@@ -203,20 +203,20 @@ class BaseHook:
         except Exception as e:
             self.logger.error(f"Error in {self.hook_name}: {e}", exc_info=True)
             raise
-    
+
     def execute(self):
         """Main execution method to be overridden by subclasses."""
         raise NotImplementedError("Subclasses must implement execute()")
-    
+
     def run(self):
         """Main entry point for hook execution."""
         try:
             # Read input
-            input_data = self.read_input()
-            
+            self.read_input()
+
             # Execute hook logic with timeout
             self.run_with_timeout(lambda: self.execute(), timeout_seconds=55)  # 55s to stay under Claude's 60s
-            
+
         except ValidationError as e:
             self.output_error(f"Validation error: {e}", blocking=True)
         except TimeoutError as e:
@@ -244,18 +244,18 @@ def atomic_write(file_path: Path, content: str):
     try:
         # Write to temporary file
         temp_path.write_text(content, encoding='utf-8')
-        
+
         # Atomic rename
         temp_path.replace(file_path)
-        
-    except Exception as e:
+
+    except Exception:
         # Clean up temp file on error
         if temp_path.exists():
             temp_path.unlink()
         raise
 
 
-def get_claude_session_info(input_data: Dict[str, Any]) -> Dict[str, Any]:
+def get_claude_session_info(input_data: dict[str, Any]) -> dict[str, Any]:
     """Extract Claude session information from input."""
     return {
         "session_id": input_data.get("sessionId", "unknown"),

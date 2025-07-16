@@ -11,7 +11,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-from .constants import SYSTEM_FILES, USER_EDITABLE_FILES, VERSION_PATTERNS
+from quaestor.constants import SYSTEM_FILES, USER_EDITABLE_FILES, VERSION_PATTERNS
 
 
 class FileType(Enum):

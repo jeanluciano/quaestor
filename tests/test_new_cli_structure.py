@@ -48,18 +48,16 @@ class TestNewCLIStructure:
 
     def test_new_template_processor_imports_successfully(self):
         """Test that the new template processor can be imported without errors."""
-        from quaestor.templates.processor import get_project_data, process_template
+        from quaestor.core.template_engine import get_project_data, process_template
 
         assert callable(get_project_data)
         assert callable(process_template)
 
     def test_languages_yaml_exists(self):
         """Test that the languages.yaml config file exists."""
-        from quaestor.templates.processor import Path
+        from pathlib import Path
 
-        config_path = Path(__file__).parent.parent / "src" / "quaestor" / "templates" / "config" / "languages.yaml"
-        # Use relative path from project root
-        config_path = Path.cwd() / "src" / "quaestor" / "templates" / "config" / "languages.yaml"
+        config_path = Path(__file__).parent.parent / "src" / "quaestor" / "assets" / "configuration" / "languages.yaml"
         assert config_path.exists(), f"languages.yaml not found at {config_path}"
 
     def test_init_command_help(self, runner):
@@ -99,7 +97,7 @@ class TestNewCLIStructure:
 
     def test_template_processor_works(self, temp_dir):
         """Test that the new template processor works."""
-        from quaestor.templates.processor import get_project_data, process_template
+        from quaestor.core.template_engine import get_project_data, process_template
 
         # Create a simple Python project
         (temp_dir / "pyproject.toml").write_text("[project]\nname = 'test'")
@@ -261,7 +259,7 @@ class TestBackwardCompatibility:
 
     def test_legacy_template_processor_works(self, temp_dir):
         """Test that the legacy template processor wrapper works."""
-        from quaestor.template_processor import get_project_data, process_template
+        from quaestor.core.template_engine import get_project_data, process_template
 
         # Create a simple Python project
         (temp_dir / "pyproject.toml").write_text("[project]\nname = 'test'")

@@ -13,9 +13,9 @@ from typing import Any
 from rich.console import Console
 from rich.table import Table
 
-from . import __version__
-from .constants import COMMAND_FILES, QUAESTOR_CONFIG_END, QUAESTOR_CONFIG_START
-from .manifest import FileManifest, FileType, categorize_file, extract_version_from_content
+from quaestor import __version__
+from quaestor.constants import COMMAND_FILES, QUAESTOR_CONFIG_END, QUAESTOR_CONFIG_START
+from quaestor.core.project_metadata import FileManifest, FileType, categorize_file, extract_version_from_content
 
 console = Console()
 

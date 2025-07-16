@@ -7,7 +7,7 @@ from pathlib import Path
 import typer
 from rich.console import Console
 
-from ..constants import (
+from quaestor.constants import (
     COMMAND_FILES,
     DEFAULT_COMMANDS_DIR,
     QUAESTOR_CONFIG_END,
@@ -15,11 +15,11 @@ from ..constants import (
     QUAESTOR_DIR_NAME,
     TEMPLATE_FILES,
 )
-from ..manifest import FileManifest, FileType, extract_version_from_content
-from ..rule_engine import RuleEngine
-from ..template_processor import get_project_data, process_template
-from ..updater import QuaestorUpdater, print_update_result
-from ..utils import update_gitignore
+from quaestor.core.project_metadata import FileManifest, FileType, extract_version_from_content
+from quaestor.core.template_engine import get_project_data, process_template
+from quaestor.core.validation_engine import RuleEngine
+from quaestor.updater import QuaestorUpdater, print_update_result
+from quaestor.utils import update_gitignore
 
 console = Console()
 

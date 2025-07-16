@@ -138,7 +138,7 @@ class ContextManager:
         """Get recently modified files with retry logic."""
         import subprocess
         from time import sleep
-        
+
         # Retry logic for git operations
         for attempt in range(3):
             try:
@@ -163,7 +163,7 @@ class ContextManager:
                 elif attempt < 2:  # Retry on git failure
                     sleep(1)  # Wait before retry
                     continue
-                    
+
             except subprocess.TimeoutExpired:
                 if attempt < 2:
                     sleep(1)

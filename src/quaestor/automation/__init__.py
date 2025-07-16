@@ -1,6 +1,7 @@
-"""Quaestor hooks module for Claude Code integration.
+"""Quaestor automation module for Claude Code integration.
 
-This module provides automated enforcement and assistance through Claude Code hooks.
+This module provides automated enforcement, workflow management, and intelligent
+assistance through Claude Code integration.
 """
 
 import json
@@ -12,7 +13,7 @@ from rich.console import Console
 
 console = Console()
 
-app = typer.Typer(name="hooks", help="Claude Code hook integration for Quaestor")
+app = typer.Typer(name="automation", help="Claude Code automation integration for Quaestor")
 
 
 class HookResult:
@@ -89,7 +90,7 @@ def run_hook(hook_name: str, context: dict[str, Any]) -> HookResult:
 
         return run_enforcement_hook(hook_name, context)
     elif hook_name.startswith("auto_"):
-        from .automation import run_automation_hook
+        from .workflow import run_automation_hook
 
         return run_automation_hook(hook_name, context)
     elif hook_name.startswith("intel_"):
@@ -116,7 +117,7 @@ def update_memory(
     milestone: str | None = typer.Option(None, "--milestone", help="Specific milestone to update"),
 ):
     """Update MEMORY.md with current progress."""
-    from .automation import update_memory_from_todos
+    from .workflow import update_memory_from_todos
 
     if from_todos:
         result = update_memory_from_todos(milestone)
@@ -133,7 +134,7 @@ def quality_check(
     fix: bool = typer.Option(False, "--fix", help="Attempt to fix issues automatically"),
 ):
     """Run quality checks based on project type."""
-    from .automation import run_quality_checks
+    from .workflow import run_quality_checks
 
     result = run_quality_checks(fix=fix)
     console.print(result.message)
@@ -149,7 +150,7 @@ def check_milestone(
     milestone: str | None = typer.Option(None, "--milestone", help="Specific milestone to check"),
 ):
     """Check milestone completion status."""
-    from .automation import check_milestone_completion
+    from .workflow import check_milestone_completion
 
     result = check_milestone_completion(milestone, auto_pr)
     console.print(result.message)

@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from quaestor.manifest import (
+from quaestor.core.project_metadata import (
     FileType,
     categorize_file,
     extract_version_from_content,

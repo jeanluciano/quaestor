@@ -6,9 +6,9 @@ import typer
 from rich.console import Console
 from rich.prompt import Confirm
 
-from ..constants import QUAESTOR_DIR_NAME
-from ..manifest import FileManifest
-from ..updater import QuaestorUpdater, print_update_result
+from quaestor.constants import QUAESTOR_DIR_NAME
+from quaestor.core.project_metadata import FileManifest
+from quaestor.updater import QuaestorUpdater, print_update_result
 
 console = Console()
 

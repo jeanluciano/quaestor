@@ -2,7 +2,7 @@
 
 from unittest.mock import patch
 
-from quaestor.manifest import FileManifest, FileType
+from quaestor.core.project_metadata import FileManifest, FileType
 from quaestor.updater import QuaestorUpdater, UpdateResult
 
 

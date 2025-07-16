@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Any
 
-from .project_analyzer import ProjectAnalyzer
+from .project_analysis import ProjectAnalyzer
 
 
 class RuleEngine:

@@ -11,35 +11,36 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 try:
-    from quaestor.hooks.base import BaseHook
     from hook_utils import WorkflowState, get_project_root
+
+    from quaestor.hooks.base import BaseHook
 except ImportError:
     # Fallback for development
-    from hooks.base import BaseHook
     from hook_utils import WorkflowState, get_project_root
+    from hooks.base import BaseHook
 
 
 class ResearchTracker(BaseHook):
     """Track research activities with proper error handling and JSON I/O."""
-    
+
     def __init__(self):
         super().__init__("track-research")
         self.workflow_state = None
         self.project_root = None
-        
+
     def execute(self):
         """Main execution logic."""
         # Get project root from input or use default
         self.project_root = Path(self.input_data.get("projectRoot", get_project_root()))
-        
+
         # Validate project root
         if not self.project_root.exists():
             self.output_error(f"Project root does not exist: {self.project_root}", blocking=True)
             return
-            
+
         # Get file path from input if provided
         file_path = self.input_data.get("filePath") or self.input_data.get("file_path")
-        
+
         # Validate file path if provided
         if file_path:
             try:
@@ -48,28 +49,28 @@ class ResearchTracker(BaseHook):
             except Exception as e:
                 self.logger.warning(f"Invalid file path: {e}")
                 file_path = None
-        
+
         # Initialize workflow state
         self.workflow_state = WorkflowState(self.project_root)
-        
+
         # Track research activity
         self.workflow_state.track_research(file_path)
-        
+
         # Get current state
         state = self.workflow_state.state
         files_examined = len(state.get("research_files", []))
-        
+
         # Prepare response data
         response_data = {
             "phase": state["phase"],
             "files_examined": files_examined,
             "research_files": state.get("research_files", [])
         }
-        
+
         # Check if ready to move to planning phase
         if files_examined >= 3 and state["phase"] == "researching":
             self.workflow_state.set_phase("planning")
-            
+
             # Success with transition message
             self.output_success(
                 f"✅ Good research! Examined {files_examined} files. Ready to create an implementation plan.",
@@ -85,7 +86,7 @@ class ResearchTracker(BaseHook):
             message = f"Research in progress. Examined {files_examined} files."
             if remaining > 0:
                 message += f" Need to examine {remaining} more files."
-                
+
             self.output_success(
                 message,
                 data={
