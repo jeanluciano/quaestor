@@ -22,6 +22,7 @@ classifiers = [
 dependencies = [
     "typer>=0.16.0",
     "rich>=13.0.0",
+    "PyYAML>=6.0,<7.0",
 ]
 
 [project.urls]

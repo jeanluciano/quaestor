@@ -1,0 +1,226 @@
+# Language-specific configurations for Quaestor templates
+# This file defines tooling, commands, and conventions for different programming languages
+
+python:
+  primary_language: python
+  lint_command: "ruff check ."
+  format_command: "ruff format ."
+  test_command: pytest
+  coverage_command: "pytest --cov"
+  type_check_command: "mypy ."
+  security_scan_command: "bandit -r src/"
+  profile_command: "python -m cProfile"
+  coverage_threshold: 80
+  type_checking: true
+  performance_target_ms: 200
+  commit_prefix: feat
+  quick_check_command: "ruff check . && pytest -x"
+  full_check_command: "ruff check . && ruff format --check . && mypy . && pytest"
+  precommit_install_command: "pre-commit install"
+  doc_style_example: |
+    def example_function(param: str) -> str:
+        """
+        Brief description of what the function does.
+
+        Args:
+            param: Description of the parameter
+
+        Returns:
+            Description of return value
+
+        Raises:
+            ValueError: When param is invalid
+        """
+        pass
+
+javascript:
+  primary_language: javascript
+  lint_command: "npx eslint ."
+  format_command: "npx prettier --write ."
+  test_command: "npm test"
+  coverage_command: "npm test -- --coverage"
+  type_check_command: "npx tsc --noEmit"
+  security_scan_command: "npm audit"
+  profile_command: "node --prof"
+  coverage_threshold: 80
+  type_checking: false
+  performance_target_ms: 100
+  commit_prefix: feat
+  quick_check_command: "npm run lint && npm test -- --bail"
+  full_check_command: "npm run lint && npm run prettier:check && npm test"
+  precommit_install_command: "husky install"
+  doc_style_example: |
+    /**
+     * Brief description of what the function does.
+     *
+     * @param {string} param - Description of the parameter
+     * @returns {string} Description of return value
+     * @throws {Error} When param is invalid
+     */
+    function exampleFunction(param) {
+        // Implementation
+    }
+
+typescript:
+  primary_language: typescript
+  lint_command: "npx eslint . --ext .ts,.tsx"
+  format_command: "npx prettier --write ."
+  test_command: "npm test"
+  coverage_command: "npm test -- --coverage"
+  type_check_command: "npx tsc --noEmit"
+  security_scan_command: "npm audit"
+  profile_command: "node --prof"
+  coverage_threshold: 80
+  type_checking: true
+  performance_target_ms: 100
+  commit_prefix: feat
+  quick_check_command: "npm run lint && npm run type-check && npm test -- --bail"
+  full_check_command: "npm run lint && npm run prettier:check && npm run type-check && npm test"
+  precommit_install_command: "husky install"
+  doc_style_example: |
+    /**
+     * Brief description of what the function does.
+     *
+     * @param param - Description of the parameter
+     * @returns Description of return value
+     * @throws {Error} When param is invalid
+     */
+    function exampleFunction(param: string): string {
+        // Implementation
+    }
+
+rust:
+  primary_language: rust
+  lint_command: "cargo clippy -- -D warnings"
+  format_command: "cargo fmt"
+  test_command: "cargo test"
+  coverage_command: "cargo tarpaulin"
+  type_check_command: "cargo check"
+  security_scan_command: "cargo audit"
+  profile_command: "cargo bench"
+  coverage_threshold: 80
+  type_checking: true
+  performance_target_ms: 50
+  commit_prefix: feat
+  quick_check_command: "cargo check && cargo clippy && cargo test -- --fail-fast"
+  full_check_command: "cargo fmt -- --check && cargo clippy -- -D warnings && cargo test"
+  precommit_install_command: "pre-commit install"
+  doc_style_example: |
+    /// Brief description of what the function does.
+    ///
+    /// # Arguments
+    ///
+    /// * `param` - Description of the parameter
+    ///
+    /// # Returns
+    ///
+    /// Description of return value
+    ///
+    /// # Errors
+    ///
+    /// Returns `Error` when param is invalid
+    pub fn example_function(param: &str) -> Result<String, Error> {
+        // Implementation
+    }
+
+go:
+  primary_language: go
+  lint_command: "golangci-lint run"
+  format_command: "go fmt ./..."
+  test_command: "go test ./..."
+  coverage_command: "go test -cover ./..."
+  type_check_command: "go vet ./..."
+  security_scan_command: "gosec ./..."
+  profile_command: "go test -cpuprofile=cpu.prof"
+  coverage_threshold: 80
+  type_checking: true
+  performance_target_ms: 50
+  commit_prefix: feat
+  quick_check_command: "go vet ./... && go test -short ./..."
+  full_check_command: "go fmt ./... && go vet ./... && golangci-lint run && go test ./..."
+  precommit_install_command: "pre-commit install"
+  doc_style_example: |
+    // ExampleFunction does a brief description of what the function does.
+    //
+    // Parameters:
+    //   - param: Description of the parameter
+    //
+    // Returns:
+    //   - string: Description of return value
+    //   - error: When param is invalid
+    func ExampleFunction(param string) (string, error) {
+        // Implementation
+    }
+
+java:
+  primary_language: java
+  lint_command: "mvn checkstyle:check"
+  format_command: "mvn spotless:apply"
+  test_command: "mvn test"
+  coverage_command: "mvn jacoco:report"
+  type_check_command: "mvn compile"
+  security_scan_command: "mvn dependency-check:check"
+  profile_command: "mvn test -Dtest.profile=true"
+  coverage_threshold: 80
+  type_checking: true
+  performance_target_ms: 100
+  commit_prefix: feat
+  quick_check_command: "mvn compile && mvn test -Dtest=*UnitTest"
+  full_check_command: "mvn checkstyle:check && mvn compile && mvn test"
+  precommit_install_command: "pre-commit install"
+  doc_style_example: |
+    /**
+     * Brief description of what the method does.
+     *
+     * @param param Description of the parameter
+     * @return Description of return value
+     * @throws IllegalArgumentException When param is invalid
+     */
+    public String exampleMethod(String param) {
+        // Implementation
+    }
+
+ruby:
+  primary_language: ruby
+  lint_command: "rubocop"
+  format_command: "rubocop --autocorrect"
+  test_command: "bundle exec rspec"
+  coverage_command: "bundle exec rspec --format progress"
+  type_check_command: "bundle exec sorbet tc"
+  security_scan_command: "bundle audit"
+  profile_command: "ruby-prof"
+  coverage_threshold: 80
+  type_checking: false
+  performance_target_ms: 150
+  commit_prefix: feat
+  quick_check_command: "rubocop && bundle exec rspec --fail-fast"
+  full_check_command: "rubocop && bundle exec rspec && bundle audit"
+  precommit_install_command: "pre-commit install"
+  doc_style_example: |
+    # Brief description of what the method does.
+    #
+    # @param param [String] Description of the parameter
+    # @return [String] Description of return value
+    # @raise [ArgumentError] When param is invalid
+    def example_method(param)
+      # Implementation
+    end
+
+# Default configuration for unknown project types
+unknown:
+  primary_language: "unknown"
+  lint_command: "# Configure your linter"
+  format_command: "# Configure your formatter"
+  test_command: "# Configure your test runner"
+  coverage_command: "# Configure coverage tool"
+  type_check_command: null
+  security_scan_command: null
+  profile_command: null
+  coverage_threshold: null
+  type_checking: false
+  performance_target_ms: 200
+  commit_prefix: chore
+  quick_check_command: "make check"
+  full_check_command: "make validate"
+  precommit_install_command: "pre-commit install"
+  doc_style_example: null

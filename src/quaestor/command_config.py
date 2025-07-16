@@ -1,14 +1,20 @@
-"""Command configuration system for project-specific overrides."""
+"""Command configuration system for project-specific overrides.
+
+This module provides backward compatibility while delegating to the unified config system.
+"""
 
 import json
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import yaml
 
 
 class CommandConfig:
-    """Manage project-specific command configurations."""
+    """Manage project-specific command configurations.
+
+    This class now serves as a compatibility layer over the unified QuaestorConfig system.
+    """
 
     def __init__(self, project_dir: Path):
         self.project_dir = project_dir
@@ -16,11 +22,30 @@ class CommandConfig:
         self.override_dir = project_dir / ".quaestor" / "commands"
         self._config: dict[str, Any] | None = None
 
+        # Use unified config system internally
+        try:
+            from .config_manager import QuaestorConfig
+
+            self._unified_config = QuaestorConfig(project_dir)
+        except ImportError:
+            # Fallback to legacy behavior if unified config not available
+            self._unified_config = None
+
     def load_config(self) -> dict[str, Any]:
         """Load command configuration from file."""
         if self._config is not None:
             return self._config
 
+        # Use unified config if available
+        if self._unified_config:
+            try:
+                config_data = self._unified_config.command_config.load()
+                self._config = config_data
+                return self._config
+            except Exception:
+                pass
+
+        # Fallback to direct file loading
         self._config = {}
         if self.config_path.exists():
             try:
@@ -34,17 +59,41 @@ class CommandConfig:
 
     def get_command_config(self, command_name: str) -> dict[str, Any]:
         """Get configuration for a specific command."""
+        # Use unified config if available
+        if self._unified_config:
+            try:
+                return self._unified_config.get_command_config(command_name)
+            except Exception:
+                pass
+
+        # Fallback to legacy behavior
         config = self.load_config()
         commands = config.get("commands", {})
         return commands.get(command_name, {})
 
     def has_override(self, command_name: str) -> bool:
         """Check if a command has a local override file."""
+        # Use unified config if available
+        if self._unified_config:
+            try:
+                return self._unified_config.has_command_override(command_name)
+            except Exception:
+                pass
+
+        # Fallback to direct check
         override_path = self.override_dir / f"{command_name}.md"
         return override_path.exists()
 
     def get_override_path(self, command_name: str) -> Path | None:
         """Get path to command override file if it exists."""
+        # Use unified config if available
+        if self._unified_config:
+            try:
+                return self._unified_config.get_command_override_path(command_name)
+            except Exception:
+                pass
+
+        # Fallback to direct check
         override_path = self.override_dir / f"{command_name}.md"
         return override_path if override_path.exists() else None
 

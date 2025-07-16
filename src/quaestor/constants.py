@@ -40,14 +40,12 @@ INIT_FILES = {
 QUAESTOR_CONFIG_START = "<!-- QUAESTOR CONFIG START -->"
 QUAESTOR_CONFIG_END = "<!-- QUAESTOR CONFIG END -->"
 
-# Manifest file mappings (source package -> target path in .quaestor)
-MANIFEST_FILES = {
-    "ARCHITECTURE.md": "ARCHITECTURE.md",
-    "MEMORY.md": "MEMORY.md",
-}
 
 # Template file mappings
 TEMPLATE_FILES = {
     "ARCHITECTURE.template.md": "ARCHITECTURE.md",
     "MEMORY.template.md": "MEMORY.md",
+    "PATTERNS.template.md": "PATTERNS.md",
+    "VALIDATION.template.md": "VALIDATION.md",
+    "AUTOMATION.template.md": "AUTOMATION.md",
 }

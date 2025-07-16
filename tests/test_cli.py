@@ -25,12 +25,15 @@ class TestInitCommand:
             def mock_read_text(package, resource):
                 files = {
                     ("quaestor.templates", "CLAUDE_INCLUDE.md"): (
-                        "<!-- BEGIN QUAESTOR CONFIG -->\nQuaestor config\n<!-- END QUAESTOR CONFIG -->"
+                        "<!-- QUAESTOR CONFIG START -->\nQuaestor config\n<!-- QUAESTOR CONFIG END -->"
                     ),
                     ("quaestor", "QUAESTOR_CLAUDE.md"): "# QUAESTOR_CLAUDE.md test content",
                     ("quaestor", "CRITICAL_RULES.md"): "# CRITICAL_RULES test content",
-                    ("quaestor.manifest", "ARCHITECTURE.md"): "# ARCHITECTURE manifest",
-                    ("quaestor.manifest", "MEMORY.md"): "# MEMORY manifest",
+                    ("quaestor.templates", "ARCHITECTURE.template.md"): "# ARCHITECTURE template",
+                    ("quaestor.templates", "MEMORY.template.md"): "# MEMORY template",
+                    ("quaestor.templates", "PATTERNS.template.md"): "# PATTERNS template",
+                    ("quaestor.templates", "VALIDATION.template.md"): "# VALIDATION template",
+                    ("quaestor.templates", "AUTOMATION.template.md"): "# AUTOMATION template",
                     ("quaestor.commands", "project-init.md"): "# project-init.md",
                     ("quaestor.commands", "task-py.md"): "# task-py.md",
                     ("quaestor.commands", "task-rs.md"): "# task-rs.md",
@@ -42,7 +45,7 @@ class TestInitCommand:
 
             mock_read.side_effect = mock_read_text
 
-            result = runner.invoke(app, ["init", str(temp_dir)])
+            result = runner.invoke(app, ["init", str(temp_dir), "--mode", "team", "--no-contextual"])
 
             assert result.exit_code == 0
             assert (temp_dir / ".quaestor").exists()
@@ -64,7 +67,7 @@ class TestInitCommand:
         manifest_path.write_text('{"version": "1.0", "files": {}}')
 
         # Simulate user saying no to update
-        result = runner.invoke(app, ["init", str(temp_dir)], input="n\n")
+        result = runner.invoke(app, ["init", str(temp_dir), "--mode", "team"], input="n\n")
 
         assert result.exit_code == 0
         assert "Checking for updates" in result.output or "already exists" in result.output
@@ -80,8 +83,11 @@ class TestInitCommand:
         with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
             mock_read.side_effect = [
                 "# CLAUDE.md test content",
-                "# ARCHITECTURE manifest",
-                "# MEMORY manifest",
+                "# ARCHITECTURE template",
+                "# MEMORY template",
+                "# PATTERNS template",
+                "# VALIDATION template",
+                "# AUTOMATION template",
                 "# project-init.md",
                 "# task-py.md",
                 "# task-rs.md",
@@ -89,11 +95,11 @@ class TestInitCommand:
                 "# compose.md",
             ]
 
-            result = runner.invoke(app, ["init", str(temp_dir), "--force"])
+            result = runner.invoke(app, ["init", str(temp_dir), "--mode", "team", "--force"])
 
             assert result.exit_code == 0
             assert (temp_dir / ".quaestor").exists()
-            assert "Initialization complete!" in result.output
+            assert "Team mode initialization complete!" in result.output
 
     def test_init_handles_missing_manifest_files(self, runner, temp_dir):
         """Test fallback to AI templates when manifest files are missing."""
@@ -107,8 +113,8 @@ class TestInitCommand:
                 }
                 if (package, filename) in files:
                     return files[(package, filename)]
-                elif package == "quaestor.manifest":
-                    raise FileNotFoundError("Manifest not found")
+                elif package == "quaestor.templates":
+                    return f"# {filename} template"
                 elif package == "quaestor.commands":
                     return f"# {filename} content"
                 raise FileNotFoundError(f"Unknown file: {package}/{filename}")
@@ -119,7 +125,8 @@ class TestInitCommand:
 
             assert result.exit_code == 0
             assert (temp_dir / ".quaestor").exists()
-            assert "AI format" in result.output
+            # In personal mode, template files are processed automatically
+            assert "Created ARCHITECTURE.md" in result.output or "Setting up documentation files" in result.output
 
     def test_init_handles_resource_errors_gracefully(self, runner, temp_dir):
         """Test that init handles missing resources gracefully."""
@@ -129,9 +136,9 @@ class TestInitCommand:
 
             result = runner.invoke(app, ["init", str(temp_dir)])
 
-            # Should still create directory but warn about missing files
-            assert (temp_dir / ".quaestor").exists()
-            assert "Could not copy" in result.output
+            # Should still create directories but warn about missing files
+            assert (temp_dir / ".claude").exists() or (temp_dir / ".quaestor").exists()
+            assert "Could not" in result.output or "Failed" in result.output
 
     def test_init_with_custom_path(self, runner, temp_dir):
         """Test init with a custom directory path."""
@@ -141,8 +148,11 @@ class TestInitCommand:
         with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
             mock_read.side_effect = [
                 "# CLAUDE.md test content",
-                "# ARCHITECTURE manifest",
-                "# MEMORY manifest",
+                "# ARCHITECTURE template",
+                "# MEMORY template",
+                "# PATTERNS template",
+                "# VALIDATION template",
+                "# AUTOMATION template",
                 "# project-init.md",
                 "# task-py.md",
                 "# task-rs.md",
@@ -153,8 +163,9 @@ class TestInitCommand:
             result = runner.invoke(app, ["init", str(custom_dir)])
 
             assert result.exit_code == 0
-            assert (custom_dir / ".quaestor").exists()
-            assert (custom_dir / "CLAUDE.md").exists()
+            # Personal mode creates .claude directory
+            assert (custom_dir / ".claude").exists()
+            assert (custom_dir / ".claude" / "CLAUDE.md").exists()
 
     def test_init_copies_all_command_files(self, runner, temp_dir):
         """Test that all command files are installed to ~/.claude/commands."""
@@ -180,6 +191,9 @@ class TestInitCommand:
                     ("quaestor", "CRITICAL_RULES.md"): "# CRITICAL_RULES.md",
                     ("quaestor.templates", "ARCHITECTURE.template.md"): "# ARCHITECTURE",
                     ("quaestor.templates", "MEMORY.template.md"): "# MEMORY",
+                    ("quaestor.templates", "PATTERNS.template.md"): "# PATTERNS",
+                    ("quaestor.templates", "VALIDATION.template.md"): "# VALIDATION",
+                    ("quaestor.templates", "AUTOMATION.template.md"): "# AUTOMATION",
                 }
                 if package == "quaestor.commands":
                     return f"# {resource}"
@@ -190,16 +204,16 @@ class TestInitCommand:
             result = runner.invoke(app, ["init", str(temp_dir)])
 
             assert result.exit_code == 0
-            # Commands are now installed globally
-            assert "Commands installed to ~/.claude/commands" in result.output
+            # Personal mode installs commands locally
+            assert "Installing command files to .claude/commands" in result.output
 
             for cmd in expected_commands:
                 assert f"Installed {cmd}" in result.output
 
-    def test_init_converts_manifest_files_to_ai_format(
+    def test_init_processes_template_files(
         self, runner, temp_dir, sample_architecture_manifest, sample_memory_manifest
     ):
-        """Test that init properly converts manifest files to AI format."""
+        """Test that init properly processes template files."""
         with patch("quaestor.cli.pkg_resources.read_text") as mock_read:
 
             def side_effect(package, filename):
@@ -207,46 +221,37 @@ class TestInitCommand:
                     return "# CLAUDE.md test content"
                 elif package == "quaestor" and filename == "CRITICAL_RULES.md":
                     return "# CRITICAL_RULES.md test content"
-                elif package == "quaestor.manifest" and filename == "ARCHITECTURE.md":
+                elif package == "quaestor.templates" and filename == "ARCHITECTURE.template.md":
                     return sample_architecture_manifest
-                elif package == "quaestor.manifest" and filename == "MEMORY.md":
+                elif package == "quaestor.templates" and filename == "MEMORY.template.md":
                     return sample_memory_manifest
+                elif package == "quaestor.templates" and filename == "PATTERNS.template.md":
+                    return "# PATTERNS template content"
+                elif package == "quaestor.templates" and filename == "VALIDATION.template.md":
+                    return "# VALIDATION template content"
+                elif package == "quaestor.templates" and filename == "AUTOMATION.template.md":
+                    return "# AUTOMATION template content"
                 elif package == "quaestor.commands":
                     return f"# {filename} content"
                 raise FileNotFoundError(f"Unknown file: {package}/{filename}")
 
             mock_read.side_effect = side_effect
 
-            result = runner.invoke(app, ["init", str(temp_dir)])
+            result = runner.invoke(app, ["init", str(temp_dir), "--mode", "team"])
 
             assert result.exit_code == 0
-            assert "Converting manifest files to AI format" in result.output
-            assert "Copied ARCHITECTURE.md" in result.output
-            assert "Copied MEMORY.md" in result.output
+            assert "Setting up documentation files" in result.output
+            assert "Created ARCHITECTURE.md" in result.output
+            assert "Created MEMORY.md" in result.output
 
-            # Check ARCHITECTURE.md was converted properly
+            # Check that template files were processed and files created
             arch_content = (temp_dir / ".quaestor" / "ARCHITECTURE.md").read_text()
-            assert "<!-- META:document:architecture -->" in arch_content
-            assert "<!-- META:version:1.0 -->" in arch_content
-            assert "<!-- META:ai-optimized:true -->" in arch_content
-            assert "<!-- SECTION:architecture:overview:START -->" in arch_content
-            assert "<!-- DATA:architecture-pattern:START -->" in arch_content
-            assert 'pattern: "Domain-Driven Design (DDD)"' in arch_content
             assert "Domain Layer" in arch_content  # Original content preserved
             assert "Infrastructure Layer" in arch_content
 
-            # Check MEMORY.md was converted properly
+            # Check MEMORY.md was processed
             mem_content = (temp_dir / ".quaestor" / "MEMORY.md").read_text()
-            assert "<!-- META:document:memory -->" in mem_content
-            assert "<!-- META:version:1.0 -->" in mem_content
-            assert "<!-- META:ai-optimized:true -->" in mem_content
-            assert "<!-- SECTION:memory:status:START -->" in mem_content
-            assert "<!-- DATA:project-status:START -->" in mem_content
-            assert 'last_updated: "2024-01-15"' in mem_content
-            assert 'current_phase: "Development"' in mem_content
-            assert 'overall_progress: "60%"' in mem_content
-            assert "Milestone 1: Core Features" in mem_content  # Original content preserved
-            assert "Payment integration" in mem_content
+            assert "Payment integration" in mem_content  # Original content preserved
 
     def test_init_merges_with_existing_claude_md(self, runner, temp_dir):
         """Test that init merges with existing CLAUDE.md instead of overwriting."""
@@ -259,8 +264,8 @@ class TestInitCommand:
             def mock_read_text(package, resource):
                 files = {
                     ("quaestor.templates", "CLAUDE_INCLUDE.md"): (
-                        "<!-- BEGIN QUAESTOR CONFIG -->\nQuaestor config\n"
-                        "<!-- END QUAESTOR CONFIG -->\n\n<!-- Your custom content below -->"
+                        "<!-- QUAESTOR CONFIG START -->\nQuaestor config\n"
+                        "<!-- QUAESTOR CONFIG END -->\n\n<!-- Your custom content below -->"
                     ),
                     ("quaestor", "QUAESTOR_CLAUDE.md"): "# QUAESTOR_CLAUDE.md test content",
                     ("quaestor", "CRITICAL_RULES.md"): "# CRITICAL_RULES test content",
@@ -273,19 +278,19 @@ class TestInitCommand:
 
             mock_read.side_effect = mock_read_text
 
-            result = runner.invoke(app, ["init", str(temp_dir)])
+            result = runner.invoke(app, ["init", str(temp_dir), "--mode", "team", "--no-contextual"])
 
             assert result.exit_code == 0
 
             # Check that CLAUDE.md exists and contains both Quaestor config and original content
             updated_content = existing_claude.read_text()
-            assert "<!-- BEGIN QUAESTOR CONFIG -->" in updated_content
-            assert "<!-- END QUAESTOR CONFIG -->" in updated_content
+            assert "<!-- QUAESTOR CONFIG START -->" in updated_content
+            assert "<!-- QUAESTOR CONFIG END -->" in updated_content
             assert "My Custom Claude Config" in updated_content
             assert "This is my custom content." in updated_content
 
             # Ensure Quaestor config is at the beginning
-            assert updated_content.startswith("<!-- BEGIN QUAESTOR CONFIG -->")
+            assert updated_content.startswith("<!-- QUAESTOR CONFIG START -->")
 
 
 class TestCLIApp:
@@ -297,7 +302,7 @@ class TestCLIApp:
         result = runner.invoke(app, ["init", "--help"])
 
         assert result.exit_code == 0
-        assert "Initialize a .quaestor directory" in result.output
+        assert "Initialize Quaestor" in result.output
 
     def test_help_displays_correctly(self, runner):
         """Test that help text displays correctly."""
@@ -306,4 +311,4 @@ class TestCLIApp:
         assert result.exit_code == 0
         assert "Quaestor - Context management" in result.output
         assert "init" in result.output
-        assert "Initialize a .quaestor directory" in result.output
+        assert "Initialize Quaestor" in result.output

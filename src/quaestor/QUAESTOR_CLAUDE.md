@@ -103,6 +103,9 @@ When you're stuck or confused:
 For detailed information about the project:
 - **[MEMORY.md](./.quaestor/MEMORY.md)**: Current project state and progress tracking
 - **[ARCHITECTURE.md](./.quaestor/ARCHITECTURE.md)**: Technical architecture and design principles
+- **[PATTERNS.md](./.quaestor/PATTERNS.md)**: Common implementation patterns and best practices
+- **[VALIDATION.md](./.quaestor/VALIDATION.md)**: Quality gates and validation rules
+- **[AUTOMATION.md](./.quaestor/AUTOMATION.md)**: Hook behaviors and automation details
 
 # ARCHITECTURE & CODE GUIDELINES
 
@@ -227,10 +230,12 @@ workflow_hooks:
 ### Working with the Codebase
 
 <!-- CHECKLIST:codebase-work:START -->
-1. Check `/examples` for reference implementations
-2. Follow established patterns in the codebase
-3. Ensure backward compatibility when making changes
-4. Use feature flags for gradual rollout of new features
+1. Check **[PATTERNS.md](./.quaestor/PATTERNS.md)** for implementation patterns
+2. Review **[VALIDATION.md](./.quaestor/VALIDATION.md)** for quality standards
+3. Follow established patterns in the codebase
+4. Ensure backward compatibility when making changes
+5. Use feature flags for gradual rollout of new features
+6. Understand **[AUTOMATION.md](./.quaestor/AUTOMATION.md)** for hook behaviors
 <!-- CHECKLIST:codebase-work:END -->
 
 ### Development Process

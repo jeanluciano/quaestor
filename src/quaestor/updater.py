@@ -93,8 +93,8 @@ class QuaestorUpdater:
         files_to_check = [
             ("QUAESTOR_CLAUDE.md", self.quaestor_dir / "QUAESTOR_CLAUDE.md"),
             ("CRITICAL_RULES.md", self.quaestor_dir / "CRITICAL_RULES.md"),
-            ("manifest/ARCHITECTURE.md", self.quaestor_dir / "ARCHITECTURE.md"),
-            ("manifest/MEMORY.md", self.quaestor_dir / "MEMORY.md"),
+            ("templates/ARCHITECTURE.template.md", self.quaestor_dir / "ARCHITECTURE.md"),
+            ("templates/MEMORY.template.md", self.quaestor_dir / "MEMORY.md"),
         ]
 
         for resource_path, target_path in files_to_check:
@@ -141,11 +141,8 @@ class QuaestorUpdater:
             True if newer version available
         """
         try:
-            # Try to read from appropriate package location
-            if resource_path.startswith("manifest/"):
-                content = pkg_resources.read_text("quaestor.manifest", resource_path.replace("manifest/", ""))
-            else:
-                content = pkg_resources.read_text("quaestor", resource_path)
+            # Read from package location
+            content = pkg_resources.read_text("quaestor", resource_path)
 
             new_version = extract_version_from_content(content)
             if not new_version:

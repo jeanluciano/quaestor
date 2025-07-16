@@ -262,9 +262,10 @@ wheels = [
 
 [[package]]
 name = "quaestor"
-version = "0.3.43"
+version = "0.4.0"
 source = { editable = "." }
 dependencies = [
+    { name = "pyyaml" },
     { name = "rich" },
     { name = "typer" },
 ]
@@ -280,6 +281,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "pyyaml", specifier = ">=6.0,<7.0" },
     { name = "rich", specifier = ">=13.0.0" },
     { name = "typer", specifier = ">=0.16.0" },
 ]
