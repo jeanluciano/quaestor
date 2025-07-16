@@ -262,7 +262,7 @@ wheels = [
 
 [[package]]
 name = "quaestor"
-version = "0.4.0"
+version = "0.4.1b1"
 source = { editable = "." }
 dependencies = [
     { name = "pyyaml" },

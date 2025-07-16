@@ -24,11 +24,29 @@ class RuleEngine:
         else:
             return self._minimal_rules(project_analysis)
 
+    def _get_file_references(self) -> str:
+        """Get the standard file reference list for Quaestor."""
+        return """<!-- QUAESTOR CONFIG START -->
+> [!IMPORTANT]
+> **Claude:** This project uses Quaestor for AI context management.
+> Please read the following files in order:
+> 1. `.quaestor/QUAESTOR_CLAUDE.md` - How to work with this project effectively
+> 2. `.quaestor/CRITICAL_RULES.md` - Critical rules you must follow
+> 3. `.quaestor/ARCHITECTURE.md` - System design and structure (if available)
+> 4. `.quaestor/MEMORY.md` - Implementation patterns and decisions (if available)
+> 5. `.quaestor/PATTERNS.md` - Common implementation patterns (if available)
+> 6. `.quaestor/VALIDATION.md` - Quality gates and validation rules (if available)
+> 7. `.quaestor/AUTOMATION.md` - Hook behaviors and automation (if available)
+<!-- QUAESTOR CONFIG END -->
+
+<!-- Your custom content below -->
+"""
+
     def _minimal_rules(self, analysis: dict[str, Any]) -> str:
         """For simple scripts/tools - just quality basics."""
         project_type = analysis.get("project_type", "unknown")
 
-        return f"""# Project AI Assistant Configuration
+        return f"""{self._get_file_references()}# Project AI Assistant Configuration
 
 This project uses Quaestor for AI context management.
 
@@ -61,7 +79,7 @@ This is a simple project. Focus on clean code and clear documentation.
         project_type = analysis.get("project_type", "unknown")
         has_tests = analysis.get("has_tests", False)
 
-        return f"""# Project AI Assistant Configuration
+        return f"""{self._get_file_references()}# Project AI Assistant Configuration
 
 This project uses Quaestor for AI context management.
 
@@ -126,7 +144,7 @@ Before EVERY response, I'll consider:
         """Full strict rules for team projects."""
         project_type = analysis.get("project_type", "unknown")
 
-        return f"""# Project AI Assistant Configuration
+        return f"""{self._get_file_references()}# Project AI Assistant Configuration
 
 This project uses Quaestor for AI context management in **TEAM MODE**.
 
