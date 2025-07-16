@@ -47,6 +47,6 @@ htmlcov/
 # Local
 test_project/
 .claude/
-
+hook_test.log
 examples/
 .pypirc

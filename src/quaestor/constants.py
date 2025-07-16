@@ -41,11 +41,14 @@ QUAESTOR_CONFIG_START = "<!-- QUAESTOR CONFIG START -->"
 QUAESTOR_CONFIG_END = "<!-- QUAESTOR CONFIG END -->"
 
 
-# Template file mappings
+# Template file mappings (actual filename -> output filename)
 TEMPLATE_FILES = {
-    "ARCHITECTURE.template.md": "ARCHITECTURE.md",
-    "MEMORY.template.md": "MEMORY.md",
-    "PATTERNS.template.md": "PATTERNS.md",
-    "VALIDATION.template.md": "VALIDATION.md",
-    "AUTOMATION.template.md": "AUTOMATION.md",
+    "architecture.md": "ARCHITECTURE.md",
+    "memory.md": "MEMORY.md",
+    "patterns.md": "PATTERNS.md",
+    "validation.md": "VALIDATION.md",
+    "automation.md": "AUTOMATION.md",
 }
+
+# Template base path within assets
+TEMPLATE_BASE_PATH = "quaestor.assets.templates.documentation"

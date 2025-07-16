@@ -13,6 +13,7 @@ from quaestor.constants import (
     QUAESTOR_CONFIG_END,
     QUAESTOR_CONFIG_START,
     QUAESTOR_DIR_NAME,
+    TEMPLATE_BASE_PATH,
     TEMPLATE_FILES,
 )
 from quaestor.core.project_metadata import FileManifest, FileType, extract_version_from_content
@@ -155,8 +156,8 @@ def _init_team_mode(target_dir: Path, force: bool, contextual: bool = True):
 
     manifest.set_quaestor_version(__version__)
 
-    # Handle CLAUDE.md
-    _merge_claude_md(target_dir, use_rule_engine=contextual)
+    # Handle CLAUDE.md - always use simple format for team mode
+    _merge_claude_md(target_dir, use_rule_engine=False)
 
     # Copy system files
     _copy_system_files(quaestor_dir, manifest, target_dir)
@@ -198,7 +199,7 @@ def _merge_claude_md(target_dir: Path, use_rule_engine: bool = False) -> bool:
 
         # Get the include template
         try:
-            include_content = pkg_resources.read_text("quaestor.templates", "CLAUDE_INCLUDE.md")
+            include_content = pkg_resources.read_text("quaestor.assets.templates.documentation", "claude_include.md")
         except Exception:
             # Fallback if template is missing
             include_content = """<!-- QUAESTOR CONFIG START -->
@@ -209,6 +210,9 @@ def _merge_claude_md(target_dir: Path, use_rule_engine: bool = False) -> bool:
 > 2. `.quaestor/CRITICAL_RULES.md` - Critical rules you must follow
 > 3. `.quaestor/ARCHITECTURE.md` - System design and structure (if available)
 > 4. `.quaestor/MEMORY.md` - Implementation patterns and decisions (if available)
+> 5. `.quaestor/PATTERNS.md` - Common implementation patterns (if available)
+> 6. `.quaestor/VALIDATION.md` - Quality gates and validation rules (if available)
+> 7. `.quaestor/AUTOMATION.md` - Hook behaviors and automation (if available)
 <!-- QUAESTOR CONFIG END -->
 
 <!-- Your custom content below -->
@@ -267,7 +271,9 @@ def _copy_system_files(quaestor_dir: Path, manifest: FileManifest, target_dir: P
     """Copy system files to .quaestor directory."""
     # Copy QUAESTOR_CLAUDE.md
     try:
-        quaestor_claude_content = pkg_resources.read_text("quaestor", "QUAESTOR_CLAUDE.md")
+        quaestor_claude_content = pkg_resources.read_text(
+            "quaestor.assets.templates.documentation", "quaestor_claude.md"
+        )
         quaestor_claude_path = quaestor_dir / "QUAESTOR_CLAUDE.md"
         quaestor_claude_path.write_text(quaestor_claude_content)
 
@@ -280,7 +286,7 @@ def _copy_system_files(quaestor_dir: Path, manifest: FileManifest, target_dir: P
 
     # Copy CRITICAL_RULES.md
     try:
-        critical_rules_content = pkg_resources.read_text("quaestor", "CRITICAL_RULES.md")
+        critical_rules_content = pkg_resources.read_text("quaestor.assets.templates.documentation", "critical_rules.md")
         critical_rules_path = quaestor_dir / "CRITICAL_RULES.md"
         critical_rules_path.write_text(critical_rules_content)
 
@@ -312,7 +318,7 @@ def _init_common(target_dir: Path, force: bool, mode: str):
 
             # Process template with project data
             try:
-                template_content = pkg_resources.read_text("quaestor.templates", template_name)
+                template_content = pkg_resources.read_text(TEMPLATE_BASE_PATH, template_name)
                 # Create a temporary file to process
                 with tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False) as tf:
                     tf.write(template_content)
