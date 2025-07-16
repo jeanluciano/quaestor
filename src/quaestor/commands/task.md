@@ -1,358 +1,171 @@
 ---
-allowed-tools: all
-description: Execute production-quality implementation with auto-detected language standards
+allowed-tools: [Read, Write, Edit, MultiEdit, Bash, Glob, Grep, TodoWrite, Task]
+description: "Execute production-quality implementation with intelligent orchestration"
+performance-profile: "complex"
+complexity-threshold: 0.7
+auto-activation: ["auto-persona", "milestone-integration", "quality-gates"]
+intelligence-features: ["project-detection", "parallel-execution", "context-awareness"]
 ---
 
-# TASK COMMAND - MANDATORY COMPLIANCE REQUIRED
-<!-- META:command:task -->
-<!-- META:version:4.0 -->
-<!-- META:ai-optimized:true -->
-<!-- META:auto-detect:true -->
+# /task - Intelligent Implementation Command
 
-## ⚡ IMMEDIATE ACTION REQUIRED ⚡
+## Purpose
+Execute production-quality features with auto-detected language standards, intelligent tool orchestration, and milestone integration.
 
-**TASK ASSIGNMENT:** $ARGUMENTS
-
-<!-- IF NO ARGUMENTS PROVIDED -->
-{% if not ARGUMENTS or ARGUMENTS == "" %}
-**NO TASK SPECIFIED - CHECKING FOR NEXT TASK:**
-1. First, check .quaestor/MEMORY.md for pending tasks or next logical step
-2. Look for sections like "next_task:", "pending:", "TODO:", or incomplete items
-3. If found, announce the task and proceed with it
-4. If no pending tasks found, ask the user what they'd like to work on
-
-Example response:
-"I'll check MEMORY.md for the next task... Found pending task: 'implement user authentication'. Starting research phase for this task."
-{% endif %}
-
-**YOU MUST:** Begin with milestone awareness phase. No exceptions.
-
-## 📋 MILESTONE AWARENESS PHASE (MANDATORY)
-
-**BEFORE STARTING ANY WORK:**
-
-1. **Check Active Milestones:**
-   - Read all .quaestor/milestones/*/README.md files
-   - Find tasks.yaml files with status: "in_progress" or "active"
-   - Identify which phase/task/subtask relates to this work
-
-2. **Declare Your Work Context:**
-   - Announce: "Working on: [Phase] > [Task] > [Subtask]"
-   - Example: "Working on: Phase 1 > vector_store > Create VectorStore abstraction"
-   - If no match found, declare: "New work not in existing milestones"
-
-3. **Update Task Status:**
-   - If starting a new task, update status to "in_progress"
-   - If continuing existing work, confirm current status
-   - Document any changes to the original plan
-
-**MILESTONE DECLARATION TEMPLATE:**
+## Usage
 ```
-🎯 MILESTONE CONTEXT:
-- Phase: [Phase Name]
-- Task ID: [task_id]
-- Task Name: [Task Name]
-- Subtask: [Current Subtask] ([X/Y] completed)
-- Progress: [X]%
-- File: .quaestor/milestones/[phase]/tasks.yaml
+/task "implement user authentication system"
+/task [description] [--strategy systematic|agile|focused] [--parallel]
 ```
 
-**IF NO MILESTONE MATCH:**
-Ask the user if this work should:
-1. Be added to existing milestone
-2. Create new task in current phase
-3. Proceed as standalone work
+## Auto-Intelligence
 
-**MILESTONE AUTO-DETECTION:**
-1. Scan .quaestor/milestones/ for keywords in task names
-2. Match argument keywords to task descriptions
-3. Identify related subtasks
-4. Suggest milestone context to user
+### Project Detection
+- **Language**: Auto-detect → Python|Rust|JS|Generic standards
+- **Complexity**: Assess scope → Single|Multi-file|System-wide
+- **Persona**: Activate based on keywords → architect|frontend|backend|security
 
-**EXAMPLE:**
-Task: "implement vector store"
-Detected: Phase 1 > vector_store task
-Subtasks: ["Create VectorStore abstraction (ABC)", "Implement InMemoryVectorDB", ...]
-Suggestion: "This appears to relate to Phase 1 vector_store task. Shall I work on the next incomplete subtask?"
+### Execution Strategy
+- **Systematic**: Complex architecture (>0.7 complexity)
+- **Agile**: Feature development (0.3-0.7 complexity)  
+- **Focused**: Bug fixes (<0.3 complexity)
 
-## AUTO-DETECTION PHASE
+## Workflow: Research → Plan → Implement → Validate
 
-<!-- DATA:detection-rules:START -->
+### Phase 1: Discovery & Research 🔍
+**No Arguments?** → Check `.quaestor/MEMORY.md` for `next_task:` or pending items
+
+**Milestone Integration:**
 ```yaml
-project_detection:
-  order: 0
-  action: "Detect project type from files"
-  checks:
-    - if_exists: ["pyproject.toml", "requirements.txt", "setup.py", "*.py"]
-      then: "PYTHON_MODE"
-    - if_exists: ["Cargo.toml", "*.rs"]
-      then: "RUST_MODE"
-    - if_exists: ["package.json", "*.js", "*.ts", "*.jsx", "*.tsx"]
-      then: "JAVASCRIPT_MODE"
-    - else: "GENERIC_MODE"
+🎯 Context Check:
+- Scan: .quaestor/milestones/*/tasks.yaml
+- Match: keywords → active tasks
+- Update: status → "in_progress"
+- Progress: track completion %
 ```
-<!-- DATA:detection-rules:END -->
 
-## IRON-CLAD EXECUTION SEQUENCE
+**Research Protocol:**
+- Analyze codebase patterns & conventions
+- Identify dependencies & integration points
+- Assess complexity → tool selection strategy
 
-<!-- DATA:workflow-sequence:START -->
+### Phase 2: Planning & Approval 📋
+**Present detailed implementation strategy:**
+- Architecture decisions & trade-offs
+- File changes & new components required
+- Quality gates & validation approach
+- Risk assessment & mitigation
+
+**MANDATORY: Get approval before proceeding**
+
+### Phase 3: Implementation ⚡
+**Intelligent Orchestration:**
+- **Multi-file ops** → Spawn Task agents for parallel execution
+- **Complex refactoring** → Agent per module/component
+- **Test writing** → Dedicated testing agent
+- **Documentation** → Concurrent doc updates
+
+**Quality Cycle** (every 3 edits):
+```
+Execute → Validate → Fix (if ❌) → Continue
+```
+
+### Phase 4: Validation & Completion ✅
+**Language-Specific Standards:**
+
+**Python:** `ruff check . && ruff format . && pytest`
+**Rust:** `cargo clippy -- -D warnings && cargo fmt && cargo test`  
+**JS/TS:** `npx eslint . --fix && npx prettier --write . && npm test`
+**Generic:** Syntax + error handling + documentation + tests
+
+**Completion Criteria:**
+- ✅ All tests passing
+- ✅ Zero linting errors  
+- ✅ Type checking clean (if applicable)
+- ✅ Documentation complete
+- ✅ Milestone progress updated
+
+## Complexity Management
+
+**Auto-Stop Triggers:**
+- Function >50 lines → refactor prompt
+- Nesting depth >3 → simplification required
+- Circular dependencies → architecture review
+- Performance implications unclear → measurement required
+
+**Intelligent Delegation:**
+- **>7 directories** → `--parallel-dirs` auto-enabled
+- **>50 files** → Multi-agent file delegation
+- **Multiple domains** → Specialized agent per domain
+
+## Milestone Integration
+
+**Auto-Update Protocol:**
 ```yaml
-mandatory_workflow:
-  deviation_tolerance: ZERO
-  enforcement: IMMEDIATE
-  
-phases:
-  - phase: TASK_DISCOVERY
-    order: 0
-    action: "Find next task if none specified"
-    only_if: "No arguments provided"
-    steps:
-      - "Read .quaestor/MEMORY.md"
-      - "Look for: next_task, pending items, incomplete milestones"
-      - "Check current_milestone progress"
-      - "Find TODOs or unfinished features"
-    required_output: "Found task: [describe task] OR No pending tasks found"
-    
-  - phase: RESEARCH
-    order: 1
-    action: "Analyze codebase exhaustively"
-    required_output: "I'll research the codebase and create a plan before implementing."
-    minimum_duration: "THOROUGH - no rushing allowed"
-    
-  - phase: PLAN
-    order: 2
-    action: "Present detailed implementation strategy"
-    required_output: "Here's my implementation plan: [DETAILED PLAN]"
-    approval: "MANDATORY before proceeding"
-    
-  - phase: IMPLEMENT
-    order: 3
-    action: "Execute with continuous validation"
-    validation_frequency: "EVERY 3 EDITS"
-    checkpoint_enforcement: "AUTOMATIC"
+Pre-Implementation:
+  - Check: active milestones & match task context
+  - Declare: "Working on [Phase] > [Task] > [Subtask]"
+  - Update: task status → "in_progress"
 
-required_responses:
-  task_start: "I'll research the codebase and create a plan before implementing."
-  complex_architecture: "I need to ultrathink through this architecture."
-  multi_component: "I'll spawn agents to handle different components in parallel."
-  found_issues: "Stopping to fix issues before continuing."
-  completion: "All checks pass. Implementation complete."
+Post-Implementation:
+  - Mark: completed subtasks with "# COMPLETED"
+  - Update: progress percentage
+  - Log: MEMORY.md with timestamp & outcomes
+  - Identify: next logical task in sequence
 ```
-<!-- DATA:workflow-sequence:END -->
 
-## LANGUAGE-SPECIFIC QUALITY STANDARDS
-
-### PYTHON MODE
-<!-- DATA:python-standards:START -->
+## Task Discovery (No Arguments)
 ```yaml
-quality_gates:
-  - tool: "ruff"
-    command: "ruff check . --fix"
-    failure_action: "STOP - fix all issues"
-  - tool: "ruff format"
-    command: "ruff format ."
-    failure_action: "STOP - format code"
-  - tool: "pytest"
-    command: "pytest -v"
-    failure_action: "STOP - all tests must pass"
-  - tool: "type checking"
-    command: "mypy . --ignore-missing-imports"
-    failure_action: "FIX - add type hints"
-
-validation_commands:
-  before_commit:
-    - "ruff check ."
-    - "ruff format --check ."
-    - "pytest"
-  after_major_change:
-    - "pytest -v"
-    - "ruff check . --statistics"
-
-required_patterns:
-  - comprehensive_docstrings
-  - type_hints_everywhere
-  - proper_error_handling
-  - test_coverage_80_percent
+Discovery Protocol:
+  1. Read: .quaestor/MEMORY.md
+  2. Look for: next_task|pending|TODO|incomplete
+  3. Check: current_milestone progress
+  4. Output: "Found task: [description]" OR "No pending tasks"
 ```
-<!-- DATA:python-standards:END -->
 
-### RUST MODE
-<!-- DATA:rust-standards:START -->
+## Quality Gates by Language
+
+### Python Standards
 ```yaml
-quality_gates:
-  - tool: "cargo clippy"
-    command: "cargo clippy -- -D warnings"
-    failure_action: "STOP - fix all clippy warnings"
-  - tool: "cargo fmt"
-    command: "cargo fmt"
-    failure_action: "STOP - format code"
-  - tool: "cargo test"
-    command: "cargo test"
-    failure_action: "STOP - all tests must pass"
-  - tool: "cargo check"
-    command: "cargo check"
-    failure_action: "STOP - code must compile"
-
-validation_commands:
-  before_commit:
-    - "cargo fmt -- --check"
-    - "cargo clippy -- -D warnings"
-    - "cargo test"
-  after_major_change:
-    - "cargo test --all"
-    - "cargo bench"
-
-required_patterns:
-  - comprehensive_documentation
-  - proper_error_handling_with_result
-  - safe_rust_patterns
-  - no_unwrap_in_production
-  - test_coverage_80_percent
+Validation:
+  - ruff: check . --fix
+  - format: ruff format .
+  - tests: pytest -v
+  - types: mypy . --ignore-missing-imports
+Required:
+  - Comprehensive docstrings
+  - Type hints everywhere  
+  - 80%+ test coverage
 ```
-<!-- DATA:rust-standards:END -->
 
-### JAVASCRIPT/TYPESCRIPT MODE
-<!-- DATA:javascript-standards:START -->
+### Rust Standards  
 ```yaml
-quality_gates:
-  - tool: "eslint"
-    command: "npx eslint . --fix"
-    failure_action: "STOP - fix all issues"
-  - tool: "prettier"
-    command: "npx prettier --write ."
-    failure_action: "STOP - format code"
-  - tool: "tests"
-    command: "npm test"
-    failure_action: "STOP - all tests must pass"
-  - tool: "type checking"
-    command: "npx tsc --noEmit"
-    failure_action: "FIX - resolve type errors"
-
-validation_commands:
-  before_commit:
-    - "npx eslint ."
-    - "npx prettier --check ."
-    - "npm test"
-  after_major_change:
-    - "npm test -- --coverage"
-    - "npm run build"
-
-required_patterns:
-  - proper_async_await
-  - error_boundaries
-  - comprehensive_jsdoc
-  - test_coverage_80_percent
+Validation:
+  - clippy: cargo clippy -- -D warnings
+  - format: cargo fmt
+  - tests: cargo test
+  - check: cargo check
+Required:
+  - Comprehensive documentation
+  - Result<T,E> error handling
+  - No unwrap() in production
 ```
-<!-- DATA:javascript-standards:END -->
 
-### GENERIC MODE
-<!-- DATA:generic-standards:START -->
+### JavaScript/TypeScript Standards
 ```yaml
-quality_gates:
-  - check: "syntax_validity"
-    action: "Ensure code compiles/runs"
-  - check: "error_handling"
-    action: "Add proper error handling"
-  - check: "documentation"
-    action: "Add clear comments and docs"
-  - check: "tests"
-    action: "Write comprehensive tests"
-
-required_patterns:
-  - clear_variable_names
-  - modular_design
-  - proper_error_handling
-  - comprehensive_documentation
+Validation:
+  - lint: npx eslint . --fix
+  - format: npx prettier --write .
+  - tests: npm test
+  - types: npx tsc --noEmit
+Required:
+  - Proper async/await patterns
+  - Comprehensive JSDoc
+  - Error boundaries (React)
 ```
-<!-- DATA:generic-standards:END -->
 
-## MANDATORY AGENT USAGE
+## Final Response Protocol
+**Task complete. All quality gates passed. Milestone tracking updated. Ready for review.**
 
-**SPAWN AGENTS FOR:**
-- Multi-file operations
-- Test writing while implementing
-- Complex refactoring
-- Performance optimization
-- Documentation updates
-
-## COMPLEXITY MANAGEMENT
-
-**IMMEDIATELY STOP AND ASK WHEN:**
-- Function exceeds 50 lines
-- Nesting depth > 3
-- Circular dependencies detected
-- Multiple valid approaches exist
-- Performance implications unclear
-
-## VALIDATION CYCLE
-
-<!-- DATA:validation-cycle:START -->
-```yaml
-continuous_validation:
-  frequency: "EVERY 3 EDITS"
-  checks:
-    - syntax_valid: "MANDATORY"
-    - tests_pass: "MANDATORY"
-    - linting_clean: "MANDATORY"
-    - types_correct: "MANDATORY"
-  
-  on_failure:
-    action: "STOP IMMEDIATELY"
-    fix: "RESOLVE BEFORE CONTINUING"
-    report: "EXPLAIN ISSUE AND FIX"
-```
-<!-- DATA:validation-cycle:END -->
-
-## CHECKPOINT REQUIREMENTS
-
-**MANDATORY STOPS:**
-1. After research phase - present findings
-2. After plan creation - get approval
-3. Every 3 file edits - run validation
-4. Before declaring complete - full test suite
-
-## COMPLETION CRITERIA
-
-**BEFORE MARKING COMPLETE:**
-- [ ] All tests passing
-- [ ] Zero linting errors
-- [ ] Type checking passes (if applicable)
-- [ ] Documentation complete
-- [ ] Error handling comprehensive
-- [ ] Performance acceptable
-
-## 📊 POST-COMPLETION MILESTONE UPDATE (MANDATORY)
-
-**AFTER COMPLETING IMPLEMENTATION:**
-
-1. **Update Milestone Files:**
-   ```bash
-   # Update .quaestor/milestones/[phase]/tasks.yaml
-   # Mark completed subtasks with "# COMPLETED"
-   # Update progress percentage
-   # Add timestamped notes
-   ```
-
-2. **Update MEMORY.md:**
-   ```markdown
-   ### YYYY-MM-DD
-   - **COMPLETED**: [Task Name] ([Phase] - [task_id], subtask [X/Y])
-     - Implementation: [brief description]
-     - Files created: [list key files]
-     - Tests added: [count and brief description]
-     - Status: [X]% complete
-     - Next: [what's next in this task]
-   ```
-
-3. **Verification Checklist:**
-   - [ ] Milestone task status updated
-   - [ ] Subtasks marked complete with "# COMPLETED"
-   - [ ] Progress percentage updated
-   - [ ] MEMORY.md progress log added
-   - [ ] Notes added with timestamp
-   - [ ] Next steps identified
-
-**COMPLIANCE CHECK:**
-If you cannot complete the milestone updates, explain why and ask for guidance.
-
-**FINAL RESPONSE:** "Task complete. All quality gates passed. Milestone tracking updated. Ready for review."
+---
+*Command with orchestration for Claude integration and execution efficiency*

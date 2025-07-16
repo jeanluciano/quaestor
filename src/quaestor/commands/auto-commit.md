@@ -1,404 +1,182 @@
 ---
-allowed-tools: all
-description: Automatically create atomic commits for completed milestone items using conventional commit spec
+allowed-tools: [Read, Bash, Grep, Edit, TodoWrite]
+description: "Intelligent commit generation with conventional commit spec and milestone integration"
+performance-profile: "optimization"
+complexity-threshold: 0.3
+auto-activation: ["todo-completion-detection", "commit-generation", "milestone-tracking"]
+intelligence-features: ["conventional-commits", "scope-detection", "quality-gates"]
 ---
 
-# AUTO COMMIT - Atomic Commits for Completed Items
-<!-- META:command:auto:commit -->
-<!-- META:version:1.0 -->
-<!-- META:ai-optimized:true -->
+# /auto-commit - Intelligent Commit Generation
 
-## 🎯 PURPOSE: One Commit Per Completed Task
+## Purpose
+Automatically create conventional commits when TODOs are completed, with intelligent scope detection, quality gates, and milestone integration.
 
-**Automatically create conventional commits when individual milestone items are completed.**
-
-<!-- SECTION:auto-commit:overview:START -->
-## Overview
-
-<!-- DATA:workflow-summary:START -->
-```yaml
-workflow:
-  trigger: "Single TODO item marked as completed"
-  actions:
-    - detect_completion: "TodoWrite status change to 'completed'"
-    - analyze_changes: "Find files modified for this task"
-    - run_checks: "Ensure code quality"
-    - generate_commit: "Create conventional commit"
-    - update_tracking: "Update milestone progress"
-  
-benefits:
-  - "Atomic, focused commits"
-  - "Clean git history"
-  - "Automatic conventional commits"
-  - "Real-time progress tracking"
+## Usage
 ```
-<!-- DATA:workflow-summary:END -->
-<!-- SECTION:auto-commit:overview:END -->
-
-<!-- SECTION:auto-commit:trigger-detection:START -->
-## Trigger Detection
-
-<!-- DATA:completion-triggers:START -->
-```yaml
-completion_triggers:
-  primary_source:
-    tool: "TodoWrite"
-    event: "Status change to 'completed'"
-    data:
-      - todo_id: "Unique identifier"
-      - content: "Task description"
-      - priority: "Task priority"
-      - previous_status: "in_progress"
-  
-  context_detection:
-    milestone_link:
-      search_in: ".quaestor/milestones/*/tasks.yaml"
-      match: "TODO content with milestone task"
-    
-    affected_files:
-      git_status: "Modified files since task started"
-      time_window: "Since todo was set to in_progress"
-      heuristics:
-        - "Files in same directory as task"
-        - "Files imported by changed files"
-        - "Test files for changed code"
+/auto-commit
+/auto-commit --dry-run
+/auto-commit --todo-id 42
 ```
-<!-- DATA:completion-triggers:END -->
-<!-- SECTION:auto-commit:trigger-detection:END -->
 
-<!-- SECTION:auto-commit:commit-generation:START -->
-## Conventional Commit Generation
+## Auto-Intelligence
 
-<!-- DATA:commit-spec:START -->
+### Commit Generation
 ```yaml
-conventional_commits:
-  specification: "https://www.conventionalcommits.org/en/v1.0.0/"
-  
-  type_detection:
-    from_todo_content:
-      patterns:
-        - "implement|add|create" → "feat"
-        - "fix|resolve|repair" → "fix"
-        - "update docs|document" → "docs"
-        - "refactor|restructure" → "refactor"
-        - "test|testing" → "test"
-        - "optimize|performance" → "perf"
-        - "update deps|dependency" → "build"
-        - "ci/cd|pipeline" → "ci"
-        - "formatting|lint" → "style"
-        - "cleanup|maintenance" → "chore"
-    
-    from_file_patterns:
-      "test_*.py|*.test.js|*.spec.ts" → "test"
-      "*.md|docs/*" → "docs"
-      ".github/workflows/*" → "ci"
-      "package.json|requirements.txt" → "build"
-    
-    default: "feat"  # When unclear, assume feature
-  
-  scope_extraction:
-    strategies:
-      1_from_milestone:
-        example: "Phase 1: Authentication" → "auth"
-        
-      2_from_directory:
-        example: "src/components/Button.jsx" → "components"
-        
-      3_from_module:
-        example: "quaestor.hooks.automation" → "hooks"
-        
-      4_explicit_in_todo:
-        pattern: "[scope:xxx]"
-        example: "Add login [scope:auth]" → "auth"
-    
-    max_length: 20
-    optional: true
-  
-  description_generation:
-    source: "TODO content"
-    transformations:
-      - "Convert to imperative mood"
-      - "Remove task metadata"
-      - "Lowercase first letter"
-      - "Remove trailing punctuation"
-      - "Limit to 50 characters"
-    
-    examples:
-      input: "Implement user authentication with OAuth2"
-      output: "implement user authentication with OAuth2"
-      
-      input: "Fix the bug in payment processing"
-      output: "fix bug in payment processing"
-      
-      input: "TODO: Update README with new API endpoints"
-      output: "update README with new API endpoints"
+Conventional Commits:
+  - Type: Auto-detect feat|fix|docs|refactor|test|perf|chore
+  - Scope: Extract from milestone|directory|module patterns
+  - Description: Transform TODO → imperative mood
+  - Body: Generate from file changes + context
 ```
-<!-- DATA:commit-spec:END -->
 
-<!-- DATA:message-template:START -->
+### Quality Integration
+- **Pre-commit checks**: Syntax, linting, tests
+- **Smart staging**: Only related files
+- **Milestone tracking**: Auto-update progress
+
+## Execution: Detect → Analyze → Generate → Commit
+
+### Phase 1: Completion Detection 🔍
+**TODO Status Monitoring:**
 ```yaml
-commit_message_template: |
-  {{ type }}{% if scope %}({{ scope }}){% endif %}: {{ description }}
-  {% if body %}
-
-  {{ body }}
-  {% endif %}
-  {% if milestone %}
-
-  Part of: {{ milestone }}
-  {% endif %}
-  {% if todo_id %}
-  Completes: TODO #{{ todo_id }}
-  {% endif %}
-  {% if breaking %}
-
-  BREAKING CHANGE: {{ breaking }}
-  {% endif %}
-  {% if issues %}
-  {% for issue in issues %}
-  Refs: #{{ issue }}
-  {% endfor %}
-  {% endif %}
-
-example_outputs:
-  - |
-    feat(auth): implement OAuth2 login flow
-    
-    - Added OAuth2 provider configuration
-    - Implemented callback handling
-    - Added token refresh logic
-    
-    Part of: Phase 1 - User Authentication
-    Completes: TODO #42
-    
-  - |
-    fix: resolve null pointer in payment processor
-    
-    The payment processor was not handling null customer IDs
-    properly, causing crashes in production.
-    
-    Completes: TODO #17
-    Refs: #156
+Trigger Source:
+  - TodoWrite: Status change to 'completed'
+  - Context: Link to milestone tasks
+  - Files: Modified since TODO in_progress
+  - Scope: Directory/module analysis
 ```
-<!-- DATA:message-template:END -->
-<!-- SECTION:auto-commit:commit-generation:END -->
 
-<!-- SECTION:auto-commit:quality-gates:START -->
-## Quality Gates
-
-<!-- DATA:pre-commit-checks:START -->
+### Phase 2: Intelligent Analysis ⚡
+**Conventional Commit Spec:**
 ```yaml
-quality_checks:
-  mandatory:
-    1_syntax_check:
-      description: "Ensure code is syntactically valid"
-      commands:
-        python: "python -m py_compile"
-        javascript: "node --check"
-        typescript: "tsc --noEmit"
-    
-    2_linting:
-      description: "Code meets style standards"
-      commands:
-        python: "ruff check"
-        javascript: "eslint"
-        rust: "cargo clippy"
-    
-    3_tests:
-      description: "Related tests pass"
-      strategy: "Run tests in affected modules only"
-      fast_mode: true
+Type Detection:
+  - implement|add|create → feat
+  - fix|resolve|repair → fix
+  - update docs|document → docs
+  - refactor|restructure → refactor
+  - test|testing → test
+  - optimize|performance → perf
   
-  optional:
-    formatting:
-      auto_fix: true
-      commands:
-        python: "ruff format"
-        javascript: "prettier --write"
-  
-  on_failure:
-    action: "Abort commit and show errors"
-    suggestion: "Run /quaestor:check to fix issues"
+Scope Extraction:
+  - Milestone: "Phase 1: Auth" → auth
+  - Directory: "src/components/" → components
+  - Module: "quaestor.hooks" → hooks
+  - Explicit: "[scope:api]" → api
 ```
-<!-- DATA:pre-commit-checks:END -->
-<!-- SECTION:auto-commit:quality-gates:END -->
 
-<!-- SECTION:auto-commit:file-staging:START -->
-## Intelligent File Staging
+### Phase 3: Message Generation 📝
+**Template Structure:**
+```
+type(scope): description
 
-<!-- DATA:staging-logic:START -->
+- Change summary bullet points
+- Key implementation details
+
+Part of: [Milestone Name]
+Completes: TODO #[id]
+```
+
+**Example Output:**
+```
+feat(auth): implement OAuth2 login flow
+
+- Added OAuth2 provider configuration
+- Implemented callback handling
+- Added token refresh logic
+
+Part of: Phase 1 - User Authentication
+Completes: TODO #42
+```
+
+### Phase 4: Quality Gates ✅
+**Pre-Commit Validation:**
 ```yaml
-file_staging:
-  automatic_detection:
-    1_direct_changes:
-      description: "Files modified for this TODO"
-      detection: "git diff --name-only"
-      
-    2_test_files:
-      description: "Test files for changed code"
-      patterns:
-        - "test_{{ module }}.py"
-        - "{{ module }}.test.js"
-        - "{{ module }}.spec.ts"
-    
-    3_documentation:
-      description: "Related documentation"
-      patterns:
-        - "README.md (if changed)"
-        - "docs/* (if related)"
-        - "*.md (in same directory)"
-    
-    4_configuration:
-      description: "Config files if needed"
-      patterns:
-        - "package.json (if deps added)"
-        - "requirements.txt (if deps added)"
-        - "*.config.* (if modified)"
+Mandatory Checks:
+  - Syntax: python -m py_compile, tsc --noEmit
+  - Linting: ruff check, eslint, cargo clippy
+  - Tests: Run affected modules only (fast mode)
   
-  exclusions:
-    never_stage:
-      - "*.log"
-      - "*.tmp"
-      - ".env*"
-      - "*.secret"
-      - "__pycache__"
-      - "node_modules"
-    
-    ask_before_staging:
-      - "*.generated.*"
-      - "package-lock.json"
-      - "poetry.lock"
+Auto-Fix:
+  - Formatting: ruff format, prettier --write
+  - Import sorting: isort, organize imports
   
-  validation:
-    ensure_related: "Only stage files related to TODO"
-    prevent_mixing: "Don't mix unrelated changes"
+Failure Response:
+  - Abort commit → show errors
+  - Suggest: Run /check to fix issues
 ```
-<!-- DATA:staging-logic:END -->
-<!-- SECTION:auto-commit:file-staging:END -->
 
-<!-- SECTION:auto-commit:milestone-integration:START -->
+## Smart File Staging
+
+**Auto-Detection Rules:**
+```yaml
+Include:
+  - Direct changes: git diff --name-only
+  - Test files: test_*.py, *.test.js, *.spec.ts
+  - Related docs: README.md, *.md in same dir
+  - Config: package.json, requirements.txt (if deps added)
+  
+Exclude:
+  - Temp files: *.log, *.tmp, __pycache__
+  - Secrets: .env*, *.secret
+  - Generated: *.generated.*, lock files
+  
+Validation:
+  - Only stage TODO-related files
+  - Prevent mixing unrelated changes
+```
+
 ## Milestone Integration
 
-<!-- DATA:milestone-tracking:START -->
+**Auto-Tracking Updates:**
 ```yaml
-milestone_tracking:
-  on_commit:
-    1_find_milestone:
-      search: ".quaestor/milestones/*/tasks.yaml"
-      match: "TODO content in task list"
-    
-    2_update_task:
-      add_fields:
-        completed_at: "{{ timestamp }}"
-        commit_sha: "{{ git_commit_sha }}"
-        status: "completed"
-    
-    3_update_progress:
-      recalculate: "completed / total * 100"
-      update_memory: true
-    
-    4_check_milestone_completion:
-      if_all_tasks_done:
-        notification: "🎉 Milestone complete! Ready for PR"
-        next_action: "Suggest running /quaestor:milestone-pr"
+On Commit:
+  - Find milestone: Match TODO in tasks.yaml
+  - Update task: Add completed_at + commit_sha
+  - Recalculate progress: completed/total * 100
+  - Check completion: Notify if milestone done
   
-  progress_tracking:
-    memory_update:
-      location: "## Current Milestone"
-      format: |
-        - ✅ {{ task_description }} ({{ commit_sha_short }})
+Memory Updates:
+  - Format: "✅ task_description (commit_sha)"
+  - Location: Current Milestone section
+  - Trigger: Suggest /milestone-pr if complete
 ```
-<!-- DATA:milestone-tracking:END -->
-<!-- SECTION:auto-commit:milestone-integration:END -->
 
-<!-- SECTION:auto-commit:hook-configuration:START -->
 ## Hook Configuration
 
-<!-- DATA:hook-setup:START -->
-```yaml
-hook_integration:
-  trigger_hook:
-    location: ".claude/settings.json"
-    configuration: |
-      {
-        "hooks": {
-          "PostToolUse": [
-            {
-              "matcher": "TodoWrite",
-              "hooks": [
-                {
-                  "type": "command",
-                  "command": "quaestor auto-commit --check"
-                }
-              ]
-            }
-          ]
-        }
-      }
-  
-  auto_commit_check:
-    description: "Check if any TODOs were completed"
-    logic:
-      - "Parse TodoWrite output"
-      - "Find status: 'completed' items"
-      - "Trigger auto-commit for each"
+**Automatic Triggers:**
+```json
+{
+  "hooks": {
+    "PostToolUse": [{
+      "matcher": "TodoWrite",
+      "hooks": [{
+        "type": "command",
+        "command": "quaestor auto-commit --check"
+      }]
+    }]
+  }
+}
 ```
-<!-- DATA:hook-setup:END -->
-<!-- SECTION:auto-commit:hook-configuration:END -->
 
-<!-- SECTION:auto-commit:usage:START -->
-## Usage
+**Logic Flow:**
+- Parse TodoWrite output → Find 'completed' status
+- Trigger auto-commit for each completion
+- Update milestone progress automatically
 
-<!-- EXAMPLE:automatic:START -->
-```yaml
-# Automatic trigger (recommended)
-- Complete a TODO item via TodoWrite
-- Auto-commit runs automatically
-- Creates conventional commit
-- Updates milestone progress
-```
-<!-- EXAMPLE:automatic:END -->
+## Success Criteria
 
-<!-- EXAMPLE:manual:START -->
-```bash
-# Manual execution
-/quaestor:auto-commit
+**Commit Creation:**
+- ✅ Conventional commit format generated
+- ✅ Only related files staged
+- ✅ Quality gates passed
+- ✅ Milestone tracking updated
 
-# Check what would be committed
-/quaestor:auto-commit --dry-run
+**Integration:**
+- ✅ TODO completion detection working
+- ✅ Automatic hook triggers functional
+- ✅ Progress calculation accurate
+- ✅ Clean git history maintained
 
-# Commit specific TODO
-/quaestor:auto-commit --todo-id 42
-
-# Skip quality checks (not recommended)
-/quaestor:auto-commit --skip-checks
-```
-<!-- EXAMPLE:manual:END -->
-<!-- SECTION:auto-commit:usage:END -->
-
-<!-- SECTION:auto-commit:configuration:START -->
-## Configuration
-
-<!-- DATA:settings:START -->
-```yaml
-auto_commit_settings:
-  enabled: true
-  
-  behavior:
-    require_all_checks: true
-    auto_push: false
-    sign_commits: true
-    
-  commit_style:
-    conventional: true
-    include_todo_id: true
-    include_milestone: true
-    
-  notifications:
-    on_success: "✅ Committed: {{ description }}"
-    on_failure: "❌ Commit failed: {{ error }}"
-```
-<!-- DATA:settings:END -->
-<!-- SECTION:auto-commit:configuration:END -->
-
-**One task completed = One atomic commit. Clean history, automatic tracking!**
+---
+*Intelligent commit generation with conventional spec and milestone integration*

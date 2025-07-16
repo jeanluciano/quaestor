@@ -1,119 +1,148 @@
 ---
-allowed-tools: [Read, LS, Grep]
-description: Show current project status and progress
+allowed-tools: [Read, LS, Grep, Bash]
+description: "Intelligent project progress overview with visual indicators and actionable insights"
+performance-profile: "standard"
+complexity-threshold: 0.2
+auto-activation: ["progress-visualization", "insight-generation", "next-action-detection"]
+intelligence-features: ["milestone-analysis", "velocity-tracking", "bottleneck-detection"]
 ---
 
-# STATUS - Project Progress Overview
-<!-- META:command:status -->
-<!-- META:version:1.0 -->
+# /status - Intelligent Progress Overview
 
-## 📊 Project Status Report
+## Purpose
+Analyze project progress with visual indicators, velocity tracking, and actionable insights for next steps.
 
-I'll analyze your project's current state and progress.
+## Usage
+```
+/status
+/status --verbose
+/status --milestone current
+```
 
-### 1. Check Quaestor Documentation
-First, let me read your project's current status from the Quaestor files:
+## Auto-Intelligence
 
+### Progress Analysis
 ```yaml
-files_to_check:
-  - path: ".quaestor/MEMORY.md"
-    purpose: "Current progress and milestones"
-  - path: ".quaestor/ARCHITECTURE.md"
-    purpose: "Project structure and design"
-  - path: ".quaestor/manifest.json"
-    purpose: "File tracking and versions"
+Data Sources:
+  - MEMORY.md → milestone tracking + task completion
+  - Git history → commit velocity + activity patterns
+  - Quality metrics → test coverage + lint status
+  - Project health → dependencies + documentation
 ```
 
-### 2. Analyze Current State
+### Visual Indicators
+- **Progress bars**: [████████░░] 80% with emoji status
+- **Velocity tracking**: Commits/week, tasks/milestone trends
+- **Bottleneck detection**: Stalled tasks, failing quality gates
 
-<!-- DATA:status-analysis:START -->
+## Execution: Scan → Analyze → Visualize → Recommend
+
+### Phase 1: Data Collection 🔍
+**Multi-Source Analysis:**
 ```yaml
-progress_indicators:
-  milestones:
-    - check: "current_milestone"
-      source: "MEMORY.md → Current Milestone section"
-    - check: "completed_items"
-      source: "MEMORY.md → Completed section"
-    - check: "in_progress_items"
-      source: "MEMORY.md → In Progress section"
-    - check: "upcoming_items"
-      source: "MEMORY.md → Planned section"
+Progress Data:
+  - Current milestone status + completion %
+  - Task breakdown: completed|in_progress|planned
+  - Recent activity: commits, updates, changes
   
-  code_quality:
-    - check: "test_status"
-      command: "Check if tests exist and recent results"
-    - check: "linting_status"
-      command: "Look for recent linting results"
-    - check: "type_checking"
-      command: "Check for type checking configuration"
+Quality Metrics:
+  - Test coverage: % + trend
+  - Linting status: ✅ clean | ⚠️ warnings | ❌ errors
+  - Build health: last successful build
   
-  project_health:
-    - check: "recent_commits"
-      source: "git log if available"
-    - check: "documentation_status"
-      source: "README.md and docs/"
-    - check: "dependencies_status"
-      source: "package files"
-```
-<!-- DATA:status-analysis:END -->
-
-### 3. Generate Status Report
-
-After analyzing, I'll provide a formatted status report:
-
-```
-📊 Project Status: [Project Name]
-
-Current Phase: [Milestone Name]
-Progress: [##########----] 75%
-
-✅ Recently Completed ([count]):
-  • [Completed item 1]
-  • [Completed item 2]
-  • ...
-
-🚧 In Progress ([count]):
-  • [Current task 1] - [status]
-  • [Current task 2] - [status]
-  • ...
-
-📋 Upcoming ([count]):
-  • [Planned item 1]
-  • [Planned item 2]
-  • ...
-
-Code Quality:
-  Tests: [✅ Passing | ⚠️ Issues | ❌ Failing]
-  Linting: [✅ Clean | ⚠️ Warnings | ❌ Errors]
-  Type Check: [✅ Clean | ⚠️ Issues | ❌ Errors]
-
-Last Activity: [time since last commit/update]
-Documentation: [✅ Current | ⚠️ Needs Update | ❌ Missing]
-
-💡 Recommendations:
-  • [Suggestion based on current state]
-  • [Next logical step]
+Velocity Tracking:
+  - Commits per week: trend analysis
+  - Tasks completed per milestone: average
+  - Time to completion: milestone duration patterns
 ```
 
-### 4. Verbose Mode (if requested)
+### Phase 2: Progress Visualization 📊
+**Status Report Format:**
+```
+🎯 [Project Name] • [Current Phase]
 
-If you add `--verbose` to the command, I'll also show:
-- Detailed progress on each task
-- Full list of completed items
-- Technical debt tracking
-- Performance metrics
-- Test coverage details
+📈 Progress: [████████░░] 80% • Velocity: +15% this week
 
-### 5. Quick Actions
+✅ Completed (5): 
+  • user authentication system (a1b2c3d)
+  • payment processing integration (e4f5g6h)
+  • responsive UI components (i7j8k9l)
 
-Based on the status, I'll suggest quick actions:
-- If tests failing: "Run `/check` to see details"
-- If tasks stalled: "Use `/task` to continue implementation"
-- If milestone complete: "Use `/milestone-commit` to finalize"
+🔄 In Progress (2):
+  • API documentation → 60% complete
+  • performance optimization → started 3d ago
+
+📋 Planned (3):
+  • deployment pipeline setup
+  • monitoring & alerting
+  • user feedback integration
+
+⚡ Quality Dashboard:
+  Tests: ✅ 87% coverage • Linting: ✅ clean • Build: ✅ passing
+
+🎢 Velocity: 8 commits this week • 2.3 tasks/milestone avg
+
+💡 Next Action: Complete API docs → ready for /milestone-pr
+```
+
+### Phase 3: Intelligent Insights 💡
+**Smart Recommendations:**
+```yaml
+Bottleneck Detection:
+  - Stalled tasks → suggest /task to continue
+  - Failing tests → suggest /check to fix
+  - Low velocity → identify blockers
+  
+Next Actions:
+  - Milestone near completion → suggest /milestone-pr
+  - Quality issues → prioritize /check fixes
+  - Documentation gaps → highlight missing docs
+  
+Trend Analysis:
+  - Velocity increasing → celebrate progress
+  - Tasks accumulating → suggest focus areas
+  - Quality declining → recommend cleanup
+```
+
+### Phase 4: Actionable Guidance 🚀
+**Context-Aware Suggestions:**
+```yaml
+Action Triggers:
+  Milestone 90%+ complete:
+    → "🎉 Almost done! Run /milestone-pr when ready"
+  
+  Tests failing:
+    → "⚠️ Quality gate failing. Run /check to fix issues"
+  
+  No activity 3+ days:
+    → "📋 Ready to continue? Run /task for next steps"
+  
+  High velocity + clean quality:
+    → "🚀 Great momentum! Consider next milestone planning"
+```
+
+## Verbose Mode Features
+
+**Extended Analysis:**
+- Detailed task breakdowns with time estimates
+- Complete commit history with impact analysis
+- Technical debt tracking and prioritization
+- Performance metrics and benchmark comparisons
+- Dependency health and security status
+
+## Success Criteria
+
+**Status Analysis:**
+- ✅ All data sources scanned and analyzed
+- ✅ Progress accurately calculated and visualized
+- ✅ Quality metrics current and actionable
+- ✅ Velocity trends identified and explained
+
+**Intelligence Quality:**
+- ✅ Bottlenecks detected with specific suggestions
+- ✅ Next actions prioritized by impact
+- ✅ Trends analyzed with context-aware insights
+- ✅ Visual indicators clear and informative
 
 ---
-
-**Usage:**
-- `/status` - Show concise project status
-- `/status --verbose` - Show detailed status with all items
-- `/status --json` - Output in JSON format (coming soon)
+*Intelligent progress tracking with actionable insights and visual velocity analysis*

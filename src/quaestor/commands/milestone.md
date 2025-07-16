@@ -1,207 +1,207 @@
 ---
-allowed-tools: [Read, Edit, MultiEdit, Write, Bash]
-description: Create or complete project milestones
+allowed-tools: [Read, Edit, MultiEdit, Write, Bash, Grep]
+description: "Intelligent milestone management with completion detection"
+performance-profile: "standard"
+complexity-threshold: 0.3
+auto-activation: ["completion-detection", "evidence-validation", "progress-tracking"]
+intelligence-features: ["readiness-assessment", "auto-archiving", "next-phase-planning"]
 ---
 
-# MILESTONE - Project Phase Management
-<!-- META:command:milestone -->
-<!-- META:version:1.0 -->
+# /milestone - Intelligent Milestone Management
 
-## 🎯 Milestone Management
+## Purpose
+Create new milestones or intelligently complete current milestones with evidence-based validation and automated progress tracking.
 
-**Purpose:** Create new milestones or mark current milestone as complete.
-
-### Command Options
-
-```yaml
-usage_patterns:
-  - "/milestone --create 'MVP Complete'"  # Start new milestone
-  - "/milestone --complete"                # Complete current milestone
-  - "/milestone --status"                  # Show milestone progress
-  - "/milestone"                          # Interactive mode
+## Usage
+```
+/milestone --create "MVP Complete"
+/milestone --complete
+/milestone --status
+/milestone [interactive mode]
 ```
 
-### Workflow
+## Auto-Intelligence
 
-#### 1. Check Current Status
-First, I'll read MEMORY.md to understand:
-- Current milestone name and progress
-- Completed items in this milestone
-- Any pending items
-- Overall project phase
-
-#### 2. For Milestone Completion
-
-<!-- DATA:completion-workflow:START -->
+### Completion Detection
 ```yaml
-completion_steps:
-  - validate_readiness:
-      check: "All tasks marked complete"
-      verify: "No failing tests"
-      ensure: "Documentation updated"
-  
-  - archive_progress:
-      action: "Move completed items to history"
-      location: "MEMORY.md → Milestone History"
-      format: "Dated milestone summary"
-  
-  - generate_summary:
-      include:
-        - "Key achievements"
-        - "Technical decisions made"
-        - "Patterns established"
-        - "Lessons learned"
-  
-  - update_architecture:
-      if_needed: "Update ARCHITECTURE.md with new patterns"
-      document: "Major architectural decisions"
-  
-  - prepare_next_phase:
-      prompt: "What's the focus of the next milestone?"
-      create: "New milestone section in MEMORY.md"
+Readiness Assessment:
+  - Tasks: scan for incomplete items
+  - Quality: verify tests + linting status
+  - Documentation: check for pending updates
+  - Evidence: validate measurable criteria
 ```
-<!-- DATA:completion-workflow:END -->
 
-#### 3. For New Milestone Creation
+### Smart Archiving
+- **Auto-categorize**: achievements, decisions, patterns, metrics
+- **Cross-reference**: link related commits, PRs, issues
+- **Extract insights**: document lessons learned + patterns established
 
-<!-- DATA:creation-workflow:START -->
+## Execution: Assess → Validate → Archive → Plan
+
+### Phase 1: Status Assessment 🔍
+**Current Milestone Analysis:**
 ```yaml
-creation_steps:
-  - gather_context:
-      ask: "What's the main goal of this milestone?"
-      examples:
-        - "User Authentication System"
-        - "API Integration"
-        - "Performance Optimization"
-        - "MVP Launch"
-  
-  - define_scope:
-      prompt: "What are the key deliverables?"
-      format: "Bullet list of concrete items"
-  
-  - set_success_criteria:
-      define: "How will we know this milestone is complete?"
-      measurable: true
-  
-  - initialize_tracking:
-      create_sections:
-        - "Milestone: [Name]"
-        - "Goals: [List]"
-        - "Success Criteria: [Metrics]"
-        - "Planned Items: [Tasks]"
-        - "In Progress: []"
-        - "Completed: []"
+Discovery:
+  - Read: .quaestor/MEMORY.md → current milestone section
+  - Parse: planned|in_progress|completed items
+  - Check: .quaestor/milestones/*/tasks.yaml files
+  - Assess: overall completion percentage
 ```
-<!-- DATA:creation-workflow:END -->
 
-### Output Format
+### Phase 2: Completion Validation ✅
+**Evidence-Based Readiness Check:**
+```yaml
+Quality Gates:
+  - ✅ All planned tasks marked complete
+  - ✅ Tests passing (run quality check)
+  - ✅ Documentation current
+  - ✅ No critical TODOs remaining
+  - ✅ Success criteria met
 
-#### Milestone Completion Output:
-```markdown
-## 🎉 Milestone Complete: [Name]
+Intelligent Verification:
+  - Parse: task completion evidence
+  - Validate: measurable outcomes achieved
+  - Confirm: no blocking issues remain
+```
+
+### Phase 3: Intelligent Archiving 📦
+**Automated Archive Process:**
+```yaml
+Archive Generation:
+  1. Extract: key achievements + technical highlights
+  2. Categorize: features|fixes|improvements|patterns
+  3. Document: architectural decisions + trade-offs
+  4. Quantify: metrics (tests, coverage, files, commits)
+  5. Preserve: lessons learned + future considerations
+```
+
+**Archive Structure:**
+```
+## 🎉 Milestone Complete: [Name] - [Date]
 
 ### Summary
-Completed [X] tasks over [duration]
+[X] tasks completed over [duration] • [Y] commits • [Z] files modified
 
 ### Key Achievements
-• [Achievement 1]
-• [Achievement 2]
-• ...
+• [Feature 1] - [Impact/value]
+• [Feature 2] - [Impact/value]
+• [Pattern/Decision] - [Rationale]
 
-### Technical Highlights
-• [Pattern or decision 1]
-• [Pattern or decision 2]
-• ...
+### Quality Metrics
+- Tests: [count] passing ([coverage]%)
+- Linting: ✅ Clean
+- Type Coverage: [percentage]
+- Performance: [metrics if applicable]
 
-### Metrics
-- Tests: [count] passing
-- Coverage: [percentage]
-- Files Modified: [count]
-- Commits: [count]
+### Technical Evolution  
+• [Architectural pattern established]
+• [Framework/library decisions]
+• [Infrastructure improvements]
 
-### Ready for Next Phase
-✅ All tasks complete
-✅ Tests passing
-✅ Documentation updated
-✅ Code reviewed
-
----
-Milestone archived to history. Ready to start: [Next Milestone Name]
+### Next Phase Focus
+[Identified next logical milestone based on current progress]
 ```
 
-#### New Milestone Output:
-```markdown
-## 🚀 New Milestone: [Name]
-
-### Goals
-1. [Primary goal]
-2. [Secondary goal]
-3. ...
-
-### Planned Tasks
-- [ ] [Task 1]
-- [ ] [Task 2]
-- [ ] [Task 3]
-- ...
-
-### Success Criteria
-- [Measurable criterion 1]
-- [Measurable criterion 2]
-- ...
-
-### Estimated Duration
-[Estimate based on scope]
-
----
-Milestone created! Use `/task "[first task]"` to begin.
+### Phase 4: Next Phase Planning 🚀
+**Intelligent Next Milestone Suggestion:**
+```yaml
+Planning Intelligence:
+  - Analyze: current architecture + remaining TODOs
+  - Identify: logical next development phase
+  - Suggest: milestone scope + success criteria
+  - Estimate: duration based on current velocity
 ```
 
-### Interactive Mode
+## Milestone Creation Workflow
 
-If no flags provided, I'll guide you through:
+### Guided Creation Process
+```yaml
+Context Gathering:
+  1. Goal: "What's the main objective?"
+  2. Scope: "What are the key deliverables?"
+  3. Criteria: "How will we measure success?"
+  4. Duration: "Estimated timeframe?"
 
-1. **Current Status Review**
-   - Show what's been completed
-   - List any pending items
-   - Display overall progress
+Template Generation:
+  - Create: structured milestone section in MEMORY.md
+  - Initialize: task tracking + progress indicators
+  - Set: measurable success criteria
+  - Link: to existing architecture + patterns
+```
 
-2. **Decision Point**
-   - Complete current milestone?
-   - Create new milestone?
-   - Just view status?
+### Creation Output Template
+```yaml
+New Milestone Structure:
+  - Header: "🚀 Milestone: [Name]"
+  - Goals: [Numbered objectives]
+  - Planned_Tasks: [Checkbox list]
+  - Success_Criteria: [Measurable outcomes]
+  - In_Progress: []
+  - Completed: []
+  - Estimated_Duration: [Based on scope analysis]
+```
 
-3. **Guided Process**
-   - Walk through appropriate workflow
-   - Gather necessary information
-   - Update all relevant files
+## Interactive Mode Features
 
-### Integration Points
+**Intelligent Status Overview:**
+```yaml
+When No Flags Provided:
+  1. Display: current milestone progress visualization
+  2. Analyze: completion readiness
+  3. Recommend: complete|continue|create action
+  4. Guide: through selected workflow
+```
 
-- **MEMORY.md**: Primary tracking document
-- **ARCHITECTURE.md**: Update if architectural decisions made
-- **Git**: Option to create milestone tag
-- **GitHub**: Option to close related issues/PRs
+**Progress Visualization:**
+```
+📊 Current Milestone: [Name]
+Progress: [████████░░] 80%
 
-### Best Practices
+✅ Completed (X): [List recent completions]
+🔄 In Progress (Y): [List active tasks]  
+📋 Planned (Z): [List remaining tasks]
 
-1. **Complete milestones when:**
-   - All planned features implemented
-   - Tests comprehensive and passing
-   - Documentation current
-   - Ready for next phase
+🎯 Readiness Check:
+✅ Tasks: 8/10 complete
+⚠️ Tests: 2 failing (run /check)
+✅ Documentation: Current
+❌ Success Criteria: 2/3 met
 
-2. **Create focused milestones:**
-   - Single clear objective
-   - Measurable completion criteria
-   - Reasonable scope (1-2 weeks)
-   - Concrete deliverables
+💡 Recommendation: Fix failing tests before completion
+```
 
-3. **Archive properly:**
-   - Document decisions made
-   - Note patterns discovered
-   - Record metrics
-   - Preserve learning
+## Quality Integration
+
+**Automatic Quality Validation:**
+- **Before completion** → Run `/check` to validate readiness
+- **Evidence requirement** → All quality gates must pass
+- **Metrics capture** → Document test coverage, performance benchmarks
+- **Standards compliance** → Verify against project quality standards
+
+## Success Criteria
+
+**Milestone Completion:**
+- ✅ All planned tasks demonstrably complete
+- ✅ Quality gates passed (tests, linting, types)
+- ✅ Documentation updated and current
+- ✅ Success criteria measurably achieved
+- ✅ Archive generated with evidence + insights
+
+**Milestone Creation:**
+- ✅ Clear, measurable objectives defined
+- ✅ Concrete deliverables identified
+- ✅ Success criteria established
+- ✅ Progress tracking initialized
+- ✅ Integration with existing project patterns
+
+## Integration Points
+
+**Quaestor Ecosystem:**
+- **MEMORY.md** → Primary milestone tracking
+- **ARCHITECTURE.md** → Update with architectural decisions
+- **milestones/** → Detailed task tracking (if exists)
+- **Git tags** → Optional milestone tagging
+- **Quality system** → Integrated validation before completion
 
 ---
-
-**Ready to manage your project milestones!**
+*Intelligent milestone management with evidence-based completion and automated progress tracking*
