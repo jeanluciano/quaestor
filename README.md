@@ -115,9 +115,11 @@ Or create full overrides in `.quaestor/commands/task.md`.
 
 ### 🎯 Flexible Modes
 
+**Installation modes determine where files are stored:**
+
 **Personal Mode (Default)**:
 - Everything local in `.claude/`
-- Perfect for personal projects
+- Perfect for solo developers
 - Commands and context in one place
 - Fully gitignored
 
@@ -126,6 +128,8 @@ Or create full overrides in `.quaestor/commands/task.md`.
 - Global commands in `~/.claude/`
 - Consistent across team
 - Version controlled rules
+
+**Note**: Both modes support all command complexity levels. Mode choice is about file organization, not project complexity.
 
 ### 📊 Smart Project Analysis
 - Auto-detects language (Python, Rust, JS/TS, Go, Java, etc.)
@@ -140,6 +144,14 @@ Adaptive workflow based on scope:
 - **Complex systems**: >50 files → Systematic agent delegation
 - **Quality cycles**: Execute → Validate → Fix → Complete
 - **Auto-escalation**: Complexity threshold triggers
+
+### 📈 Command Complexity Thresholds
+Commands adapt their behavior based on task complexity (0.0-1.0):
+- **Standard (0.2-0.4)**: Quick, focused operations (e.g., `/status`, `/milestone`)
+- **Optimization (0.4-0.6)**: Balanced efficiency with smart features (e.g., `/check`)
+- **Complex (0.6-0.8)**: Full orchestration and deep analysis (e.g., `/task`, `/analyze`)
+
+Thresholds control: auto-activation features, parallel processing, quality gates, and error recovery.
 
 ## Project Structure
 
@@ -187,7 +199,7 @@ your-project/
 
 ### Example Workflows
 
-**Simple Project (Personal Mode)**:
+**Simple Task Example**:
 ```
 You: /task: add config parser
 
@@ -197,7 +209,7 @@ Claude: Auto-detects Python project, applies ruff+pytest standards
 - Conventional commit with smart scope detection
 ```
 
-**Complex Project (Team Mode)**:
+**Complex Task Example**:
 ```
 You: /task: refactor authentication system
 
@@ -207,6 +219,8 @@ Claude: Complex threshold 0.7+ → orchestration mode
 3. "Quality gates: tests, linting, security validation" ✅
 4. "Milestone tracking updated, PR ready" 🚀
 ```
+
+**Note**: Task complexity is independent of installation mode. Both personal and team modes support all complexity levels.
 
 ### Command Customization Example
 
