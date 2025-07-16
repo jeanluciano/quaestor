@@ -276,9 +276,7 @@ class TestInitCommand:
                         "<!-- QUAESTOR CONFIG START -->\nQuaestor config\n"
                         "<!-- QUAESTOR CONFIG END -->\n\n<!-- Your custom content below -->"
                     ),
-                    ("quaestor.assets.templates", "quaestor_claude.md"): (
-                        "# QUAESTOR_CLAUDE.md test content"
-                    ),
+                    ("quaestor.assets.templates", "quaestor_claude.md"): ("# QUAESTOR_CLAUDE.md test content"),
                     ("quaestor.assets.templates", "critical_rules.md"): "# CRITICAL_RULES test content",
                     ("quaestor.assets.templates", "architecture.md"): "# AI ARCHITECTURE template",
                     ("quaestor.assets.templates", "memory.md"): "# AI MEMORY template",

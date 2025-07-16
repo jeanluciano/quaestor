@@ -85,7 +85,7 @@ def _init_personal_mode(target_dir: Path, force: bool):
         console.print("  [blue]✓[/blue] Created context-aware CLAUDE.md in .claude directory")
     except Exception as e:
         console.print(f"  [yellow]⚠[/yellow] Could not create CLAUDE.md: {e}")
-    
+
     # Create settings.json for hooks configuration
     settings_path = claude_dir / "settings.json"
     try:
@@ -290,9 +290,7 @@ def _copy_system_files(quaestor_dir: Path, manifest: FileManifest, target_dir: P
     """Copy system files to .quaestor directory."""
     # Copy QUAESTOR_CLAUDE.md
     try:
-        quaestor_claude_content = pkg_resources.read_text(
-            "quaestor.assets.templates", "quaestor_claude.md"
-        )
+        quaestor_claude_content = pkg_resources.read_text("quaestor.assets.templates", "quaestor_claude.md")
         quaestor_claude_path = quaestor_dir / "QUAESTOR_CLAUDE.md"
         quaestor_claude_path.write_text(quaestor_claude_content)
 
