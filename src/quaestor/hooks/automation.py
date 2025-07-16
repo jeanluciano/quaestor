@@ -230,19 +230,25 @@ def run_quality_checks(fix: bool = False) -> HookResult:
 
 
 def run_python_checks(root: Path, fix: bool) -> dict[str, Any]:
-    """Run Python quality checks."""
+    """Run Python quality checks with timeout protection."""
     try:
         cmd = ["ruff", "check", str(root / "src"), str(root / "tests")]
         if fix:
             cmd.append("--fix")
 
-        result = subprocess.run(cmd, capture_output=True, text=True)
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=60, cwd=root)
         success = result.returncode == 0
 
         return {
             "name": "Ruff (linting)",
             "success": success,
-            "message": "All checks passed" if success else f"Found issues:\n{result.stdout}",
+            "message": "All checks passed" if success else f"Found issues:\n{result.stdout[:1000]}",  # Limit output
+        }
+    except subprocess.TimeoutExpired:
+        return {
+            "name": "Ruff (linting)",
+            "success": False,
+            "message": "Ruff check timed out after 60 seconds",
         }
     except FileNotFoundError:
         return {
@@ -250,12 +256,24 @@ def run_python_checks(root: Path, fix: bool) -> dict[str, Any]:
             "success": False,
             "message": "Ruff not found. Install with: pip install ruff",
         }
+    except Exception as e:
+        return {
+            "name": "Ruff (linting)",
+            "success": False,
+            "message": f"Unexpected error: {str(e)[:200]}",
+        }
 
 
 def run_python_tests(root: Path) -> dict[str, Any]:
-    """Run Python tests."""
+    """Run Python tests with timeout protection."""
     try:
-        result = subprocess.run(["pytest", str(root / "tests"), "-v"], capture_output=True, text=True)
+        result = subprocess.run(
+            ["pytest", str(root / "tests"), "-v"],
+            capture_output=True,
+            text=True,
+            timeout=300,  # 5 minutes for tests
+            cwd=root
+        )
         success = result.returncode == 0
 
         # Extract test summary
@@ -265,7 +283,13 @@ def run_python_tests(root: Path) -> dict[str, Any]:
         return {
             "name": "Pytest",
             "success": success,
-            "message": summary if success else f"Tests failed:\n{result.stdout}",
+            "message": summary if success else f"Tests failed:\n{result.stdout[:1000]}",
+        }
+    except subprocess.TimeoutExpired:
+        return {
+            "name": "Pytest",
+            "success": False,
+            "message": "Tests timed out after 5 minutes",
         }
     except FileNotFoundError:
         return {
@@ -273,22 +297,34 @@ def run_python_tests(root: Path) -> dict[str, Any]:
             "success": False,
             "message": "Pytest not found. Install with: pip install pytest",
         }
+    except Exception as e:
+        return {
+            "name": "Pytest",
+            "success": False,
+            "message": f"Unexpected error: {str(e)[:200]}",
+        }
 
 
 def run_rust_checks(root: Path, fix: bool) -> dict[str, Any]:
-    """Run Rust quality checks."""
+    """Run Rust quality checks with timeout protection."""
     try:
         cmd = ["cargo", "clippy"]
         if fix:
             cmd.extend(["--fix", "--allow-dirty"])
 
-        result = subprocess.run(cmd, capture_output=True, text=True, cwd=root)
+        result = subprocess.run(cmd, capture_output=True, text=True, cwd=root, timeout=120)
         success = result.returncode == 0
 
         return {
             "name": "Clippy",
             "success": success,
-            "message": "All checks passed" if success else "Found warnings/errors",
+            "message": "All checks passed" if success else f"Found warnings/errors:\n{result.stdout[:1000]}",
+        }
+    except subprocess.TimeoutExpired:
+        return {
+            "name": "Clippy",
+            "success": False,
+            "message": "Clippy check timed out after 2 minutes",
         }
     except FileNotFoundError:
         return {
@@ -296,12 +332,24 @@ def run_rust_checks(root: Path, fix: bool) -> dict[str, Any]:
             "success": False,
             "message": "Cargo not found. Install Rust toolchain.",
         }
+    except Exception as e:
+        return {
+            "name": "Clippy",
+            "success": False,
+            "message": f"Unexpected error: {str(e)[:200]}",
+        }
 
 
 def run_rust_tests(root: Path) -> dict[str, Any]:
-    """Run Rust tests."""
+    """Run Rust tests with timeout protection."""
     try:
-        result = subprocess.run(["cargo", "test"], capture_output=True, text=True, cwd=root)
+        result = subprocess.run(
+            ["cargo", "test"],
+            capture_output=True,
+            text=True,
+            cwd=root,
+            timeout=300  # 5 minutes
+        )
         success = result.returncode == 0
 
         # Extract test summary
@@ -311,7 +359,13 @@ def run_rust_tests(root: Path) -> dict[str, Any]:
         return {
             "name": "Cargo Test",
             "success": success,
-            "message": summary if success else "Tests failed",
+            "message": summary if success else f"Tests failed:\n{result.stdout[:1000]}",
+        }
+    except subprocess.TimeoutExpired:
+        return {
+            "name": "Cargo Test",
+            "success": False,
+            "message": "Tests timed out after 5 minutes",
         }
     except FileNotFoundError:
         return {
@@ -319,47 +373,83 @@ def run_rust_tests(root: Path) -> dict[str, Any]:
             "success": False,
             "message": "Cargo not found",
         }
+    except Exception as e:
+        return {
+            "name": "Cargo Test",
+            "success": False,
+            "message": f"Unexpected error: {str(e)[:200]}",
+        }
 
 
 def run_js_checks(root: Path, fix: bool) -> dict[str, Any]:
-    """Run JavaScript/TypeScript checks."""
+    """Run JavaScript/TypeScript checks with timeout protection."""
     try:
         cmd = ["npm", "run", "lint"]
         if fix:
-            cmd.append("--", "--fix")
+            cmd.extend(["--", "--fix"])
 
-        result = subprocess.run(cmd, capture_output=True, text=True, cwd=root)
+        result = subprocess.run(cmd, capture_output=True, text=True, cwd=root, timeout=120)
         success = result.returncode == 0
 
         return {
             "name": "ESLint",
             "success": success,
-            "message": "All checks passed" if success else "Found issues",
+            "message": "All checks passed" if success else f"Found issues:\n{result.stdout[:1000]}",
+        }
+    except subprocess.TimeoutExpired:
+        return {
+            "name": "ESLint",
+            "success": False,
+            "message": "ESLint check timed out after 2 minutes",
         }
     except FileNotFoundError:
         return {
             "name": "ESLint",
             "success": False,
             "message": "npm not found",
+        }
+    except Exception as e:
+        return {
+            "name": "ESLint",
+            "success": False,
+            "message": f"Unexpected error: {str(e)[:200]}",
         }
 
 
 def run_js_tests(root: Path) -> dict[str, Any]:
-    """Run JavaScript tests."""
+    """Run JavaScript tests with timeout protection."""
     try:
-        result = subprocess.run(["npm", "test"], capture_output=True, text=True, cwd=root)
+        result = subprocess.run(
+            ["npm", "test"],
+            capture_output=True,
+            text=True,
+            cwd=root,
+            timeout=300  # 5 minutes
+        )
         success = result.returncode == 0
 
         return {
             "name": "npm test",
             "success": success,
-            "message": "All tests passed" if success else "Tests failed",
+            "message": "All tests passed" if success else f"Tests failed:\n{result.stdout[:1000]}",
+        }
+    except subprocess.TimeoutExpired:
+        return {
+            "name": "npm test",
+            "success": False,
+            "message": "Tests timed out after 5 minutes",
         }
     except FileNotFoundError:
         return {
             "name": "npm test",
             "success": False,
             "message": "npm not found",
+        }
+    except Exception as e:
+        return {
+            "name": "npm test",
+            "success": False,
+            "message": f"Unexpected error: {str(e)[:200]}",
         }
 
 
@@ -424,7 +514,7 @@ def check_milestone_completion(milestone: str | None, auto_pr: bool = False) -> 
 
 
 def create_milestone_pr(milestone_name: str, milestone_content: str) -> dict[str, Any]:
-    """Create a pull request for completed milestone."""
+    """Create a pull request for completed milestone with timeout protection."""
     try:
         # Extract completed items for PR description
         completed_items = re.findall(r"[-*]\s*\[x\]\s*(.+?)(?:\n|$)", milestone_content)
@@ -455,32 +545,39 @@ def create_milestone_pr(milestone_name: str, milestone_content: str) -> dict[str
             pr_body,
         ]
 
-        result = subprocess.run(cmd, capture_output=True, text=True)
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
 
         if result.returncode == 0:
             # Extract PR URL from output
             pr_url = result.stdout.strip()
             return {"success": True, "pr_url": pr_url}
         else:
-            return {"success": False, "error": result.stderr}
+            return {"success": False, "error": result.stderr[:500]}
 
+    except subprocess.TimeoutExpired:
+        return {"success": False, "error": "Creating PR timed out after 30 seconds"}
     except Exception as e:
-        return {"success": False, "error": str(e)}
+        return {"success": False, "error": str(e)[:200]}
 
 
 def create_atomic_commit(message: str | None, files: list[str] | None = None) -> HookResult:
-    """Create an atomic commit with proper message."""
+    """Create an atomic commit with proper message and timeout protection."""
     try:
         # Stage files
         cmd = ["git", "add"] + files if files else ["git", "add", "-A"]
 
-        subprocess.run(cmd, check=True)
+        subprocess.run(cmd, check=True, timeout=30)
 
         # Generate commit message if not provided
         if not message:
             # Get staged changes
-            diff_result = subprocess.run(["git", "diff", "--cached", "--name-only"], capture_output=True, text=True)
-            changed_files = diff_result.stdout.strip().split("\n")
+            diff_result = subprocess.run(
+                ["git", "diff", "--cached", "--name-only"],
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+            changed_files = [f for f in diff_result.stdout.strip().split("\n") if f]
 
             # Determine commit type
             if any("test" in f for f in changed_files):
@@ -495,11 +592,13 @@ def create_atomic_commit(message: str | None, files: list[str] | None = None) ->
             message = f"{commit_type}: Update {len(changed_files)} files"
 
         # Create commit
-        subprocess.run(["git", "commit", "-m", message], check=True)
+        subprocess.run(["git", "commit", "-m", message], check=True, timeout=30)
 
         return HookResult(True, f"✅ Created commit: {message}")
 
+    except subprocess.TimeoutExpired:
+        return HookResult(False, "Git operation timed out")
     except subprocess.CalledProcessError as e:
         return HookResult(False, f"Failed to create commit: {e}")
     except Exception as e:
-        return HookResult(False, f"Unexpected error: {e}")
+        return HookResult(False, f"Unexpected error: {str(e)[:200]}")

@@ -8,8 +8,9 @@ from pathlib import Path
 from typing import Any
 
 import typer
+from rich.console import Console
 
-from ..cli import console
+console = Console()
 
 app = typer.Typer(name="hooks", help="Claude Code hook integration for Quaestor")
 

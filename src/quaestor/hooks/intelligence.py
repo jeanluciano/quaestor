@@ -5,6 +5,7 @@ intelligent assistance to Claude.
 """
 
 import json
+import logging
 import re
 from collections import defaultdict
 from datetime import datetime, timedelta
@@ -27,6 +28,7 @@ class ContextManager:
         self.patterns_file = self.root / PATTERNS_FILE
         self.context_cache = self._load_cache()
         self.learned_patterns = self._load_patterns()
+        self.logger = logging.getLogger("quaestor.hooks.intelligence")
 
     def _load_cache(self) -> dict[str, Any]:
         """Load context cache."""
@@ -133,29 +135,47 @@ class ContextManager:
         return list(relevant)
 
     def _get_recently_modified_files(self) -> list[str]:
-        """Get recently modified files."""
-        try:
-            import subprocess
+        """Get recently modified files with retry logic."""
+        import subprocess
+        from time import sleep
+        
+        # Retry logic for git operations
+        for attempt in range(3):
+            try:
+                result = subprocess.run(
+                    ["git", "log", "--name-only", "--pretty=format:", "-10"],
+                    capture_output=True,
+                    text=True,
+                    cwd=self.root,
+                    timeout=10
+                )
 
-            result = subprocess.run(
-                ["git", "log", "--name-only", "--pretty=format:", "-10"],
-                capture_output=True,
-                text=True,
-                cwd=self.root,
-            )
-
-            if result.returncode == 0:
-                files = [f.strip() for f in result.stdout.split("\n") if f.strip()]
-                # Remove duplicates while preserving order
-                seen = set()
-                unique_files = []
-                for f in files:
-                    if f not in seen and (self.root / f).exists():
-                        seen.add(f)
-                        unique_files.append(f)
-                return unique_files[:10]
-        except Exception:
-            pass
+                if result.returncode == 0:
+                    files = [f.strip() for f in result.stdout.split("\n") if f.strip()]
+                    # Remove duplicates while preserving order
+                    seen = set()
+                    unique_files = []
+                    for f in files:
+                        if f not in seen and (self.root / f).exists():
+                            seen.add(f)
+                            unique_files.append(f)
+                    return unique_files[:10]
+                elif attempt < 2:  # Retry on git failure
+                    sleep(1)  # Wait before retry
+                    continue
+                    
+            except subprocess.TimeoutExpired:
+                if attempt < 2:
+                    sleep(1)
+                    continue
+                else:
+                    self.logger.warning("Git log timed out after retries")
+            except Exception as e:
+                if attempt < 2:
+                    sleep(1)
+                    continue
+                else:
+                    self.logger.warning(f"Failed to get recent files: {e}")
 
         return []
 
@@ -351,9 +371,17 @@ def suggest_next_action(context: dict[str, Any]) -> HookResult:
         import subprocess
 
         # Check for uncommitted changes
-        result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, cwd=root)
+        result = subprocess.run(
+            ["git", "status", "--porcelain"],
+            capture_output=True,
+            text=True,
+            cwd=root,
+            timeout=10
+        )
         if result.returncode == 0 and result.stdout.strip():
             suggestions.append("💾 Uncommitted changes detected - consider committing completed work")
+    except subprocess.TimeoutExpired:
+        pass  # Don't fail suggestions due to timeout
     except Exception:
         pass
 

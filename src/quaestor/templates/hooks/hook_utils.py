@@ -2,10 +2,12 @@
 """Shared utilities for Quaestor hook scripts."""
 
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 
 class WorkflowState:
@@ -35,13 +37,23 @@ class WorkflowState:
             return {"phase": "idle", "files_examined": 0, "research_files": [], "implementation_files": []}
 
     def _save_state(self):
-        """Save workflow state to file."""
+        """Save workflow state to file atomically."""
         try:
             self.state_file.parent.mkdir(exist_ok=True, parents=True)
-            with open(self.state_file, "w") as f:
+            
+            # Write to temp file first
+            temp_file = self.state_file.with_suffix('.tmp')
+            with open(temp_file, "w") as f:
                 json.dump(self.state, f, indent=2)
+            
+            # Atomic rename
+            temp_file.replace(self.state_file)
         except Exception as e:
             print(f"Warning: Could not save workflow state: {e}")
+            # Clean up temp file if it exists
+            temp_file = self.state_file.with_suffix('.tmp')
+            if temp_file.exists():
+                temp_file.unlink()
 
     def set_phase(self, phase, message=None):
         """Set workflow phase with optional message."""
@@ -104,10 +116,26 @@ def detect_project_type(project_root="."):
     return "unknown"
 
 
-def run_command(cmd, description=None, capture_output=True):
-    """Run a command and return success status and output."""
+def run_command(cmd: List[str], description: Optional[str] = None, capture_output: bool = True, 
+                timeout_seconds: int = 30) -> Tuple[bool, str, str]:
+    """Run a command with timeout and return success status and output.
+    
+    Args:
+        cmd: Command and arguments as a list
+        description: Optional description for logging
+        capture_output: Whether to capture stdout/stderr
+        timeout_seconds: Maximum execution time in seconds
+        
+    Returns:
+        Tuple of (success, stdout, stderr)
+    """
     try:
-        result = subprocess.run(cmd, capture_output=capture_output, text=True)
+        result = subprocess.run(
+            cmd, 
+            capture_output=capture_output, 
+            text=True,
+            timeout=timeout_seconds
+        )
         if description:
             if result.returncode == 0:
                 print(f"✅ {description} passed")
@@ -117,10 +145,20 @@ def run_command(cmd, description=None, capture_output=True):
                     print(f"   Error: {result.stderr.strip()}")
 
         return result.returncode == 0, result.stdout, result.stderr
+    except subprocess.TimeoutExpired:
+        error_msg = f"Command timed out after {timeout_seconds} seconds: {' '.join(cmd)}"
+        if description:
+            print(f"⏱️  {description} timed out after {timeout_seconds}s")
+        return False, "", error_msg
     except FileNotFoundError:
         if description:
             print(f"⚠️  {description} command not found - skipping")
         return False, "", f"Command not found: {' '.join(cmd)}"
+    except Exception as e:
+        error_msg = f"Unexpected error running command: {e}"
+        if description:
+            print(f"❌ {description} error: {e}")
+        return False, "", error_msg
 
 
 def get_quality_commands(project_type):
@@ -147,8 +185,17 @@ def get_quality_commands(project_type):
     return commands.get(project_type, [])
 
 
-def run_quality_checks(project_root=".", block_on_fail=False):
-    """Run quality checks for the detected project type."""
+def run_quality_checks(project_root: str = ".", block_on_fail: bool = False, timeout_per_check: int = 60) -> bool:
+    """Run quality checks for the detected project type with timeout protection.
+    
+    Args:
+        project_root: Project root directory
+        block_on_fail: Whether to exit if checks fail
+        timeout_per_check: Timeout for each individual check
+        
+    Returns:
+        True if all checks passed, False otherwise
+    """
     project_type = detect_project_type(project_root)
     commands = get_quality_commands(project_type)
 
@@ -157,14 +204,25 @@ def run_quality_checks(project_root=".", block_on_fail=False):
         return True
 
     all_passed = True
+    failed_checks = []
+    
     for description, cmd in commands:
-        success, stdout, stderr = run_command(cmd, description)
-        if not success:
-            all_passed = False
+        # Change to project root for command execution
+        original_cwd = Path.cwd()
+        try:
+            os.chdir(project_root)
+            success, stdout, stderr = run_command(cmd, description, timeout_seconds=timeout_per_check)
+            if not success:
+                all_passed = False
+                failed_checks.append(description)
+        finally:
+            os.chdir(original_cwd)
 
-    if not all_passed and block_on_fail:
-        print("❌ Quality checks failed. Please fix issues before proceeding.")
-        sys.exit(1)
+    if not all_passed:
+        print(f"\n❌ {len(failed_checks)} quality check(s) failed: {', '.join(failed_checks)}")
+        if block_on_fail:
+            print("Please fix issues before proceeding.")
+            sys.exit(1)
 
     return all_passed
 
