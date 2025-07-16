@@ -71,7 +71,6 @@ def _init_personal_mode(target_dir: Path, force: bool):
     # Create directories
     claude_dir.mkdir(exist_ok=True)
     (claude_dir / "commands").mkdir(exist_ok=True)
-    (claude_dir / "context").mkdir(exist_ok=True)
     console.print(f"[green]Created .claude directory (personal mode) in {target_dir}[/green]")
 
     # Create CLAUDE.md in .claude directory for personal mode
