@@ -86,6 +86,15 @@ def _init_personal_mode(target_dir: Path, force: bool):
         console.print("  [blue]✓[/blue] Created context-aware CLAUDE.md in .claude directory")
     except Exception as e:
         console.print(f"  [yellow]⚠[/yellow] Could not create CLAUDE.md: {e}")
+    
+    # Create settings.json for hooks configuration
+    settings_path = claude_dir / "settings.json"
+    try:
+        settings_content = pkg_resources.read_text("quaestor.assets.configuration", "automation_base.json")
+        settings_path.write_text(settings_content)
+        console.print("  [blue]✓[/blue] Created settings.json for hooks configuration")
+    except Exception as e:
+        console.print(f"  [yellow]⚠[/yellow] Could not create settings.json: {e}")
 
     # Common initialization
     copied_files, commands_copied = _init_common(target_dir, force, "personal")
@@ -158,6 +167,17 @@ def _init_team_mode(target_dir: Path, force: bool, contextual: bool = True):
 
     # Handle CLAUDE.md - always use simple format for team mode
     _merge_claude_md(target_dir, use_rule_engine=False)
+
+    # Create .claude/settings.json for team mode
+    claude_dir = target_dir / ".claude"
+    claude_dir.mkdir(exist_ok=True)
+    settings_path = claude_dir / "settings.json"
+    try:
+        settings_content = pkg_resources.read_text("quaestor.assets.configuration", "automation_base.json")
+        settings_path.write_text(settings_content)
+        console.print("  [blue]✓[/blue] Created settings.json for hooks configuration")
+    except Exception as e:
+        console.print(f"  [yellow]⚠[/yellow] Could not create settings.json: {e}")
 
     # Copy system files
     _copy_system_files(quaestor_dir, manifest, target_dir)
