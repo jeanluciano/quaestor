@@ -80,22 +80,55 @@ Generated Documents:
   - CRITICAL_RULES.md: Framework-specific guidelines
 ```
 
-### Phase 3: User Validation ✅
-**Interactive Confirmation:**
+### Phase 3: User Validation ✅ **[MANDATORY - DO NOT SKIP]**
+
+⚠️ **CRITICAL ENFORCEMENT RULE:**
 ```yaml
-Present Analysis:
-  "Detected: {{framework}} {{architecture_pattern}} project"
-  "Found: {{components_count}} components, {{patterns_count}} patterns"
-  "Suggested milestones: {{milestone_list}}"
+before_phase_4:
+  MUST_PRESENT_ANALYSIS:
+    - framework_detection_results
+    - architecture_pattern_analysis  
+    - proposed_milestones
+    - quality_standards_detected
   
-User Options:
-  - ✅ Proceed with detected setup
-  - 🔄 Modify detected patterns
-  - 📝 Custom architecture description
-  - 🚫 Start with minimal setup
+  MUST_GET_USER_CHOICE:
+    options:
+      - "✅ Proceed with detected setup"
+      - "🔄 Modify detected patterns" 
+      - "📝 Custom architecture description"
+      - "🚫 Start with minimal setup"
+  
+  VIOLATION_CONSEQUENCES:
+    - if_skipped: "IMMEDIATE STOP - Restart from Phase 3"
+    - required_response: "I must validate this analysis with you before proceeding"
 ```
 
-### Phase 4: Setup Completion 🚀
+**MANDATORY Interactive Confirmation Template:**
+```
+## Project Analysis Validation ✋
+
+**Detected Configuration:**
+- Framework: [detected_framework]
+- Architecture: [detected_pattern]
+- Complexity: [score]/1.0
+- Phase: [project_phase]
+
+**Proposed Milestones:**
+[list_proposed_milestones]
+
+**Quality Standards:**
+[detected_tools_and_standards]
+
+## Your Options:
+- ✅ Proceed with detected setup
+- 🔄 Modify detected patterns
+- 📝 Custom architecture description  
+- 🚫 Start with minimal setup
+
+What would you prefer?
+```
+
+### Phase 4: Setup Completion 🚀 **[ONLY AFTER USER APPROVAL]**
 
 **Document Generation:**
 ```yaml
@@ -171,6 +204,7 @@ Example Milestone Sets:
 ## Success Criteria
 **Initialization Complete:**
 - ✅ Framework and architecture accurately detected
+- ✅ **USER VALIDATION COMPLETED** ← **MANDATORY**
 - ✅ Documents generated with real project data
 - ✅ Milestones aligned with project phase and goals
 - ✅ Quality standards configured for tech stack
