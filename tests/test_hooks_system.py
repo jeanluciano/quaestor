@@ -267,5 +267,121 @@ class TestHooksCopyingInInit:
                 assert hook_path.exists(), f"Hook {hook} was not copied"
 
 
+class TestTemplateCopying:
+    """Test that all templates are properly copied during init."""
+
+    @patch('quaestor.cli.init.process_template')
+    @patch('importlib.resources.read_text')
+    @patch('quaestor.cli.init.console')
+    def test_all_template_files_copied(self, _mock_console, mock_read_text, mock_process_template):
+        """Test that all template files from TEMPLATE_FILES are copied."""
+        from quaestor.constants import TEMPLATE_FILES
+        
+        # Mock the template content and processing
+        mock_read_text.return_value = "# Mock Template Content"
+        mock_process_template.return_value = "# Processed Mock Content"
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            target_dir = Path(tmpdir)
+            
+            # Run init_common
+            copied_files, _commands_copied = _init_common(target_dir, force=False, mode="personal")
+            
+            quaestor_dir = target_dir / ".quaestor"
+            assert quaestor_dir.exists(), ".quaestor directory should be created"
+            
+            # Check that all template files were copied
+            for _template_name, output_name in TEMPLATE_FILES.items():
+                output_path = quaestor_dir / output_name
+                assert output_path.exists(), f"Template file {output_name} was not created"
+                
+                # Verify the file has content
+                content = output_path.read_text()
+                assert len(content) > 0, f"Template file {output_name} is empty"
+                
+                # Check it appears in copied_files list
+                expected_path = f".quaestor/{output_name}"
+                assert expected_path in copied_files, f"{expected_path} not in copied_files list"
+
+    def test_template_files_constant_completeness(self):
+        """Test that TEMPLATE_FILES includes all critical Quaestor files."""
+        from quaestor.constants import TEMPLATE_FILES
+        
+        # These are the critical files that must be included
+        required_files = {
+            "QUAESTOR_CLAUDE.md",
+            "CRITICAL_RULES.md", 
+            "ARCHITECTURE.md",
+            "MEMORY.md",
+            "PATTERNS.md",
+            "VALIDATION.md",
+            "AUTOMATION.md"
+        }
+        
+        actual_files = set(TEMPLATE_FILES.values())
+        
+        missing_files = required_files - actual_files
+        assert not missing_files, f"Missing required template files: {missing_files}"
+
+    def test_claude_md_references_all_files(self):
+        """Test that CLAUDE.md references all the template files."""
+        # Read the current CLAUDE.md
+        claude_md_path = Path(__file__).parent.parent / "CLAUDE.md"
+        assert claude_md_path.exists(), "CLAUDE.md should exist in project root"
+        
+        claude_content = claude_md_path.read_text()
+        
+        # Files that should be referenced in CLAUDE.md
+        expected_references = [
+            ".quaestor/QUAESTOR_CLAUDE.md",
+            ".quaestor/CRITICAL_RULES.md",
+            ".quaestor/ARCHITECTURE.md", 
+            ".quaestor/MEMORY.md",
+            ".quaestor/PATTERNS.md",
+            ".quaestor/VALIDATION.md",
+            ".quaestor/AUTOMATION.md"
+        ]
+        
+        for ref in expected_references:
+            assert ref in claude_content, f"CLAUDE.md should reference {ref}"
+
+    @patch('quaestor.cli.init.process_template')
+    @patch('importlib.resources.read_text')
+    @patch('quaestor.cli.init.console')
+    def test_template_processing_failure_handling(self, _mock_console, mock_read_text, mock_process_template):
+        """Test that template processing failures are handled gracefully."""
+        # Mock read_text to succeed but process_template to fail
+        mock_read_text.return_value = "# Mock Template Content"
+        mock_process_template.side_effect = Exception("Processing failed")
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            target_dir = Path(tmpdir)
+            
+            # This should not crash even if template processing fails
+            _init_common(target_dir, force=False, mode="personal")
+            
+            # Should still create .quaestor directory
+            quaestor_dir = target_dir / ".quaestor"
+            assert quaestor_dir.exists(), ".quaestor directory should be created even if processing fails"
+
+    @patch('quaestor.cli.init.process_template')
+    @patch('importlib.resources.read_text')
+    @patch('quaestor.cli.init.console')
+    def test_missing_template_file_handling(self, _mock_console, mock_read_text, _mock_process_template):
+        """Test handling when a template file is missing."""
+        # Mock read_text to raise an exception (simulating missing file)
+        mock_read_text.side_effect = FileNotFoundError("Template not found")
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            target_dir = Path(tmpdir)
+            
+            # This should not crash even if template files are missing
+            _init_common(target_dir, force=False, mode="personal")
+            
+            # Should still create .quaestor directory
+            quaestor_dir = target_dir / ".quaestor"
+            assert quaestor_dir.exists(), ".quaestor directory should be created even if templates are missing"
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
