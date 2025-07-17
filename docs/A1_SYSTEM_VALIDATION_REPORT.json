@@ -1,0 +1,155 @@
+{
+  "timestamp": "2025-07-16T10:13:49.345742",
+  "version": "2.1.0",
+  "tests": {
+    "end_to_end": {
+      "passed": 4,
+      "failed": 0,
+      "workflows": {
+        "development": {
+          "success": true,
+          "steps": [
+            "Context switched to development",
+            "Tool sequence executed",
+            "File created and tracked",
+            "Quality check: good",
+            "State snapshot: snapshot_1752678829347253",
+            "Patterns learned: 0"
+          ],
+          "duration": "< 1s",
+          "quality_passed": true
+        },
+        "analysis": {
+          "success": true,
+          "files_analyzed": 2,
+          "total_lines": 37,
+          "functions": 5,
+          "classes": 1,
+          "quality_issues": 3,
+          "analysis_time": "0.001s"
+        },
+        "learning": {
+          "success": true,
+          "patterns_detected": 0,
+          "pattern_recognized": false,
+          "suggestions_available": false,
+          "learning_active": true
+        },
+        "state_management": {
+          "success": true,
+          "files_tracked": 3,
+          "snapshots_created": 259,
+          "diff_available": true,
+          "undo_successful": "snapshot_1752678829534210",
+          "state_management_functional": true
+        }
+      },
+      "total": 4,
+      "success_rate": 1.0
+    },
+    "performance": {
+      "targets_met": {
+        "startup_under_1s": true,
+        "memory_under_150mb": true,
+        "response_under_100ms": true,
+        "throughput_over_100": true
+      },
+      "measurements": {
+        "startup_time": 2.7179718017578125e-05,
+        "memory_mb": 44.265625,
+        "avg_response_ms": 0.29664039611816406,
+        "events_per_second": 7932.789892761901
+      },
+      "all_targets_met": true
+    },
+    "integration": {
+      "integrations": {
+        "event_bus": "connected",
+        "context_learning": "integrated",
+        "quality_analysis": "integrated",
+        "prediction_extension": "integrated",
+        "workflow_extension": "integrated",
+        "hooks_extension": "integrated",
+        "configuration": "integrated"
+      },
+      "issues": [],
+      "success": true,
+      "integration_count": 7
+    },
+    "extensions": {
+      "extensions": {
+        "prediction": {
+          "status": "functional",
+          "tool_predictions": 0,
+          "file_predictions": 0,
+          "summary": {
+            "tool_patterns": 3,
+            "file_patterns": 1,
+            "recent_tools": 3,
+            "recent_files": 0,
+            "status": "active"
+          }
+        },
+        "state": {
+          "status": "functional",
+          "snapshots": 259,
+          "operations": [
+            "track",
+            "snapshot",
+            "list"
+          ]
+        },
+        "workflow": {
+          "status": "functional",
+          "detection": "active",
+          "events_tracked": 3
+        },
+        "hooks": {
+          "status": "failed",
+          "error": "'SimpleHookManager' object has no attribute 'load_hooks'"
+        },
+        "persistence": {
+          "status": "functional",
+          "save_load": true,
+          "operations": [
+            "save",
+            "load",
+            "backup"
+          ]
+        }
+      },
+      "functionality": {},
+      "summary": {
+        "total_extensions": 5,
+        "functional": 4,
+        "failed": 1,
+        "success_rate": 0.8
+      }
+    },
+    "migration": {
+      "compatibility": {
+        "config_format": "compatible",
+        "directory_structure": "compatible",
+        "cli_integration": "compatible",
+        "migration_guide": "available"
+      },
+      "migration_steps": [
+        "V0.4.0 config format recognized",
+        "V0.4.0 directory structure supported",
+        "A1 available as CLI subcommand",
+        "Migration guide documented"
+      ],
+      "issues": [],
+      "migration_ready": true,
+      "compatibility_score": 0.75
+    }
+  },
+  "summary": {
+    "all_validations_passed": false,
+    "end_to_end_success": true,
+    "performance_met": true,
+    "integration_success": true,
+    "extensions_functional": false,
+    "migration_ready": true
+  }
+}
