@@ -1,0 +1,75 @@
+cli:
+  auto_confirm: false
+  output_format: rich
+  show_progress: true
+  theme: default
+  verbosity: normal
+core:
+  context:
+    auto_update_relevance: true
+    context_cache_size: 100
+    default_type: development
+    max_relevant_files: 20
+    relevance_threshold: 0.3
+extensions:
+  hooks:
+    config_file: hooks.json
+    default_timeout: 30
+    enabled: true
+    max_concurrent: 5
+    parallel_execution: true
+  learning:
+    adaptation_threshold: 0.8
+    auto_learn: true
+    enabled: true
+    learning_window_days: 7
+    max_adaptations: 500
+  persistence:
+    auto_backup: true
+    backend: file
+    backup_interval_hours: 24
+    compression: true
+    enabled: true
+    retention_days: 90
+  prediction:
+    auto_learn: true
+    confidence_threshold: 0.7
+    enabled: true
+    learning_rate: 0.1
+    max_patterns: 1000
+    pattern_file: patterns.json
+  state:
+    auto_cleanup: true
+    cleanup_days: 30
+    compression: true
+    enabled: true
+    max_snapshots: 50
+    storage_path: state
+  workflow:
+    auto_track: true
+    detection_sensitivity: medium
+    enabled: true
+    min_pattern_length: 3
+    pattern_window_size: 10
+features:
+  advanced_prediction: true
+  auto_hooks: true
+  learning_adaptation: true
+  persistence: true
+  state_management: true
+  workflow_detection: true
+generated_at: auto-generated
+preferences:
+  auto_save: true
+  compact_output: false
+  confirm_destructive: true
+  notifications: true
+  show_tips: true
+system:
+  data_dir: .quaestor
+  debug: false
+  log_level: INFO
+  max_workers: 4
+  timeout_seconds: 30.0
+  version: 2.1.0
+version: 2.1.0
