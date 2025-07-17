@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "{python_path} {hooks_dir}/implementation_declaration.py"
+            "command": "{python_path} {project_root}/.quaestor/hooks/pre-implementation-declaration.py"
           }
         ]
       }
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "{python_path} {hooks_dir}/research_tracker.py {project_root}"
+            "command": "{python_path} {project_root}/.quaestor/hooks/track-research.py {project_root}"
           }
         ]
       },
@@ -26,7 +26,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "{python_path} {hooks_dir}/implementation_tracker.py {project_root}"
+            "command": "{python_path} {project_root}/.quaestor/hooks/track-implementation.py {project_root}"
           }
         ]
       },
@@ -35,7 +35,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "{python_path} {hooks_dir}/memory_updater.py {project_root} --from-todos"
+            "command": "{python_path} {project_root}/.quaestor/hooks/update-memory.py {project_root} --from-todos"
           }
         ]
       },
@@ -44,7 +44,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "{python_path} {hooks_dir}/todo_milestone_connector.py {project_root}"
+            "command": "{python_path} {project_root}/.quaestor/hooks/todo-milestone-connector.py {project_root}"
           }
         ]
       }

@@ -6,13 +6,13 @@ from pathlib import Path
 
 # Import shared utilities
 try:
-    from .hook_utils import WorkflowState, get_project_root
+    from .shared_utils import WorkflowState, get_project_root
 except ImportError:
     # Fallback for when run as standalone script
     import sys
 
     sys.path.insert(0, str(Path(__file__).parent))
-    from hook_utils import WorkflowState, get_project_root
+    from shared_utils import WorkflowState, get_project_root
 
 
 def main():

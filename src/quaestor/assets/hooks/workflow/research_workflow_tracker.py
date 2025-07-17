@@ -11,12 +11,12 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 try:
-    from hook_utils import WorkflowState, get_project_root
+    from shared_utils import WorkflowState, get_project_root
 
     from quaestor.hooks.base import BaseHook
 except ImportError:
     # Fallback for development
-    from hook_utils import WorkflowState, get_project_root
+    from shared_utils import WorkflowState, get_project_root
     from hooks.base import BaseHook
 
 
