@@ -125,7 +125,11 @@ before_phase_4:
 - 📝 Custom architecture description  
 - 🚫 Start with minimal setup
 
-What would you prefer?
+## Milestone Creation:
+- ⭐ Create milestone files (.quaestor/milestones/*/README.md + tasks.yaml)
+- 📝 Documentation only (just populate MEMORY.md templates)
+
+What would you prefer for setup and milestones?
 ```
 
 ### Phase 4: Setup Completion 🚀 **[ONLY AFTER USER APPROVAL]**
@@ -142,6 +146,26 @@ Auto-Population:
   - Detected components and responsibilities
   - Inferred milestones from git history
   - Framework-specific quality standards
+```
+
+**Conditional Milestone Creation:**
+```yaml
+if_user_chose_milestone_files:
+  actions:
+    - create_directories: ".quaestor/milestones/[milestone_id]/"
+    - generate_readme: "Goals, success criteria, timeline"
+    - create_tasks_yaml: "Structured subtask tracking with status"
+    - initialize_notes: "Implementation notes and decisions"
+  
+if_user_chose_documentation_only:
+  actions:
+    - populate_memory_templates: "Update MEMORY.md with milestone information"
+    - skip_milestone_directories: "No .quaestor/milestones/ creation"
+
+mandatory_for_both:
+  - populate_architecture_md: "Real project analysis"
+  - update_critical_rules: "Framework-specific guidelines"
+  - configure_quality_standards: "Testing and linting setup"
 ```
 
 ## Framework-Specific Intelligence
