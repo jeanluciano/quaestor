@@ -94,14 +94,14 @@ class TestEventTypes:
         assert event.id is not None
         assert len(event.id) > 0
         assert event.timestamp > 0
-        assert event.source == "quaestor.v2_1"
+        assert event.source == "quaestor.a1"
 
         # Test serialization includes base fields
         data = event.to_dict()
         assert "id" in data
         assert "timestamp" in data
         assert "source" in data
-        assert data["source"] == "quaestor.v2_1"
+        assert data["source"] == "quaestor.a1"
 
     def test_event_defaults(self):
         """Test event default values."""

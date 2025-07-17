@@ -16,8 +16,8 @@ try:
     from quaestor.hooks.base import BaseHook
 except ImportError:
     # Fallback for development
-    from shared_utils import WorkflowState, get_project_root
     from hooks.base import BaseHook
+    from shared_utils import WorkflowState, get_project_root
 
 
 class ResearchTracker(BaseHook):

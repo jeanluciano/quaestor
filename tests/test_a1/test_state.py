@@ -392,7 +392,7 @@ class TestSimpleStateManager:
 
             # After creating snapshots
             state_manager.track_files(["*.py"])
-            snapshot1 = state_manager.create_snapshot("First")
+            state_manager.create_snapshot("First")
             snapshot2 = state_manager.create_snapshot("Second")
 
             status = state_manager.get_status()

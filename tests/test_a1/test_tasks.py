@@ -334,7 +334,7 @@ class TestTaskManager:
         manager = TaskManager()
         manager.completed_tasks.add("dep1")
 
-        task_id = manager.submit_task(lambda: "result", depends_on={"dep1"})
+        manager.submit_task(lambda: "result", depends_on={"dep1"})
 
         assert manager.queue.size() == 1
 

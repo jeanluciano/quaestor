@@ -487,7 +487,7 @@ class TestIntegration:
         manager.add_file(session.id, "/docs/architecture.md")
 
         # Switch to development
-        dev_context = manager.switch_context_type(session.id, ContextType.DEVELOPMENT, "implementing feature")
+        manager.switch_context_type(session.id, ContextType.DEVELOPMENT, "implementing feature")
 
         # Add development files
         manager.add_file(session.id, "/src/main.py")

@@ -6,13 +6,13 @@ for automatic context management.
 """
 
 import json
-import sys
-from pathlib import Path
 from datetime import datetime
-from typing import Any, Dict
+from pathlib import Path
+from typing import Any
+
 
 # A1 would send events to its processing engine
-def send_to_a1(event_data: Dict[str, Any]):
+def send_to_a1(event_data: dict[str, Any]):
     """Send event to A1 processing engine via IPC/file queue."""
     # In real implementation, this would use proper IPC
     event_file = Path(".quaestor/a1/events/pending") / f"{event_data['timestamp']}.json"
@@ -20,9 +20,9 @@ def send_to_a1(event_data: Dict[str, Any]):
     event_file.write_text(json.dumps(event_data, indent=2))
 
 
-def pre_tool_use_hook(tool_name: str, tool_data: Dict[str, Any], **kwargs) -> Dict[str, Any]:
+def pre_tool_use_hook(tool_name: str, tool_data: dict[str, Any], **kwargs) -> dict[str, Any]:
     """Pre-tool use hook that sends events to A1."""
-    
+
     # Build event for A1
     event = {
         "type": "pre_tool_use",
@@ -35,21 +35,21 @@ def pre_tool_use_hook(tool_name: str, tool_data: Dict[str, Any], **kwargs) -> Di
             "active_rules": kwargs.get("active_rules", [])
         }
     }
-    
+
     # Send to A1 for processing
     send_to_a1(event)
-    
+
     # A1 might return rule adaptations (in real implementation)
     # For now, always allow
     return {"allow": True}
 
 
-def post_tool_use_hook(tool_name: str, tool_data: Dict[str, Any], result: Any, **kwargs) -> None:
+def post_tool_use_hook(tool_name: str, tool_data: dict[str, Any], result: Any, **kwargs) -> None:
     """Post-tool use hook that sends completion events to A1."""
-    
+
     # Build completion event
     event = {
-        "type": "post_tool_use", 
+        "type": "post_tool_use",
         "tool": tool_name,
         "data": tool_data,
         "result": {
@@ -59,19 +59,19 @@ def post_tool_use_hook(tool_name: str, tool_data: Dict[str, Any], result: Any, *
         "timestamp": datetime.now().isoformat(),
         "session_id": kwargs.get("session_id", "unknown")
     }
-    
+
     # Special handling for different tools
     if tool_name == "Edit":
         event["data"]["changes"] = len(result.get("diff", "").split("\n")) if isinstance(result, dict) else 0
     elif tool_name == "Read":
         event["data"]["lines"] = len(result.get("content", "").split("\n")) if isinstance(result, dict) else 0
-    
+
     send_to_a1(event)
 
 
 def stop_hook(**kwargs) -> None:
     """Stop hook when Claude finishes - good time for A1 to update patterns."""
-    
+
     event = {
         "type": "stop",
         "timestamp": datetime.now().isoformat(),
@@ -81,7 +81,7 @@ def stop_hook(**kwargs) -> None:
             "duration": kwargs.get("duration", 0)
         }
     }
-    
+
     send_to_a1(event)
 
 

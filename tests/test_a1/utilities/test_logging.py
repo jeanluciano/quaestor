@@ -132,9 +132,8 @@ class TestActionLogger:
         """Test timing an action that fails."""
         logger = ActionLogger()
 
-        with pytest.raises(ValueError):
-            with logger.timed_action("failed_test", ActionType.ERROR) as record:
-                raise ValueError("Test error")
+        with pytest.raises(ValueError), logger.timed_action("failed_test", ActionType.ERROR):
+            raise ValueError("Test error")
 
         results = logger.query_actions(action_type=ActionType.ERROR)
         assert len(results) == 1
@@ -320,7 +319,7 @@ class TestConvenienceFunctions:
         """Test decision logging."""
         logger = ActionLogger()
 
-        action_id = log_decision(
+        log_decision(
             logger,
             decision_name="choose_algorithm",
             reasoning="Based on data size and complexity",

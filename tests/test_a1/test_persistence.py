@@ -513,7 +513,7 @@ class TestGlobalFunctions:
 
     def test_global_convenience_functions(self):
         """Test global convenience functions."""
-        import src.quaestor.v2_1.extensions.persistence as persistence_module
+        import a1.extensions.persistence as persistence_module
 
         with tempfile.TemporaryDirectory() as tmp_dir:
             # Initialize global manager

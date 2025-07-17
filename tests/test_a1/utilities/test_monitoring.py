@@ -57,7 +57,7 @@ class TestMetricCollector:
 
         # Record metrics at different times
         now = datetime.now()
-        old_metric = collector.get_metrics("test")  # Empty list
+        collector.get_metrics("test")  # Empty list
 
         collector.record_value("test", 1.0)
         time.sleep(0.01)
@@ -152,10 +152,10 @@ class TestResourceMonitor:
         monitor = ResourceMonitor()
 
         # First call establishes baseline
-        usage1 = monitor.get_current_usage()
+        monitor.get_current_usage()
 
         # Do some work
-        data = [i**2 for i in range(1000)]
+        [i**2 for i in range(1000)]
         time.sleep(0.1)
 
         # Second call should show deltas
@@ -204,7 +204,7 @@ class TestPerformanceMonitor:
 
         with monitor.measure("resource_test", record_resources=True):
             # Do some work
-            data = [i**2 for i in range(10000)]
+            [i**2 for i in range(10000)]
 
         # Check metrics were recorded
         duration_metrics = monitor.metrics.get_metrics("resource_test_duration")
@@ -219,9 +219,8 @@ class TestPerformanceMonitor:
         """Test measuring operation that fails."""
         monitor = PerformanceMonitor()
 
-        with pytest.raises(ValueError):
-            with monitor.measure("failing_operation") as metadata:
-                raise ValueError("Test error")
+        with pytest.raises(ValueError), monitor.measure("failing_operation"):
+            raise ValueError("Test error")
 
         # Duration should still be recorded with success=False
         metrics = monitor.metrics.get_metrics("failing_operation_duration")

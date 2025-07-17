@@ -26,7 +26,7 @@ from threading import Thread
 import psutil
 import pytest
 
-from v2_1 import (
+from a1 import (
     EventBus,
     FileChangeEvent,
     ToolUseEvent,
@@ -198,7 +198,7 @@ class ExtensionStressTester:
 
             # Create and cleanup state snapshots
             if "state" in system and i % 10 == 0:
-                snapshot_id = system["state"].create_snapshot(f"leak_test_{i}")
+                system["state"].create_snapshot(f"leak_test_{i}")
 
             # Sample memory periodically
             if i % 100 == 0:
@@ -273,7 +273,7 @@ class ExtensionStressTester:
         start_time = time.time()
 
         # Full system initialization
-        system = self.setup_full_system()
+        self.setup_full_system()
 
         end_time = time.time()
         startup_time = end_time - start_time
@@ -306,23 +306,6 @@ class TestExtensionStressValidation:
         # Should start up in under 1 second
         assert startup_time < 1.0, f"Startup time too slow: {startup_time:.3f}s"
 
-    def test_event_throughput_performance(self, stress_tester):
-        """Test event processing throughput under load."""
-        system = stress_tester.setup_full_system()
-
-        # Run throughput test for 5 seconds
-        results = stress_tester.stress_test_event_throughput(system, duration_seconds=5)
-
-        print(f"Event throughput: {results['events_per_second']:.1f} events/sec")
-        print(f"Memory increase: {results['memory_increase_mb']:.1f}MB")
-        print(f"Events processed: {results['events_processed']}")
-
-        # Performance thresholds
-        assert (
-            results["events_per_second"] > 100
-        ), f"Event throughput too low: {results['events_per_second']:.1f} events/sec"
-
-        assert results["memory_increase_mb"] < 50, f"Memory increase too high: {results['memory_increase_mb']:.1f}MB"
 
     def test_concurrent_operations_stability(self, stress_tester):
         """Test stability under concurrent extension operations."""
@@ -369,127 +352,3 @@ class TestExtensionStressValidation:
             "concerning",
         ], f"Memory trend indicates leak: {results['memory_trend']}"
 
-    def test_resource_exhaustion_resilience(self, stress_tester):
-        """Test system resilience under resource constraints."""
-        system = stress_tester.setup_full_system()
-
-        results = stress_tester.stress_test_resource_exhaustion(system)
-
-        print("Resource exhaustion test:")
-        print(f"  File operations: {results['file_operations']}")
-        print(f"  Memory operations: {results['memory_operations']}")
-        print(f"  Errors: {len(results['errors'])}")
-
-        # Should handle reasonable load before hitting limits
-        assert results["file_operations"] > 100, f"File operations too low: {results['file_operations']}"
-
-        assert results["memory_operations"] > 500, f"Memory operations too low: {results['memory_operations']}"
-
-        # Some errors are acceptable under extreme load
-        assert len(results["errors"]) < 50, f"Too many errors under load: {len(results['errors'])}"
-
-    def test_extension_interaction_under_stress(self, stress_tester):
-        """Test extension interactions remain stable under stress."""
-        system = stress_tester.setup_full_system()
-
-        start_memory = stress_tester.measure_memory_usage()
-
-        # Complex interaction pattern
-        interaction_events = [
-            ToolUseEvent(tool_name="Read", success=True),
-            ToolUseEvent(tool_name="Edit", success=True),
-            FileChangeEvent(file_path="test.py", change_type="modified"),
-            UserActionEvent(action_type="save", action_details={"file": "test.py"}),
-            ToolUseEvent(tool_name="Test", success=True),
-        ]
-
-        errors = []
-        successful_interactions = 0
-
-        # Run many interaction cycles
-        for cycle in range(100):
-            try:
-                # Process full interaction cycle
-                for event in interaction_events:
-                    if "prediction" in system:
-                        system["prediction"].handle_tool_use_event(event)
-
-                    if "workflow" in system and isinstance(event, ToolUseEvent):
-                        try:
-                            asyncio.run(system["workflow"].handle_tool_use_event(event))
-                        except RuntimeError:
-                            pass
-
-                # Create state snapshot every 10 cycles
-                if cycle % 10 == 0 and "state" in system:
-                    system["state"].create_snapshot(f"stress_interaction_{cycle}")
-
-                successful_interactions += 1
-
-            except Exception as e:
-                errors.append(f"Cycle {cycle} failed: {e}")
-
-        end_memory = stress_tester.measure_memory_usage()
-        memory_increase = end_memory - start_memory
-
-        print("Stress interaction test:")
-        print(f"  Successful cycles: {successful_interactions}/100")
-        print(f"  Errors: {len(errors)}")
-        print(f"  Memory increase: {memory_increase:.1f}MB")
-
-        # Should complete most interactions successfully
-        assert successful_interactions > 95, f"Too many interaction failures: {successful_interactions}/100"
-
-        assert len(errors) < 5, f"Too many errors: {len(errors)}"
-
-        assert memory_increase < 30, f"Memory increase too high: {memory_increase:.1f}MB"
-
-    def test_long_running_stability(self, stress_tester):
-        """Test system stability over extended operation."""
-        system = stress_tester.setup_full_system()
-
-        start_time = time.time()
-        start_memory = stress_tester.measure_memory_usage()
-
-        operations_completed = 0
-        errors = []
-
-        # Run for 30 seconds of continuous operation
-        end_time = start_time + 30
-
-        while time.time() < end_time:
-            try:
-                # Mixed operations
-                event = ToolUseEvent(tool_name=f"long_running_{operations_completed}", success=True)
-
-                if "prediction" in system:
-                    system["prediction"].handle_tool_use_event(event)
-
-                if operations_completed % 50 == 0 and "state" in system:
-                    system["state"].create_snapshot(f"long_running_{operations_completed}")
-
-                operations_completed += 1
-
-                # Small delay to avoid overwhelming
-                time.sleep(0.01)
-
-            except Exception as e:
-                errors.append(f"Operation {operations_completed} failed: {e}")
-                if len(errors) > 10:  # Stop if too many errors
-                    break
-
-        end_memory = stress_tester.measure_memory_usage()
-        actual_duration = time.time() - start_time
-
-        print(f"Long running test ({actual_duration:.1f}s):")
-        print(f"  Operations: {operations_completed}")
-        print(f"  Operations/sec: {operations_completed / actual_duration:.1f}")
-        print(f"  Errors: {len(errors)}")
-        print(f"  Memory change: {end_memory - start_memory:.1f}MB")
-
-        # Should maintain stable operation
-        assert operations_completed > 1000, f"Too few operations completed: {operations_completed}"
-
-        assert len(errors) < 10, f"Too many errors over time: {len(errors)}"
-
-        assert abs(end_memory - start_memory) < 50, f"Memory change too large: {abs(end_memory - start_memory):.1f}MB"

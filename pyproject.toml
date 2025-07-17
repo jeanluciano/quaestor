@@ -40,6 +40,8 @@ dev = [
     "pytest-mock>=3.14.1",
     "ruff>=0.12.2",
     "pre-commit>=3.5.0",
+    "psutil>=7.0.0",
+    "pytest-asyncio>=1.1.0",
 ]
 
 [tool.setuptools]

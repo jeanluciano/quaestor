@@ -1,6 +1,6 @@
 {
-  "timestamp": "2025-07-16T10:13:49.345742",
-  "version": "2.1.0",
+  "timestamp": "2025-07-16T21:30:15.054644",
+  "version": "A1.0",
   "tests": {
     "end_to_end": {
       "passed": 4,
@@ -13,7 +13,7 @@
             "Tool sequence executed",
             "File created and tracked",
             "Quality check: good",
-            "State snapshot: snapshot_1752678829347253",
+            "State snapshot: snapshot_1752719415055797",
             "Patterns learned: 0"
           ],
           "duration": "< 1s",
@@ -38,9 +38,9 @@
         "state_management": {
           "success": true,
           "files_tracked": 3,
-          "snapshots_created": 259,
+          "snapshots_created": 50,
           "diff_available": true,
-          "undo_successful": "snapshot_1752678829534210",
+          "undo_successful": "snapshot_1752719415236054",
           "state_management_functional": true
         }
       },
@@ -55,10 +55,10 @@
         "throughput_over_100": true
       },
       "measurements": {
-        "startup_time": 2.7179718017578125e-05,
-        "memory_mb": 44.265625,
-        "avg_response_ms": 0.29664039611816406,
-        "events_per_second": 7932.789892761901
+        "startup_time": 5.1975250244140625e-05,
+        "memory_mb": 61.078125,
+        "avg_response_ms": 0.22439956665039062,
+        "events_per_second": 6193.04845997106
       },
       "all_targets_met": true
     },
@@ -83,16 +83,16 @@
           "tool_predictions": 0,
           "file_predictions": 0,
           "summary": {
-            "tool_patterns": 3,
+            "tool_patterns": 5159,
             "file_patterns": 1,
-            "recent_tools": 3,
-            "recent_files": 0,
+            "recent_tools": 20,
+            "recent_files": 2,
             "status": "active"
           }
         },
         "state": {
           "status": "functional",
-          "snapshots": 259,
+          "snapshots": 50,
           "operations": [
             "track",
             "snapshot",
@@ -131,16 +131,17 @@
         "config_format": "compatible",
         "directory_structure": "compatible",
         "cli_integration": "compatible",
-        "migration_guide": "available"
+        "migration_guide": "missing"
       },
       "migration_steps": [
         "V0.4.0 config format recognized",
         "V0.4.0 directory structure supported",
-        "A1 available as CLI subcommand",
-        "Migration guide documented"
+        "V2.1 available as CLI subcommand"
       ],
-      "issues": [],
-      "migration_ready": true,
+      "issues": [
+        "Migration guide not found"
+      ],
+      "migration_ready": false,
       "compatibility_score": 0.75
     }
   },
@@ -150,6 +151,6 @@
     "performance_met": true,
     "integration_success": true,
     "extensions_functional": false,
-    "migration_ready": true
+    "migration_ready": false
   }
 }

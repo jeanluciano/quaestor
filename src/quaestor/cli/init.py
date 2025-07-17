@@ -90,17 +90,17 @@ def _init_personal_mode(target_dir: Path, force: bool):
     settings_path = claude_dir / "settings.json"
     try:
         settings_content = pkg_resources.read_text("quaestor.assets.configuration", "automation_base.json")
-        
+
         # Replace placeholders in the template
         import sys
         python_path = sys.executable
         project_root = str(target_dir.absolute())
         hooks_dir = str(claude_dir / "hooks")  # Personal mode: hooks in .claude/hooks
-        
+
         settings_content = settings_content.replace("{python_path}", python_path)
         settings_content = settings_content.replace("{project_root}", project_root)
         settings_content = settings_content.replace("{hooks_dir}", hooks_dir)
-        
+
         settings_path.write_text(settings_content)
         console.print("  [blue]✓[/blue] Created settings.json for hooks configuration")
     except Exception as e:
@@ -184,17 +184,17 @@ def _init_team_mode(target_dir: Path, force: bool, contextual: bool = True):
     settings_path = claude_dir / "settings.json"
     try:
         settings_content = pkg_resources.read_text("quaestor.assets.configuration", "automation_base.json")
-        
+
         # Replace placeholders in the template
         import sys
         python_path = sys.executable
         project_root = str(target_dir.absolute())
         hooks_dir = str(quaestor_dir / "hooks")  # Team mode: hooks in .quaestor/hooks
-        
+
         settings_content = settings_content.replace("{python_path}", python_path)
         settings_content = settings_content.replace("{project_root}", project_root)
         settings_content = settings_content.replace("{hooks_dir}", hooks_dir)
-        
+
         settings_path.write_text(settings_content)
         console.print("  [blue]✓[/blue] Created settings.json for hooks configuration")
     except Exception as e:

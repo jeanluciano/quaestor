@@ -31,7 +31,8 @@ class TestDetectThoughtPatterns:
 
     def test_branching_pattern(self):
         """Test detection of branching patterns."""
-        text = "If the data is valid, we proceed. Else, we need to clean it. Alternatively, we could use a different approach."
+        text = ("If the data is valid, we proceed. Else, we need to clean it. "
+                "Alternatively, we could use a different approach.")
 
         patterns = detect_thought_patterns(text)
 
@@ -51,7 +52,7 @@ class TestDetectThoughtPatterns:
 
     def test_multiple_patterns(self):
         """Test detection of multiple patterns in same text."""
-        text = """First, let's analyze the situation. If we find issues, we'll examine them closely. 
+        text = """First, let's analyze the situation. If we find issues, we'll examine them closely.
                   Then we'll create innovative solutions. This systematic approach will help us."""
 
         patterns = detect_thought_patterns(text)
@@ -73,7 +74,7 @@ class TestDetectThoughtPatterns:
     def test_recursive_pattern(self):
         """Test detection of recursive patterns through repetition."""
         # Use a text with more clear repetition
-        text = """The system processes data recursively. Each recursive call processes more data. 
+        text = """The system processes data recursively. Each recursive call processes more data.
                   The recursive algorithm continues. Recursive processing is efficient."""
 
         patterns = detect_thought_patterns(text, min_confidence=0.3)  # Lower threshold for test
@@ -95,9 +96,9 @@ class TestEstimateTextComplexity:
 
     def test_complex_text(self):
         """Test complexity of complex text."""
-        text = """Despite the intricate nature of this challenging problem, we must analyze 
-                  multiple interconnected factors. However, if we evaluate each component 
-                  systematically, we can optimize the solution. Therefore, assuming proper 
+        text = """Despite the intricate nature of this challenging problem, we must analyze
+                  multiple interconnected factors. However, if we evaluate each component
+                  systematically, we can optimize the solution. Therefore, assuming proper
                   integration of various elements, the complex system should function."""
 
         complexity = estimate_text_complexity(text)

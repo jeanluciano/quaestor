@@ -19,7 +19,7 @@ import psutil
 import pytest
 
 # Import V2.1 components
-from v2_1 import (
+from a1 import (
     AnalysisEngine,
     ContextManager,
     # Core components
@@ -59,10 +59,10 @@ class V21PerformanceBaseline:
 
         # Initialize core components
         event_bus = EventBus()
-        context_manager = ContextManager()
-        quality_guardian = QualityGuardian()
-        learning_manager = LearningManager()
-        analysis_engine = AnalysisEngine()
+        ContextManager()
+        QualityGuardian()
+        LearningManager()
+        AnalysisEngine()
 
         core_startup_time = time.time() - start_time
 
@@ -72,27 +72,27 @@ class V21PerformanceBaseline:
         if with_extensions:
             # Prediction engine
             ext_start = time.time()
-            prediction = get_prediction_engine()
+            get_prediction_engine()
             extension_times["prediction"] = time.time() - ext_start
 
             # Hook manager
             ext_start = time.time()
-            hooks = get_hook_manager()
+            get_hook_manager()
             extension_times["hooks"] = time.time() - ext_start
 
             # State manager
             ext_start = time.time()
-            state = get_state_manager()
+            get_state_manager()
             extension_times["state"] = time.time() - ext_start
 
             # Workflow detector
             ext_start = time.time()
-            workflow = initialize_workflow_detector(event_bus)
+            initialize_workflow_detector(event_bus)
             extension_times["workflow"] = time.time() - ext_start
 
             # Persistence manager
             ext_start = time.time()
-            persistence = get_persistence_manager()
+            get_persistence_manager()
             extension_times["persistence"] = time.time() - ext_start
 
         total_startup_time = time.time() - start_time
@@ -170,7 +170,7 @@ class V21PerformanceBaseline:
         # Prediction response time
         if "prediction" in system:
             start = time.time()
-            predictions = system["prediction"].predict_next_tool()
+            system["prediction"].predict_next_tool()
             response_times["predict_tool"] = (time.time() - start) * 1000  # ms
 
         # State snapshot response time
@@ -322,7 +322,8 @@ class V21PerformanceBaseline:
         print(f"   Event processing: {throughput_results['event_processing_time_ms']:.3f}ms/event")
         print(f"   Async events/sec: {throughput_results['async_events_per_second']:.1f}")
         print(
-            f"   Target: >100 events/sec | Status: {'✓ PASS' if throughput_results['events_per_second'] > 100 else '✗ FAIL'}"
+            f"   Target: >100 events/sec | "
+            f"Status: {'✓ PASS' if throughput_results['events_per_second'] > 100 else '✗ FAIL'}"
         )
 
         # Resource usage

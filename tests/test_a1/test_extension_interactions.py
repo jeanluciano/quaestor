@@ -27,7 +27,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from v2_1 import (
+from a1 import (
     # Core components
     EventBus,
     FileChangeEvent,
@@ -72,7 +72,7 @@ class ExtensionInteractionValidator:
         test_dir.mkdir(exist_ok=True)
 
         # Patch global storage paths to use test directory
-        with patch("quaestor.v2_1.extensions.prediction.Path") as mock_path:
+        with patch("a1.extensions.prediction.Path") as mock_path:
             mock_path.return_value = test_dir / "patterns.json"
 
             # Initialize system with selected extensions only
@@ -202,8 +202,7 @@ class ExtensionInteractionValidator:
         def persistence_operation():
             try:
                 if "persistence" in system:
-                    for i in range(5):
-                        config_data = {"test_key": f"test_value_{i}"}
+                    for _i in range(5):
                         # Note: This assumes persistence manager has save_config method
                         time.sleep(0.01)
             except Exception as e:
@@ -378,7 +377,7 @@ class TestExtensionInteractions:
 
     def test_extension_combinations_basic(self, interaction_validator):
         """Test basic functionality of all extension combinations."""
-        combinations = interaction_validator.create_extension_combinations()
+        interaction_validator.create_extension_combinations()
 
         # Test a representative sample (not all 32 to keep test time reasonable)
         test_combinations = [

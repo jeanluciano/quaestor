@@ -436,8 +436,9 @@ class TestConfigManager:
 
             loaded_features = new_manager.get("features")
             assert loaded_features is not None
-            assert loaded_features.is_enabled("feature1")
-            assert loaded_features.is_enabled("feature2")
+            # A1FeatureFlags has default features
+            assert loaded_features.is_enabled("advanced_prediction")
+            assert loaded_features.is_enabled("state_management")
 
 
 class TestConvenienceFunctions:

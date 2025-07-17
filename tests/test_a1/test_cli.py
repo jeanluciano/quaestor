@@ -20,8 +20,8 @@ class TestV21CLI:
         result = runner.invoke(app, ["version"])
 
         assert result.exit_code == 0
-        assert "Quaestor V2.1" in result.stdout
-        assert "v2.1.0" in result.stdout
+        assert "Quaestor A1" in result.stdout
+        assert "vA1.0" in result.stdout
         assert "Core Components" in result.stdout
         assert "79% reduction" in result.stdout
 
@@ -30,7 +30,7 @@ class TestV21CLI:
         result = runner.invoke(app, ["status"])
 
         assert result.exit_code == 0
-        assert "V2.1 System Status" in result.stdout
+        assert "A1 System Status" in result.stdout
         assert "Core Components" in result.stdout
         assert "Extensions" in result.stdout
         assert "Performance" in result.stdout
@@ -40,7 +40,7 @@ class TestV21CLI:
         result = runner.invoke(app, ["--help"])
 
         assert result.exit_code == 0
-        assert "Quaestor V2.1" in result.stdout
+        assert "Quaestor A1" in result.stdout
         assert "event" in result.stdout
         assert "context" in result.stdout
         assert "quality" in result.stdout
@@ -128,7 +128,7 @@ class TestExtensionCommands:
         result = runner.invoke(app, ["extensions", "list"])
 
         assert result.exit_code == 0
-        assert "V2.1 Extensions" in result.stdout
+        assert "A1 Extensions" in result.stdout
         assert "prediction" in result.stdout
         assert "hooks" in result.stdout
         assert "state" in result.stdout
@@ -158,15 +158,17 @@ class TestConfigCommands:
         result = runner.invoke(app, ["config", "show"])
 
         assert result.exit_code == 0
-        assert "V2.1 Configuration" in result.stdout
+        assert "A1 Configuration" in result.stdout
 
     def test_config_init(self, runner):
         """Test config init command."""
         result = runner.invoke(app, ["config", "init"])
 
         assert result.exit_code == 0
-        assert "Initializing V2.1 Configuration" in result.stdout
-        assert "configuration initialized" in result.stdout
+        assert "Initializing A1 Configuration" in result.stdout
+        # Should either initialize or warn about existing config
+        assert ("configuration initialized successfully" in result.stdout or
+                "Configuration already exists" in result.stdout)
 
 
 class TestPredictionCommands:

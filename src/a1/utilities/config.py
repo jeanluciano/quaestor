@@ -88,14 +88,22 @@ class BaseConfig:
         Returns:
             Configuration instance
         """
-        # Get field names
-        field_names = {f.name for f in fields(cls)}
+        # Get field info
+        field_map = {f.name: f for f in fields(cls)}
 
-        # Filter only known fields
+        # Process fields with type conversion
         filtered_data = {}
         for key, value in data.items():
-            if key in field_names:
-                filtered_data[key] = value
+            if key in field_map:
+                field = field_map[key]
+                # Check if field type is a BaseConfig subclass
+                if (isinstance(value, dict) and
+                    hasattr(field.type, '__bases__') and
+                    BaseConfig in field.type.__bases__):
+                    # Recursively create nested config
+                    filtered_data[key] = field.type.from_dict(value)
+                else:
+                    filtered_data[key] = value
 
         return cls(**filtered_data)
 

@@ -259,7 +259,7 @@ class TestSimpleHookManager:
         """Test reloading configuration."""
         manager = SimpleHookManager(config_file=sample_config, project_root=temp_dir)
 
-        initial_hooks = len(manager.hooks.get("PostToolUse", []))
+        len(manager.hooks.get("PostToolUse", []))
 
         # Modify config file
         config = {
@@ -310,7 +310,7 @@ class TestGlobalFunctions:
 
         assert manager1 is manager2
 
-    @patch("src.quaestor.v2_1.extensions.hooks.get_hook_manager")
+    @patch("a1.extensions.hooks.get_hook_manager")
     def test_execute_hooks_global(self, mock_get_manager):
         """Test global execute_hooks function."""
         mock_manager = Mock()
@@ -323,7 +323,7 @@ class TestGlobalFunctions:
         assert results[0].success is True
         mock_manager.execute_hooks.assert_called_once_with("TestEvent", "TestTool", extra="data")
 
-    @patch("src.quaestor.v2_1.extensions.hooks.execute_hooks")
+    @patch("a1.extensions.hooks.execute_hooks")
     def test_execute_pre_tool_hooks(self, mock_execute):
         """Test pre-tool hooks convenience function."""
         mock_execute.return_value = []
@@ -332,7 +332,7 @@ class TestGlobalFunctions:
 
         mock_execute.assert_called_once_with("PreToolUse", "Write", file_path="test.py")
 
-    @patch("src.quaestor.v2_1.extensions.hooks.execute_hooks")
+    @patch("a1.extensions.hooks.execute_hooks")
     def test_execute_post_tool_hooks(self, mock_execute):
         """Test post-tool hooks convenience function."""
         mock_execute.return_value = []
@@ -341,7 +341,7 @@ class TestGlobalFunctions:
 
         mock_execute.assert_called_once_with("PostToolUse", "Write", success=True, duration=100)
 
-    @patch("src.quaestor.v2_1.extensions.hooks.get_hook_manager")
+    @patch("a1.extensions.hooks.get_hook_manager")
     def test_register_hook_global(self, mock_get_manager):
         """Test global register_hook function."""
         mock_manager = Mock()
@@ -356,7 +356,7 @@ class TestGlobalFunctions:
         assert args[2].command == "echo test"
         assert args[2].type == "command"
 
-    @patch("src.quaestor.v2_1.extensions.hooks.get_hook_manager")
+    @patch("a1.extensions.hooks.get_hook_manager")
     def test_reload_hooks_global(self, mock_get_manager):
         """Test global reload_hooks function."""
         mock_manager = Mock()
@@ -510,7 +510,8 @@ class TestIntegration:
             results = manager.handle_tool_use_event(event)
             all_results.extend(results)
 
-        # Should have executed hooks for Write(1 pre + 1 post), Read(0 pre + 1 post), TodoWrite(0 pre + 1 post) = 4 total
+        # Should have executed hooks for Write(1 pre + 1 post), Read(0 pre + 1 post),
+        # TodoWrite(0 pre + 1 post) = 4 total
         # Note: Some patterns overlap, so actual count may be higher
         assert len(all_results) >= 4  # At least 4 hooks should execute
 

@@ -208,7 +208,7 @@ class TestQualityGuardian:
 
     def test_get_issues_for_file(self, quality_guardian, sample_metrics):
         """Test getting issues for a specific file."""
-        report = quality_guardian.analyze_quality([sample_metrics])
+        quality_guardian.analyze_quality([sample_metrics])
 
         issues = quality_guardian.get_issues_for_file(sample_metrics.file_path)
         assert len(issues) >= 0
@@ -313,7 +313,7 @@ class TestQualityGuardian:
 
     def test_update_average_quality(self, quality_guardian):
         """Test average quality score updates."""
-        initial_avg = quality_guardian.metrics["average_quality"]
+        quality_guardian.metrics["average_quality"]
 
         # Simulate multiple analyses by updating total_analyses first
         quality_guardian.metrics["total_analyses"] = 1
@@ -332,7 +332,7 @@ class TestQualityGuardian:
         metrics = QualityMetrics(file_path="test.py", overall_score=80.0)
 
         # Generate more than 50 reports
-        for i in range(55):
+        for _i in range(55):
             quality_guardian.analyze_quality([metrics])
 
         # History should be limited to 50

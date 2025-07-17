@@ -3,11 +3,11 @@
 import json
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 import pytest
 
-from quaestor.cli.init import _init_common, _init_personal_mode, _init_team_mode
+from quaestor.cli.init import _init_common, _init_personal_mode
 
 
 class TestHooksConfiguration:
@@ -19,7 +19,7 @@ class TestHooksConfiguration:
 
         automation_json = pkg_resources.read_text("quaestor.assets.configuration", "automation_base.json")
         data = json.loads(automation_json)
-        
+
         # Check that we use placeholders, not hardcoded paths
         for hook_type in ["PreToolUse", "PostToolUse"]:
             for matcher_config in data["hooks"][hook_type]:
@@ -38,7 +38,7 @@ class TestHooksConfiguration:
 
         automation_json = pkg_resources.read_text("quaestor.assets.configuration", "automation_base.json")
         data = json.loads(automation_json)
-        
+
         expected_hooks = {
             "implementation_declaration.py",
             "research_tracker.py",
@@ -46,7 +46,7 @@ class TestHooksConfiguration:
             "memory_updater.py",
             "todo_milestone_connector.py"
         }
-        
+
         found_hooks = set()
         for hook_type in ["PreToolUse", "PostToolUse"]:
             for matcher_config in data["hooks"][hook_type]:
@@ -56,7 +56,7 @@ class TestHooksConfiguration:
                     for expected in expected_hooks:
                         if expected in command:
                             found_hooks.add(expected)
-        
+
         # Should NOT have old hook names
         all_commands = json.dumps(data)
         assert "pre-implementation-declaration.py" not in all_commands
@@ -64,7 +64,7 @@ class TestHooksConfiguration:
         assert "track-implementation.py" not in all_commands
         assert "update-memory.py" not in all_commands
         assert "todo-milestone-connector.py" not in all_commands  # Note the hyphen
-        
+
         # Should have all expected hooks
         assert found_hooks == expected_hooks, f"Missing hooks: {expected_hooks - found_hooks}"
 
@@ -80,7 +80,7 @@ class TestHooksConfiguration:
             ("workflow", "todo_milestone_connector.py"),
             ("", "shared_utils.py"),  # In hooks root
         ]
-        
+
         for subdir, hook_file in expected_hooks:
             try:
                 if subdir:
@@ -102,10 +102,10 @@ class TestHooksConfiguration:
             ("workflow", "memory_updater.py"),
             ("workflow", "todo_milestone_connector.py"),
         ]
-        
+
         for subdir, hook_file in hook_files:
             content = pkg_resources.read_text(f"quaestor.assets.hooks.{subdir}", hook_file)
-            
+
             # Check for correct imports
             if "WorkflowState" in content or "get_project_root" in content:
                 assert "from .shared_utils import" in content or "from shared_utils import" in content, \
@@ -120,7 +120,7 @@ class TestHooksConfiguration:
         """Test that personal mode installs hooks to .claude/hooks."""
         with tempfile.TemporaryDirectory() as tmpdir:
             target_dir = Path(tmpdir)
-            
+
             # Mock the necessary functions
             with patch('quaestor.cli.init._init_common') as mock_common:
                 mock_common.return_value = (["file1", "file2"], 5)  # Return non-empty results
@@ -132,13 +132,13 @@ class TestHooksConfiguration:
                                 "PostToolUse": []
                             }
                         })
-                        
+
                         _init_personal_mode(target_dir, force=False)
-            
+
             # Check settings.json was created with proper replacements
             settings_path = target_dir / ".claude" / "settings.json"
             assert settings_path.exists()
-            
+
             settings_content = settings_path.read_text()
             # Settings.json may not exist in this mock test
             if settings_path.exists():
@@ -151,7 +151,7 @@ class TestHooksConfiguration:
     def test_init_replaces_all_placeholders(self):
         """Test that init properly replaces all placeholders in settings.json."""
         import sys
-        
+
         template_content = json.dumps({
             "hooks": {
                 "PreToolUse": [{
@@ -163,25 +163,25 @@ class TestHooksConfiguration:
                 }]
             }
         })
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             target_dir = Path(tmpdir)
             hooks_dir = target_dir / ".claude" / "hooks"
-            
+
             # Test placeholder replacement logic
             python_path = sys.executable
             project_root = str(target_dir.absolute())
             hooks_dir_str = str(hooks_dir)
-            
+
             processed = template_content.replace("{python_path}", python_path)
             processed = processed.replace("{project_root}", project_root)
             processed = processed.replace("{hooks_dir}", hooks_dir_str)
-            
+
             # Verify no placeholders remain
             assert "{python_path}" not in processed
             assert "{project_root}" not in processed
             assert "{hooks_dir}" not in processed
-            
+
             # Verify correct paths are present
             data = json.loads(processed)
             command = data["hooks"]["PreToolUse"][0]["hooks"][0]["command"]
@@ -197,17 +197,17 @@ class TestHooksConfiguration:
         workflow_hooks = set()
         try:
             # List workflow hooks
-            for item in ["implementation_declaration.py", "research_tracker.py", 
-                        "implementation_tracker.py", "memory_updater.py", 
+            for item in ["implementation_declaration.py", "research_tracker.py",
+                        "implementation_tracker.py", "memory_updater.py",
                         "todo_milestone_connector.py"]:
                 workflow_hooks.add(item)
-        except:
+        except Exception:
             pass
-        
+
         # Parse automation_base.json
         automation_json = pkg_resources.read_text("quaestor.assets.configuration", "automation_base.json")
         data = json.loads(automation_json)
-        
+
         # Extract hook names from commands
         referenced_hooks = set()
         for hook_type in ["PreToolUse", "PostToolUse"]:
@@ -219,7 +219,7 @@ class TestHooksConfiguration:
                     if len(parts) > 1:
                         hook_file = parts[1].split()[0]
                         referenced_hooks.add(hook_file)
-        
+
         # All referenced hooks should exist
         assert referenced_hooks.issubset(workflow_hooks), \
             f"Referenced hooks not found: {referenced_hooks - workflow_hooks}"
@@ -227,41 +227,41 @@ class TestHooksConfiguration:
 
 class TestHooksCopyingInInit:
     """Test that init command properly copies hooks."""
-    
+
     @patch('importlib.resources.read_text')
     @patch('quaestor.cli.init.console')
     def test_init_common_should_copy_hooks(self, mock_console, mock_read_text):
         """Test that _init_common copies hook files."""
         # This test ensures we add hook copying to init
         # Currently this might fail - that's the point!
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             target_dir = Path(tmpdir)
-            
+
             # Mock resources
             mock_read_text.side_effect = lambda pkg, file: "mock content"
-            
+
             # Run init_common
             copied_files, commands_copied = _init_common(target_dir, force=False, mode="personal")
-            
+
             # Check if hooks directory was created
             hooks_dir = target_dir / ".claude" / "hooks"
-            
+
             # This assertion documents what SHOULD happen
             # If this fails, it means init needs to be updated to copy hooks
             if not hooks_dir.exists():
                 pytest.skip("Hook copying not yet implemented in _init_common")
-            
+
             # These are the hooks that should be copied
             expected_hooks = [
                 "shared_utils.py",
                 "implementation_declaration.py",
                 "research_tracker.py",
-                "implementation_tracker.py", 
+                "implementation_tracker.py",
                 "memory_updater.py",
                 "todo_milestone_connector.py"
             ]
-            
+
             for hook in expected_hooks:
                 hook_path = hooks_dir / hook
                 assert hook_path.exists(), f"Hook {hook} was not copied"
