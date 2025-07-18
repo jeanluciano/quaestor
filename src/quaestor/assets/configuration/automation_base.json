@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "{python_path} {hooks_dir}/implementation_declaration.py"
+            "command": "{python_path} {hooks_dir}/workflow/implementation_declaration.py"
           }
         ]
       }
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "{python_path} {hooks_dir}/research_tracker.py {project_root}"
+            "command": "{python_path} {hooks_dir}/workflow/research_tracker.py {project_root}"
           }
         ]
       },
@@ -26,7 +26,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "{python_path} {hooks_dir}/implementation_tracker.py {project_root}"
+            "command": "{python_path} {hooks_dir}/workflow/implementation_tracker.py {project_root}"
           }
         ]
       },
@@ -35,7 +35,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "{python_path} {hooks_dir}/memory_updater.py {project_root} --from-todos"
+            "command": "{python_path} {hooks_dir}/workflow/memory_updater.py {project_root} --from-todos"
           }
         ]
       },
@@ -44,10 +44,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "{python_path} {hooks_dir}/todo_milestone_connector.py {project_root}"
+            "command": "{python_path} {hooks_dir}/workflow/todo_milestone_connector.py {project_root}"
           }
         ]
       }
     ]
   }
 }
+EOF < /dev/null

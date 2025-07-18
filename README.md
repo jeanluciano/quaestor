@@ -6,7 +6,10 @@
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Quaestor** provides intelligent context management and quality enforcement for AI assistants, with flexible modes for personal and team projects. Version 0.4.2 brings updated documentation and streamlined user experience.
+**Quaestor** provides intelligent context management and quality enforcement for AI assistants, with flexible modes for personal and team projects. Version 0.4.4 brings improved installation experience, manifest support for personal mode, enhanced hook integration, and Nix support.
+
+> [!NOTE]
+> **Approaching 1.0 Release**: Quaestor is maturing and stabilizing. As we approach version 1.0, expect fewer breaking changes and a focus on refining existing features rather than adding new ones. Future feature development will primarily occur in the optional A1Context add-on, keeping the core Quaestor package lean and stable.
 
 ## Why Quaestor?
 
@@ -31,9 +34,38 @@ uvx quaestor init --mode team
 Creates a self-contained setup in your project:
 ```
 project/
-├── .claude/           # All AI files (gitignored)
-│   ├── CLAUDE.md     # Context-aware rules
-│   ├── commands/     # Local command copies
+├── CLAUDE.md          # Context-aware rules in project root
+├── .claude/           # Configuration only
+│   └── settings.local.json  # Local hooks config (not committed)
+├── .quaestor/        # Documentation, memory & hooks (gitignored)
+│   ├── ARCHITECTURE.md
+│   ├── MEMORY.md
+│   ├── PATTERNS.md
+│   ├── VALIDATION.md
+│   ├── AUTOMATION.md
+│   ├── manifest.json # Version tracking for updates
+│   └── hooks/       # Hook scripts
+│       ├── workflow/
+│       └── validation/
+├── ~/.claude/commands/  # Personal commands (global)
+│   ├── task.md
+│   ├── status.md
+│   ├── analyze.md
+│   ├── milestone.md
+│   ├── check.md
+│   ├── auto-commit.md
+│   ├── milestone-pr.md
+│   └── project-init.md
+└── .gitignore        # Auto-updated (.quaestor/, .claude/settings.local.json)
+```
+
+### Team Mode
+For shared projects with consistent standards:
+```
+project/
+├── CLAUDE.md         # Team rules (committed)
+├── .claude/          # Project configuration
+│   ├── commands/    # Project commands (shared with team)
 │   │   ├── task.md
 │   │   ├── status.md
 │   │   ├── analyze.md
@@ -43,22 +75,6 @@ project/
 │   │   ├── milestone-pr.md
 │   │   └── project-init.md
 │   └── settings.json # Hooks configuration
-├── .quaestor/        # Documentation & memory
-│   ├── ARCHITECTURE.md
-│   ├── MEMORY.md
-│   ├── PATTERNS.md
-│   ├── VALIDATION.md
-│   └── AUTOMATION.md
-└── .gitignore        # Auto-updated
-```
-
-### Team Mode
-For shared projects with consistent standards:
-```
-project/
-├── CLAUDE.md         # Team rules (committed)
-├── .claude/          # Local hooks only
-│   └── settings.json # Hooks configuration
 ├── .quaestor/        # Shared documentation (committed)
 │   ├── QUAESTOR_CLAUDE.md
 │   ├── CRITICAL_RULES.md
@@ -67,17 +83,11 @@ project/
 │   ├── PATTERNS.md
 │   ├── VALIDATION.md
 │   ├── AUTOMATION.md
-│   └── manifest.json
-├── ~/.claude/commands/  # Global commands
-│   ├── task.md
-│   ├── status.md
-│   ├── analyze.md
-│   ├── milestone.md
-│   ├── check.md
-│   ├── auto-commit.md
-│   ├── milestone-pr.md
-│   └── project-init.md
-└── .gitignore        # Auto-updated
+│   ├── manifest.json # Version tracking
+│   └── hooks/       # Hook scripts
+│       ├── workflow/
+│       └── validation/
+└── .gitignore        # NOT modified by Quaestor (team decides)
 ```
 
 Now Claude can use commands with project-specific behavior:
@@ -89,12 +99,38 @@ Now Claude can use commands with project-specific behavior:
 
 ## Installation
 
+### Using uvx (Recommended)
 ```bash
-# No install needed (recommended)
+# No install needed
 uvx quaestor init
+```
 
-# Or install globally
+### Using pip
+```bash
+# Install globally
 pip install quaestor
+```
+
+### Using Nix
+```bash
+# Run directly with Nix flakes
+nix run github:jeanluciano/quaestor -- init
+
+# Add to your flake.nix for project integration
+{
+  inputs = {
+    quaestor.url = "github:jeanluciano/quaestor";
+    # ... other inputs
+  };
+  
+  outputs = { self, quaestor, ... }: {
+    # Use quaestor.packages.${system}.default
+    # Or quaestor.apps.${system}.default
+  };
+}
+
+# For development with Nix
+nix develop github:jeanluciano/quaestor
 ```
 
 ## Commands
@@ -151,16 +187,18 @@ Or create full overrides in `.quaestor/commands/task.md`.
 **Installation modes determine where files are stored:**
 
 **Personal Mode (Default)**:
-- Everything local in `.claude/`
-- Perfect for solo developers
-- Commands and context in one place
-- Fully gitignored
+- Commands installed globally in `~/.claude/commands/` (marked as "(user)")
+- Local settings in `.claude/settings.local.json` (not committed)
+- CLAUDE.md in project root for easy discovery
+- All Quaestor files in `.quaestor/` (gitignored)
+- Manifest tracking enables updates via `quaestor init`
 
 **Team Mode**:
-- Shared standards in `.quaestor/`
-- Global commands in `~/.claude/`
-- Consistent across team
-- Version controlled rules
+- Commands in `.claude/commands/` (marked as "(project)", shared with team)
+- Settings in `.claude/settings.json` (committed)
+- CLAUDE.md in project root with team standards
+- All Quaestor files in `.quaestor/` (committed)
+- No gitignore modifications (team controls what to track)
 
 **Note**: Both modes support all command complexity levels. Mode choice is about file organization, not project complexity.
 
@@ -187,12 +225,17 @@ Commands adapt their behavior based on task complexity (0.0-1.0):
 Thresholds control: auto-activation features, parallel processing, quality gates, and error recovery.
 
 
-## Recent Updates (v0.4.2)
+## Recent Updates (v0.4.4)
 
-- **Enhanced Hooks System** - Comprehensive fixes for better workflow automation
-- **Improved Testing** - Full test coverage for critical components
-- **A1 Development** - Working on next-generation automatic intelligence system
-- **Documentation Updates** - Clearer guidance and updated examples
+- **Improved Installation Experience**:
+  - Personal mode: Commands now install globally as personal commands
+  - Personal mode: Uses `settings.local.json` to keep configuration private
+  - Team mode: Commands install as project commands in `.claude/commands/`
+  - Both modes: Hooks now always install to `.quaestor/hooks/`
+- **Manifest Support for Personal Mode** - Enables `quaestor init` to check for updates
+- **Enhanced Hook Integration** - Hooks now properly call automation module
+- **Better File Organization** - Cleaner separation between personal and team modes
+- **No Forced Gitignore** - Team mode no longer modifies gitignore
 
 ## How It Works
 

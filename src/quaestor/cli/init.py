@@ -55,14 +55,41 @@ def init_command(
 
 def _init_personal_mode(target_dir: Path, force: bool):
     """Initialize in personal mode (all files local to project)."""
-    # Set up .claude directory in project root
+    # Set up directories
     claude_dir = target_dir / ".claude"
+    quaestor_dir = target_dir / QUAESTOR_DIR_NAME
+    manifest_path = quaestor_dir / "manifest.json"
 
-    # Check if this is a fresh install or update
-    if claude_dir.exists() and not force:
-        console.print(f"[yellow].claude directory already exists in {target_dir}[/yellow]")
-        console.print("[yellow]Use --force to overwrite existing installation[/yellow]")
-        raise typer.Exit(1)
+    # Load or create manifest
+    manifest = FileManifest(manifest_path)
+
+    # Check if this is an update scenario
+    if quaestor_dir.exists() and not force:
+        # Use updater for existing installations
+        updater = QuaestorUpdater(target_dir, manifest)
+
+        # Check what would be updated
+        console.print("[blue]Checking for updates...[/blue]")
+        updates = updater.check_for_updates(show_diff=True)
+
+        if not updates["needs_update"] and not any(updates["files"].values()):
+            console.print("\n[green]✓ Everything is up to date![/green]")
+            raise typer.Exit()
+
+        from rich.prompt import Confirm
+
+        if not Confirm.ask("\n[yellow]Proceed with update?[/yellow]"):
+            console.print("[red]Update cancelled.[/red]")
+            raise typer.Exit()
+
+        # Perform update
+        result = updater.update(backup=True)
+        print_update_result(result)
+
+        # Save manifest
+        manifest.save()
+        console.print("\n[green]✅ Update complete![/green]")
+        raise typer.Exit()
 
     # Fresh installation
     if claude_dir.exists() and force:
@@ -70,24 +97,20 @@ def _init_personal_mode(target_dir: Path, force: bool):
 
     # Create directories
     claude_dir.mkdir(exist_ok=True)
+    quaestor_dir.mkdir(exist_ok=True)
     (claude_dir / "commands").mkdir(exist_ok=True)
     console.print(f"[green]Created .claude directory (personal mode) in {target_dir}[/green]")
 
-    # Create CLAUDE.md in .claude directory for personal mode
-    claude_path = claude_dir / "CLAUDE.md"
-    try:
-        # Use RuleEngine to generate contextual CLAUDE.md
-        console.print("  [blue]→[/blue] Analyzing project complexity...")
-        rule_engine = RuleEngine(target_dir)
-        claude_content = rule_engine.generate_claude_md(mode="personal")
+    # Set quaestor version in manifest
+    from .. import __version__
 
-        claude_path.write_text(claude_content)
-        console.print("  [blue]✓[/blue] Created context-aware CLAUDE.md in .claude directory")
-    except Exception as e:
-        console.print(f"  [yellow]⚠[/yellow] Could not create CLAUDE.md: {e}")
+    manifest.set_quaestor_version(__version__)
 
-    # Create settings.json for hooks configuration
-    settings_path = claude_dir / "settings.json"
+    # Handle CLAUDE.md - same as team mode (in project root)
+    _merge_claude_md(target_dir, use_rule_engine=False)
+
+    # Create settings.local.json for hooks configuration (personal mode)
+    settings_path = claude_dir / "settings.local.json"
     try:
         settings_content = pkg_resources.read_text("quaestor.assets.configuration", "automation_base.json")
 
@@ -95,19 +118,33 @@ def _init_personal_mode(target_dir: Path, force: bool):
         import sys
         python_path = sys.executable
         project_root = str(target_dir.absolute())
-        hooks_dir = str(claude_dir / "hooks")  # Personal mode: hooks in .claude/hooks
+        hooks_dir = str(quaestor_dir / "hooks")  # Personal mode: hooks in .quaestor/hooks
 
         settings_content = settings_content.replace("{python_path}", python_path)
         settings_content = settings_content.replace("{project_root}", project_root)
         settings_content = settings_content.replace("{hooks_dir}", hooks_dir)
 
         settings_path.write_text(settings_content)
-        console.print("  [blue]✓[/blue] Created settings.json for hooks configuration")
+        console.print("  [blue]✓[/blue] Created settings.local.json for hooks configuration (not committed)")
     except Exception as e:
-        console.print(f"  [yellow]⚠[/yellow] Could not create settings.json: {e}")
+        console.print(f"  [yellow]⚠[/yellow] Could not create settings.local.json: {e}")
+
+    # Copy system files to .quaestor directory (for manifest tracking)
+    _copy_system_files(quaestor_dir, manifest, target_dir)
 
     # Common initialization
     copied_files, commands_copied = _init_common(target_dir, force, "personal")
+
+    # Track template files in manifest
+    for _template_name, output_name in TEMPLATE_FILES.items():
+        output_path = quaestor_dir / output_name
+        if output_path.exists():
+            content = output_path.read_text()
+            version = extract_version_from_content(content) or "1.0"
+            manifest.track_file(output_path, FileType.USER_EDITABLE, version, target_dir)
+
+    # Save manifest
+    manifest.save()
 
     # Summary
     if copied_files or commands_copied > 0:
@@ -119,8 +156,9 @@ def _init_personal_mode(target_dir: Path, force: bool):
                 console.print(f"  • {file}")
 
         console.print("\n[blue]Next steps:[/blue]")
-        console.print("  • Commands are available from .claude/commands")
-        console.print("  • Claude will automatically discover .claude/CLAUDE.md")
+        console.print("  • Personal commands are available globally")
+        console.print("  • Claude will automatically discover CLAUDE.md")
+        console.print("  • Use 'quaestor init' to check for updates")
     else:
         console.print("[red]No files were copied. Please check the source files exist.[/red]")
         raise typer.Exit(1)
@@ -379,13 +417,13 @@ def _init_common(target_dir: Path, force: bool, mode: str):
     console.print("\n[blue]Installing command files:[/blue]")
 
     if mode == "personal":
-        commands_dir = target_dir / ".claude" / "commands"
+        commands_dir = DEFAULT_COMMANDS_DIR  # Personal mode: install to ~/.claude/commands
         commands_dir.mkdir(parents=True, exist_ok=True)
-        console.print("Installing to .claude/commands (local to project)")
+        console.print("Installing to ~/.claude/commands (personal commands)")
     else:
-        commands_dir = DEFAULT_COMMANDS_DIR
+        commands_dir = target_dir / ".claude" / "commands"  # Team mode: install to .claude/commands
         commands_dir.mkdir(parents=True, exist_ok=True)
-        console.print("Installing to ~/.claude/commands (global)")
+        console.print("Installing to .claude/commands (project commands)")
 
     commands_copied = 0
     for cmd_file in COMMAND_FILES:
@@ -397,25 +435,85 @@ def _init_common(target_dir: Path, force: bool, mode: str):
         except Exception as e:
             console.print(f"  [yellow]⚠[/yellow] Could not install {cmd_file}: {e}")
 
+    # Copy hook files
+    console.print("\n[blue]Installing hook files:[/blue]")
+    
+    # Both modes now install hooks to .quaestor/hooks
+    hooks_dir = quaestor_dir / "hooks"
+    
+    # Create hooks directory structure
+    hooks_dir.mkdir(parents=True, exist_ok=True)
+    (hooks_dir / "workflow").mkdir(exist_ok=True)
+    (hooks_dir / "validation").mkdir(exist_ok=True)
+    
+    # Copy all hook files from assets
+    hooks_copied = 0
+    try:
+        import shutil
+        
+        # Copy shared_utils.py
+        try:
+            utils_content = pkg_resources.read_text("quaestor.assets.hooks", "shared_utils.py")
+            (hooks_dir / "shared_utils.py").write_text(utils_content)
+            console.print(f"  [blue]✓[/blue] Installed shared_utils.py")
+            hooks_copied += 1
+        except Exception as e:
+            console.print(f"  [yellow]⚠[/yellow] Could not install shared_utils.py: {e}")
+        
+        # Copy workflow hooks
+        workflow_hooks = [
+            "automated_commit_trigger.py",
+            "context_refresher.py", 
+            "file_change_tracker.py",
+            "implementation_declaration.py",
+            "implementation_tracker.py",
+            "memory_sync.py",
+            "memory_updater.py",
+            "research_tracker.py",
+            "research_workflow_tracker.py",
+            "todo_milestone_connector.py"
+        ]
+        
+        for hook_file in workflow_hooks:
+            try:
+                hook_content = pkg_resources.read_text("quaestor.assets.hooks.workflow", hook_file)
+                (hooks_dir / "workflow" / hook_file).write_text(hook_content)
+                console.print(f"  [blue]✓[/blue] Installed workflow/{hook_file}")
+                hooks_copied += 1
+            except Exception as e:
+                console.print(f"  [yellow]⚠[/yellow] Could not install workflow/{hook_file}: {e}")
+        
+        # Copy validation hooks
+        validation_hooks = [
+            "compliance_validator.py",
+            "milestone_checker.py",
+            "milestone_validator.py",
+            "quality_checker.py",
+            "research_enforcer.py"
+        ]
+        
+        for hook_file in validation_hooks:
+            try:
+                hook_content = pkg_resources.read_text("quaestor.assets.hooks.validation", hook_file)
+                (hooks_dir / "validation" / hook_file).write_text(hook_content)
+                console.print(f"  [blue]✓[/blue] Installed validation/{hook_file}")
+                hooks_copied += 1
+            except Exception as e:
+                console.print(f"  [yellow]⚠[/yellow] Could not install validation/{hook_file}: {e}")
+                
+        console.print(f"\n  [green]Installed {hooks_copied} hook files[/green]")
+        
+    except Exception as e:
+        console.print(f"  [red]✗[/red] Failed to copy hooks: {e}")
+
     # Update gitignore
     if mode == "personal":
         entries = [
             "# Quaestor Personal Mode",
-            ".claude/",
-            ".quaestor/cache/",
-            ".quaestor/user/",
-            ".quaestor/local/",
+            ".quaestor/",  # Only ignore .quaestor directory in personal mode
+            ".claude/settings.local.json",  # Ignore local settings
         ]
-    else:
-        entries = [
-            "# Quaestor Team Mode",
-            ".claude/settings.json",
-            ".quaestor/cache/",
-            ".quaestor/user/",
-            ".quaestor/local/",
-            ".quaestor/personal/",
-        ]
-
-    update_gitignore(target_dir, entries, "Quaestor")
+        update_gitignore(target_dir, entries, "Quaestor")
+    # Team mode: don't modify gitignore at all
 
     return copied_files, commands_copied

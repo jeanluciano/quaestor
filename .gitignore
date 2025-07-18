@@ -46,13 +46,7 @@ htmlcov/
 
 # Local
 test_project/
-.claude/
 hook_test.log
 examples/
 .pypirc
 
-# Quaestor
-# Quaestor Personal Mode
-.quaestor/cache/
-.quaestor/user/
-.quaestor/local/

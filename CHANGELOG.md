@@ -5,6 +5,46 @@ All notable changes to Quaestor will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.4] - 2025-01-18
+
+### Added
+- **Hook file installation** during `quaestor init`
+  - Copies all hook files from `src/quaestor/assets/hooks/` to project
+  - Creates proper directory structure for workflow and validation hooks
+- **Manifest support for personal mode**
+  - Personal mode now creates `manifest.json` for version tracking
+  - Enables `quaestor init` to check for updates in personal mode
+  - Same update experience as team mode
+- **Nix integration** ([@bbaserdem](https://github.com/bbaserdem) in [#2](https://github.com/jeanluciano/quaestor/pull/2), commit [5dca282](https://github.com/jeanluciano/quaestor/commit/5dca282f87968aa7077460c9bb4528459671889b))
+  - Added `flake.nix` for Nix users
+  - Integrated uv2nix for dependency management
+  - Enables reproducible builds with Nix
+  - First community contribution to Quaestor!
+
+### Changed
+- **Personal mode improvements**:
+  - Commands now install to `~/.claude/commands/` as personal commands (marked as "(user)")
+  - Settings file changed from `.claude/settings.json` to `.claude/settings.local.json` (not committed)
+  - CLAUDE.md now created in project root (same as team mode)
+  - Hooks moved from `.claude/hooks/` to `.quaestor/hooks/`
+  - Gitignore simplified to only ignore `.quaestor/` and `.claude/settings.local.json`
+- **Team mode improvements**:
+  - Commands now install to `.claude/commands/` as project commands (marked as "(project)")
+  - No longer modifies `.gitignore` (team decides what to track)
+  - Hooks remain in `.quaestor/hooks/`
+
+### Fixed
+- Hook integration with automation module
+  - Asset hooks now properly call the automation module functions
+  - Added `shared_utils.py` with helper functions for hook execution
+  - Fixed hook paths in `automation_base.json` template to include workflow/ subdirectory
+  - Fixed Python path issues in hook configurations
+
+### Improved
+- Better separation between personal and team modes following Claude Code conventions
+- Cleaner file organization with consistent hook locations
+- More intuitive command installation (personal=user-wide, team=project-specific)
+
 ## [0.4.0] - 2025-01-13
 
 ### Added
