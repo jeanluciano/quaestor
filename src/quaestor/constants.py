@@ -44,7 +44,7 @@ QUAESTOR_CONFIG_END = "<!-- QUAESTOR CONFIG END -->"
 # Template file mappings (actual filename -> output filename)
 TEMPLATE_FILES = {
     "quaestor_claude.md": "QUAESTOR_CLAUDE.md",
-    "critical_rules.md": "CRITICAL_RULES.md", 
+    "critical_rules.md": "CRITICAL_RULES.md",
     "architecture.md": "ARCHITECTURE.md",
     "memory.md": "MEMORY.md",
     "patterns.md": "PATTERNS.md",

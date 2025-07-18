@@ -116,6 +116,7 @@ def _init_personal_mode(target_dir: Path, force: bool):
 
         # Replace placeholders in the template
         import sys
+
         python_path = sys.executable
         project_root = str(target_dir.absolute())
         hooks_dir = str(quaestor_dir / "hooks")  # Personal mode: hooks in .quaestor/hooks
@@ -225,6 +226,7 @@ def _init_team_mode(target_dir: Path, force: bool, contextual: bool = True):
 
         # Replace placeholders in the template
         import sys
+
         python_path = sys.executable
         project_root = str(target_dir.absolute())
         hooks_dir = str(quaestor_dir / "hooks")  # Team mode: hooks in .quaestor/hooks
@@ -425,45 +427,60 @@ def _init_common(target_dir: Path, force: bool, mode: str):
         commands_dir.mkdir(parents=True, exist_ok=True)
         console.print("Installing to .claude/commands (project commands)")
 
+    # Use command processor to apply configurations
+    from quaestor.command_processor import CommandProcessor
+
+    processor = CommandProcessor(target_dir)
+
     commands_copied = 0
+    configured_count = 0
+
     for cmd_file in COMMAND_FILES:
         try:
-            cmd_content = pkg_resources.read_text("quaestor.commands", cmd_file)
+            cmd_name = cmd_file[:-3]  # Remove .md extension
+
+            # Process command with any configurations
+            cmd_content = processor.process_command(cmd_name)
+
+            # Check if command was configured
+            if processor.has_configuration(cmd_name):
+                configured_count += 1
+                console.print(f"  [blue]✓[/blue] Installed {cmd_file} [yellow](configured)[/yellow]")
+            else:
+                console.print(f"  [blue]✓[/blue] Installed {cmd_file}")
+
             (commands_dir / cmd_file).write_text(cmd_content)
-            console.print(f"  [blue]✓[/blue] Installed {cmd_file}")
             commands_copied += 1
         except Exception as e:
             console.print(f"  [yellow]⚠[/yellow] Could not install {cmd_file}: {e}")
 
     # Copy hook files
     console.print("\n[blue]Installing hook files:[/blue]")
-    
+
     # Both modes now install hooks to .quaestor/hooks
     hooks_dir = quaestor_dir / "hooks"
-    
+
     # Create hooks directory structure
     hooks_dir.mkdir(parents=True, exist_ok=True)
     (hooks_dir / "workflow").mkdir(exist_ok=True)
     (hooks_dir / "validation").mkdir(exist_ok=True)
-    
+
     # Copy all hook files from assets
     hooks_copied = 0
     try:
-        import shutil
-        
         # Copy shared_utils.py
         try:
             utils_content = pkg_resources.read_text("quaestor.assets.hooks", "shared_utils.py")
             (hooks_dir / "shared_utils.py").write_text(utils_content)
-            console.print(f"  [blue]✓[/blue] Installed shared_utils.py")
+            console.print("  [blue]✓[/blue] Installed shared_utils.py")
             hooks_copied += 1
         except Exception as e:
             console.print(f"  [yellow]⚠[/yellow] Could not install shared_utils.py: {e}")
-        
+
         # Copy workflow hooks
         workflow_hooks = [
             "automated_commit_trigger.py",
-            "context_refresher.py", 
+            "context_refresher.py",
             "file_change_tracker.py",
             "implementation_declaration.py",
             "implementation_tracker.py",
@@ -471,9 +488,9 @@ def _init_common(target_dir: Path, force: bool, mode: str):
             "memory_updater.py",
             "research_tracker.py",
             "research_workflow_tracker.py",
-            "todo_milestone_connector.py"
+            "todo_milestone_connector.py",
         ]
-        
+
         for hook_file in workflow_hooks:
             try:
                 hook_content = pkg_resources.read_text("quaestor.assets.hooks.workflow", hook_file)
@@ -482,16 +499,16 @@ def _init_common(target_dir: Path, force: bool, mode: str):
                 hooks_copied += 1
             except Exception as e:
                 console.print(f"  [yellow]⚠[/yellow] Could not install workflow/{hook_file}: {e}")
-        
+
         # Copy validation hooks
         validation_hooks = [
             "compliance_validator.py",
             "milestone_checker.py",
             "milestone_validator.py",
             "quality_checker.py",
-            "research_enforcer.py"
+            "research_enforcer.py",
         ]
-        
+
         for hook_file in validation_hooks:
             try:
                 hook_content = pkg_resources.read_text("quaestor.assets.hooks.validation", hook_file)
@@ -500,11 +517,16 @@ def _init_common(target_dir: Path, force: bool, mode: str):
                 hooks_copied += 1
             except Exception as e:
                 console.print(f"  [yellow]⚠[/yellow] Could not install validation/{hook_file}: {e}")
-                
+
         console.print(f"\n  [green]Installed {hooks_copied} hook files[/green]")
-        
+
     except Exception as e:
         console.print(f"  [red]✗[/red] Failed to copy hooks: {e}")
+
+    # Show configuration summary if any commands were configured
+    if configured_count > 0:
+        console.print(f"\n[yellow]📝 {configured_count} command(s) were configured with project settings[/yellow]")
+        console.print("[dim]Run 'quaestor configure' to view or modify configurations[/dim]")
 
     # Update gitignore
     if mode == "personal":
