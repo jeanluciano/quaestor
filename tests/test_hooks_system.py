@@ -44,7 +44,7 @@ class TestHooksConfiguration:
             "research_tracker.py",
             "implementation_tracker.py",
             "memory_updater.py",
-            "todo_milestone_connector.py"
+            "todo_milestone_connector.py",
         }
 
         found_hooks = set()
@@ -108,32 +108,26 @@ class TestHooksConfiguration:
 
             # Check for correct imports
             if "WorkflowState" in content or "get_project_root" in content:
-                assert "from .shared_utils import" in content or "from shared_utils import" in content, \
+                assert "from .shared_utils import" in content or "from shared_utils import" in content, (
                     f"{hook_file} should import from shared_utils"
-                assert "from hook_utils import" not in content, \
-                    f"{hook_file} should NOT import from hook_utils"
-                assert "from .hook_utils import" not in content, \
-                    f"{hook_file} should NOT import from .hook_utils"
+                )
+                assert "from hook_utils import" not in content, f"{hook_file} should NOT import from hook_utils"
+                assert "from .hook_utils import" not in content, f"{hook_file} should NOT import from .hook_utils"
 
-    @patch('quaestor.cli.init.console')
+    @patch("quaestor.cli.init.console")
     def test_personal_mode_creates_hooks_in_claude_dir(self, mock_console):
         """Test that personal mode installs hooks to .claude/hooks."""
         with tempfile.TemporaryDirectory() as tmpdir:
             target_dir = Path(tmpdir)
 
             # Mock the necessary functions
-            with patch('quaestor.cli.init._init_common') as mock_common:
+            with patch("quaestor.cli.init._init_common") as mock_common, \
+                 patch("quaestor.cli.init.RuleEngine"), \
+                 patch("importlib.resources.read_text") as mock_read:
                 mock_common.return_value = (["file1", "file2"], 5)  # Return non-empty results
-                with patch('quaestor.cli.init.RuleEngine'):
-                    with patch('importlib.resources.read_text') as mock_read:
-                        mock_read.return_value = json.dumps({
-                            "hooks": {
-                                "PreToolUse": [],
-                                "PostToolUse": []
-                            }
-                        })
+                mock_read.return_value = json.dumps({"hooks": {"PreToolUse": [], "PostToolUse": []}})
 
-                        _init_personal_mode(target_dir, force=False)
+                _init_personal_mode(target_dir, force=False)
 
             # Check settings.json was created with proper replacements
             settings_path = target_dir / ".claude" / "settings.json"
@@ -152,17 +146,20 @@ class TestHooksConfiguration:
         """Test that init properly replaces all placeholders in settings.json."""
         import sys
 
-        template_content = json.dumps({
-            "hooks": {
-                "PreToolUse": [{
-                    "matcher": "Write",
-                    "hooks": [{
-                        "type": "command",
-                        "command": "{python_path} {hooks_dir}/test.py {project_root}"
-                    }]
-                }]
+        template_content = json.dumps(
+            {
+                "hooks": {
+                    "PreToolUse": [
+                        {
+                            "matcher": "Write",
+                            "hooks": [
+                                {"type": "command", "command": "{python_path} {hooks_dir}/test.py {project_root}"}
+                            ],
+                        }
+                    ]
+                }
             }
-        })
+        )
 
         with tempfile.TemporaryDirectory() as tmpdir:
             target_dir = Path(tmpdir)
@@ -197,9 +194,13 @@ class TestHooksConfiguration:
         workflow_hooks = set()
         try:
             # List workflow hooks
-            for item in ["implementation_declaration.py", "research_tracker.py",
-                        "implementation_tracker.py", "memory_updater.py",
-                        "todo_milestone_connector.py"]:
+            for item in [
+                "implementation_declaration.py",
+                "research_tracker.py",
+                "implementation_tracker.py",
+                "memory_updater.py",
+                "todo_milestone_connector.py",
+            ]:
                 workflow_hooks.add(item)
         except Exception:
             pass
@@ -221,15 +222,16 @@ class TestHooksConfiguration:
                         referenced_hooks.add(hook_file)
 
         # All referenced hooks should exist
-        assert referenced_hooks.issubset(workflow_hooks), \
+        assert referenced_hooks.issubset(workflow_hooks), (
             f"Referenced hooks not found: {referenced_hooks - workflow_hooks}"
+        )
 
 
 class TestHooksCopyingInInit:
     """Test that init command properly copies hooks."""
 
-    @patch('importlib.resources.read_text')
-    @patch('quaestor.cli.init.console')
+    @patch("importlib.resources.read_text")
+    @patch("quaestor.cli.init.console")
     def test_init_common_should_copy_hooks(self, mock_console, mock_read_text):
         """Test that _init_common copies hook files."""
         # This test ensures we add hook copying to init
@@ -259,7 +261,7 @@ class TestHooksCopyingInInit:
                 "research_tracker.py",
                 "implementation_tracker.py",
                 "memory_updater.py",
-                "todo_milestone_connector.py"
+                "todo_milestone_connector.py",
             ]
 
             for hook in expected_hooks:
@@ -270,35 +272,35 @@ class TestHooksCopyingInInit:
 class TestTemplateCopying:
     """Test that all templates are properly copied during init."""
 
-    @patch('quaestor.cli.init.process_template')
-    @patch('importlib.resources.read_text')
-    @patch('quaestor.cli.init.console')
+    @patch("quaestor.cli.init.process_template")
+    @patch("importlib.resources.read_text")
+    @patch("quaestor.cli.init.console")
     def test_all_template_files_copied(self, _mock_console, mock_read_text, mock_process_template):
         """Test that all template files from TEMPLATE_FILES are copied."""
         from quaestor.constants import TEMPLATE_FILES
-        
+
         # Mock the template content and processing
         mock_read_text.return_value = "# Mock Template Content"
         mock_process_template.return_value = "# Processed Mock Content"
 
         with tempfile.TemporaryDirectory() as tmpdir:
             target_dir = Path(tmpdir)
-            
+
             # Run init_common
             copied_files, _commands_copied = _init_common(target_dir, force=False, mode="personal")
-            
+
             quaestor_dir = target_dir / ".quaestor"
             assert quaestor_dir.exists(), ".quaestor directory should be created"
-            
+
             # Check that all template files were copied
             for _template_name, output_name in TEMPLATE_FILES.items():
                 output_path = quaestor_dir / output_name
                 assert output_path.exists(), f"Template file {output_name} was not created"
-                
+
                 # Verify the file has content
                 content = output_path.read_text()
                 assert len(content) > 0, f"Template file {output_name} is empty"
-                
+
                 # Check it appears in copied_files list
                 expected_path = f".quaestor/{output_name}"
                 assert expected_path in copied_files, f"{expected_path} not in copied_files list"
@@ -306,20 +308,20 @@ class TestTemplateCopying:
     def test_template_files_constant_completeness(self):
         """Test that TEMPLATE_FILES includes all critical Quaestor files."""
         from quaestor.constants import TEMPLATE_FILES
-        
+
         # These are the critical files that must be included
         required_files = {
             "QUAESTOR_CLAUDE.md",
-            "CRITICAL_RULES.md", 
+            "CRITICAL_RULES.md",
             "ARCHITECTURE.md",
             "MEMORY.md",
             "PATTERNS.md",
             "VALIDATION.md",
-            "AUTOMATION.md"
+            "AUTOMATION.md",
         }
-        
+
         actual_files = set(TEMPLATE_FILES.values())
-        
+
         missing_files = required_files - actual_files
         assert not missing_files, f"Missing required template files: {missing_files}"
 
@@ -328,26 +330,26 @@ class TestTemplateCopying:
         # Read the current CLAUDE.md
         claude_md_path = Path(__file__).parent.parent / "CLAUDE.md"
         assert claude_md_path.exists(), "CLAUDE.md should exist in project root"
-        
+
         claude_content = claude_md_path.read_text()
-        
+
         # Files that should be referenced in CLAUDE.md
         expected_references = [
             ".quaestor/QUAESTOR_CLAUDE.md",
             ".quaestor/CRITICAL_RULES.md",
-            ".quaestor/ARCHITECTURE.md", 
+            ".quaestor/ARCHITECTURE.md",
             ".quaestor/MEMORY.md",
             ".quaestor/PATTERNS.md",
             ".quaestor/VALIDATION.md",
-            ".quaestor/AUTOMATION.md"
+            ".quaestor/AUTOMATION.md",
         ]
-        
+
         for ref in expected_references:
             assert ref in claude_content, f"CLAUDE.md should reference {ref}"
 
-    @patch('quaestor.cli.init.process_template')
-    @patch('importlib.resources.read_text')
-    @patch('quaestor.cli.init.console')
+    @patch("quaestor.cli.init.process_template")
+    @patch("importlib.resources.read_text")
+    @patch("quaestor.cli.init.console")
     def test_template_processing_failure_handling(self, _mock_console, mock_read_text, mock_process_template):
         """Test that template processing failures are handled gracefully."""
         # Mock read_text to succeed but process_template to fail
@@ -356,17 +358,17 @@ class TestTemplateCopying:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             target_dir = Path(tmpdir)
-            
+
             # This should not crash even if template processing fails
             _init_common(target_dir, force=False, mode="personal")
-            
+
             # Should still create .quaestor directory
             quaestor_dir = target_dir / ".quaestor"
             assert quaestor_dir.exists(), ".quaestor directory should be created even if processing fails"
 
-    @patch('quaestor.cli.init.process_template')
-    @patch('importlib.resources.read_text')
-    @patch('quaestor.cli.init.console')
+    @patch("quaestor.cli.init.process_template")
+    @patch("importlib.resources.read_text")
+    @patch("quaestor.cli.init.console")
     def test_missing_template_file_handling(self, _mock_console, mock_read_text, _mock_process_template):
         """Test handling when a template file is missing."""
         # Mock read_text to raise an exception (simulating missing file)
@@ -374,10 +376,10 @@ class TestTemplateCopying:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             target_dir = Path(tmpdir)
-            
+
             # This should not crash even if template files are missing
             _init_common(target_dir, force=False, mode="personal")
-            
+
             # Should still create .quaestor directory
             quaestor_dir = target_dir / ".quaestor"
             assert quaestor_dir.exists(), ".quaestor directory should be created even if templates are missing"
