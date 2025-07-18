@@ -284,7 +284,7 @@ def is_hook_enabled(hook_name, config=None, category="enforcement"):
 
 def parse_hook_input():
     """Parse Claude hook input from stdin.
-    
+
     Returns:
         dict: Parsed hook data including tool name, args, etc.
     """
@@ -293,12 +293,12 @@ def parse_hook_input():
         input_data = sys.stdin.read()
         if input_data:
             return json.loads(input_data)
-        
+
         # If no stdin, check environment variables
         env_data = os.environ.get('CLAUDE_HOOK_DATA')
         if env_data:
             return json.loads(env_data)
-            
+
         return {}
     except Exception as e:
         print(f"Warning: Could not parse hook input: {e}")
@@ -307,11 +307,11 @@ def parse_hook_input():
 
 def call_automation_hook(hook_name, context=None):
     """Call a hook from the quaestor.automation module.
-    
+
     Args:
         hook_name: Name of the hook to call (e.g., 'auto_commit')
         context: Optional context dictionary to pass to the hook
-        
+
     Returns:
         Exit code (0 for success, 1 for failure)
     """
@@ -320,14 +320,14 @@ def call_automation_hook(hook_name, context=None):
         quaestor_root = Path(__file__).parent.parent.parent
         if str(quaestor_root) not in sys.path:
             sys.path.insert(0, str(quaestor_root))
-        
+
         # Import automation module
-        from quaestor.automation import run_hook, HookResult
-        
+        from quaestor.automation import HookResult, run_hook
+
         # Call the hook
         context = context or {}
         result = run_hook(hook_name, context)
-        
+
         # Handle result
         if isinstance(result, HookResult):
             print(result.message)
@@ -335,7 +335,7 @@ def call_automation_hook(hook_name, context=None):
         else:
             # Legacy support
             return 0 if result else 1
-            
+
     except ImportError as e:
         print(f"Error: Could not import quaestor.automation: {e}")
         print("Make sure Quaestor is installed: pip install -e /path/to/quaestor")
