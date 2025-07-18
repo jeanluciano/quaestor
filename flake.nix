@@ -29,7 +29,7 @@
     flake-utils,
     ...
   } @ inputs: let
-    projectName = "flake_template";
+    projectName = "quaestor";
   in
     (flake-utils.lib.eachDefaultSystem (system: let
       uvBoilerplate = import nix/uv.nix {inherit inputs system projectName;};
