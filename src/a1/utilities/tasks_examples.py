@@ -372,9 +372,9 @@ def example_8_utility_functions():
 
         for i, result in enumerate(results):
             if result.success:
-                print(f"Task {i+1}: {result.data}")
+                print(f"Task {i + 1}: {result.data}")
             else:
-                print(f"Task {i+1} failed: {result.error}")
+                print(f"Task {i + 1} failed: {result.error}")
 
     asyncio.run(run_example())
 

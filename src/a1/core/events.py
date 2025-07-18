@@ -4,7 +4,7 @@ import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 from uuid import uuid4
 
 
@@ -129,15 +129,15 @@ class LearningEvent(Event):
 @dataclass
 class ClaudeEvent(Event):
     """Event received directly from Claude Code hooks."""
-    
+
     type: str = ""  # Hook type: pre_tool_use, post_tool_use, etc.
-    data: Dict[str, Any] = field(default_factory=dict)  # Raw hook data
+    data: dict[str, Any] = field(default_factory=dict)  # Raw hook data
     timestamp: datetime = field(default_factory=datetime.now)
     source: str = "claude_code"
-    
+
     def get_event_type(self) -> str:
         return f"claude_{self.type}"
-    
+
     def _get_data(self) -> dict[str, Any]:
         return {
             "hook_type": self.type,
@@ -149,15 +149,15 @@ class ClaudeEvent(Event):
 @dataclass
 class QuaestorEvent(Event):
     """Event originating from Quaestor system (not Claude)."""
-    
+
     type: str = ""  # Event type: milestone_updated, config_changed, etc.
-    data: Dict[str, Any] = field(default_factory=dict)
+    data: dict[str, Any] = field(default_factory=dict)
     component: str = ""  # Which Quaestor component sent this
     source: str = "quaestor"
-    
+
     def get_event_type(self) -> str:
         return f"quaestor_{self.type}"
-    
+
     def _get_data(self) -> dict[str, Any]:
         return {
             "quaestor_type": self.type,

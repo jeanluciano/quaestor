@@ -7,7 +7,22 @@ auto-activation: ["auto-persona", "milestone-integration", "quality-gates"]
 intelligence-features: ["project-detection", "parallel-execution", "context-awareness"]
 ---
 
+<!-- CONFIGURED BY QUAESTOR
+This command has been customized for your project.
+Base command: task
+Configuration: .quaestor/command-config.yaml
+Override: .quaestor/commands/task.md (if exists)
+-->
+
 # /task - Intelligent Implementation Command
+
+<!-- PROJECT-SPECIFIC: STRICT ENFORCEMENT ENABLED -->
+## ⚠️ STRICT MODE ACTIVE
+
+This project has enabled strict enforcement for this command.
+ALL rules are MANDATORY with ZERO tolerance for deviations.
+
+
 
 ## Purpose
 Execute production-quality features with auto-detected language standards, intelligent tool orchestration, and milestone integration.
@@ -169,3 +184,8 @@ Required:
 
 ---
 *Command with orchestration for Claude integration and execution efficiency*
+## 📋 PROJECT-SPECIFIC RULES
+
+- Always use type hints in Python code
+- Include integration tests for API changes
+

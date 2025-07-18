@@ -102,7 +102,7 @@ def example_resource_monitoring():
 
     for i in range(5):
         usage = monitor.get_current_usage()
-        print(f"\n[{i+1}s] Resource snapshot:")
+        print(f"\n[{i + 1}s] Resource snapshot:")
         print(f"  CPU: {usage.cpu_percent:.1f}%")
         print(f"  Memory: {usage.memory_mb:.1f} MB ({usage.memory_percent:.1f}%)")
         print(f"  Threads: {usage.thread_count}")
@@ -177,9 +177,7 @@ def example_alert_thresholds():
 
     print(f"\nGenerated {len(alerts)} alerts:")
     for alert in sorted(alerts, key=lambda a: a.severity.value):
-        print(
-            f"  [{alert.severity.value}] {alert.metric_name}: " f"{alert.current_value:.0f}ms > {alert.threshold:.0f}ms"
-        )
+        print(f"  [{alert.severity.value}] {alert.metric_name}: {alert.current_value:.0f}ms > {alert.threshold:.0f}ms")
 
     # Resolve some alerts
     monitor.resolve_alerts("api_response_duration")
@@ -272,8 +270,8 @@ def example_continuous_monitoring():
             mem_summary = collector.get_summary("memory_usage", window_minutes=1)
 
             print(f"\n[{iteration}] Metrics Update:")
-            print(f"  CPU: {cpu_summary['latest']:.1f}% " f"(avg: {cpu_summary['mean']:.1f}%)")
-            print(f"  Memory: {mem_summary['latest']:.1f}MB " f"(avg: {mem_summary['mean']:.1f}MB)")
+            print(f"  CPU: {cpu_summary['latest']:.1f}% (avg: {cpu_summary['mean']:.1f}%)")
+            print(f"  Memory: {mem_summary['latest']:.1f}MB (avg: {mem_summary['mean']:.1f}MB)")
 
         time.sleep(0.2)
 
@@ -322,7 +320,7 @@ def example_custom_benchmark():
     sizes = [50, 100, 200]
 
     for size in sizes:
-        print(f"\n{'='*50}")
+        print(f"\n{'=' * 50}")
         print(f"Array size: {size}")
         print("=" * 50)
 

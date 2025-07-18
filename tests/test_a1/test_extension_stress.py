@@ -306,7 +306,6 @@ class TestExtensionStressValidation:
         # Should start up in under 1 second
         assert startup_time < 1.0, f"Startup time too slow: {startup_time:.3f}s"
 
-
     def test_concurrent_operations_stability(self, stress_tester):
         """Test stability under concurrent extension operations."""
         system = stress_tester.setup_full_system()
@@ -343,12 +342,11 @@ class TestExtensionStressValidation:
         # Memory usage should be reasonable
         assert results["memory_increase_mb"] < 100, f"Memory increase too high: {results['memory_increase_mb']:.1f}MB"
 
-        assert (
-            results["memory_per_operation_kb"] < 10
-        ), f"Memory per operation too high: {results['memory_per_operation_kb']:.2f}KB"
+        assert results["memory_per_operation_kb"] < 10, (
+            f"Memory per operation too high: {results['memory_per_operation_kb']:.2f}KB"
+        )
 
         assert results["memory_trend"] in [
             "stable",
             "concerning",
         ], f"Memory trend indicates leak: {results['memory_trend']}"
-

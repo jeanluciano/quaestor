@@ -31,8 +31,10 @@ class TestDetectThoughtPatterns:
 
     def test_branching_pattern(self):
         """Test detection of branching patterns."""
-        text = ("If the data is valid, we proceed. Else, we need to clean it. "
-                "Alternatively, we could use a different approach.")
+        text = (
+            "If the data is valid, we proceed. Else, we need to clean it. "
+            "Alternatively, we could use a different approach."
+        )
 
         patterns = detect_thought_patterns(text)
 

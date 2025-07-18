@@ -297,26 +297,26 @@ class ContextManager:
 
         self.switcher.optimize_context(session.current_context)
         return True
-        
+
     async def process_event(self, event) -> None:
         """Process an event and update context accordingly."""
         # For now, just track that we received an event
         # In future, this would analyze the event and update context
         pass
-        
+
     def get_current_context(self) -> dict | None:
         """Get the current context summary."""
         if not self.current_session or not self.current_session.current_context:
             return None
-            
+
         context = self.current_session.current_context
         return {
             "type": context.context_type.value,
             "task": context.current_task,
             "relevant_files": context.get_top_files(5),
-            "files_count": len(context.relevant_files)
+            "files_count": len(context.relevant_files),
         }
-        
+
     async def update_milestone(self, milestone_data: dict) -> None:
         """Update context based on milestone change."""
         # Update current task from milestone

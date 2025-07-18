@@ -284,11 +284,11 @@ class V21PerformanceBaseline:
         startup_results = self.measure_startup_time()
         self.results["startup"] = startup_results
 
-        print(f"   Core startup: {startup_results['core_startup_time']*1000:.1f}ms")
-        print(f"   Extensions total: {startup_results['extensions_total']*1000:.1f}ms")
+        print(f"   Core startup: {startup_results['core_startup_time'] * 1000:.1f}ms")
+        print(f"   Extensions total: {startup_results['extensions_total'] * 1000:.1f}ms")
         for ext, time_taken in startup_results["extension_times"].items():
-            print(f"     - {ext}: {time_taken*1000:.1f}ms")
-        print(f"   TOTAL STARTUP: {startup_results['total_startup_time']*1000:.1f}ms")
+            print(f"     - {ext}: {time_taken * 1000:.1f}ms")
+        print(f"   TOTAL STARTUP: {startup_results['total_startup_time'] * 1000:.1f}ms")
         print(f"   Target: <1000ms | Status: {'✓ PASS' if startup_results['total_startup_time'] < 1.0 else '✗ FAIL'}")
 
         # Memory usage

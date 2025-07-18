@@ -97,9 +97,7 @@ class BaseConfig:
             if key in field_map:
                 field = field_map[key]
                 # Check if field type is a BaseConfig subclass
-                if (isinstance(value, dict) and
-                    hasattr(field.type, '__bases__') and
-                    BaseConfig in field.type.__bases__):
+                if isinstance(value, dict) and hasattr(field.type, "__bases__") and BaseConfig in field.type.__bases__:
                     # Recursively create nested config
                     filtered_data[key] = field.type.from_dict(value)
                 else:

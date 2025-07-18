@@ -385,7 +385,7 @@ class TestConvenienceFunctions:
 
         # Check workflow tags and progress
         for i, result in enumerate(reversed(results)):  # Results are in reverse order
-            assert f"step:{i+1}" in result.tags
+            assert f"step:{i + 1}" in result.tags
             assert result.context["progress"] == (i + 1) / 3
             assert result.context["workflow"] == "data_processing"
             assert "workflow" in result.tags

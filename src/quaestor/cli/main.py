@@ -40,7 +40,7 @@ except ImportError:
 # Add A1 integration if available
 try:
     from quaestor.integrations import add_a1_to_cli
-    
+
     add_a1_to_cli(app)
 except ImportError:
     # A1 integration not available

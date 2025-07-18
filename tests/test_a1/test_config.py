@@ -190,13 +190,16 @@ class TestEnvironmentVariables:
 
     def test_system_env_overrides(self):
         """Test system configuration environment overrides."""
-        with tempfile.TemporaryDirectory() as temp_dir, patch.dict(
-            os.environ,
-            {
-                "QUAESTOR_A1_SYSTEM_DEBUG": "true",
-                "QUAESTOR_A1_SYSTEM_LOG_LEVEL": "DEBUG",
-                "QUAESTOR_A1_SYSTEM_MAX_WORKERS": "8",
-            },
+        with (
+            tempfile.TemporaryDirectory() as temp_dir,
+            patch.dict(
+                os.environ,
+                {
+                    "QUAESTOR_A1_SYSTEM_DEBUG": "true",
+                    "QUAESTOR_A1_SYSTEM_LOG_LEVEL": "DEBUG",
+                    "QUAESTOR_A1_SYSTEM_MAX_WORKERS": "8",
+                },
+            ),
         ):
             config_manager = ConfigManager(temp_dir)
             config_manager.ensure_loaded()
@@ -205,7 +208,6 @@ class TestEnvironmentVariables:
             assert config_manager.get_value("system.debug") is True
             assert config_manager.get_value("system.log_level") == "DEBUG"
             assert config_manager.get_value("system.max_workers") == 8
-
 
 
 class TestGlobalConfigFunctions:

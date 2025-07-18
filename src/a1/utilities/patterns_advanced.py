@@ -480,12 +480,12 @@ def extract_recurring_elements(texts: list[str]) -> dict[str, Any]:
         # Extract 2-3 word phrases
         words = text.lower().split()
         for i in range(len(words) - 1):
-            bigram = f"{words[i]} {words[i+1]}"
+            bigram = f"{words[i]} {words[i + 1]}"
             if len(words[i]) > 3 and len(words[i + 1]) > 3:  # Skip short words
                 phrase_occurrences[bigram] += 1
 
             if i < len(words) - 2:
-                trigram = f"{words[i]} {words[i+1]} {words[i+2]}"
+                trigram = f"{words[i]} {words[i + 1]} {words[i + 2]}"
                 if all(len(w) > 3 for w in [words[i], words[i + 1], words[i + 2]]):
                     phrase_occurrences[trigram] += 1
 

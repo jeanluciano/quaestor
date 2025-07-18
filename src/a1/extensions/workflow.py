@@ -429,7 +429,7 @@ class SimpleWorkflowDetector:
                         "type": "timeout",
                         "workflow_id": workflow.id,
                         "duration": duration,
-                        "message": f"Workflow {workflow.id} has been running for {duration/60:.1f} minutes",
+                        "message": f"Workflow {workflow.id} has been running for {duration / 60:.1f} minutes",
                     }
                 )
 

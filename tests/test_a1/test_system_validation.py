@@ -312,7 +312,7 @@ def long_function_with_many_lines():
         # Modify files
         for i, pattern in enumerate(test_files):
             file_path = state_root / pattern
-            file_path.write_text(f"# Version {i+1} modified\nprint('Updated {i}')\n")
+            file_path.write_text(f"# Version {i + 1} modified\nprint('Updated {i}')\n")
 
         # Create another snapshot
         snapshot_id_2 = state_manager.create_snapshot("modified_state")
@@ -764,7 +764,7 @@ def long_function_with_many_lines():
         print(f"   Total workflows tested: {e2e_results['total']}")
         print(f"   Passed: {e2e_results['passed']}")
         print(f"   Failed: {e2e_results['failed']}")
-        print(f"   Success rate: {e2e_results['success_rate']*100:.1f}%")
+        print(f"   Success rate: {e2e_results['success_rate'] * 100:.1f}%")
 
         for workflow_name, result in e2e_results["workflows"].items():
             status = "✓ PASS" if result.get("success") else "✗ FAIL"
@@ -812,7 +812,7 @@ def long_function_with_many_lines():
         print(f"   Total extensions: {summary.get('total_extensions', 0)}")
         print(f"   Functional: {summary.get('functional', 0)}")
         print(f"   Failed: {summary.get('failed', 0)}")
-        print(f"   Success rate: {summary.get('success_rate', 0)*100:.1f}%")
+        print(f"   Success rate: {summary.get('success_rate', 0) * 100:.1f}%")
 
         for ext_name, ext_data in extension_results["extensions"].items():
             status = ext_data.get("status", "unknown")
@@ -825,7 +825,7 @@ def long_function_with_many_lines():
         self.validation_results["tests"]["migration"] = migration_results
 
         print(f"   Migration ready: {'✓ YES' if migration_results['migration_ready'] else '✗ NO'}")
-        print(f"   Compatibility score: {migration_results['compatibility_score']*100:.1f}%")
+        print(f"   Compatibility score: {migration_results['compatibility_score'] * 100:.1f}%")
 
         for aspect, status in migration_results["compatibility"].items():
             icon = "✓" if status == "compatible" else "✗"
@@ -883,7 +883,6 @@ def system_validator():
 
 class TestV21SystemValidation:
     """Test suite for V2.1 system validation."""
-
 
 
 if __name__ == "__main__":

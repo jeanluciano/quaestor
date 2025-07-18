@@ -167,8 +167,9 @@ class TestConfigCommands:
         assert result.exit_code == 0
         assert "Initializing A1 Configuration" in result.stdout
         # Should either initialize or warn about existing config
-        assert ("configuration initialized successfully" in result.stdout or
-                "Configuration already exists" in result.stdout)
+        assert (
+            "configuration initialized successfully" in result.stdout or "Configuration already exists" in result.stdout
+        )
 
 
 class TestPredictionCommands:
