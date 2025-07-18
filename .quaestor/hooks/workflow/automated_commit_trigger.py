@@ -10,29 +10,29 @@ from pathlib import Path
 
 # Add parent directory to path for shared_utils
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from shared_utils import parse_hook_input, call_automation_hook, get_project_root
+from shared_utils import call_automation_hook, get_project_root, parse_hook_input
 
 
 def parse_todo_changes(hook_data):
     """Parse TodoWrite output to find completed items.
-    
+
     Args:
         hook_data: Parsed hook input from Claude
-        
+
     Returns:
         list: Completed TODO items with their descriptions
     """
     completed_todos = []
-    
+
     try:
         # Check if this is a TodoWrite event
         if hook_data.get('toolName') != 'TodoWrite':
             return completed_todos
-            
+
         # Get the todos from the output
         output = hook_data.get('output', {})
         todos = output.get('todos', [])
-        
+
         # Find completed items
         for todo in todos:
             if todo.get('status') == 'completed':
@@ -43,25 +43,25 @@ def parse_todo_changes(hook_data):
                     'content': todo.get('content', 'Completed task'),
                     'priority': todo.get('priority', 'medium')
                 })
-                
+
     except Exception as e:
         print(f"Warning: Error parsing TODO changes: {e}")
-        
+
     return completed_todos
 
 
 def generate_commit_message(todos):
     """Generate a commit message from completed TODOs.
-    
+
     Args:
         todos: List of completed TODO items
-        
+
     Returns:
         str: Formatted commit message
     """
     if not todos:
         return None
-        
+
     if len(todos) == 1:
         # Single todo - use its content as the message
         content = todos[0]['content']
@@ -84,19 +84,19 @@ def main():
     """Main entry point for the hook."""
     # Parse hook input
     hook_data = parse_hook_input()
-    
+
     # Find completed TODOs
     completed_todos = parse_todo_changes(hook_data)
-    
+
     if not completed_todos:
         # No completed TODOs, nothing to do
         return 0
-        
+
     print(f"✅ Found {len(completed_todos)} completed TODO(s)")
-    
+
     # Generate commit message
     commit_message = generate_commit_message(completed_todos)
-    
+
     # Prepare context for automation hook
     context = {
         'message': commit_message,
@@ -104,7 +104,7 @@ def main():
         'todos': completed_todos,
         'project_root': str(get_project_root())
     }
-    
+
     # Call the automation hook
     print("🚀 Creating auto-commit...")
     return call_automation_hook('auto_commit', context)
