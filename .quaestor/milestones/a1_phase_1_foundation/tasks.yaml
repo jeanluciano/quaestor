@@ -1,0 +1,53 @@
+milestone:
+  id: a1_phase_1_foundation
+  name: A1 Foundation
+  status: active
+  progress: 95
+  start_date: '2025-07-17'
+  target_date: null
+tasks:
+- id: setup_a1_module
+  name: Set up A1 as Quaestor addon
+  status: completed
+  subtasks:
+  - Create src/a1/service/__init__.py structure
+  - Implement A1Service class with lifecycle methods
+  - Add A1 to Quaestor startup sequence
+  - Create configuration system for A1
+- id: event_processing
+  name: Implement basic hook event processing
+  status: completed
+  subtasks:
+  - 'Define HookEvent dataclass schema # COMPLETED'
+  - 'Create EventProcessor base class # COMPLETED'
+  - Implement hook event receivers
+  - Add event validation and sanitization
+  progress: 50%
+  notes: '
+
+    - 2025-07-17: Progress update via hook
+
+    - 2025-07-18: Progress update via hook'
+- id: event_queue
+  name: Create event queue system
+  status: completed
+  subtasks:
+  - Implement async event queue with asyncio
+  - Add queue overflow handling
+  - Create event prioritization system
+  - Build queue monitoring metrics
+- id: intent_detection
+  name: Basic intent detection from event patterns
+  status: completed
+  subtasks:
+  - Define intent types (Exploring, Implementing, Debugging, Refactoring)
+  - Create IntentDetector class
+  - Implement pattern matching for tool sequences
+  - Add confidence scoring system
+  - Build intent history tracking
+quality_gates:
+- Unit tests for all components
+- Integration tests with mock hooks
+- Performance benchmarks documented
+- Error handling for all edge cases
+- Documentation for event schemas

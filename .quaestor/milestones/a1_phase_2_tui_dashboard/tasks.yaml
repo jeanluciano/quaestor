@@ -1,0 +1,51 @@
+milestone:
+  id: "a1_phase_2_tui_dashboard"
+  name: "TUI Dashboard"
+  status: "planned"
+  progress: 0
+  start_date: null
+  target_date: null
+
+tasks:
+  - id: "tui_framework"
+    name: "Build TUI using Rich/Textual"
+    status: "todo"
+    subtasks:
+      - "Set up Textual application structure"
+      - "Create main dashboard layout"
+      - "Implement responsive grid system"
+      - "Add keyboard navigation support"
+    
+  - id: "real_time_display"
+    name: "Real-time event display"
+    status: "todo"
+    subtasks:
+      - "Create event stream widget"
+      - "Implement WebSocket/IPC communication"
+      - "Add event filtering and search"
+      - "Build event history buffer"
+    
+  - id: "metrics_tracking"
+    name: "Basic metrics tracking"
+    status: "todo"
+    subtasks:
+      - "Design metrics collection system"
+      - "Create statistics widgets"
+      - "Implement session metrics"
+      - "Add performance indicators"
+    
+  - id: "intent_visualization"
+    name: "Intent visualization"
+    status: "todo"
+    subtasks:
+      - "Create intent status widget"
+      - "Build confidence meter display"
+      - "Add intent history graph"
+      - "Implement intent transition animations"
+
+quality_gates:
+  - "TUI responsive on all terminal sizes"
+  - "Memory usage stable over long sessions"
+  - "Keyboard shortcuts documented"
+  - "Accessibility features implemented"
+  - "Performance profiling complete"

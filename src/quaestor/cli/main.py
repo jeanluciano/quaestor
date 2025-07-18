@@ -37,6 +37,15 @@ except ImportError:
     # Automation module not available
     pass
 
+# Add A1 integration if available
+try:
+    from quaestor.integrations import add_a1_to_cli
+    
+    add_a1_to_cli(app)
+except ImportError:
+    # A1 integration not available
+    pass
+
 
 def main():
     """Entry point for the CLI."""
