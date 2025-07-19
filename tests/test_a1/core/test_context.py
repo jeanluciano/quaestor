@@ -421,7 +421,7 @@ class TestContextManager:
         stats = manager.get_stats()
         assert stats["total_sessions"] == 3  # Default + 2 new sessions
         assert stats["active_sessions"] == 3
-        assert stats["avg_files_per_context"] == 2/3  # 2 files across 3 sessions
+        assert stats["avg_files_per_context"] == 2 / 3  # 2 files across 3 sessions
 
 
 class TestPerformance:

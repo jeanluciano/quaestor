@@ -42,16 +42,16 @@ def check_milestone_completion(hook_data, project_root):
 
     try:
         # Check if this is a TodoWrite event
-        if hook_data.get('toolName') != 'TodoWrite':
+        if hook_data.get("toolName") != "TodoWrite":
             return completed_milestones
 
         # Get the todos from the output
-        output = hook_data.get('output', {})
-        todos = output.get('todos', [])
+        output = hook_data.get("output", {})
+        todos = output.get("todos", [])
 
         # Count completed vs total
         total = len(todos)
-        completed = sum(1 for todo in todos if todo.get('status') == 'completed')
+        completed = sum(1 for todo in todos if todo.get("status") == "completed")
 
         # If all TODOs are completed, we might have a completed milestone
         if total > 0 and completed == total:
@@ -77,12 +77,8 @@ def main():
 
     # First, update memory with TODO changes
     print("📝 Updating project memory...")
-    memory_context = {
-        'from_todos': True,
-        'hook_data': hook_data,
-        'project_root': str(project_root)
-    }
-    call_automation_hook('auto_update_memory', memory_context)
+    memory_context = {"from_todos": True, "hook_data": hook_data, "project_root": str(project_root)}
+    call_automation_hook("auto_update_memory", memory_context)
 
     # Check for milestone completion
     completed_milestones = check_milestone_completion(hook_data, project_root)
@@ -92,21 +88,13 @@ def main():
 
         # Trigger milestone PR creation
         for milestone in completed_milestones:
-            pr_context = {
-                'milestone': milestone,
-                'auto_pr': True,
-                'project_root': str(project_root)
-            }
+            pr_context = {"milestone": milestone, "auto_pr": True, "project_root": str(project_root)}
             print(f"🚀 Creating PR for milestone: {milestone}")
-            call_automation_hook('auto_milestone_check', pr_context)
+            call_automation_hook("auto_milestone_check", pr_context)
     else:
         # Just check milestone status
-        check_context = {
-            'milestone': None,
-            'auto_pr': False,
-            'project_root': str(project_root)
-        }
-        call_automation_hook('auto_milestone_check', check_context)
+        check_context = {"milestone": None, "auto_pr": False, "project_root": str(project_root)}
+        call_automation_hook("auto_milestone_check", check_context)
 
     return 0
 

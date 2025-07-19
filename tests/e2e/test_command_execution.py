@@ -72,9 +72,7 @@ class TestCommandExecution:
         base_cmd = [sys.executable, "-m", "quaestor.cli.main", "configure"]
 
         # 1. Initialize configuration
-        result = subprocess.run(
-            base_cmd + ["--init"], cwd=initialized_project, capture_output=True, text=True
-        )
+        result = subprocess.run(base_cmd + ["--init"], cwd=initialized_project, capture_output=True, text=True)
         assert result.returncode == 0
 
         # Verify config file exists

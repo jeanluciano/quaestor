@@ -19,21 +19,21 @@ def main():
     hook_data = parse_hook_input()
 
     # Check if this is a TodoWrite event
-    if hook_data.get('toolName') != 'TodoWrite':
+    if hook_data.get("toolName") != "TodoWrite":
         return 0
 
     print("📝 Updating MEMORY.md based on TODO changes...")
 
     # Prepare context for automation hook
     context = {
-        'from_todos': True,
-        'milestone': None,  # Could be enhanced to detect specific milestone
-        'hook_data': hook_data,
-        'project_root': str(get_project_root())
+        "from_todos": True,
+        "milestone": None,  # Could be enhanced to detect specific milestone
+        "hook_data": hook_data,
+        "project_root": str(get_project_root()),
     }
 
     # Call the automation hook
-    return call_automation_hook('auto_update_memory', context)
+    return call_automation_hook("auto_update_memory", context)
 
 
 if __name__ == "__main__":

@@ -194,7 +194,7 @@ class IntentDetector:
             if self._has_sequence(tools_used, pattern["required_sequence"]):
                 score += 0.3
                 evidence["has_required_sequence"] = True
-        
+
         # Check multiple sequences (for debugging pattern)
         if "sequences" in pattern:
             for seq in pattern["sequences"]:
@@ -209,9 +209,12 @@ class IntentDetector:
         edit_count = tools_used.count("Edit") + tools_used.count("MultiEdit")
         evidence["edit_count"] = edit_count
 
-        if "min_edits" in pattern and edit_count >= pattern["min_edits"]:
-            score += 0.2
-        elif "max_edits" in pattern and edit_count <= pattern["max_edits"]:
+        if (
+            "min_edits" in pattern
+            and edit_count >= pattern["min_edits"]
+            or "max_edits" in pattern
+            and edit_count <= pattern["max_edits"]
+        ):
             score += 0.2
 
         # Check indicators

@@ -19,16 +19,13 @@ def main():
     hook_data = parse_hook_input()
 
     # Get the tool being used
-    tool = hook_data.get('tool', '')
+    tool = hook_data.get("tool", "")
 
     # Prepare context for enforcement hook
-    context = {
-        'tool': tool,
-        'hook_data': hook_data
-    }
+    context = {"tool": tool, "hook_data": hook_data}
 
     # Call the enforcement hook
-    return call_automation_hook('enforce_research_before_code', context)
+    return call_automation_hook("enforce_research_before_code", context)
 
 
 if __name__ == "__main__":

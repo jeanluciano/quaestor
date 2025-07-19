@@ -32,8 +32,8 @@ class TestHookIntegration:
         # Mock the service client to handle sync call
         async def mock_send_event(event):
             return True
-        
-        with patch.object(receiver.service_client, 'send_event', new=mock_send_event):
+
+        with patch.object(receiver.service_client, "send_event", new=mock_send_event):
             # Test data
             hook_data = {"tool": "Read", "file_path": "/test.py", "timestamp": datetime.now().isoformat()}
 

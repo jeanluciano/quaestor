@@ -87,7 +87,9 @@ class TestBasicWorkflow:
 
         # 5. Test automation subcommand exists
         result = subprocess.run(
-            [quaestor_command, "automation", "--help"] if isinstance(quaestor_command, str) else quaestor_command + ["automation", "--help"],
+            [quaestor_command, "automation", "--help"]
+            if isinstance(quaestor_command, str)
+            else quaestor_command + ["automation", "--help"],
             cwd=temp_git_repo,
             capture_output=True,
             text=True,
@@ -113,7 +115,7 @@ class TestBasicWorkflow:
         assert (temp_git_repo / ".claude").exists()
         assert (temp_git_repo / ".claude" / "settings.local.json").exists()
         assert (temp_git_repo / ".quaestor").exists()
-        
+
         # Note: Commands are installed to user's home ~/.claude/commands in personal mode
         # We can't easily test this in e2e without affecting the real home directory
 
@@ -205,7 +207,9 @@ class Helper:
 
         # 3. Test update-memory command exists
         result = subprocess.run(
-            [quaestor_command, "automation", "update-memory", "--help"] if isinstance(quaestor_command, str) else quaestor_command + ["automation", "update-memory", "--help"],
+            [quaestor_command, "automation", "update-memory", "--help"]
+            if isinstance(quaestor_command, str)
+            else quaestor_command + ["automation", "update-memory", "--help"],
             cwd=temp_git_repo,
             capture_output=True,
             text=True,
@@ -258,7 +262,9 @@ class TestErrorHandling:
             text=True,
         )
         assert result.returncode != 0
-        assert "invalid" in result.stdout.lower() or "invalid" in result.stderr.lower() or "error" in result.stderr.lower()
+        assert (
+            "invalid" in result.stdout.lower() or "invalid" in result.stderr.lower() or "error" in result.stderr.lower()
+        )
 
 
 class TestHookIntegration:
@@ -285,7 +291,7 @@ class TestHookIntegration:
         settings_file = temp_git_repo / ".claude" / "settings.json"
         if not settings_file.exists():
             settings_file = temp_git_repo / ".claude" / "settings.local.json"
-        
+
         if settings_file.exists():
             settings_content = settings_file.read_text()
             assert "workflow/implementation_declaration.py" in settings_content

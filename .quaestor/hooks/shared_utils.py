@@ -295,7 +295,7 @@ def parse_hook_input():
             return json.loads(input_data)
 
         # If no stdin, check environment variables
-        env_data = os.environ.get('CLAUDE_HOOK_DATA')
+        env_data = os.environ.get("CLAUDE_HOOK_DATA")
         if env_data:
             return json.loads(env_data)
 

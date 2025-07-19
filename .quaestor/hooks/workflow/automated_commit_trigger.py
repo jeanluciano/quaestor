@@ -26,23 +26,25 @@ def parse_todo_changes(hook_data):
 
     try:
         # Check if this is a TodoWrite event
-        if hook_data.get('toolName') != 'TodoWrite':
+        if hook_data.get("toolName") != "TodoWrite":
             return completed_todos
 
         # Get the todos from the output
-        output = hook_data.get('output', {})
-        todos = output.get('todos', [])
+        output = hook_data.get("output", {})
+        todos = output.get("todos", [])
 
         # Find completed items
         for todo in todos:
-            if todo.get('status') == 'completed':
+            if todo.get("status") == "completed":
                 # Check if this was just marked completed
                 # (This is a simple check - could be enhanced to track state changes)
-                completed_todos.append({
-                    'id': todo.get('id'),
-                    'content': todo.get('content', 'Completed task'),
-                    'priority': todo.get('priority', 'medium')
-                })
+                completed_todos.append(
+                    {
+                        "id": todo.get("id"),
+                        "content": todo.get("content", "Completed task"),
+                        "priority": todo.get("priority", "medium"),
+                    }
+                )
 
     except Exception as e:
         print(f"Warning: Error parsing TODO changes: {e}")
@@ -64,7 +66,7 @@ def generate_commit_message(todos):
 
     if len(todos) == 1:
         # Single todo - use its content as the message
-        content = todos[0]['content']
+        content = todos[0]["content"]
         # Clean up the message
         if len(content) > 50:
             # Truncate to 50 chars for commit title
@@ -74,8 +76,8 @@ def generate_commit_message(todos):
         # Multiple todos - create a summary
         message = f"feat: complete {len(todos)} tasks\n\n"
         for todo in todos:
-            priority = todo.get('priority', 'medium')
-            content = todo['content']
+            priority = todo.get("priority", "medium")
+            content = todo["content"]
             message += f"- [{priority}] {content}\n"
         return message
 
@@ -99,15 +101,15 @@ def main():
 
     # Prepare context for automation hook
     context = {
-        'message': commit_message,
-        'files': None,  # Let the hook determine which files to commit
-        'todos': completed_todos,
-        'project_root': str(get_project_root())
+        "message": commit_message,
+        "files": None,  # Let the hook determine which files to commit
+        "todos": completed_todos,
+        "project_root": str(get_project_root()),
     }
 
     # Call the automation hook
     print("🚀 Creating auto-commit...")
-    return call_automation_hook('auto_commit', context)
+    return call_automation_hook("auto_commit", context)
 
 
 if __name__ == "__main__":
