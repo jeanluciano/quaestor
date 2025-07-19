@@ -5,7 +5,7 @@ All notable changes to Quaestor will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.4.4] - 2025-01-18
+## [0.5.0] - 2025-01-19
 
 ### Added
 - **Hook file installation** during `quaestor init`
@@ -20,6 +20,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Integrated uv2nix for dependency management
   - Enables reproducible builds with Nix
   - First community contribution to Quaestor!
+- **A1 TUI Dashboard** - Complete interactive terminal dashboard for A1 monitoring
+  - Real-time event streaming with filtering and search capabilities
+  - Live metrics visualization with sparkline graphs for CPU, memory, and performance
+  - Intent detection visualization with confidence meters and history tracking
+  - Alert management system with severity levels and acknowledgment
+  - Multiple screens: main dashboard, event details, and settings
+  - Full keyboard navigation with vim-style bindings
+  - Dark/light theme support
+  - Responsive grid layout that adapts to terminal size
+  - New CLI command: `a1 dashboard` to launch the TUI
+- **Textual dependency** added for advanced TUI capabilities
+- **Extended A1Client** with dashboard-specific methods for fetching events, metrics, and intents
+- **Automated commit trigger hook** added to automation template
+  - Triggers git commits when TODO items are marked as completed
+  - Generates conventional commit messages based on task descriptions
+  - Integration with milestone tracking system
 
 ### Changed
 - **Personal mode improvements**:
@@ -32,6 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Commands now install to `.claude/commands/` as project commands (marked as "(project)")
   - No longer modifies `.gitignore` (team decides what to track)
   - Hooks remain in `.quaestor/hooks/`
+- Updated automation_base.json to include automated_commit_trigger.py hook
+- Enhanced A1 service client with mock data support for dashboard testing
 
 ### Fixed
 - Hook integration with automation module
@@ -39,11 +57,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `shared_utils.py` with helper functions for hook execution
   - Fixed hook paths in `automation_base.json` template to include workflow/ subdirectory
   - Fixed Python path issues in hook configurations
+- Test suite updated to include automated_commit_trigger hook in validation
 
 ### Improved
 - Better separation between personal and team modes following Claude Code conventions
 - Cleaner file organization with consistent hook locations
 - More intuitive command installation (personal=user-wide, team=project-specific)
+
+### Developer Notes
+- Created comprehensive documentation for auto-commit hook enhancement needs
+- TUI currently uses mock data while full IPC implementation is pending
+- All A1 Phase 2 milestone tasks completed (100%)
 
 ## [0.4.0] - 2025-01-13
 
