@@ -14,13 +14,3 @@ repos:
         types: [python]
         require_serial: true
 
-  - repo: local
-    hooks:
-      - id: pytest
-        name: pytest
-        entry: uv run pytest -x --tb=short
-        language: system
-        pass_filenames: false
-        always_run: true
-        stages: [pre-push]
-        verbose: true

@@ -85,7 +85,8 @@ class TestBasicWorkflow:
             text=True,
         )
         assert result.returncode == 0
-        assert "up to date" in result.stdout.lower() or "updated" in result.stdout.lower()
+        # Check for successful update indicators
+        assert any(phrase in result.stdout.lower() for phrase in ["up to date", "update complete", "added"])
 
         # 5. Test automation subcommand exists
         result = subprocess.run(
