@@ -238,14 +238,16 @@ class TestUpdateIntegration:
         with patch("quaestor.updater.pkg_resources.read_text") as mock_read:
             # Need to handle multiple calls to read_text for different files
             def read_text_side_effect(package, resource):
-                if resource == "QUAESTOR_CLAUDE.md":
+                if resource == "quaestor_claude.md":
                     return "<!-- QUAESTOR:version:1.1 -->\nUpdated QUAESTOR_CLAUDE content"
-                elif resource == "CRITICAL_RULES.md":
+                elif resource == "critical_rules.md":
                     return "<!-- QUAESTOR:version:1.1 -->\nUpdated CRITICAL_RULES content"
-                elif resource == "ARCHITECTURE.template.md":
+                elif resource == "architecture.md":
                     return "<!-- QUAESTOR:version:1.1 -->\nUpdated architecture"
-                elif resource == "MEMORY.template.md":
+                elif resource == "memory.md":
                     return "<!-- QUAESTOR:version:1.1 -->\nUpdated memory"
+                elif resource == "claude_include.md":
+                    return "<!-- QUAESTOR CONFIG START -->\nUpdated include\n<!-- QUAESTOR CONFIG END -->"
                 else:
                     raise FileNotFoundError(f"Resource {resource} not found")
 
