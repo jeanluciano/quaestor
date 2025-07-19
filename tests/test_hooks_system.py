@@ -199,6 +199,7 @@ class TestHooksConfiguration:
                 "implementation_tracker.py",
                 "memory_updater.py",
                 "todo_milestone_connector.py",
+                "automated_commit_trigger.py",
             ]:
                 workflow_hooks.add(f"workflow/{item}")
         except Exception:
