@@ -52,4 +52,5 @@ examples/
 
 # Quaestor test artifacts
 .quaestor/.quaestor/state/snapshots/
+.quaestor/patterns.json
 

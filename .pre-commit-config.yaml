@@ -1,12 +1,18 @@
 repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.2
+  - repo: local
     hooks:
       - id: ruff
-        args: ["--fix", "--exit-non-zero-on-fix"]
+        name: ruff
+        entry: uv run ruff check --fix
+        language: system
+        types: [python]
+        require_serial: true
       - id: ruff-format
-        # Ensure format uses the same config as CLI
-        args: ["--config", "pyproject.toml"]
+        name: ruff-format
+        entry: uv run ruff format
+        language: system
+        types: [python]
+        require_serial: true
 
   - repo: local
     hooks:
