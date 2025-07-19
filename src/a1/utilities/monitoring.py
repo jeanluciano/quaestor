@@ -557,7 +557,7 @@ class Benchmark:
                 95: durations[int(len(durations) * 0.95)],
                 99: durations[int(len(durations) * 0.99)],
             },
-            throughput=1000.0 / mean(durations),  # Operations per second
+            throughput=1000.0 / mean(durations) if mean(durations) > 0 else 0.0,  # Operations per second
             resource_usage=end_resources,
         )
 
