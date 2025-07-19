@@ -6,13 +6,13 @@ from pathlib import Path
 
 # Import shared utilities
 try:
-    from .hook_utils import get_project_root, run_quality_checks
+    from ..shared_utils import get_project_root, run_quality_checks
 except ImportError:
     # Fallback for when run as standalone script
     import sys
 
-    sys.path.insert(0, str(Path(__file__).parent))
-    from hook_utils import get_project_root, run_quality_checks
+    sys.path.insert(0, str(Path(__file__).parent.parent))
+    from shared_utils import get_project_root, run_quality_checks
 
 
 if __name__ == "__main__":

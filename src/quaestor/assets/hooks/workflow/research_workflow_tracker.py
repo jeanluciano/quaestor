@@ -8,16 +8,26 @@ import sys
 from pathlib import Path
 
 # Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 try:
-    from shared_utils import WorkflowState, get_project_root
-
     from quaestor.hooks.base import BaseHook
+
+    from ..shared_utils import WorkflowState, get_project_root
 except ImportError:
     # Fallback for development
-    from hooks.base import BaseHook
     from shared_utils import WorkflowState, get_project_root
+
+    try:
+        from quaestor.hooks.base import BaseHook
+    except ImportError:
+        # Create a dummy BaseHook if not available
+        class BaseHook:
+            def __init__(self, name):
+                self.name = name
+
+            def run(self):
+                pass
 
 
 class ResearchTracker(BaseHook):

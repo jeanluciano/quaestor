@@ -5,6 +5,16 @@ All notable changes to Quaestor will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1] - 2025-01-19
+
+### Fixed
+- **Hook import errors** in asset hook files
+  - Fixed incorrect relative imports in validation and workflow hooks
+  - Changed import paths from `.shared_utils` to `..shared_utils` for proper resolution
+  - Updated fallback import paths to use `parent.parent` for hooks in subdirectories
+  - Fixed module name references from `hook_utils` to `shared_utils`
+  - All hooks now run without import errors
+
 ## [0.5.0] - 2025-01-19
 
 ### Added

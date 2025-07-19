@@ -1,10 +1,10 @@
 {
-  "quaestor_version": "0.4.3",
+  "quaestor_version": "0.5.0",
   "files": {
     ".quaestor/QUAESTOR_CLAUDE.md": {
       "type": "user-editable",
       "version": "1.0",
-      "installed_at": "2025-07-18T14:53:23.840964",
+      "installed_at": "2025-07-19T11:49:43.941036",
       "original_checksum": "f6a61fd68af5b300523977ca326e0d258b4d8bb70228782f32a6b1bb8fd6366a",
       "current_checksum": "f6a61fd68af5b300523977ca326e0d258b4d8bb70228782f32a6b1bb8fd6366a",
       "user_modified": false
@@ -12,7 +12,7 @@
     ".quaestor/CRITICAL_RULES.md": {
       "type": "user-editable",
       "version": "1.0",
-      "installed_at": "2025-07-18T14:53:23.841059",
+      "installed_at": "2025-07-19T11:49:43.941129",
       "original_checksum": "071d7cea0f7a7872ee47a2b843429d7b97b2436e882f2fa28029c0f17b644258",
       "current_checksum": "071d7cea0f7a7872ee47a2b843429d7b97b2436e882f2fa28029c0f17b644258",
       "user_modified": false
@@ -20,7 +20,7 @@
     ".quaestor/ARCHITECTURE.md": {
       "type": "user-editable",
       "version": "1.0",
-      "installed_at": "2025-07-18T14:53:23.841189",
+      "installed_at": "2025-07-19T11:49:43.941274",
       "original_checksum": "2f303a49e472da1fc0e76c026e3188a0b9e671df188a5b1982cd1f7517bba98d",
       "current_checksum": "2f303a49e472da1fc0e76c026e3188a0b9e671df188a5b1982cd1f7517bba98d",
       "user_modified": false
@@ -28,7 +28,7 @@
     ".quaestor/MEMORY.md": {
       "type": "user-editable",
       "version": "1.0",
-      "installed_at": "2025-07-18T14:53:23.841257",
+      "installed_at": "2025-07-19T11:49:43.941351",
       "original_checksum": "261faeabace3b79efe0a001bf33e1cbaaaedb341578b37e426e582e2d0e1aab1",
       "current_checksum": "261faeabace3b79efe0a001bf33e1cbaaaedb341578b37e426e582e2d0e1aab1",
       "user_modified": false
@@ -36,7 +36,7 @@
     ".quaestor/PATTERNS.md": {
       "type": "user-editable",
       "version": "1.0",
-      "installed_at": "2025-07-18T14:53:23.841313",
+      "installed_at": "2025-07-19T11:49:43.941413",
       "original_checksum": "44eedc0d6b333cbb6a88c789fe2015de1f1d0617b70fa52f957952feb2dba44c",
       "current_checksum": "44eedc0d6b333cbb6a88c789fe2015de1f1d0617b70fa52f957952feb2dba44c",
       "user_modified": false
@@ -44,7 +44,7 @@
     ".quaestor/VALIDATION.md": {
       "type": "user-editable",
       "version": "1.0",
-      "installed_at": "2025-07-18T14:53:23.841410",
+      "installed_at": "2025-07-19T11:49:43.941516",
       "original_checksum": "bf2fbe2ea5ac64449a5ed5fd689462f10f27cf940988bc743bec83012a534014",
       "current_checksum": "bf2fbe2ea5ac64449a5ed5fd689462f10f27cf940988bc743bec83012a534014",
       "user_modified": false
@@ -52,11 +52,11 @@
     ".quaestor/AUTOMATION.md": {
       "type": "user-editable",
       "version": "1.0",
-      "installed_at": "2025-07-18T14:53:23.841467",
+      "installed_at": "2025-07-19T11:49:43.941574",
       "original_checksum": "b6a55360e7fe33ac750b03165648e80d4ebce59e2aa2fb3715dd16cf713b4cec",
       "current_checksum": "b6a55360e7fe33ac750b03165648e80d4ebce59e2aa2fb3715dd16cf713b4cec",
       "user_modified": false
     }
   },
-  "last_updated": "2025-07-18T14:53:23.841469"
+  "last_updated": "2025-07-19T11:49:43.941576"
 }
