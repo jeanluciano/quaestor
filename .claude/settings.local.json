@@ -5,7 +5,8 @@
       "Bash(rm:*)",
       "Bash(uv run ruff check:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(python:*)"
     ],
     "deny": []
   }

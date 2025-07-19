@@ -72,6 +72,36 @@ def performance():
         console.print("\n[yellow]Dashboard stopped.[/yellow]")
 
 
+@app.command()
+def dashboard():
+    """Launch the interactive TUI dashboard for A1 monitoring."""
+    console.print("[bold cyan]Starting A1 TUI Dashboard...[/bold cyan]")
+
+    try:
+        from .tui import A1Dashboard
+
+        # Get socket path from config if available
+        socket_path = None
+        try:
+            socket_path = Path(get_config_value("service.socket_path", "~/.quaestor/a1/service.sock"))
+            socket_path = socket_path.expanduser()
+        except Exception:
+            pass
+
+        # Run the dashboard
+        app = A1Dashboard(socket_path=socket_path)
+        app.run()
+
+    except ImportError as e:
+        console.print("[red]TUI dashboard not available. Ensure textual is installed.[/red]")
+        console.print(f"[dim]Error: {e}[/dim]")
+    except KeyboardInterrupt:
+        console.print("\n[yellow]Dashboard stopped.[/yellow]")
+    except Exception as e:
+        console.print(f"[red]Error running dashboard: {e}[/red]")
+        raise typer.Exit(1) from e
+
+
 @app.command(name="version")
 def version():
     """Show A1 version and system information."""

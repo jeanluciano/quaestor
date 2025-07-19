@@ -47,6 +47,15 @@
             "command": "{python_path} {hooks_dir}/workflow/todo_milestone_connector.py {project_root}"
           }
         ]
+      },
+      {
+        "matcher": "TodoWrite",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{python_path} {hooks_dir}/workflow/automated_commit_trigger.py {project_root}"
+          }
+        ]
       }
     ]
   }

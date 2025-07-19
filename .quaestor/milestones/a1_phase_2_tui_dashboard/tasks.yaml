@@ -1,20 +1,20 @@
 milestone:
   id: "a1_phase_2_tui_dashboard"
   name: "TUI Dashboard"
-  status: "planned"
-  progress: 0
+  status: "active"
+  progress: 75
   start_date: null
   target_date: null
 
 tasks:
   - id: "tui_framework"
     name: "Build TUI using Rich/Textual"
-    status: "todo"
+    status: "completed"
     subtasks:
-      - "Set up Textual application structure"
-      - "Create main dashboard layout"
-      - "Implement responsive grid system"
-      - "Add keyboard navigation support"
+      - "Set up Textual application structure # COMPLETED"
+      - "Create main dashboard layout # COMPLETED"
+      - "Implement responsive grid system # COMPLETED"
+      - "Add keyboard navigation support # COMPLETED"
     
   - id: "real_time_display"
     name: "Real-time event display"

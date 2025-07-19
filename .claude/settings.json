@@ -47,8 +47,16 @@
             "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/hooks/workflow/todo_milestone_connector.py /Users/jeanluciano/Dev/jeanluciano/quaestor"
           }
         ]
+      },
+      {
+        "matcher": "TodoWrite",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/hooks/workflow/automated_commit_trigger.py /Users/jeanluciano/Dev/jeanluciano/quaestor"
+          }
+        ]
       }
     ]
   }
 }
-EOF < /dev/null
