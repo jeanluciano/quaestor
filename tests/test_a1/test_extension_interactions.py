@@ -456,17 +456,17 @@ class TestExtensionInteractions:
         performance_results = interaction_validator.test_performance_under_load(system)
 
         # Performance thresholds (adjust based on requirements)
-        assert performance_results["processing_time_seconds"] < 5.0, (
-            f"Processing time too slow: {performance_results['processing_time_seconds']}s"
-        )
+        assert (
+            performance_results["processing_time_seconds"] < 5.0
+        ), f"Processing time too slow: {performance_results['processing_time_seconds']}s"
 
-        assert performance_results["memory_increase_mb"] < 50.0, (
-            f"Memory increase too high: {performance_results['memory_increase_mb']}MB"
-        )
+        assert (
+            performance_results["memory_increase_mb"] < 50.0
+        ), f"Memory increase too high: {performance_results['memory_increase_mb']}MB"
 
-        assert performance_results["events_per_second"] > 20, (
-            f"Event processing too slow: {performance_results['events_per_second']} events/sec"
-        )
+        assert (
+            performance_results["events_per_second"] > 20
+        ), f"Event processing too slow: {performance_results['events_per_second']} events/sec"
 
     def test_all_extensions_active(self, interaction_validator):
         """Test system with all extensions active simultaneously."""

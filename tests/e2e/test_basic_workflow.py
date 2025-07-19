@@ -77,7 +77,9 @@ class TestBasicWorkflow:
 
         # 4. Test update command
         result = subprocess.run(
-            [quaestor_command, "update"] if isinstance(quaestor_command, str) else quaestor_command + ["update"],
+            [quaestor_command, "update", "--force"]
+            if isinstance(quaestor_command, str)
+            else quaestor_command + ["update", "--force"],
             cwd=temp_git_repo,
             capture_output=True,
             text=True,

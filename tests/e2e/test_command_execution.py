@@ -49,7 +49,7 @@ class TestCommandExecution:
     def test_update_command_manifest_check(self, initialized_project):
         """Test update command correctly checks manifest."""
         # First update should show up to date
-        cmd = [sys.executable, "-m", "quaestor.cli.main", "update"]
+        cmd = [sys.executable, "-m", "quaestor.cli.main", "update", "--force"]
         result = subprocess.run(cmd, cwd=initialized_project, capture_output=True, text=True)
         assert result.returncode == 0
         assert "up to date" in result.stdout.lower()
