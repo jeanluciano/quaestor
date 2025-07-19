@@ -100,7 +100,13 @@ select = [
     "UP",  # pyupgrade
     "SIM", # flake8-simplify
 ]
-ignore = ["B008"]  # Allow function calls in argument defaults (needed for Typer)
+ignore = [
+    "B008",   # Allow function calls in argument defaults (needed for Typer)
+    "SIM102", # Use a single if statement instead of nested if statements
+    "SIM103", # Return the condition directly
+    "SIM110", # Simplify for loops
+    "E722",   # Do not use bare except (sometimes needed for robustness)
+]
 
 [tool.ruff.format]
 quote-style = "double"
