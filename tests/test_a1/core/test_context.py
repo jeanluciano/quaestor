@@ -410,7 +410,7 @@ class TestContextManager:
         # Manager creates one default session
         stats = manager.get_stats()
         assert stats["total_sessions"] == 1
-        assert stats["active_sessions"] == 0
+        assert stats["active_sessions"] == 1  # Default session is active
 
         # Create sessions
         session1 = manager.create_session()
@@ -419,9 +419,9 @@ class TestContextManager:
         manager.add_file(session2.id, "/file2.py")
 
         stats = manager.get_stats()
-        assert stats["total_sessions"] == 2
-        assert stats["active_sessions"] == 2
-        assert stats["avg_files_per_context"] == 1.0
+        assert stats["total_sessions"] == 3  # Default + 2 new sessions
+        assert stats["active_sessions"] == 3
+        assert stats["avg_files_per_context"] == 2/3  # 2 files across 3 sessions
 
 
 class TestPerformance:
