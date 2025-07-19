@@ -131,18 +131,15 @@ class TestHooksConfiguration:
 
                 _init_personal_mode(target_dir, force=False)
 
-            # Check settings.json was created with proper replacements
-            settings_path = target_dir / ".claude" / "settings.json"
+            # Personal mode creates settings.local.json, not settings.json
+            settings_path = target_dir / ".claude" / "settings.local.json"
             assert settings_path.exists()
 
             settings_content = settings_path.read_text()
-            # Settings.json may not exist in this mock test
-            if settings_path.exists():
-                settings_content = settings_path.read_text()
-                # Should NOT have placeholders
-                assert "{python_path}" not in settings_content
-                assert "{project_root}" not in settings_content
-                assert "{hooks_dir}" not in settings_content
+            # Should NOT have placeholders
+            assert "{python_path}" not in settings_content
+            assert "{project_root}" not in settings_content
+            assert "{hooks_dir}" not in settings_content
 
     def test_init_replaces_all_placeholders(self):
         """Test that init properly replaces all placeholders in settings.json."""
@@ -203,7 +200,7 @@ class TestHooksConfiguration:
                 "memory_updater.py",
                 "todo_milestone_connector.py",
             ]:
-                workflow_hooks.add(item)
+                workflow_hooks.add(f"workflow/{item}")
         except Exception:
             pass
 

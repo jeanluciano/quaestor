@@ -207,8 +207,8 @@ class TestInitCommand:
             result = runner.invoke(app, ["init", str(temp_dir)])
 
             assert result.exit_code == 0
-            # Personal mode installs commands locally
-            assert "Installing to .claude/commands" in result.output
+            # Personal mode installs commands to ~/.claude/commands
+            assert "Installing to ~/.claude/commands (personal commands)" in result.output
 
             for cmd in expected_commands:
                 assert f"Installed {cmd}" in result.output
