@@ -12,6 +12,7 @@ Performance Targets:
 
 import asyncio
 import gc
+import os
 import time
 from typing import Any
 
@@ -242,7 +243,9 @@ class V21PerformanceBaseline:
         event_bus = system["event_bus"]
         start_time = time.time()
 
-        for i in range(500):
+        # Use environment variable to control iterations
+        iterations = 500 if os.environ.get("FULL_STRESS_TEST") == "1" else 50
+        for i in range(iterations):
             event = ToolUseEvent(tool_name=f"load_test_{i}", success=True)
             asyncio.run(event_bus.publish(event))
 

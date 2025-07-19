@@ -38,6 +38,9 @@ dev = [
     "pytest>=8.4.1",
     "pytest-cov>=6.2.1",
     "pytest-mock>=3.14.1",
+    "pytest-xdist>=3.5.0",
+    "pytest-sugar>=1.0.0",
+    "pytest-timeout>=2.2.0",
     "ruff>=0.12.2",
     "pre-commit>=3.5.0",
     "psutil>=7.0.0",
@@ -72,6 +75,23 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
+addopts = [
+    "-n", "auto",  # Use all available CPU cores
+    "--maxfail=3",  # Stop after 3 failures
+    "--strict-markers",  # Enforce marker declarations
+    "--tb=short",  # Shorter traceback format
+    "-ra",  # Show summary of all test outcomes
+    "--ignore=tests/performance",  # Exclude performance tests by default
+]
+# Timeout for individual tests (in seconds)
+timeout = 60
+timeout_method = "thread"
+# Markers for test categorization
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "stress: marks tests as stress tests",
+    "performance: marks tests as performance tests",
+]
 
 [tool.coverage.run]
 source = ["src/quaestor"]

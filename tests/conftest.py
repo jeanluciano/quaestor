@@ -15,7 +15,7 @@ def temp_dir() -> Generator[Path, None, None]:
         yield Path(tmp)
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def sample_architecture_manifest() -> str:
     """Sample ARCHITECTURE.md content in manifest format."""
     return """# Project Architecture
@@ -36,7 +36,7 @@ The system is built around these key components:
 """
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def sample_memory_manifest() -> str:
     """Sample MEMORY.md content in manifest format."""
     return """# Project Memory & Progress Tracking
@@ -74,15 +74,17 @@ def temp_git_project(tmp_path):
     project_dir = tmp_path / "test_project"
     project_dir.mkdir()
 
-    # Initialize git
-    subprocess.run(["git", "init"], cwd=project_dir, capture_output=True, check=True)
+    # Initialize git with minimal config for speed
+    subprocess.run(["git", "init", "--initial-branch=main"], cwd=project_dir, capture_output=True, check=True)
     subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=project_dir, check=True)
     subprocess.run(["git", "config", "user.name", "Test User"], cwd=project_dir, check=True)
+    # Disable git hooks for faster operations
+    subprocess.run(["git", "config", "core.hooksPath", "/dev/null"], cwd=project_dir, check=True)
 
     # Create initial commit
     (project_dir / "README.md").write_text("# Test Project")
     subprocess.run(["git", "add", "."], cwd=project_dir, check=True)
-    subprocess.run(["git", "commit", "-m", "Initial commit"], cwd=project_dir, check=True)
+    subprocess.run(["git", "commit", "-m", "Initial commit", "--no-verify"], cwd=project_dir, check=True)
 
     return project_dir
 
@@ -179,7 +181,7 @@ line-length = 88
     return temp_git_project
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def command_config_sample():
     """Sample command configuration data."""
     return {
@@ -210,7 +212,7 @@ def mock_automation_context():
     }
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def mock_hook_result():
     """Mock hook result object."""
 
@@ -224,3 +226,35 @@ def mock_hook_result():
             return 0 if self.success else 1
 
     return MockHookResult
+
+
+# Cache expensive imports at module level
+_cached_modules = {}
+
+
+@pytest.fixture(scope="session")
+def cached_rich_console():
+    """Cached Rich console for testing."""
+    if "rich" not in _cached_modules:
+        from rich.console import Console
+
+        _cached_modules["rich"] = Console(force_terminal=False, width=80)
+    return _cached_modules["rich"]
+
+
+@pytest.fixture(scope="session", autouse=True)
+def configure_test_environment():
+    """Configure environment for optimal test performance."""
+    import os
+
+    # Disable unnecessary features during tests
+    os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
+    os.environ["GIT_TERMINAL_PROMPT"] = "0"  # Disable git credential prompts
+
+    # Set test-specific configurations
+    os.environ["QUAESTOR_TEST_MODE"] = "1"
+
+    yield
+
+    # Cleanup
+    os.environ.pop("QUAESTOR_TEST_MODE", None)

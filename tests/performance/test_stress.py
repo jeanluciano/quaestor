@@ -17,6 +17,7 @@ Performance Targets:
 
 import asyncio
 import gc
+import os
 import tempfile
 import time
 from pathlib import Path
@@ -66,6 +67,10 @@ class ExtensionStressTester:
 
     def stress_test_event_throughput(self, system: dict, duration_seconds: int = 10) -> dict:
         """Stress test event processing throughput."""
+        # Use environment variable to control duration
+        if os.environ.get("FULL_STRESS_TEST") != "1":
+            duration_seconds = min(duration_seconds, 2)  # Limit to 2 seconds for quick tests
+
         start_memory = self.measure_memory_usage()
         start_time = time.time()
 
@@ -234,7 +239,9 @@ class ExtensionStressTester:
 
         try:
             # Test many file operations
-            for i in range(500):
+            # Use environment variable to control iterations
+            file_iterations = 500 if os.environ.get("FULL_STRESS_TEST") == "1" else 50
+            for i in range(file_iterations):
                 if "state" in system:
                     try:
                         system["state"].create_snapshot(f"resource_test_{i}")
@@ -245,7 +252,9 @@ class ExtensionStressTester:
 
             # Test memory-intensive operations
             large_events = []
-            for i in range(1000):
+            # Use environment variable to control iterations
+            memory_iterations = 1000 if os.environ.get("FULL_STRESS_TEST") == "1" else 100
+            for i in range(memory_iterations):
                 try:
                     event = ToolUseEvent(
                         tool_name=f"memory_test_{i}" * 10,  # Larger string
@@ -329,8 +338,10 @@ class TestExtensionStressValidation:
         """Test for memory leaks over many operations."""
         system = stress_tester.setup_full_system()
 
-        # Run 500 iterations to detect leaks
-        results = stress_tester.stress_test_memory_leak_detection(system, iterations=500)
+        # Use environment variable to control iterations
+        # Default to 100 for quick tests, 500 for full tests
+        iterations = 500 if os.environ.get("FULL_STRESS_TEST") == "1" else 100
+        results = stress_tester.stress_test_memory_leak_detection(system, iterations=iterations)
 
         print("Memory leak test:")
         print(f"  Initial: {results['initial_memory_mb']:.1f}MB")
