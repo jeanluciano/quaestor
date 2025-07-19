@@ -185,8 +185,7 @@ class TestHookScript:
 
     def test_main_no_args(self, capsys):
         """Test main with no arguments."""
-        with patch.object(sys, "argv", ["claude_receiver.py"]), \
-             pytest.raises(SystemExit) as exc_info:
+        with patch.object(sys, "argv", ["claude_receiver.py"]), pytest.raises(SystemExit) as exc_info:
             from a1.hooks.claude_receiver import main
 
             main()
@@ -197,9 +196,11 @@ class TestHookScript:
 
     def test_main_invalid_json(self, capsys):
         """Test main with invalid JSON input."""
-        with patch.object(sys, "argv", ["claude_receiver.py", "test_hook"]), \
-             patch("sys.stdin", MockStdin("invalid json")), \
-             pytest.raises(SystemExit) as exc_info:
+        with (
+            patch.object(sys, "argv", ["claude_receiver.py", "test_hook"]),
+            patch("sys.stdin", MockStdin("invalid json")),
+            pytest.raises(SystemExit) as exc_info,
+        ):
             from a1.hooks.claude_receiver import main
 
             main()
@@ -210,9 +211,11 @@ class TestHookScript:
 
     def test_main_unknown_hook(self, capsys):
         """Test main with unknown hook type."""
-        with patch.object(sys, "argv", ["claude_receiver.py", "unknown_hook"]), \
-             patch("sys.stdin", MockStdin('{"test": "data"}')), \
-             pytest.raises(SystemExit) as exc_info:
+        with (
+            patch.object(sys, "argv", ["claude_receiver.py", "unknown_hook"]),
+            patch("sys.stdin", MockStdin('{"test": "data"}')),
+            pytest.raises(SystemExit) as exc_info,
+        ):
             from a1.hooks.claude_receiver import main
 
             main()
@@ -223,9 +226,11 @@ class TestHookScript:
 
     def test_main_successful_processing(self, capsys):
         """Test main with successful processing."""
-        with patch.object(sys, "argv", ["claude_receiver.py", "post_tool_use"]), \
-             patch("sys.stdin", MockStdin('{"tool": "Read", "file": "test.py"}')), \
-             patch("a1.hooks.claude_receiver.ClaudeHookReceiver") as MockReceiver:
+        with (
+            patch.object(sys, "argv", ["claude_receiver.py", "post_tool_use"]),
+            patch("sys.stdin", MockStdin('{"tool": "Read", "file": "test.py"}')),
+            patch("a1.hooks.claude_receiver.ClaudeHookReceiver") as MockReceiver,
+        ):
             mock_instance = Mock()
             mock_instance.handle_post_tool_use.return_value = {"status": "received", "a1": "processing"}
             MockReceiver.return_value = mock_instance

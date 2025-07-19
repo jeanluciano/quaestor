@@ -99,8 +99,10 @@ class TestCommandProcessor:
         processor = CommandProcessor(temp_project)
 
         # Mock the loader's config methods
-        with patch.object(processor.loader.config, "get_command_config") as mock_get_config, \
-             patch.object(processor.loader.config, "has_override") as mock_has_override:
+        with (
+            patch.object(processor.loader.config, "get_command_config") as mock_get_config,
+            patch.object(processor.loader.config, "has_override") as mock_has_override,
+        ):
             # No config or override
             mock_get_config.return_value = {}
             mock_has_override.return_value = False
@@ -119,8 +121,10 @@ class TestCommandProcessor:
         """Test processing command without configuration."""
         processor = CommandProcessor(temp_project)
 
-        with patch.object(processor, "_load_base_command") as mock_load, \
-             patch.object(processor.loader, "load_command") as mock_loader:
+        with (
+            patch.object(processor, "_load_base_command") as mock_load,
+            patch.object(processor.loader, "load_command") as mock_loader,
+        ):
             mock_load.return_value = sample_command_content
             mock_loader.return_value = sample_command_content  # No changes
 
@@ -135,8 +139,10 @@ class TestCommandProcessor:
         processor = CommandProcessor(temp_project)
         modified_content = sample_command_content + "\n## STRICT MODE ACTIVE"
 
-        with patch.object(processor, "_load_base_command") as mock_load, \
-             patch.object(processor.loader, "load_command") as mock_loader:
+        with (
+            patch.object(processor, "_load_base_command") as mock_load,
+            patch.object(processor.loader, "load_command") as mock_loader,
+        ):
             mock_load.return_value = sample_command_content
             mock_loader.return_value = modified_content  # Changed by config
 
@@ -172,8 +178,10 @@ class TestCommandProcessor:
         processor = CommandProcessor(temp_project)
         modified_content = sample_command_content + "\n## Configuration Applied"
 
-        with patch.object(processor, "_load_base_command") as mock_load, \
-             patch.object(processor, "process_command") as mock_process:
+        with (
+            patch.object(processor, "_load_base_command") as mock_load,
+            patch.object(processor, "process_command") as mock_process,
+        ):
             mock_load.return_value = sample_command_content
             mock_process.return_value = modified_content
 

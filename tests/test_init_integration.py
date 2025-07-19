@@ -175,8 +175,10 @@ class TestInitIntegration:
         memory_file.write_text(original_content + "\n## User Notes\nCustom content")
 
         # Second init should trigger update check
-        with patch("quaestor.cli.init.Path.cwd", return_value=temp_git_project), \
-             patch("rich.prompt.Confirm.ask", return_value=False):
+        with (
+            patch("quaestor.cli.init.Path.cwd", return_value=temp_git_project),
+            patch("rich.prompt.Confirm.ask", return_value=False),
+        ):
             result2 = runner.invoke(app, ["init", "--mode", "team"])
 
         assert "Checking for updates" in result2.output

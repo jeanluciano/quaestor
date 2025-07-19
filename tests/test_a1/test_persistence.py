@@ -143,8 +143,7 @@ class TestFileStorageBackend:
             backend = FileStorageBackend(Path(tmp_dir))
 
             # Simulate interrupted write
-            with patch("shutil.move", side_effect=Exception("Simulated error")), \
-                 pytest.raises(StorageError):
+            with patch("shutil.move", side_effect=Exception("Simulated error")), pytest.raises(StorageError):
                 backend.write("test.json", {"data": "value"})
 
             # Ensure no partial file exists

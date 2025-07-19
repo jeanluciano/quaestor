@@ -121,9 +121,11 @@ class TestHooksConfiguration:
             target_dir = Path(tmpdir)
 
             # Mock the necessary functions
-            with patch("quaestor.cli.init._init_common") as mock_common, \
-                 patch("quaestor.cli.init.RuleEngine"), \
-                 patch("importlib.resources.read_text") as mock_read:
+            with (
+                patch("quaestor.cli.init._init_common") as mock_common,
+                patch("quaestor.cli.init.RuleEngine"),
+                patch("importlib.resources.read_text") as mock_read,
+            ):
                 mock_common.return_value = (["file1", "file2"], 5)  # Return non-empty results
                 mock_read.return_value = json.dumps({"hooks": {"PreToolUse": [], "PostToolUse": []}})
 
