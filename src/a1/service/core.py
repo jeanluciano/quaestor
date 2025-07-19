@@ -39,8 +39,8 @@ class A1Service:
         )
 
         # IPC transport for receiving events
-        socket_path = Path.home() / ".quaestor" / "a1" / "service.sock"
-        self.ipc_transport = IPCEventTransport(socket_path)
+        socket_path = config.get("socket_path", str(Path.home() / ".quaestor" / "a1" / "service.sock"))
+        self.ipc_transport = IPCEventTransport(Path(socket_path))
 
         self.running = False
 

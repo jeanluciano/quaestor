@@ -154,6 +154,12 @@ class TestServiceIntegration:
             await service.initialize()
             await service.start()
 
+            # Give the server a moment to start
+            await asyncio.sleep(0.1)
+
+            # Check if socket exists
+            assert socket_path.exists(), f"Socket file not created at {socket_path}"
+
             # Create client
             client = A1ServiceClient(socket_path)
 

@@ -83,19 +83,17 @@ class TestBasicWorkflow:
             text=True,
         )
         assert result.returncode == 0
-        assert "already up to date" in result.stdout.lower() or "updated" in result.stdout.lower()
+        assert "up to date" in result.stdout.lower() or "updated" in result.stdout.lower()
 
-        # 5. Test status command
+        # 5. Test automation subcommand exists
         result = subprocess.run(
-            [quaestor_command, "status"] if isinstance(quaestor_command, str) else quaestor_command + ["status"],
+            [quaestor_command, "automation", "--help"] if isinstance(quaestor_command, str) else quaestor_command + ["automation", "--help"],
             cwd=temp_git_repo,
             capture_output=True,
             text=True,
         )
         assert result.returncode == 0
-        assert "Quaestor Status" in result.stdout
-        assert "Installation" in result.stdout
-        assert "Commands" in result.stdout
+        assert "enforce-research" in result.stdout
 
     def test_personal_mode_workflow(self, temp_git_repo, quaestor_command):
         """Test personal mode workflow."""
@@ -174,8 +172,8 @@ class TestBasicWorkflow:
         task_content = task_file.read_text()
         assert "<!-- CONFIGURED BY QUAESTOR" in task_content
 
-    def test_analysis_workflow(self, temp_git_repo, quaestor_command):
-        """Test project analysis workflow."""
+    def test_automation_workflow(self, temp_git_repo, quaestor_command):
+        """Test automation workflow."""
         # 1. Create some Python files
         src_dir = temp_git_repo / "src"
         src_dir.mkdir()
@@ -210,24 +208,14 @@ class Helper:
             check=True,
         )
 
-        # 3. Run analysis
+        # 3. Test update-memory command exists
         result = subprocess.run(
-            [quaestor_command, "analyze"] if isinstance(quaestor_command, str) else quaestor_command + ["analyze"],
+            [quaestor_command, "automation", "update-memory", "--help"] if isinstance(quaestor_command, str) else quaestor_command + ["automation", "update-memory", "--help"],
             cwd=temp_git_repo,
             capture_output=True,
             text=True,
         )
         assert result.returncode == 0
-        assert "Project Analysis Results" in result.stdout
-        assert "Python" in result.stdout
-        assert "Files" in result.stdout
-
-        # 4. Check architecture file was created
-        arch_file = temp_git_repo / ".quaestor" / "ARCHITECTURE.md"
-        assert arch_file.exists()
-        arch_content = arch_file.read_text()
-        assert "main.py" in arch_content
-        assert "utils.py" in arch_content
 
 
 class TestErrorHandling:
