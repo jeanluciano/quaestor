@@ -353,9 +353,9 @@ class TestExtensionStressValidation:
         # Memory usage should be reasonable
         assert results["memory_increase_mb"] < 100, f"Memory increase too high: {results['memory_increase_mb']:.1f}MB"
 
-        assert (
-            results["memory_per_operation_kb"] < 10
-        ), f"Memory per operation too high: {results['memory_per_operation_kb']:.2f}KB"
+        assert results["memory_per_operation_kb"] < 10, (
+            f"Memory per operation too high: {results['memory_per_operation_kb']:.2f}KB"
+        )
 
         assert results["memory_trend"] in [
             "stable",

@@ -108,9 +108,9 @@ class TestHooksConfiguration:
 
             # Check for correct imports
             if "WorkflowState" in content or "get_project_root" in content:
-                assert (
-                    "from .shared_utils import" in content or "from shared_utils import" in content
-                ), f"{hook_file} should import from shared_utils"
+                assert "from .shared_utils import" in content or "from shared_utils import" in content, (
+                    f"{hook_file} should import from shared_utils"
+                )
                 assert "from hook_utils import" not in content, f"{hook_file} should NOT import from hook_utils"
                 assert "from .hook_utils import" not in content, f"{hook_file} should NOT import from .hook_utils"
 
@@ -221,9 +221,9 @@ class TestHooksConfiguration:
                         referenced_hooks.add(hook_file)
 
         # All referenced hooks should exist
-        assert referenced_hooks.issubset(
-            workflow_hooks
-        ), f"Referenced hooks not found: {referenced_hooks - workflow_hooks}"
+        assert referenced_hooks.issubset(workflow_hooks), (
+            f"Referenced hooks not found: {referenced_hooks - workflow_hooks}"
+        )
 
 
 class TestHooksCopyingInInit:
