@@ -91,10 +91,11 @@ class TestIntentDetector:
 
         # Simulate debugging pattern
         events = [
-            ClaudeEvent(type="test_run", data={"result": "failed"}),
+            ClaudeEvent(type="test_run", data={"result": "failed", "output": "FAILED test_feature.py::test_something"}),
             ClaudeEvent(type="post_tool_use", data={"tool": "Read", "file": "test.py"}),
             ClaudeEvent(type="post_tool_use", data={"tool": "Bash", "command": "pytest -v"}),
             ClaudeEvent(type="post_tool_use", data={"tool": "Edit", "file": "test.py"}),
+            ClaudeEvent(type="post_tool_use", data={"tool": "Bash", "command": "pytest -v"}),
         ]
 
         for event in events:
@@ -171,11 +172,11 @@ class TestIntentDetector:
         old_event.timestamp = datetime.now() - timedelta(minutes=2)
         await detector.update(old_event)
 
-        # Add recent events
-        for _ in range(3):
-            await detector.update(ClaudeEvent(type="post_tool_use", data={"tool": "Edit"}))
+        # Add recent events that match implementing pattern
+        await detector.update(ClaudeEvent(type="post_tool_use", data={"tool": "Read", "file": "main.py"}))
+        await detector.update(ClaudeEvent(type="post_tool_use", data={"tool": "Edit", "file": "main.py"}))
 
-        intent = await detector.update(ClaudeEvent(type="post_file_edit", data={}))
+        intent = await detector.update(ClaudeEvent(type="post_file_edit", data={"file": "main.py"}))
 
         # Should detect implementing, not exploring (old event filtered)
         assert intent.type == IntentDetector.IMPLEMENTING
