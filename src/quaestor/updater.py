@@ -91,10 +91,10 @@ class QuaestorUpdater:
     def _check_quaestor_files(self, updates: dict[str, Any]):
         """Check .quaestor directory files."""
         files_to_check = [
-            ("QUAESTOR_CLAUDE.md", self.quaestor_dir / "QUAESTOR_CLAUDE.md"),
-            ("CRITICAL_RULES.md", self.quaestor_dir / "CRITICAL_RULES.md"),
-            ("templates/ARCHITECTURE.template.md", self.quaestor_dir / "ARCHITECTURE.md"),
-            ("templates/MEMORY.template.md", self.quaestor_dir / "MEMORY.md"),
+            ("templates/quaestor_claude.md", self.quaestor_dir / "QUAESTOR_CLAUDE.md"),
+            ("templates/critical_rules.md", self.quaestor_dir / "CRITICAL_RULES.md"),
+            ("templates/architecture.md", self.quaestor_dir / "ARCHITECTURE.md"),
+            ("templates/memory.md", self.quaestor_dir / "MEMORY.md"),
         ]
 
         for resource_path, target_path in files_to_check:
@@ -258,10 +258,10 @@ class QuaestorUpdater:
     def _update_quaestor_files(self, result: UpdateResult, force: bool, dry_run: bool):
         """Update files in .quaestor directory."""
         files_to_process = [
-            ("QUAESTOR_CLAUDE.md", self.quaestor_dir / "QUAESTOR_CLAUDE.md"),
-            ("CRITICAL_RULES.md", self.quaestor_dir / "CRITICAL_RULES.md"),
-            ("templates/ARCHITECTURE.template.md", self.quaestor_dir / "ARCHITECTURE.md"),
-            ("templates/MEMORY.template.md", self.quaestor_dir / "MEMORY.md"),
+            ("templates/quaestor_claude.md", self.quaestor_dir / "QUAESTOR_CLAUDE.md"),
+            ("templates/critical_rules.md", self.quaestor_dir / "CRITICAL_RULES.md"),
+            ("templates/architecture.md", self.quaestor_dir / "ARCHITECTURE.md"),
+            ("templates/memory.md", self.quaestor_dir / "MEMORY.md"),
         ]
 
         for resource_name, target_path in files_to_process:
@@ -337,7 +337,7 @@ class QuaestorUpdater:
             # Get latest include template
             import importlib.resources as pkg_resources
 
-            include_content = pkg_resources.read_text("quaestor.assets.templates", "CLAUDE_INCLUDE.md")
+            include_content = pkg_resources.read_text("quaestor.assets.templates", "claude_include.md")
 
             # Extract config section from template
             config_start_idx = include_content.find(QUAESTOR_CONFIG_START)
