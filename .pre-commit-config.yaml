@@ -3,8 +3,10 @@ repos:
     rev: v0.8.2
     hooks:
       - id: ruff
-        args: ["--fix"]
+        args: ["--fix", "--exit-non-zero-on-fix"]
       - id: ruff-format
+        # Ensure format uses the same config as CLI
+        args: ["--config", "pyproject.toml"]
 
   - repo: local
     hooks:

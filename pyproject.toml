@@ -133,3 +133,6 @@ quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
 line-ending = "auto"
+# Ensure consistent formatting of docstrings and multiline expressions
+docstring-code-format = true
+docstring-code-line-length = 88
