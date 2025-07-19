@@ -315,7 +315,9 @@ class TestContextManager:
 
         assert isinstance(manager.config, ContextConfiguration)
         assert isinstance(manager.switcher, ContextSwitcher)
-        assert manager.sessions == {}
+        # Manager now creates a default session on initialization
+        assert len(manager.sessions) == 1
+        assert manager.current_session is not None
 
     def test_create_session(self):
         """Test session creation."""
@@ -405,9 +407,9 @@ class TestContextManager:
         """Test getting context statistics."""
         manager = ContextManager()
 
-        # No sessions
+        # Manager creates one default session
         stats = manager.get_stats()
-        assert stats["total_sessions"] == 0
+        assert stats["total_sessions"] == 1
         assert stats["active_sessions"] == 0
 
         # Create sessions

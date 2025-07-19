@@ -55,8 +55,8 @@ class TestInitCommand:
             assert (temp_dir / ".quaestor" / "QUAESTOR_CLAUDE.md").exists()
             assert (temp_dir / ".quaestor" / "ARCHITECTURE.md").exists()
             assert (temp_dir / ".quaestor" / "MEMORY.md").exists()
-            # Commands are now installed to ~/.claude/commands
-            assert "Installing to ~/.claude/commands" in result.output
+            # Commands are installed to .claude/commands in team mode
+            assert "Installing to .claude/commands (project commands)" in result.output
 
     def test_init_with_existing_directory_prompts_user(self, runner, temp_dir):
         """Test that init prompts when .quaestor already exists."""
@@ -167,7 +167,8 @@ class TestInitCommand:
             assert result.exit_code == 0
             # Personal mode creates .claude directory
             assert (custom_dir / ".claude").exists()
-            assert (custom_dir / ".claude" / "CLAUDE.md").exists()
+            # CLAUDE.md is in project root, not in .claude
+            assert (custom_dir / "CLAUDE.md").exists()
 
     def test_init_copies_all_command_files(self, runner, temp_dir):
         """Test that all command files are installed to ~/.claude/commands."""

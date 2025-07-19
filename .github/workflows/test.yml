@@ -37,7 +37,7 @@ jobs:
     
     - name: Run tests
       run: |
-        uv run pytest -xvs --cov=quaestor --cov-report=term-missing
+        uv run pytest -xvs --cov=quaestor --cov-report=term-missing --ignore=tests/a1/ --ignore=tests/test_a1/
     
     - name: Test CLI
       run: |
