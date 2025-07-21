@@ -561,11 +561,13 @@ def create_milestone_pr(milestone_name: str, milestone_content: str) -> dict[str
 
 
 def create_atomic_commit(message: str | None, files: list[str] | None = None) -> HookResult:
-    """Create an atomic commit with proper message and timeout protection."""
+    """Create an atomic commit with proper message and timeout protection.
+
+    Handles pre-commit hook modifications by retrying the commit if files were changed.
+    """
     try:
         # Stage files
         cmd = ["git", "add"] + files if files else ["git", "add", "-A"]
-
         subprocess.run(cmd, check=True, timeout=30)
 
         # Generate commit message if not provided
@@ -588,10 +590,35 @@ def create_atomic_commit(message: str | None, files: list[str] | None = None) ->
 
             message = f"{commit_type}: Update {len(changed_files)} files"
 
-        # Create commit
-        subprocess.run(["git", "commit", "-m", message], check=True, timeout=30)
+        # Try to create commit
+        commit_result = subprocess.run(["git", "commit", "-m", message], capture_output=True, text=True, timeout=30)
 
-        return HookResult(True, f"✅ Created commit: {message}")
+        if commit_result.returncode == 0:
+            return HookResult(True, f"✅ Created commit: {message}")
+
+        # Check if pre-commit hooks modified files
+        if (
+            "files were modified by this hook" in commit_result.stderr
+            or "files were modified by this hook" in commit_result.stdout
+        ):
+            print("📝 Pre-commit hooks modified files, retrying commit...")
+
+            # Stage the modifications made by pre-commit hooks
+            subprocess.run(["git", "add", "-A"], check=True, timeout=30)
+
+            # Retry the commit
+            retry_result = subprocess.run(["git", "commit", "-m", message], capture_output=True, text=True, timeout=30)
+
+            if retry_result.returncode == 0:
+                return HookResult(True, f"✅ Created commit after pre-commit fixes: {message}")
+            else:
+                # If it still fails, return the error
+                error_msg = retry_result.stderr or retry_result.stdout
+                return HookResult(False, f"Failed to create commit after retry: {error_msg[:500]}")
+        else:
+            # Some other error occurred
+            error_msg = commit_result.stderr or commit_result.stdout
+            return HookResult(False, f"Failed to create commit: {error_msg[:500]}")
 
     except subprocess.TimeoutExpired:
         return HookResult(False, "Git operation timed out")

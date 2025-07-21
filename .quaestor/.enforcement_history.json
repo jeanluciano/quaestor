@@ -1,0 +1,44 @@
+[
+  {
+    "id": "c35001ca-85a0-4b52-9c4e-f1bb615180bb",
+    "timestamp": 1753125951.644649,
+    "rule_id": "adaptive_research",
+    "level": "JUSTIFY",
+    "message": "Only 0 files examined. Need at least 3 files for this context.",
+    "metadata": {},
+    "context": {
+      "user_intent": "implement feature",
+      "workflow_phase": "implementing",
+      "file_path": null,
+      "tool_name": null,
+      "developer_experience": 0.5,
+      "time_pressure": 0.5,
+      "previous_violations": 0,
+      "metadata": {
+        "files_examined": 0,
+        "context_analysis": {
+          "intent_clarity": 0.0,
+          "time_pressure": 0.0,
+          "file_criticality": 0.5,
+          "developer_confidence": 0.3,
+          "risk_score": 0.25
+        },
+        "adaptation_confidence": 1.0,
+        "shortcuts_allowed": false
+      }
+    },
+    "result": {
+      "allowed": false,
+      "level": "JUSTIFY",
+      "message": "\ud83d\udd12 Adaptive Research Enforcement: Only 0 files examined. Need at least 3 files for this context.\n   Justification required to proceed.",
+      "rule_id": "adaptive_research",
+      "justification_required": true,
+      "override_allowed": true,
+      "suggestions": [
+        "Use Grep to search for patterns",
+        "Read implementation files",
+        "Check tests for examples"
+      ]
+    }
+  }
+]

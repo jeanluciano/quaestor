@@ -1,0 +1,58 @@
+{
+  "events": [
+    {
+      "id": "f460468d-d18e-4202-91e8-78c5fef6ca35",
+      "timestamp": 1753113612.095006,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "test"
+      },
+      "outcome": "allowed",
+      "enforcement_level": "BLOCK",
+      "justification": null,
+      "metadata": {}
+    },
+    {
+      "id": "ba745f2f-36ba-45b9-8490-380d275c1b8e",
+      "timestamp": 1753113632.7518039,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "test"
+      },
+      "outcome": "allowed",
+      "enforcement_level": "BLOCK",
+      "justification": null,
+      "metadata": {}
+    },
+    {
+      "id": "73da6d17-8cbb-42c1-a37f-5ad5ae7a1629",
+      "timestamp": 1753113637.847896,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "test"
+      },
+      "outcome": "allowed",
+      "enforcement_level": "BLOCK",
+      "justification": null,
+      "metadata": {}
+    },
+    {
+      "id": "77833e37-f623-4386-a49f-25e5db7cc71e",
+      "timestamp": 1753113650.842828,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "test"
+      },
+      "outcome": "allowed",
+      "enforcement_level": "BLOCK",
+      "justification": null,
+      "metadata": {}
+    }
+  ],
+  "last_updated": 1753113650.842836,
+  "total_events": 4
+}

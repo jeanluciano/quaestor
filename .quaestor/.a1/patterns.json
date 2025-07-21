@@ -1,0 +1,245 @@
+{
+  "patterns": [
+    {
+      "id": "test_rule:266629",
+      "rule_id": "test_rule",
+      "pattern_type": "intent_fix",
+      "pattern_data": {
+        "pattern_type": "intent_fix",
+        "key_attributes": {
+          "intent": "fix"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753113575.602776,
+      "last_seen": 1753113575.603015
+    },
+    {
+      "id": "test_rule:290789",
+      "rule_id": "test_rule",
+      "pattern_type": "intent_fix",
+      "pattern_data": {
+        "pattern_type": "intent_fix",
+        "key_attributes": {
+          "intent": "fix"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753113592.708797,
+      "last_seen": 1753113592.708999
+    },
+    {
+      "id": "test_rule:213123",
+      "rule_id": "test_rule",
+      "pattern_type": "intent_fix",
+      "pattern_data": {
+        "pattern_type": "intent_fix",
+        "key_attributes": {
+          "intent": "fix"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753113612.09466,
+      "last_seen": 1753113612.094898
+    },
+    {
+      "id": "test_rule:830198",
+      "rule_id": "test_rule",
+      "pattern_type": "intent_fix",
+      "pattern_data": {
+        "pattern_type": "intent_fix",
+        "key_attributes": {
+          "intent": "fix"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753113632.751423,
+      "last_seen": 1753113632.7516658
+    },
+    {
+      "id": "test_rule:457324",
+      "rule_id": "test_rule",
+      "pattern_type": "intent_fix",
+      "pattern_data": {
+        "pattern_type": "intent_fix",
+        "key_attributes": {
+          "intent": "fix"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753113637.8474472,
+      "last_seen": 1753113637.847738
+    },
+    {
+      "id": "test_rule:44529",
+      "rule_id": "test_rule",
+      "pattern_type": "intent_fix",
+      "pattern_data": {
+        "pattern_type": "intent_fix",
+        "key_attributes": {
+          "intent": "fix"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753113650.8424451,
+      "last_seen": 1753113650.84268
+    },
+    {
+      "id": "test_rule:30170",
+      "rule_id": "test_rule",
+      "pattern_type": "intent_fix",
+      "pattern_data": {
+        "pattern_type": "intent_fix",
+        "key_attributes": {
+          "intent": "fix"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753113667.306803,
+      "last_seen": 1753113667.307067
+    },
+    {
+      "id": "test_rule:768536",
+      "rule_id": "test_rule",
+      "pattern_type": "intent_fix",
+      "pattern_data": {
+        "pattern_type": "intent_fix",
+        "key_attributes": {
+          "intent": "fix"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753113678.733014,
+      "last_seen": 1753113678.7332869
+    },
+    {
+      "id": "test_rule:751250",
+      "rule_id": "test_rule",
+      "pattern_type": "intent_fix",
+      "pattern_data": {
+        "pattern_type": "intent_fix",
+        "key_attributes": {
+          "intent": "fix"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753113689.4085171,
+      "last_seen": 1753113689.40879
+    },
+    {
+      "id": "test_rule:679346",
+      "rule_id": "test_rule",
+      "pattern_type": "intent_fix",
+      "pattern_data": {
+        "pattern_type": "intent_fix",
+        "key_attributes": {
+          "intent": "fix"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753113706.015771,
+      "last_seen": 1753113706.0160818
+    },
+    {
+      "id": "test_rule:144804",
+      "rule_id": "test_rule",
+      "pattern_type": "intent_fix",
+      "pattern_data": {
+        "pattern_type": "intent_fix",
+        "key_attributes": {
+          "intent": "fix"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753113720.682281,
+      "last_seen": 1753113720.6826031
+    },
+    {
+      "id": "test_rule:725220",
+      "rule_id": "test_rule",
+      "pattern_type": "intent_fix",
+      "pattern_data": {
+        "pattern_type": "intent_fix",
+        "key_attributes": {
+          "intent": "fix"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753113747.977648,
+      "last_seen": 1753113747.977973
+    },
+    {
+      "id": "test_rule:497078",
+      "rule_id": "test_rule",
+      "pattern_type": "intent_fix",
+      "pattern_data": {
+        "pattern_type": "intent_fix",
+        "key_attributes": {
+          "intent": "fix"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753113763.2679548,
+      "last_seen": 1753113763.268297
+    },
+    {
+      "id": "test_rule:150365",
+      "rule_id": "test_rule",
+      "pattern_type": "intent_fix",
+      "pattern_data": {
+        "pattern_type": "intent_fix",
+        "key_attributes": {
+          "intent": "fix"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753123461.4749491,
+      "last_seen": 1753123461.4762099
+    },
+    {
+      "id": "test_rule:494380",
+      "rule_id": "test_rule",
+      "pattern_type": "intent_fix",
+      "pattern_data": {
+        "pattern_type": "intent_fix",
+        "key_attributes": {
+          "intent": "fix"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753125203.720244,
+      "last_seen": 1753125203.7208881
+    },
+    {
+      "id": "test_rule:334550",
+      "rule_id": "test_rule",
+      "pattern_type": "intent_fix",
+      "pattern_data": {
+        "pattern_type": "intent_fix",
+        "key_attributes": {
+          "intent": "fix"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753125951.644475,
+      "last_seen": 1753125951.647674
+    }
+  ],
+  "last_updated": 1753125951.6477141
+}
