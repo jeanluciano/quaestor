@@ -95,6 +95,9 @@ class QuaestorUpdater:
             ("templates/critical_rules.md", self.quaestor_dir / "CRITICAL_RULES.md"),
             ("templates/architecture.md", self.quaestor_dir / "ARCHITECTURE.md"),
             ("templates/memory.md", self.quaestor_dir / "MEMORY.md"),
+            ("templates/patterns.md", self.quaestor_dir / "PATTERNS.md"),
+            ("templates/validation.md", self.quaestor_dir / "VALIDATION.md"),
+            ("templates/automation.md", self.quaestor_dir / "AUTOMATION.md"),
         ]
 
         for resource_path, target_path in files_to_check:
