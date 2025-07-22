@@ -269,3 +269,43 @@ class ExceptionTracker:
         patterns.sort(key=lambda p: p["frequency"], reverse=True)
 
         return patterns
+
+    def get_summary(self, hours: float = 24) -> dict[str, Any]:
+        """Get summary of exception events."""
+        summary = self.get_event_summary(hours)
+
+        # Add by_rule breakdown with override rates
+        for rule_id in summary["by_rule"]:
+            rule_events = self.get_events_for_rule(rule_id, hours)
+            overrides = sum(1 for e in rule_events if e.outcome == "overridden")
+            total = len(rule_events)
+            if total > 0:
+                if isinstance(summary["by_rule"][rule_id], int):
+                    summary["by_rule"][rule_id] = {"total": total, "override_rate": overrides / total}
+
+        return summary
+
+    def detect_patterns(self, rule_id: str, min_frequency: int = 3) -> list[dict[str, Any]]:
+        """Detect patterns in rule exceptions (alias for find_patterns)."""
+        patterns = self.find_patterns(rule_id, min_frequency)
+
+        # Transform to expected format
+        result = []
+        for pattern in patterns:
+            # Group similar patterns
+            common_context = {}
+            if pattern["type"] == "user_intent":
+                common_context["user_intent"] = pattern["pattern"]
+            elif pattern["type"] == "file_path":
+                common_context["file_path"] = pattern["pattern"]
+
+            result.append(
+                {
+                    "count": pattern["frequency"],
+                    "common_context": common_context,
+                    "pattern_type": pattern["type"],
+                    "percentage": pattern["percentage"],
+                }
+            )
+
+        return result

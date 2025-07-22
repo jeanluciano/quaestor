@@ -50,7 +50,7 @@ class RuleAdapter:
         """Initialize adaptation strategies for different intents."""
         return {
             AdaptationStrategy.RESEARCH: {
-                "level_adjustment": -1,  # More lenient
+                "level_adjustment": -2,  # More lenient for research phase
                 "suggestions": [
                     "Take time to explore the codebase",
                     "Use grep and read tools extensively",
@@ -87,7 +87,7 @@ class RuleAdapter:
                 "allow_shortcuts": False,
             },
             AdaptationStrategy.HOTFIX: {
-                "level_adjustment": -1,  # More lenient due to urgency
+                "level_adjustment": -2,  # More lenient due to urgency
                 "suggestions": [
                     "Focus on fixing the immediate issue",
                     "Add tests for the bug",
@@ -137,7 +137,7 @@ class RuleAdapter:
         if context.developer_experience > 0.8:
             level_value -= 0.5 * self.factors.experience_weight
         elif context.developer_experience < 0.3:
-            level_value += 0.5 * self.factors.experience_weight
+            level_value += 1.0 * self.factors.experience_weight
 
         # Apply time pressure adjustment
         if context.time_pressure > 0.8:

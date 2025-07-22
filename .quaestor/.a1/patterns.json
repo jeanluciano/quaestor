@@ -239,7 +239,187 @@
       "confidence": 0.9000000000000001,
       "first_seen": 1753125951.644475,
       "last_seen": 1753125951.647674
+    },
+    {
+      "id": "research_rule:596033",
+      "rule_id": "research_rule",
+      "pattern_type": "expert_context",
+      "pattern_data": {
+        "pattern_type": "expert_context",
+        "key_attributes": {
+          "directory": "utils",
+          "intent": "fix",
+          "phase": "implementing",
+          "experience_level": "high"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753199865.629622,
+      "last_seen": 1753199865.630208
+    },
+    {
+      "id": "research_rule:358656",
+      "rule_id": "research_rule",
+      "pattern_type": "expert_context",
+      "pattern_data": {
+        "pattern_type": "expert_context",
+        "key_attributes": {
+          "directory": "utils",
+          "intent": "fix",
+          "phase": "implementing",
+          "experience_level": "high"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753199996.604225,
+      "last_seen": 1753199996.604959
+    },
+    {
+      "id": "research_rule:217115",
+      "rule_id": "research_rule",
+      "pattern_type": "expert_context",
+      "pattern_data": {
+        "pattern_type": "expert_context",
+        "key_attributes": {
+          "directory": "utils",
+          "intent": "fix",
+          "phase": "implementing",
+          "experience_level": "high"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753200909.472363,
+      "last_seen": 1753200909.473707
+    },
+    {
+      "id": "research_rule:404159",
+      "rule_id": "research_rule",
+      "pattern_type": "expert_context",
+      "pattern_data": {
+        "pattern_type": "expert_context",
+        "key_attributes": {
+          "directory": "utils",
+          "intent": "fix",
+          "phase": "implementing",
+          "experience_level": "high"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753201091.9741461,
+      "last_seen": 1753201091.975044
+    },
+    {
+      "id": "research_rule:753081",
+      "rule_id": "research_rule",
+      "pattern_type": "expert_context",
+      "pattern_data": {
+        "pattern_type": "expert_context",
+        "key_attributes": {
+          "directory": "utils",
+          "intent": "fix",
+          "phase": "implementing",
+          "experience_level": "high"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753201305.367163,
+      "last_seen": 1753201305.3687491
+    },
+    {
+      "id": "research_rule:214913",
+      "rule_id": "research_rule",
+      "pattern_type": "expert_context",
+      "pattern_data": {
+        "pattern_type": "expert_context",
+        "key_attributes": {
+          "directory": "utils",
+          "intent": "fix",
+          "phase": "implementing",
+          "experience_level": "high"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753201587.736367,
+      "last_seen": 1753201587.737607
+    },
+    {
+      "id": "research_rule:698158",
+      "rule_id": "research_rule",
+      "pattern_type": "expert_context",
+      "pattern_data": {
+        "pattern_type": "expert_context",
+        "key_attributes": {
+          "directory": "utils",
+          "intent": "fix",
+          "phase": "implementing",
+          "experience_level": "high"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753202232.470322,
+      "last_seen": 1753202232.471319
+    },
+    {
+      "id": "research_rule:437598",
+      "rule_id": "research_rule",
+      "pattern_type": "expert_context",
+      "pattern_data": {
+        "pattern_type": "expert_context",
+        "key_attributes": {
+          "directory": "utils",
+          "intent": "fix",
+          "phase": "implementing",
+          "experience_level": "high"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753202660.749853,
+      "last_seen": 1753202660.751872
+    },
+    {
+      "id": "research_rule:433193",
+      "rule_id": "research_rule",
+      "pattern_type": "expert_context",
+      "pattern_data": {
+        "pattern_type": "expert_context",
+        "key_attributes": {
+          "directory": "utils",
+          "intent": "fix",
+          "phase": "implementing",
+          "experience_level": "high"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753202727.918837,
+      "last_seen": 1753202727.9207969
+    },
+    {
+      "id": "research_rule:106226",
+      "rule_id": "research_rule",
+      "pattern_type": "expert_context",
+      "pattern_data": {
+        "pattern_type": "expert_context",
+        "key_attributes": {
+          "directory": "utils",
+          "intent": "fix",
+          "phase": "implementing",
+          "experience_level": "high"
+        }
+      },
+      "frequency": 5,
+      "confidence": 0.9000000000000001,
+      "first_seen": 1753203847.220532,
+      "last_seen": 1753203847.221757
     }
   ],
-  "last_updated": 1753125951.6477141
+  "last_updated": 1753203847.2217758
 }
