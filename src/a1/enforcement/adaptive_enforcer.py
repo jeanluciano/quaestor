@@ -67,8 +67,16 @@ class AdaptiveRuleEnforcer(RuleEnforcer):
         # Analyze context factors
         context_summary = self.factor_analyzer.get_context_summary(context.metadata)
 
-        # Add analysis results to metadata
-        context.metadata["context_analysis"] = context_summary
+        # Merge with existing context_analysis if present
+        if "context_analysis" in context.metadata:
+            # Preserve existing values, only add new ones
+            existing = context.metadata["context_analysis"]
+            for key, value in context_summary.items():
+                if key not in existing:
+                    existing[key] = value
+        else:
+            # Add analysis results to metadata
+            context.metadata["context_analysis"] = context_summary
 
         # Calculate adaptation confidence
         confidence = self.adapter.calculate_confidence_score(context)
@@ -144,6 +152,23 @@ class AdaptiveComplexityRule(AdaptiveRuleEnforcer):
             history=history,
         )
         self.base_max_lines = base_max_lines
+
+    def _determine_enforcement_level(self, context: EnforcementContext) -> EnforcementLevel:
+        """Determine enforcement level with special handling for critical files."""
+        # Get base adaptation from parent
+        base_level = super()._determine_enforcement_level(context)
+
+        # For critical files that violate complexity, enforce more strictly
+        criticality = context.metadata.get("context_analysis", {}).get("file_criticality", 0.5)
+        if criticality > 0.8:
+            # Check if we're actually violating
+            passed, _ = self.check_rule(context)
+            if not passed:
+                # Critical file with violation should at least JUSTIFY
+                if base_level < EnforcementLevel.JUSTIFY:
+                    return EnforcementLevel.JUSTIFY
+
+        return base_level
 
     def check_rule(self, context: EnforcementContext) -> tuple[bool, str]:
         """Check complexity with adaptive limits."""

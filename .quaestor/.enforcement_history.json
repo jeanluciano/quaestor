@@ -1,43 +1,44 @@
 [
   {
-    "id": "58ec010f-7c34-4969-9525-5c5ee4907589",
-    "timestamp": 1753196600.737695,
-    "rule_id": "adaptive_research",
+    "id": "0a995d45-0875-459a-a484-fc4f31cbb601",
+    "timestamp": 1753199219.5079129,
+    "rule_id": "adaptive_complexity",
     "level": "JUSTIFY",
-    "message": "Only 0 files examined. Need at least 3 files for this context.",
+    "message": "Function 'test_function' has 60 lines (adaptive limit: 40)",
     "metadata": {},
     "context": {
-      "user_intent": "implement payment processing",
+      "user_intent": "add test",
       "workflow_phase": "implementing",
-      "file_path": null,
-      "tool_name": null,
-      "developer_experience": 0.2,
-      "time_pressure": 0.1,
+      "file_path": "/path/to/auth.py",
+      "tool_name": "Write",
+      "developer_experience": 0.5,
+      "time_pressure": 0.5,
       "previous_violations": 0,
       "metadata": {
-        "files_examined": 0,
+        "content": "def test_function():\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass\n    pass",
         "context_analysis": {
+          "file_criticality": 0.9,
           "intent_clarity": 0.0,
           "time_pressure": 0.0,
-          "file_criticality": 0.5,
           "developer_confidence": 0.3,
           "risk_score": 0.25
         },
         "adaptation_confidence": 1.0,
-        "shortcuts_allowed": false
+        "shortcuts_allowed": true
       }
     },
     "result": {
       "allowed": false,
       "level": "JUSTIFY",
-      "message": "\ud83d\udd12 Adaptive Research Enforcement: Only 0 files examined. Need at least 3 files for this context.\n   Justification required to proceed.",
-      "rule_id": "adaptive_research",
+      "message": "\ud83d\udd12 Adaptive Complexity Limits: Function 'test_function' has 60 lines (adaptive limit: 40)\n   Justification required to proceed.",
+      "rule_id": "adaptive_complexity",
       "justification_required": true,
       "override_allowed": true,
       "suggestions": [
-        "Use Grep to search for patterns",
-        "Read implementation files",
-        "Check tests for examples"
+        "Break up large functions into smaller, focused functions",
+        "Extract reusable logic into separate methods",
+        "Consider using helper classes for complex logic",
+        "Add unit tests to ensure safety when refactoring"
       ]
     }
   }
