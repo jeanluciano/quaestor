@@ -12,7 +12,12 @@ This project uses Claude Code hooks for automated workflows:
 
 ### Hook Configuration
 ```json
-
+{
+  "hooks": {
+    "pre-edit": ".quaestor/hooks/validation/research_enforcer.py",
+    "post-edit": ".quaestor/hooks/workflow/research_tracker.py"
+  }
+}
 ```
 
 ## Automated Workflows
@@ -20,40 +25,46 @@ This project uses Claude Code hooks for automated workflows:
 ### Code Quality Automation
 ```bash
 # Pre-edit validation
-
+ruff check .
 
 # Post-edit formatting
-
+ruff format .
 ```
 
 ### Project Management
-- **Auto-commit**: 
-- **Branch Management**: 
-- **PR Creation**: 
-- **Milestone Tracking**: 
+- **Auto-commit**: Atomic commits with descriptive messages
+- **Branch Management**: Feature branches with PR workflow
+- **PR Creation**: Auto-create PRs for completed milestones
+- **Milestone Tracking**: Track progress and auto-update documentation
 
 ### Development Assistance
-- **Context Management**: 
-- **Rule Enforcement**: 
-- **Template Processing**: 
-- **Documentation Updates**: 
+- **Context Management**: Maintain .quaestor files for AI context
+- **Rule Enforcement**: Graduated enforcement with learning
+- **Template Processing**: Process templates with project data
+- **Documentation Updates**: Auto-update based on code changes
 
 ## Hook Behaviors
 
 ### Timeout Protection
 - **Default Timeout**: 60 seconds
-- **Retry Logic**: 
-- **Fallback Actions**: 
+- **Retry Logic**: 3 attempts with exponential backoff
+- **Fallback Actions**: Graceful degradation on failures
 
 ### Error Handling
 ```python
-
+try:
+    result = hook.run(input_data)
+except TimeoutError:
+    return fallback_result()
+except Exception as e:
+    log_error(e)
+    return safe_default()
 ```
 
 ### Logging and Monitoring
-- **Hook Execution**: 
-- **Performance Metrics**: 
-- **Debug Information**: 
+- **Hook Execution**: Structured JSON logging
+- **Performance Metrics**: Track execution time and success rate
+- **Debug Information**: Enable with DEBUG=1 environment variable
 
 ## Configuration Examples
 
