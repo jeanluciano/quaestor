@@ -1,5 +1,7 @@
 """Adaptive rule enforcer that uses context-aware adaptation."""
 
+import logging
+
 from .context_factors import ContextFactorAnalyzer
 from .enforcement_history import EnforcementHistory
 from .enforcement_levels import EnforcementLevel
@@ -21,6 +23,7 @@ class AdaptiveRuleEnforcer(RuleEnforcer):
         super().__init__(rule_id, rule_name, base_level, history)
         self.adapter = RuleAdapter(adaptation_factors)
         self.factor_analyzer = ContextFactorAnalyzer()
+        self.logger = logging.getLogger(f"a1.enforcement.{rule_id}")
 
     def enforce(self, context: EnforcementContext) -> EnforcementResult:
         """Enforce with adaptive level based on context."""
@@ -51,6 +54,10 @@ class AdaptiveRuleEnforcer(RuleEnforcer):
         """Get context-adapted suggestions."""
         # Get base suggestions from subclass
         base_suggestions = super().get_suggestions(context)
+
+        # Handle None case
+        if base_suggestions is None:
+            base_suggestions = []
 
         # Adapt suggestions based on context
         return self.adapter.get_adapted_suggestions(base_suggestions, context)
@@ -187,3 +194,12 @@ class AdaptiveComplexityRule(AdaptiveRuleEnforcer):
             return False, f"Function '{worst[0]}' has {worst[1]} lines (adaptive limit: {max_lines})"
 
         return True, "Complexity within adaptive limits"
+
+    def get_suggestions(self, context: EnforcementContext) -> list[str]:
+        """Get suggestions for reducing complexity."""
+        return [
+            "Break up large functions into smaller, focused functions",
+            "Extract reusable logic into separate methods",
+            "Consider using helper classes for complex logic",
+            "Add unit tests to ensure safety when refactoring",
+        ]

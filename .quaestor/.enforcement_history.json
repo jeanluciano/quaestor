@@ -1,18 +1,18 @@
 [
   {
-    "id": "c35001ca-85a0-4b52-9c4e-f1bb615180bb",
-    "timestamp": 1753125951.644649,
+    "id": "58ec010f-7c34-4969-9525-5c5ee4907589",
+    "timestamp": 1753196600.737695,
     "rule_id": "adaptive_research",
     "level": "JUSTIFY",
     "message": "Only 0 files examined. Need at least 3 files for this context.",
     "metadata": {},
     "context": {
-      "user_intent": "implement feature",
+      "user_intent": "implement payment processing",
       "workflow_phase": "implementing",
       "file_path": null,
       "tool_name": null,
-      "developer_experience": 0.5,
-      "time_pressure": 0.5,
+      "developer_experience": 0.2,
+      "time_pressure": 0.1,
       "previous_violations": 0,
       "metadata": {
         "files_examined": 0,

@@ -7,6 +7,77 @@ from typing import Any
 from quaestor.utils import detect_project_type, get_project_complexity_indicators, load_yaml
 
 
+def _create_template_mappings(lang_config: dict[str, Any], project_type: str) -> dict[str, Any]:
+    """Create mappings from language config to template placeholders.
+
+    Args:
+        lang_config: Language-specific configuration
+        project_type: Type of project
+
+    Returns:
+        Dictionary mapping template placeholders to values
+    """
+    # Map language config keys to template placeholder names
+    mappings = {
+        # VALIDATION.md placeholders
+        "linter_config": lang_config.get("lint_command", "Not configured"),
+        "type_checker": lang_config.get("type_check_command", "Not configured"),
+        "test_coverage_threshold": lang_config.get("coverage_threshold", 80),
+        "security_scanner": lang_config.get("security_scan_command", "Not configured"),
+        "sast_tools": lang_config.get("security_scan_command", "Configure static analysis"),
+        "vulnerability_scanner": lang_config.get("security_scan_command", "Configure vulnerability scanning"),
+        "max_build_time": "5",  # Default values
+        "max_bundle_size": "5MB",
+        "memory_threshold": "512MB",
+        "performance_budget": "3s",
+        "pre_commit_hooks": lang_config.get("precommit_install_command", "pre-commit install"),
+        "ci_pipeline_config": f"# Configure CI/CD for {project_type} project",
+        "test_coverage_target": lang_config.get("coverage_threshold", 80),
+        "current_coverage": "N/A",
+        "max_duplication": "5",
+        "current_duplication": "N/A",
+        "max_debt_hours": "40",
+        "current_debt": "N/A",
+        "max_bugs_per_kloc": "1",
+        "current_bug_density": "N/A",
+        # AUTOMATION.md placeholders
+        "hook_configuration": (
+            "{\n"
+            '  "hooks": {\n'
+            '    "pre-edit": ".quaestor/hooks/validation/research_enforcer.py",\n'
+            '    "post-edit": ".quaestor/hooks/workflow/research_tracker.py"\n'
+            "  }\n"
+            "}"
+        ),
+        "pre_edit_script": lang_config.get("lint_command", "echo 'Configure pre-edit validation'"),
+        "post_edit_script": lang_config.get("format_command", "echo 'Configure post-edit formatting'"),
+        "auto_commit_rules": "Atomic commits with descriptive messages",
+        "branch_rules": "Feature branches with PR workflow",
+        "pr_automation": "Auto-create PRs for completed milestones",
+        "milestone_automation": "Track progress and auto-update documentation",
+        "context_rules": "Maintain .quaestor files for AI context",
+        "rule_enforcement": "Graduated enforcement with learning",
+        "template_automation": "Process templates with project data",
+        "doc_automation": "Auto-update based on code changes",
+        "retry_configuration": "3 attempts with exponential backoff",
+        "fallback_behavior": "Graceful degradation on failures",
+        "error_handling_pattern": (
+            "try:\n"
+            "    result = hook.run(input_data)\n"
+            "except TimeoutError:\n"
+            "    return fallback_result()\n"
+            "except Exception as e:\n"
+            "    log_error(e)\n"
+            "    return safe_default()"
+        ),
+        "logging_config": "Structured JSON logging",
+        "monitoring_setup": "Track execution time and success rate",
+        "debug_configuration": "Enable with DEBUG=1 environment variable",
+    }
+
+    return mappings
+
+
 def get_project_data(project_dir: Path) -> dict[str, Any]:
     """Gather project-specific data for template rendering.
 
@@ -31,6 +102,9 @@ def get_project_data(project_dir: Path) -> dict[str, Any]:
     strict_mode = complexity_info.get("total_files", 0) > 50 or complexity_info.get("max_directory_depth", 0) > 5
     project_name = project_dir.name
 
+    # Map language config to template placeholders
+    template_mappings = _create_template_mappings(lang_config, project_type)
+
     # Combine all data
     return {
         "project_name": project_name,
@@ -38,6 +112,7 @@ def get_project_data(project_dir: Path) -> dict[str, Any]:
         "strict_mode": strict_mode,
         **lang_config,
         **complexity_info,
+        **template_mappings,
     }
 
 

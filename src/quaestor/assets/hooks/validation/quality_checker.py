@@ -4,16 +4,13 @@
 import sys
 from pathlib import Path
 
+# Add parent directory to path for imports
+hook_parent = Path(__file__).parent.parent
+if str(hook_parent) not in sys.path:
+    sys.path.insert(0, str(hook_parent))
+
 # Import shared utilities
-try:
-    from ..shared_utils import get_project_root, run_quality_checks
-except ImportError:
-    # Fallback for when run as standalone script
-    import sys
-
-    sys.path.insert(0, str(Path(__file__).parent.parent))
-    from shared_utils import get_project_root, run_quality_checks
-
+from shared_utils import get_project_root, run_quality_checks  # noqa: E402
 
 if __name__ == "__main__":
     # Check if we should block on failure
