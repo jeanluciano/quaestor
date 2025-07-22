@@ -1,0 +1,283 @@
+{
+  "events": [
+    {
+      "id": "f460468d-d18e-4202-91e8-78c5fef6ca35",
+      "timestamp": 1753113612.095006,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "test"
+      },
+      "outcome": "allowed",
+      "enforcement_level": "BLOCK",
+      "justification": null,
+      "metadata": {}
+    },
+    {
+      "id": "ba745f2f-36ba-45b9-8490-380d275c1b8e",
+      "timestamp": 1753113632.7518039,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "test"
+      },
+      "outcome": "allowed",
+      "enforcement_level": "BLOCK",
+      "justification": null,
+      "metadata": {}
+    },
+    {
+      "id": "73da6d17-8cbb-42c1-a37f-5ad5ae7a1629",
+      "timestamp": 1753113637.847896,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "test"
+      },
+      "outcome": "allowed",
+      "enforcement_level": "BLOCK",
+      "justification": null,
+      "metadata": {}
+    },
+    {
+      "id": "77833e37-f623-4386-a49f-25e5db7cc71e",
+      "timestamp": 1753113650.842828,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "test"
+      },
+      "outcome": "allowed",
+      "enforcement_level": "BLOCK",
+      "justification": null,
+      "metadata": {}
+    },
+    {
+      "id": "09ca72b1-036a-4693-9ea8-555cce2c0ba9",
+      "timestamp": 1753199865.629239,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "quick fix",
+        "workflow_phase": "hotfix",
+        "developer_experience": 0.9
+      },
+      "outcome": "overridden",
+      "enforcement_level": "BLOCK",
+      "justification": "Emergency fix",
+      "metadata": {}
+    },
+    {
+      "id": "77fc70f6-db6b-4804-b6f3-cfb61c9dea66",
+      "timestamp": 1753199865.629468,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "quick fix",
+        "workflow_phase": "hotfix",
+        "developer_experience": 0.9
+      },
+      "outcome": "overridden",
+      "enforcement_level": "BLOCK",
+      "justification": "Emergency fix",
+      "metadata": {}
+    },
+    {
+      "id": "2664e279-b0f7-41e1-a312-887a5b81c940",
+      "timestamp": 1753199865.62975,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "quick fix",
+        "workflow_phase": "hotfix",
+        "developer_experience": 0.9
+      },
+      "outcome": "overridden",
+      "enforcement_level": "BLOCK",
+      "justification": "Emergency fix",
+      "metadata": {}
+    },
+    {
+      "id": "1606c801-b78a-46a1-9c06-0c10d63443a4",
+      "timestamp": 1753199865.629877,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "quick fix",
+        "workflow_phase": "hotfix",
+        "developer_experience": 0.9
+      },
+      "outcome": "overridden",
+      "enforcement_level": "BLOCK",
+      "justification": "Emergency fix",
+      "metadata": {}
+    },
+    {
+      "id": "ca4831f8-29cb-4c9b-94f6-19f551217a4b",
+      "timestamp": 1753199865.630031,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "quick fix",
+        "workflow_phase": "hotfix",
+        "developer_experience": 0.9
+      },
+      "outcome": "overridden",
+      "enforcement_level": "BLOCK",
+      "justification": "Emergency fix",
+      "metadata": {}
+    },
+    {
+      "id": "12c5e755-cd51-44aa-a6af-405d26df8cfb",
+      "timestamp": 1753199996.6041942,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "quick fix",
+        "workflow_phase": "hotfix",
+        "developer_experience": 0.9
+      },
+      "outcome": "overridden",
+      "enforcement_level": "BLOCK",
+      "justification": "Emergency fix",
+      "metadata": {}
+    },
+    {
+      "id": "40380f1c-92a6-4bc3-a7de-41d8844b8432",
+      "timestamp": 1753199996.6044202,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "quick fix",
+        "workflow_phase": "hotfix",
+        "developer_experience": 0.9
+      },
+      "outcome": "overridden",
+      "enforcement_level": "BLOCK",
+      "justification": "Emergency fix",
+      "metadata": {}
+    },
+    {
+      "id": "4f24e90d-10d7-49d6-a827-a6d5fa86399c",
+      "timestamp": 1753199996.604667,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "quick fix",
+        "workflow_phase": "hotfix",
+        "developer_experience": 0.9
+      },
+      "outcome": "overridden",
+      "enforcement_level": "BLOCK",
+      "justification": "Emergency fix",
+      "metadata": {}
+    },
+    {
+      "id": "441e4936-84ad-48f2-b02b-8da32e66c35c",
+      "timestamp": 1753199996.6048698,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "quick fix",
+        "workflow_phase": "hotfix",
+        "developer_experience": 0.9
+      },
+      "outcome": "overridden",
+      "enforcement_level": "BLOCK",
+      "justification": "Emergency fix",
+      "metadata": {}
+    },
+    {
+      "id": "f03a982d-acbb-41be-b491-caeefd658c9d",
+      "timestamp": 1753199996.605047,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "quick fix",
+        "workflow_phase": "hotfix",
+        "developer_experience": 0.9
+      },
+      "outcome": "overridden",
+      "enforcement_level": "BLOCK",
+      "justification": "Emergency fix",
+      "metadata": {}
+    },
+    {
+      "id": "c34cdb52-d5d0-483a-b5c6-5e3d2dbcd3a5",
+      "timestamp": 1753200909.471523,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "quick fix",
+        "workflow_phase": "hotfix",
+        "developer_experience": 0.9
+      },
+      "outcome": "overridden",
+      "enforcement_level": "BLOCK",
+      "justification": "Emergency fix",
+      "metadata": {}
+    },
+    {
+      "id": "198ac335-28da-4f07-9011-62a7c5319a59",
+      "timestamp": 1753200909.471982,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "quick fix",
+        "workflow_phase": "hotfix",
+        "developer_experience": 0.9
+      },
+      "outcome": "overridden",
+      "enforcement_level": "BLOCK",
+      "justification": "Emergency fix",
+      "metadata": {}
+    },
+    {
+      "id": "273c728b-0df4-433e-8ee6-da75a117be30",
+      "timestamp": 1753200909.472214,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "quick fix",
+        "workflow_phase": "hotfix",
+        "developer_experience": 0.9
+      },
+      "outcome": "overridden",
+      "enforcement_level": "BLOCK",
+      "justification": "Emergency fix",
+      "metadata": {}
+    },
+    {
+      "id": "a033dfa0-9888-498b-9f64-13528ea69ae5",
+      "timestamp": 1753200909.4724212,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "quick fix",
+        "workflow_phase": "hotfix",
+        "developer_experience": 0.9
+      },
+      "outcome": "overridden",
+      "enforcement_level": "BLOCK",
+      "justification": "Emergency fix",
+      "metadata": {}
+    },
+    {
+      "id": "8f1c2a6e-8152-4f5f-904c-17f79c052a4b",
+      "timestamp": 1753200909.4726112,
+      "rule_id": "test_rule",
+      "event_type": "override",
+      "context": {
+        "user_intent": "quick fix",
+        "workflow_phase": "hotfix",
+        "developer_experience": 0.9
+      },
+      "outcome": "overridden",
+      "enforcement_level": "BLOCK",
+      "justification": "Emergency fix",
+      "metadata": {}
+    }
+  ],
+  "last_updated": 1753200909.4726222,
+  "total_events": 19
+}

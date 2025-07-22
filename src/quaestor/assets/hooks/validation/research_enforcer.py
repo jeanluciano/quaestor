@@ -5,15 +5,13 @@ import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
-# Import shared utilities
-try:
-    from ..shared_utils import WorkflowState, get_project_root
-except ImportError:
-    # Fallback for when run as standalone script
-    import sys
+# Add parent directory to path for imports
+hook_parent = Path(__file__).parent.parent
+if str(hook_parent) not in sys.path:
+    sys.path.insert(0, str(hook_parent))
 
-    sys.path.insert(0, str(Path(__file__).parent.parent))
-    from shared_utils import WorkflowState, get_project_root
+# Import shared utilities
+from shared_utils import WorkflowState, get_project_root  # noqa: E402
 
 
 def check_workflow_compliance(workflow):
