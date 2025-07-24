@@ -9,7 +9,8 @@ from enum import Enum
 from pathlib import Path
 
 from a1.core.event_bus import EventBus
-from a1.core.events import SystemEvent
+
+from .events import SystemEvent
 
 
 class SymbolType(Enum):
@@ -105,7 +106,7 @@ class SymbolTable:
                 parent.children.append(symbol.qualified_name)
 
         # Emit event
-        if self.event_bus:
+        if self.event_bus and hasattr(self.event_bus, "emit"):
             self.event_bus.emit(
                 SystemEvent(
                     type="symbol_added",
@@ -126,7 +127,7 @@ class SymbolTable:
         self._relations.append(relation)
 
         # Emit event
-        if self.event_bus:
+        if self.event_bus and hasattr(self.event_bus, "emit"):
             self.event_bus.emit(
                 SystemEvent(
                     type="relation_added",

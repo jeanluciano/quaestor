@@ -9,9 +9,9 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 from a1.core.event_bus import EventBus
-from a1.core.events import SystemEvent
 
 from .ast_parser import FunctionInfo, ModuleInfo, PythonASTParser
+from .events import SystemEvent
 
 
 @dataclass

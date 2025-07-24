@@ -10,7 +10,8 @@ from pathlib import Path
 from typing import Any
 
 from a1.core.event_bus import EventBus
-from a1.core.events import SystemEvent
+
+from .events import SystemEvent
 
 
 @dataclass

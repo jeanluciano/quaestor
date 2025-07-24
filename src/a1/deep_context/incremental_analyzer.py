@@ -12,9 +12,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from a1.core.event_bus import EventBus
-from a1.core.events import SystemEvent
 
 from .code_index import CodeNavigationIndex
+from .events import SystemEvent
 
 
 @dataclass

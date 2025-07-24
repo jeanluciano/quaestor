@@ -10,9 +10,9 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from a1.core.event_bus import EventBus
-from a1.core.events import SystemEvent
 
 from .ast_parser import ModuleInfo
+from .events import SystemEvent
 from .module_analyzer import ModuleAnalyzer
 from .symbol_builder import SymbolBuilder
 from .symbol_table import Symbol, SymbolLocation, SymbolTable, SymbolType
