@@ -127,6 +127,17 @@ from .learning import (
     PatternRecognizer,
 )
 
+# Predictive Engine (Phase 5)
+from .predictive import (
+    CommandPattern,
+    FilePattern,
+    Pattern,
+    PatternType,
+    PredictiveEngine,
+    SequenceMiner,
+    WorkflowPattern,
+)
+
 # Utilities
 from .utilities import (
     # Logging and monitoring
@@ -241,6 +252,14 @@ __all__ = [
     "PatternRecognizer",
     "AdaptationEngine",
     "FileLearningStore",
+    # Predictive Engine (Phase 5)
+    "PredictiveEngine",
+    "SequenceMiner",
+    "Pattern",
+    "PatternType",
+    "CommandPattern",
+    "WorkflowPattern",
+    "FilePattern",
     # Analysis Engine
     "AnalysisEngine",
     "CodeAnalyzer",
