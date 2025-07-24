@@ -29,13 +29,13 @@ tasks:
     
   - id: "test_mapping"
     name: "Test coverage mapping"
-    status: "todo"
+    status: "completed"
     subtasks:
-      - "Identify test files and patterns"
-      - "Map tests to source functions"
-      - "Calculate coverage per component"
-      - "Track test execution history"
-      - "Generate coverage reports"
+      - "Identify test files and patterns" # COMPLETED
+      - "Map tests to source functions" # COMPLETED
+      - "Calculate coverage per component" # COMPLETED
+      - "Track test execution history" # COMPLETED
+      - "Generate coverage reports" # COMPLETED
     
   - id: "semantic_understanding"
     name: "Semantic code understanding"
