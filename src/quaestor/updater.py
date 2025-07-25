@@ -59,6 +59,17 @@ class QuaestorUpdater:
         self.manifest = manifest
         self.claude_commands_dir = Path.home() / ".claude" / "commands"
 
+        # Define files to manage in one place to ensure consistency
+        self.QUAESTOR_FILES = [
+            ("templates/quaestor_claude.md", self.quaestor_dir / "QUAESTOR_CLAUDE.md"),
+            ("templates/critical_rules.md", self.quaestor_dir / "CRITICAL_RULES.md"),
+            ("templates/architecture.md", self.quaestor_dir / "ARCHITECTURE.md"),
+            ("templates/memory.md", self.quaestor_dir / "MEMORY.md"),
+            ("templates/patterns.md", self.quaestor_dir / "PATTERNS.md"),
+            ("templates/validation.md", self.quaestor_dir / "VALIDATION.md"),
+            ("templates/automation.md", self.quaestor_dir / "AUTOMATION.md"),
+        ]
+
     def check_for_updates(self, show_diff: bool = True) -> dict[str, Any]:
         """Check what would be updated without making changes.
 
@@ -68,9 +79,16 @@ class QuaestorUpdater:
         Returns:
             Dict with update information
         """
+        # Get current version - use manifest version if available and valid,
+        # otherwise try to detect from installed files
+        current_version = self.manifest.get_quaestor_version()
+        if not current_version:
+            # Try to detect from existing files
+            current_version = self._detect_installed_version()
+
         updates = {
             "needs_update": False,
-            "current_version": self.manifest.get_quaestor_version(),
+            "current_version": current_version,
             "new_version": __version__,
             "files": {"update": [], "add": [], "skip": []},
         }
@@ -90,17 +108,7 @@ class QuaestorUpdater:
 
     def _check_quaestor_files(self, updates: dict[str, Any]):
         """Check .quaestor directory files."""
-        files_to_check = [
-            ("templates/quaestor_claude.md", self.quaestor_dir / "QUAESTOR_CLAUDE.md"),
-            ("templates/critical_rules.md", self.quaestor_dir / "CRITICAL_RULES.md"),
-            ("templates/architecture.md", self.quaestor_dir / "ARCHITECTURE.md"),
-            ("templates/memory.md", self.quaestor_dir / "MEMORY.md"),
-            ("templates/patterns.md", self.quaestor_dir / "PATTERNS.md"),
-            ("templates/validation.md", self.quaestor_dir / "VALIDATION.md"),
-            ("templates/automation.md", self.quaestor_dir / "AUTOMATION.md"),
-        ]
-
-        for resource_path, target_path in files_to_check:
+        for resource_path, target_path in self.QUAESTOR_FILES:
             relative_path = str(target_path.relative_to(self.target_dir))
             file_type = categorize_file(target_path, relative_path)
 
@@ -133,6 +141,37 @@ class QuaestorUpdater:
             target_path = self.claude_commands_dir / cmd_file
             if not target_path.exists():
                 updates["files"]["add"].append((f"commands/{cmd_file}", FileType.COMMAND.value))
+
+    def _detect_installed_version(self) -> str | None:
+        """Try to detect the installed version from existing files.
+
+        Returns:
+            Version string or None if not detectable
+        """
+        # Try to read version from QUAESTOR_CLAUDE.md which should have version info
+        version_file = self.quaestor_dir / "QUAESTOR_CLAUDE.md"
+        if version_file.exists():
+            try:
+                content = version_file.read_text()
+                version = extract_version_from_content(content)
+                if version:
+                    return version
+            except Exception:
+                pass
+
+        # Try CRITICAL_RULES.md as fallback
+        critical_rules = self.quaestor_dir / "CRITICAL_RULES.md"
+        if critical_rules.exists():
+            try:
+                content = critical_rules.read_text()
+                version = extract_version_from_content(content)
+                if version:
+                    return version
+            except Exception:
+                pass
+
+        # If we can't detect, return None
+        return None
 
     def _has_new_version(self, resource_path: str) -> bool:
         """Check if a resource has a newer version than installed.
@@ -209,6 +248,7 @@ class QuaestorUpdater:
         if backup and not dry_run:
             backup_dir = self._create_backup()
             if backup_dir:
+                result.backed_up.append(str(backup_dir))
                 console.print(f"[green]✓ Created backup in {backup_dir}[/green]")
 
         # Update quaestor version in manifest
@@ -223,6 +263,9 @@ class QuaestorUpdater:
         # Save manifest
         if not dry_run:
             self.manifest.save()
+
+        # Validate update completeness
+        self._validate_update_result(result)
 
         return result
 
@@ -260,14 +303,7 @@ class QuaestorUpdater:
 
     def _update_quaestor_files(self, result: UpdateResult, force: bool, dry_run: bool):
         """Update files in .quaestor directory."""
-        files_to_process = [
-            ("templates/quaestor_claude.md", self.quaestor_dir / "QUAESTOR_CLAUDE.md"),
-            ("templates/critical_rules.md", self.quaestor_dir / "CRITICAL_RULES.md"),
-            ("templates/architecture.md", self.quaestor_dir / "ARCHITECTURE.md"),
-            ("templates/memory.md", self.quaestor_dir / "MEMORY.md"),
-        ]
-
-        for resource_name, target_path in files_to_process:
+        for resource_name, target_path in self.QUAESTOR_FILES:
             relative_path = str(target_path.relative_to(self.target_dir))
             file_type = categorize_file(target_path, relative_path)
 
@@ -281,6 +317,8 @@ class QuaestorUpdater:
                     new_content = pkg_resources.read_text("quaestor", resource_name)
 
                 # Determine if we should update
+                # Check if file exists before we potentially create it
+                file_existed = target_path.exists()
                 should_update = self._should_update_file(target_path, file_type, force)
 
                 if should_update:
@@ -292,7 +330,8 @@ class QuaestorUpdater:
                         version = extract_version_from_content(new_content) or "1.0"
                         self.manifest.track_file(target_path, file_type, version, self.target_dir)
 
-                    if target_path.exists():
+                    # Track whether we added or updated
+                    if file_existed:
                         result.updated.append(relative_path)
                     else:
                         result.added.append(relative_path)
@@ -393,6 +432,39 @@ class QuaestorUpdater:
         relative_path = str(target_path.relative_to(self.target_dir))
         return not self.manifest.is_file_modified(relative_path)
 
+    def _validate_update_result(self, result: UpdateResult):
+        """Validate that all expected files were processed.
+
+        Args:
+            result: UpdateResult to validate
+        """
+        # Get all file paths that should have been processed
+        expected_files = set()
+        for _, target_path in self.QUAESTOR_FILES:
+            relative_path = str(target_path.relative_to(self.target_dir))
+            expected_files.add(relative_path)
+
+        # Get all files that were actually processed
+        processed_files = set()
+        processed_files.update(result.added)
+        processed_files.update(result.updated)
+        processed_files.update(result.skipped)
+        processed_files.update([f for f, _ in result.failed])
+
+        # Filter to only quaestor files
+        processed_quaestor_files = {f for f in processed_files if f.startswith(".quaestor/")}
+
+        # Check for missing files
+        missing_files = expected_files - processed_quaestor_files
+        if missing_files:
+            console.print("\n[yellow]Warning: The following files were not processed:[/yellow]")
+            for file in missing_files:
+                console.print(f"  - {file}")
+
+        # Log summary for debugging
+        if result.failed:
+            console.print("\n[red]Some updates failed. Please check the errors above.[/red]")
+
 
 def print_update_result(result: UpdateResult):
     """Print a formatted update result.
@@ -402,18 +474,49 @@ def print_update_result(result: UpdateResult):
     """
     console.print("\n[bold]Update Summary:[/bold]")
 
-    if result.added:
-        console.print(f"\n[green]Added ({len(result.added)}):[/green]")
-        for file in result.added:
-            console.print(f"  + {file}")
+    # Group files by type for clearer output
+    quaestor_files = []
+    command_files = []
+    other_files = []
+
+    def categorize_files(files):
+        for file in files:
+            if file.startswith(".quaestor/"):
+                quaestor_files.append(file)
+            elif file.startswith("commands/"):
+                command_files.append(file)
+            else:
+                other_files.append(file)
 
     if result.updated:
-        console.print(f"\n[blue]Updated ({len(result.updated)}):[/blue]")
-        for file in result.updated:
-            console.print(f"  ↻ {file}")
+        console.print(f"\n[blue]Updated {len(result.updated)} files:[/blue]")
+        categorize_files(result.updated)
+        if quaestor_files:
+            for file in quaestor_files:
+                console.print(f"  - {file}")
+        if other_files:
+            for file in other_files:
+                console.print(f"  - {file}")
+
+    if result.added:
+        console.print(f"\n[green]Created {len(result.added)} new files:[/green]")
+        added_quaestor = []
+        added_commands = []
+        for file in result.added:
+            if file.startswith(".quaestor/"):
+                added_quaestor.append(file)
+            elif file.startswith("commands/"):
+                added_commands.append(file)
+
+        if added_quaestor:
+            for file in added_quaestor:
+                console.print(f"  - {file}")
+        if added_commands:
+            for file in added_commands:
+                console.print(f"  - {file}")
 
     if result.skipped:
-        console.print(f"\n[yellow]Skipped ({len(result.skipped)}):[/yellow]")
+        console.print(f"\n[yellow]Skipped {len(result.skipped)} files (preserved your customizations):[/yellow]")
         for file in result.skipped:
             console.print(f"  - {file}")
 
@@ -422,4 +525,6 @@ def print_update_result(result: UpdateResult):
         for file, error in result.failed:
             console.print(f"  ✗ {file}: {error}")
 
-    console.print(f"\n[bold]Result: {result.summary()}[/bold]")
+    # Show backup location if applicable
+    if result.backed_up:
+        console.print(f"\n[dim]Backup created at: {result.backed_up[0]}[/dim]")

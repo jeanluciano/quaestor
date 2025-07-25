@@ -39,7 +39,7 @@ class A1Service:
         )
 
         # IPC transport for receiving events
-        socket_path = config.get("socket_path", str(Path.home() / ".quaestor" / "a1" / "service.sock"))
+        socket_path = self.config.get("socket_path", str(Path.home() / ".quaestor" / "a1" / "service.sock"))
         self.ipc_transport = IPCEventTransport(Path(socket_path))
 
         self.running = False
@@ -65,6 +65,41 @@ class A1Service:
 
             self.quaestor_bridge = QuaestorBridge(self.config)
             logger.info("Quaestor bridge initialized")
+
+    async def _reinitialize_components(self):
+        """Reinitialize components based on updated configuration."""
+        logger.info("Reinitializing components after configuration change...")
+
+        components = self.config.get("components", {})
+
+        # Reinitialize analysis engine if needed
+        analysis_enabled = components.get("analysis_engine", {}).get("enabled", True)
+        if analysis_enabled and not self.analysis_engine:
+            self.analysis_engine = AnalysisEngine()
+            logger.info("Analysis engine reinitialized")
+        elif not analysis_enabled and self.analysis_engine:
+            self.analysis_engine = None
+            logger.info("Analysis engine disabled")
+
+        # Reinitialize learning manager if needed
+        learning_enabled = components.get("learning_manager", {}).get("enabled", False)
+        if learning_enabled and not self.learning_manager:
+            self.learning_manager = LearningManager()
+            logger.info("Learning manager reinitialized")
+        elif not learning_enabled and self.learning_manager:
+            self.learning_manager = None
+            logger.info("Learning manager disabled")
+
+        # Reinitialize Quaestor bridge if needed
+        bridge_enabled = self.config.get("hooks", {}).get("receive_from_a1", True)
+        if bridge_enabled and not self.quaestor_bridge:
+            from .quaestor_bridge import QuaestorBridge
+
+            self.quaestor_bridge = QuaestorBridge(self.config)
+            logger.info("Quaestor bridge reinitialized")
+        elif not bridge_enabled and self.quaestor_bridge:
+            self.quaestor_bridge = None
+            logger.info("Quaestor bridge disabled")
 
     async def start(self):
         """Start the A1 service."""
@@ -202,7 +237,7 @@ class A1Service:
         self.config.update(new_config)
 
         # Reinitialize components if needed
-        # TODO: Implement component reinitialization logic
+        await self._reinitialize_components()
 
     def _get_event_priority(self, event: Event) -> int:
         """Get priority for an event (0=highest, 10=lowest).

@@ -201,6 +201,69 @@ class TestQuaestorUpdater:
         assert "1 skipped" in summary
         assert "1 failed" in summary
 
+    def test_version_detection_fallback(self, temp_dir):
+        """Test version detection when manifest has no version."""
+        # Setup
+        quaestor_dir = temp_dir / ".quaestor"
+        quaestor_dir.mkdir()
+        manifest = FileManifest(quaestor_dir / "manifest.json")
+        # Don't set version in manifest
+
+        # Create QUAESTOR_CLAUDE.md with version
+        quaestor_claude = quaestor_dir / "QUAESTOR_CLAUDE.md"
+        quaestor_claude.write_text("<!-- QUAESTOR:version:0.5.1 -->\nTest content")
+
+        updater = QuaestorUpdater(temp_dir, manifest)
+
+        # Check for updates should detect version from file
+        with patch("quaestor.updater.__version__", "0.5.2"):
+            updates = updater.check_for_updates(show_diff=False)
+
+        assert updates["current_version"] == "0.5.1"
+        assert updates["new_version"] == "0.5.2"
+        assert updates["needs_update"] is True
+
+    def test_optional_files_creation(self, temp_dir):
+        """Test that optional files (PATTERNS.md, VALIDATION.md, AUTOMATION.md) are created."""
+        # Setup
+        quaestor_dir = temp_dir / ".quaestor"
+        quaestor_dir.mkdir()
+        manifest = FileManifest(quaestor_dir / "manifest.json")
+        manifest.set_quaestor_version("0.5.0")
+
+        updater = QuaestorUpdater(temp_dir, manifest)
+
+        # Mock templates
+        with patch("quaestor.updater.pkg_resources.read_text") as mock_read:
+
+            def read_text_side_effect(package, resource):
+                content_map = {
+                    "quaestor_claude.md": "<!-- QUAESTOR:version:1.0 -->\nQUAESTOR_CLAUDE content",
+                    "critical_rules.md": "<!-- QUAESTOR:version:1.0 -->\nCRITICAL_RULES content",
+                    "architecture.md": "<!-- QUAESTOR:version:1.0 -->\nARCHITECTURE content",
+                    "memory.md": "<!-- QUAESTOR:version:1.0 -->\nMEMORY content",
+                    "patterns.md": "<!-- QUAESTOR:version:1.0 -->\nPATTERNS content",
+                    "validation.md": "<!-- QUAESTOR:version:1.0 -->\nVALIDATION content",
+                    "automation.md": "<!-- QUAESTOR:version:1.0 -->\nAUTOMATION content",
+                }
+                return content_map.get(resource, "default content")
+
+            mock_read.side_effect = read_text_side_effect
+
+            with patch("quaestor.updater.__version__", "0.5.1"):
+                result = updater.update(backup=False, force=False, dry_run=False)
+
+        # Check that optional files were created
+        assert (quaestor_dir / "PATTERNS.md").exists()
+        assert (quaestor_dir / "VALIDATION.md").exists()
+        assert (quaestor_dir / "AUTOMATION.md").exists()
+
+        # Verify they're in the added list
+        added_files = [f for f in result.added if f.startswith(".quaestor/")]
+        assert ".quaestor/PATTERNS.md" in added_files
+        assert ".quaestor/VALIDATION.md" in added_files
+        assert ".quaestor/AUTOMATION.md" in added_files
+
 
 class TestUpdateIntegration:
     """Integration tests for the update functionality."""

@@ -6,7 +6,7 @@
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Quaestor** provides intelligent context management and quality enforcement for AI assistants, with flexible modes for personal and team projects. Version 0.4.4 brings improved installation experience, manifest support for personal mode, enhanced hook integration, and Nix support.
+**Quaestor** provides intelligent context management and quality enforcement for AI assistants, with flexible modes for personal and team projects. Version 0.5.2 brings critical bug fixes, improved A1 service architecture, and comprehensive code quality improvements.
 
 > [!NOTE]
 > **Approaching 1.0 Release**: Quaestor is maturing and stabilizing. As we approach version 1.0, expect fewer breaking changes and a focus on refining existing features rather than adding new ones. Future feature development will primarily occur in the optional A1Context add-on, keeping the core Quaestor package lean and stable.
@@ -225,8 +225,37 @@ Commands adapt their behavior based on task complexity (0.0-1.0):
 Thresholds control: auto-activation features, parallel processing, quality gates, and error recovery.
 
 
-## Recent Updates (v0.4.4)
+## Recent Updates (v0.5.2)
 
+### Bug Fixes & Architecture Improvements
+- **Critical TODO Resolutions**:
+  - Implemented component reinitialization logic in A1 service core
+  - Added proper IPC/socket communication in Quaestor bridge using `IPCEventTransport`
+  - Both TODOs were blocking proper service lifecycle management
+- **Code Quality Improvements**:
+  - Fixed all 31 linting issues across the codebase (trailing whitespace, unused imports, f-strings)
+  - Improved code organization and readability
+  - Enhanced type annotations consistency
+- **Documentation Updates**:
+  - Updated README.md to reflect current version and improvements
+  - Documented recent architecture enhancements
+  - Improved changelog organization for better version tracking
+
+### Previous Updates (v0.5.0)
+- **Enhanced A1 Service Architecture**:
+  - Initial component framework for dynamic configuration
+  - Base IPC/socket communication structure
+  - Service lifecycle management foundation
+- **Project Analysis Enhancements**:
+  - Fixed broken import in rule engine
+  - Cleaned up dead code for better maintainability
+  - Intelligent rule adaptation based on project complexity (0.0-1.0 scoring)
+- **Code Quality Foundation**:
+  - Initial linting setup
+  - Type annotation improvements
+  - Modular configuration structure planning
+
+### Previous Updates (v0.4.4)
 - **Improved Installation Experience**:
   - Personal mode: Commands now install globally as personal commands
   - Personal mode: Uses `settings.local.json` to keep configuration private

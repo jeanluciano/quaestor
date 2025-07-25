@@ -5,6 +5,7 @@ import logging
 from pathlib import Path
 
 from a1.core.events import ClaudeEvent, QuaestorEvent
+from a1.core.queue import IPCEventTransport
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +18,8 @@ class QuaestorBridge:
         self.config = config
         self.quaestor_socket_path = Path.home() / ".quaestor" / "quaestor.sock"
         self.event_filters = config.get("hooks", {}).get("event_filtering", [])
+        # Initialize IPC transport for communication with Quaestor
+        self.ipc_transport = IPCEventTransport(self.quaestor_socket_path)
 
     async def notify(self, claude_event: ClaudeEvent, intent: dict, context: dict | None):
         """Notify Quaestor of relevant Claude events with A1 insights.
@@ -147,16 +150,18 @@ class QuaestorBridge:
             event: Event to send
         """
         try:
-            # For now, log the event. In production, this would send via socket/IPC
+            # Send event via IPC to Quaestor
             logger.info(f"Sending to Quaestor: {event.get_event_type()}")
             logger.debug(f"Event data: {json.dumps(event.to_dict(), indent=2)}")
 
-            # TODO: Implement actual IPC/socket communication
-            # async with aiofiles.open(self.quaestor_socket_path, 'w') as f:
-            #     await f.write(json.dumps(event.to_dict()))
+            # Use IPC transport to send event to Quaestor
+            await self.ipc_transport.send_event(event)
+            logger.debug("Event successfully sent to Quaestor via IPC")
 
         except Exception as e:
             logger.error(f"Failed to send event to Quaestor: {e}")
+            # Fall back to logging for debugging
+            logger.debug(f"Event that failed to send: {json.dumps(event.to_dict(), indent=2)}")
 
     async def _handle_milestone_update(self, data: dict):
         """Handle milestone update from Quaestor."""
