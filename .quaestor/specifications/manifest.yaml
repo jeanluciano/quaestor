@@ -80,7 +80,7 @@ specifications:
     id: "spec-agent-004"
     title: "Update milestone-manager agent for specifications"
     type: "refactor"
-    status: "approved"
+    status: "tested"
     priority: "medium"
     description: "Transform milestone-manager to work with specifications"
     rationale: "Support specification lifecycle management"
@@ -94,9 +94,9 @@ specifications:
     acceptance_criteria: []
     test_scenarios: []
     dependencies: []
-    branch: null
+    branch: "feat/spec-agent-004-milestone-manager-update"
     created_at: "2025-01-15T12:00:00"
-    updated_at: "2025-01-15T12:00:00"
+    updated_at: "2025-08-01T15:58:15"
     metadata: {}
     
   spec-agent-005:
@@ -126,6 +126,7 @@ branch_mapping:
   "feat/spec-agent-001-frontmatter-update": "spec-agent-001"
   "feat/spec-agent-002-terminology-update": "spec-agent-002"
   "feat/spec-agent-003-agent-orchestration": "spec-agent-003"
+  "feat/spec-agent-004-milestone-manager-update": "spec-agent-004"
 
 created_at: "2025-01-15T12:00:00"
-updated_at: "2025-08-01T20:28:51"
+updated_at: "2025-08-01T15:52:00"
