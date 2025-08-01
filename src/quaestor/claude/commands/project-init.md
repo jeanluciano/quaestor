@@ -4,7 +4,13 @@ description: "Intelligent project analysis with auto-framework detection and ada
 performance-profile: "complex"
 complexity-threshold: 0.6
 auto-activation: ["framework-detection", "pattern-analysis", "adaptive-setup"]
-intelligence-features: ["architecture-detection", "stack-analysis", "milestone-generation"]
+intelligence-features: ["architecture-detection", "stack-analysis", "specification-generation"]
+agent-strategy:
+  project_analysis: [researcher, architect]
+  security_audit: security
+  spec_generation: planner
+  documentation: [architect, implementer]
+  quality_definition: qa
 ---
 
 # /project-init - Intelligent Project Initialization

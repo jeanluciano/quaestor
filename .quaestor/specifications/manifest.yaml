@@ -1,0 +1,72 @@
+---
+milestone: "Project-Init Agent Integration"
+created: "2025-01-15"
+updated: "2025-01-15"
+total_specifications: 5
+completion_percentage: 20
+
+specifications:
+  - id: "spec-agent-001"
+    title: "Update project-init.md frontmatter with agent-strategy"
+    status: "implemented"
+    type: "enhancement"
+    priority: "high"
+    branch: "feat/spec-agent-001-frontmatter-update"
+    created: "2025-01-15"
+    
+  - id: "spec-agent-002"
+    title: "Replace milestone/task terminology with specifications"
+    status: "draft"
+    type: "refactor"
+    priority: "high"
+    branch: null
+    created: "2025-01-15"
+    
+  - id: "spec-agent-003"
+    title: "Implement agent orchestration for project analysis"
+    status: "draft"
+    type: "feature"
+    priority: "high"
+    branch: null
+    created: "2025-01-15"
+    
+  - id: "spec-agent-004"
+    title: "Update milestone-manager agent for specifications"
+    status: "draft"
+    type: "refactor"
+    priority: "medium"
+    branch: null
+    created: "2025-01-15"
+    
+  - id: "spec-agent-005"
+    title: "Create specification-driven workflow documentation"
+    status: "draft"
+    type: "documentation"
+    priority: "medium"
+    branch: null
+    created: "2025-01-15"
+
+status_summary:
+  draft: 4
+  approved: 0
+  in_progress: 0
+  implemented: 1
+  tested: 0
+  deployed: 0
+
+dependencies:
+  spec-agent-003:
+    depends_on: ["spec-agent-001"]
+    reason: "Needs agent-strategy configuration"
+  spec-agent-005:
+    depends_on: ["spec-agent-002", "spec-agent-003"]
+    reason: "Needs updated terminology and agent patterns"
+
+estimated_hours:
+  total: 23
+  by_spec:
+    spec-agent-001: 3
+    spec-agent-002: 4
+    spec-agent-003: 8
+    spec-agent-004: 5
+    spec-agent-005: 3
