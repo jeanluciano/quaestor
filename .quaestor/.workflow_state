@@ -1,6 +1,6 @@
 {
   "phase": "planning",
-  "last_research": "2025-08-01T15:58:05.894788",
+  "last_research": "2025-08-01T16:07:45.850936",
   "last_plan": null,
   "files_examined": 0,
   "research_files": [
@@ -37,7 +37,8 @@
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/compliance_validator.py",
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/specifications/spec-agent-003.yaml",
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/specifications/spec-agent-004.yaml",
-    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/specifications/spec-agent-005.yaml"
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/specifications/spec-agent-005.yaml",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/tests/performance/test_baseline.py"
   ],
   "implementation_files": []
 }
