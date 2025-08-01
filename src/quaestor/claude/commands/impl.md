@@ -1,6 +1,6 @@
 ---
 allowed-tools: [Read, Write, Edit, MultiEdit, Bash, Glob, Grep, TodoWrite, Task]
-description: "Execute production-quality implementation with intelligent orchestration"
+description: "Execute production-quality implementation with specification-driven orchestration"
 performance-profile: "complex"
 complexity-threshold: 0.7
 auto-activation: ["auto-persona", "milestone-integration", "quality-gates"]
@@ -38,7 +38,7 @@ Execute production-quality features with auto-detected language standards, intel
 ## Workflow: Research → Plan → Implement → Validate
 
 ### Phase 1: Discovery & Research 🔍
-**No Arguments?** → Check `.quaestor/MEMORY.md` for `next_spec:` or active specifications
+**No Arguments?** → Check `.quaestor/MEMORY.md` for `active_specs:` or in-progress specifications
 
 **Specification Integration:**
 ```yaml
@@ -96,7 +96,7 @@ Execute → Validate → Fix (if ❌) → Continue
 - ✅ Zero linting errors  
 - ✅ Type checking clean (if applicable)
 - ✅ Documentation complete
-- ✅ Milestone progress updated
+- ✅ Specification status updated
 
 ## Complexity Management
 
@@ -111,29 +111,30 @@ Execute → Validate → Fix (if ❌) → Continue
 - **>50 files** → Multi-agent file delegation
 - **Multiple domains** → Specialized agent per domain
 
-## Milestone Integration
+## Specification Integration
 
 **Auto-Update Protocol:**
 ```yaml
 Pre-Implementation:
-  - Check: active milestones & match task context
-  - Declare: "Working on [Phase] > [Task] > [Subtask]"
-  - Update: task status → "in_progress"
+  - Check: active specifications & match implementation context
+  - Declare: "Working on Spec: [ID] - [Title]"
+  - Update: specification status → "in_progress"
+  - Link: current branch to specification
 
 Post-Implementation:
-  - Mark: completed subtasks with "# COMPLETED"
-  - Update: progress percentage
+  - Update: specification status → "implemented"
   - Log: MEMORY.md with timestamp & outcomes
-  - Identify: next logical task in sequence
+  - Track: acceptance criteria completion
+  - Identify: next specification or testing phase
 ```
 
-## Task Discovery (No Arguments)
+## Specification Discovery (No Arguments)
 ```yaml
 Discovery Protocol:
   1. Read: .quaestor/MEMORY.md
-  2. Look for: next_task|pending|TODO|incomplete
-  3. Check: current_milestone progress
-  4. Output: "Found task: [description]" OR "No pending tasks"
+  2. Look for: active_specs|in_progress|approved|draft
+  3. Check: .quaestor/specifications/manifest.yaml
+  4. Output: "Found spec: [ID] - [Title]" OR "No active specifications"
 ```
 
 ## Quality Gates by Language
@@ -178,7 +179,7 @@ Required:
 ```
 
 ## Final Response Protocol
-**Task complete. All quality gates passed. Milestone tracking updated. Ready for review.**
+**Implementation complete. All quality gates passed. Specification status updated. Ready for review.**
 
 ---
 *Command with orchestration for Claude integration and execution efficiency*
