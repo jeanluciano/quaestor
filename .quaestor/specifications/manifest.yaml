@@ -103,7 +103,7 @@ specifications:
     id: "spec-agent-005"
     title: "Create specification-driven workflow documentation"
     type: "documentation"
-    status: "in_progress"
+    status: "tested"
     priority: "medium"
     description: "Document the specification-driven development workflow"
     rationale: "Guide users in adopting specification-based approach"
