@@ -13,7 +13,7 @@ Quaestor is a powerful framework that enhances AI-assisted development by provid
 
 ### 🔄 Smart Automation Hooks
 - Enforce specification-driven workflows
-- Automatic progress tracking and milestone updates
+- Automatic progress tracking and specification updates
 - Quality gates and compliance checking
 
 ### 🎯 Specification-Driven Development
@@ -23,7 +23,7 @@ Quaestor is a powerful framework that enhances AI-assisted development by provid
 
 ### 📊 Progress Management
 - Visual progress dashboards
-- Milestone tracking with specification completion
+- Progress tracking through specification completion
 - Memory management for project context
 
 ## Quick Start

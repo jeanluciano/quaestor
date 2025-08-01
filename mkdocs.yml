@@ -68,7 +68,6 @@ nav:
   - Hooks & Automation:
     - Overview: hooks/overview.md
     - Specification Tracking: hooks/spec-tracking.md
-    - Milestone Integration: hooks/milestones.md
     - Custom Hooks: hooks/custom.md
   - Specification-Driven Development:
     - Overview: specs/overview.md

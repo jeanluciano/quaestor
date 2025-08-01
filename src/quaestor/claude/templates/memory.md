@@ -19,7 +19,7 @@ This file tracks the current state, progress, and future plans for the project. 
 status:
   last_updated: "[Date]"
   current_phase: "[Phase name]"
-  current_milestone: "[Milestone name]"
+  current_specification: "[Specification ID]"
   overall_progress: "[Percentage or description]"
 ```
 <!-- DATA:project-status:END -->
@@ -99,15 +99,15 @@ decisions_needed: []
 <!-- SECTION:memory:timeline:START -->
 ## Project Timeline
 
-<!-- DATA:milestones:START -->
+<!-- DATA:specifications:START -->
 ```yaml
-milestones:
-  - id: "milestone_1"
-    name: "[Name]"
+specifications:
+  - id: "spec-auth-001"
+    title: "[Title]"
     status: "[Status]"
     progress: "[X]%"
-    goal: "[Description of what this milestone achieves]"
-    specifications:
+    description: "[Description of what this specification achieves]"
+    tasks:
       completed:
         - spec_id: "[spec-id]"
           title: "[Spec title]"
@@ -124,24 +124,24 @@ milestones:
           priority: "[High/Medium/Low]"
           estimate: "[Time estimate]"
   
-  - id: "milestone_2"
-    name: "[Name]"
+  - id: "spec-user-002"
+    title: "[Title]"
     status: "upcoming"
-    goal: "[Description]"
+    description: "[Description]"
     planned_tasks:
       - "[Task 1]"
       - "[Task 2]"
     estimated_timeline: "[Timeline]"
   
-  - id: "milestone_3"
-    name: "[Name]"
+  - id: "spec-api-003"
+    title: "[Title]"
     status: "future"
-    goal: "[Description]"
+    description: "[Description]"
     high_level_items:
       - "[Item 1]"
       - "[Item 2]"
 ```
-<!-- DATA:milestones:END -->
+<!-- DATA:specifications:END -->
 <!-- SECTION:memory:timeline:END -->
 
 <!-- SECTION:memory:components:START -->

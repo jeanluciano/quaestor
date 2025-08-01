@@ -228,7 +228,7 @@ Note: This project uses relaxed enforcement. Focus on practicality over strict c
                     "strict_mode": False,
                     "include_checks": ["lint", "test", "type"],
                 },
-                "milestone": {
+                "specification": {
                     "auto_commit": True,
                     "require_tests": True,
                 },

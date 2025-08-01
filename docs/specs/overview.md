@@ -26,7 +26,7 @@ Specifications are formal documents that define exactly what needs to be built. 
 ### Automatic Tracking
 - Progress tracked through specification status
 - Branch-to-spec linking
-- Milestone completion based on spec implementation
+- Release readiness based on spec implementation
 
 ## Specification Structure
 

@@ -58,7 +58,7 @@ This shows:
 - Active specifications and their status
 - Implementation progress
 - Test coverage
-- Milestone completion
+- Release readiness
 
 ## Example Workflow
 
@@ -122,7 +122,7 @@ your-project/
 │   ├── MEMORY.md              # Project memory and progress
 │   ├── specifications/        # Specification files
 │   │   └── manifest.yaml     # Specification tracking
-│   ├── milestones/           # Milestone definitions
+│   ├── specs/               # Specification definitions
 │   └── .workflow_state       # Current workflow state
 ├── .claude/
 │   ├── commands/             # Slash command definitions

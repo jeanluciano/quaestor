@@ -1,14 +1,14 @@
 ---
 allowed-tools: [Read, Edit, MultiEdit, Write, Bash, Grep, Glob, LS, Task, TodoWrite]
-description: "Specification-driven planning, project management, and progress tracking with multi-agent orchestration"
+description: "Specification-driven planning, milestone management, and progress tracking with multi-agent orchestration"
 performance-profile: "complex"
 complexity-threshold: 0.5
-auto-activation: ["specification-planning", "project-planning", "progress-visualization", "strategic-analysis"]
+auto-activation: ["specification-planning", "milestone-planning", "progress-visualization", "strategic-analysis"]
 intelligence-features: ["spec-tracking", "velocity-tracking", "architecture-planning", "contract-validation"]
 agent-strategy:
   specification_design: planner
   system_design: architect
-  project_planning: architect
+  milestone_planning: architect
   spec_breakdown: [planner, architect, implementer]
   risk_assessment: security
   progress_analysis: researcher
@@ -17,14 +17,14 @@ agent-strategy:
 # /plan - Specification-Driven Planning & Progress Management
 
 ## Purpose
-Design specifications, plan work through spec-driven development, manage projects, track progress, and make strategic decisions. Combines specification management with progress visualization and architectural planning.
+Design specifications, plan work through spec-driven development, manage milestones, track progress, and make strategic decisions. Combines specification management with progress visualization and architectural planning.
 
 ## Usage
 ```
 /plan                           # Show progress dashboard with specs
 /plan --spec "User Auth"        # Create new specification
-/plan --project "MVP Complete"  # Create new project phase
-/plan --complete               # Complete current phase
+/plan --create "MVP Complete"   # Create new milestone
+/plan --complete               # Complete current milestone
 /plan --analyze                # Deep strategic analysis
 /plan --architecture          # Architectural planning mode
 /plan --link                   # Link current branch to spec
@@ -37,8 +37,8 @@ Design specifications, plan work through spec-driven development, manage project
 Mode Detection:
   - No args → Progress dashboard with specs
   - --spec → Specification creation wizard
-  - --project → Project phase creation wizard
-  - --complete → Phase completion validation
+  - --create → Milestone creation wizard
+  - --complete → Completion validation
   - --analyze → Strategic analysis
   - --architecture → System design planning
   - --link → Branch-to-spec linkage
@@ -55,8 +55,8 @@ Progress Analysis:
   - researcher: Gather spec status and metrics
   - architect: Analyze system evolution
   
-Project Planning:
-  - architect: Design project structure
+Milestone Planning:
+  - architect: Design milestone structure
   - planner: Break down into specifications
   - security: Risk assessment
   
@@ -77,7 +77,7 @@ Data Collection (Parallel):
   - Spec implementation: MEMORY.md and spec manifest parsing
   - Quality metrics: test/lint status per spec
   - Architecture health: dependency analysis
-  - Project progress: spec-based completion tracking
+  - Milestone progress: spec-based completion tracking
 
 Visual Presentation:
   🎯 Project: [Name] • Phase: [Current Milestone]
@@ -94,7 +94,7 @@ Visual Presentation:
     Status: IMPLEMENTED • Branch: feat/spec-api-002-rest-design
     Contract: ✅ Defined • Tests: [██████████] 10/10
   
-  📊 Current Project Phase: [Name]
+  📊 Current Milestone: [Name]
   Specs:    [███████░░░] 7/10 complete
   Quality:  [██████████] All checks passing ✅
   Docs:     [████████░░] 80% updated
@@ -112,7 +112,7 @@ Visual Presentation:
   💡 Insights:
   • Strong momentum on authentication specs
   • 3 specs awaiting implementation
-  • Ready for phase completion review
+  • Ready for milestone completion review
   
   🎯 Recommended Next Action:
   → Complete remaining 3 specifications
@@ -121,13 +121,13 @@ Visual Presentation:
 ```
 
 ### Phase 1: Status Assessment 🔍
-**Current Phase Analysis:**
+**Current Milestone Analysis:**
 ```yaml
 Discovery:
-  - Read: .quaestor/MEMORY.md → current project phase
-  - Parse: specification statuses
-  - Check: .quaestor/specifications/manifest.yaml
-  - Assess: overall completion status
+  - Read: .quaestor/MEMORY.md → current milestone section
+  - Parse: planned|in_progress|completed items
+  - Check: .quaestor/milestones/*/tasks.yaml files
+  - Assess: overall completion percentage
 ```
 
 ### Phase 2: Completion Validation ✅
@@ -159,7 +159,7 @@ Archive Generation:
 
 **Archive Structure:**
 ```
-## 🎉 Project Phase Complete: [Name] - [Date]
+## 🎉 Milestone Complete: [Name] - [Date]
 
 ### Summary
 [X] tasks completed over [duration] • [Y] commits • [Z] files modified
@@ -181,16 +181,16 @@ Archive Generation:
 • [Infrastructure improvements]
 
 ### Next Phase Focus
-[Identified next logical project phase based on current progress]
+[Identified next logical milestone based on current progress]
 ```
 
 ### Phase 4: Next Phase Planning 🚀
-**Intelligent Next Phase Suggestion:**
+**Intelligent Next Milestone Suggestion:**
 ```yaml
 Planning Intelligence:
-  - Analyze: current architecture + remaining specifications
+  - Analyze: current architecture + remaining TODOs
   - Identify: logical next development phase
-  - Suggest: phase scope + success criteria
+  - Suggest: milestone scope + success criteria
   - Estimate: duration based on current velocity
 ```
 
@@ -261,12 +261,12 @@ Context Gathering:
   4. Duration: "Estimated timeframe?"
 
 Specification Planning:
-  - Identify: specifications needed for project phase
+  - Identify: specifications needed for milestone
   - Prioritize: critical vs nice-to-have specs
   - Estimate: complexity and dependencies
   
 Template Generation:
-  - Create: structured project phase section in MEMORY.md
+  - Create: structured milestone section in MEMORY.md
   - Initialize: specification tracking
   - Set: measurable success criteria
   - Link: to specification manifest
@@ -274,8 +274,8 @@ Template Generation:
 
 ### Creation Output Template
 ```yaml
-New Project Phase Structure:
-  - Header: "🚀 Project Phase: [Name]"
+New Milestone Structure:
+  - Header: "🚀 Milestone: [Name]"
   - Goals: [Numbered objectives]
   - Planned_Tasks: [Checkbox list]
   - Success_Criteria: [Measurable outcomes]
@@ -391,9 +391,9 @@ Planning Output:
 
 **Quaestor Ecosystem:**
 - **specifications/** → Specification manifest and tracking
-- **MEMORY.md** → Primary project and spec progress
+- **MEMORY.md** → Primary milestone and spec progress
 - **ARCHITECTURE.md** → Update with architectural decisions
-- **specifications/** → Specification-level tracking
+- **milestones/** → Milestone-level tracking
 - **Git branches** → Automatic spec-to-branch linkage
 - **Quality system** → Integrated validation per specification
 - **Hooks** → spec_branch_tracker for workflow enforcement

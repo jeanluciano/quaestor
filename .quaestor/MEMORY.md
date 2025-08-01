@@ -17,10 +17,10 @@ This file tracks the current state, progress, and future plans for the project. 
 <!-- DATA:project-status:START -->
 ```yaml
 status:
-  last_updated: "2025-01-15"
-  current_phase: "Specification-Driven Development Implementation"
-  current_milestone: "Project-Init Agent Integration"
-  overall_progress: "0% - Just created milestone with 5 specifications"
+  last_updated: "[Date]"
+  current_phase: "[Phase name]"
+  current_specification: "[Specification ID]"
+  overall_progress: "[Percentage or description]"
 ```
 <!-- DATA:project-status:END -->
 
@@ -29,22 +29,22 @@ status:
 
 <!-- DATA:project-summary:START -->
 ```yaml
-project_focus: "Transforming project-init command to use agent orchestration and specifications"
+project_focus: "[Describe your project's current focus]"
 specifications:
-  implemented: 0
-  in_progress: 0
-  approved: 0
-  draft: 5
-  total: 5
+  implemented: [X]
+  in_progress: [Y]
+  approved: [Z]
+  total: [Total]
 progress:
-  completed_specs: []
-  active_specs: []
+  completed_specs:
+    - "[spec-id]: [Spec title]"
+    - "[spec-id]: [Spec title]"
+  active_specs:
+    - "[spec-id]: [Spec title] ([X%] complete)"
+    - "[spec-id]: [Spec title] ([X%] complete)"
   upcoming_specs:
-    - "spec-agent-001: Update project-init.md frontmatter with agent-strategy"
-    - "spec-agent-002: Replace milestone/task terminology with specifications"
-    - "spec-agent-003: Implement agent orchestration for project analysis"
-    - "spec-agent-004: Update milestone-manager agent for specifications"
-    - "spec-agent-005: Create specification-driven workflow documentation"
+    - "[spec-id]: [Spec title]"
+    - "[spec-id]: [Spec title]"
 ```
 <!-- DATA:project-summary:END -->
 <!-- SECTION:memory:summary:END -->
@@ -56,33 +56,26 @@ progress:
 <!-- DATA:specifications:START -->
 ```yaml
 active_specs:
-  in_progress: []
+  in_progress:
+    - id: "[spec-id]"
+      title: "[Specification title]"
+      branch: "[feat/spec-id-title]"
+      contract_defined: true/false
+      tests_written: "[X/Y]"
+      implementation: "[X%]"
   
-  approved: []
+  approved:
+    - id: "[spec-id]"
+      title: "[Specification title]"
+      priority: "[high/medium/low]"
+      estimated_effort: "[Time estimate]"
   
   draft:
-    - id: "spec-agent-001"
-      title: "Update project-init.md frontmatter with agent-strategy"
-      priority: "high"
-      needs: "Ready for implementation"
-    - id: "spec-agent-002"
-      title: "Replace milestone/task terminology with specifications"
-      priority: "high"
-      needs: "Ready for implementation"
-    - id: "spec-agent-003"
-      title: "Implement agent orchestration for project analysis"
-      priority: "high"
-      needs: "Depends on spec-agent-001"
-    - id: "spec-agent-004"
-      title: "Update milestone-manager agent for specifications"
-      priority: "medium"
-      needs: "Ready for implementation"
-    - id: "spec-agent-005"
-      title: "Create specification-driven workflow documentation"
-      priority: "medium"
-      needs: "Depends on spec-agent-002 and spec-agent-003"
+    - id: "[spec-id]"
+      title: "[Specification title]"
+      needs: "[contract definition/acceptance criteria]"
 
-next_spec: "spec-agent-001 or spec-agent-002 (can be done in parallel)"
+next_spec: "[The next specification to implement]"
 ```
 <!-- DATA:specifications:END -->
 <!-- SECTION:memory:specifications:END -->
@@ -106,46 +99,49 @@ decisions_needed: []
 <!-- SECTION:memory:timeline:START -->
 ## Project Timeline
 
-<!-- DATA:milestones:START -->
+<!-- DATA:specifications:START -->
 ```yaml
-milestones:
-  - id: "project_init_agent_integration"
-    name: "Project-Init Agent Integration"
-    status: "active"
-    progress: "0%"
-    goal: "Transform project-init from monolithic command to agent-orchestrated system"
-    specifications:
-      completed: []
-      in_progress: []
+specifications:
+  - id: "spec-auth-001"
+    title: "[Title]"
+    status: "[Status]"
+    progress: "[X]%"
+    description: "[Description of what this specification achieves]"
+    tasks:
+      completed:
+        - spec_id: "[spec-id]"
+          title: "[Spec title]"
+          date: "[Date if helpful]"
+          notes: "[Brief description]"
+      in_progress:
+        - spec_id: "[spec-id]"
+          title: "[Spec title]"
+          branch: "[Branch name]"
+          completion: "[X%]"
       planned:
-        - spec_id: "spec-agent-001"
-          title: "Update frontmatter with agent-strategy"
-          priority: "High"
-          estimate: "3 hours"
-        - spec_id: "spec-agent-002"
-          title: "Replace milestone/task terminology"
-          priority: "High"
-          estimate: "4 hours"
-        - spec_id: "spec-agent-003"
-          title: "Implement agent orchestration"
-          priority: "High"
-          estimate: "8 hours"
-        - spec_id: "spec-agent-004"
-          title: "Update milestone-manager agent"
-          priority: "Medium"
-          estimate: "5 hours"
-        - spec_id: "spec-agent-005"
-          title: "Create workflow documentation"
-          priority: "Medium"
-          estimate: "3 hours"
+        - spec_id: "[spec-id]"
+          title: "[Spec title]"
+          priority: "[High/Medium/Low]"
+          estimate: "[Time estimate]"
   
-  - id: "specification_system_enhancement"
-    name: "Specification System Enhancement"
-    status: "completed"
-    goal: "Implement comprehensive specification-driven development"
-    notes: "Successfully transformed from task-based to spec-driven approach"
+  - id: "spec-user-002"
+    title: "[Title]"
+    status: "upcoming"
+    description: "[Description]"
+    planned_tasks:
+      - "[Task 1]"
+      - "[Task 2]"
+    estimated_timeline: "[Timeline]"
+  
+  - id: "spec-api-003"
+    title: "[Title]"
+    status: "future"
+    description: "[Description]"
+    high_level_items:
+      - "[Item 1]"
+      - "[Item 2]"
 ```
-<!-- DATA:milestones:END -->
+<!-- DATA:specifications:END -->
 <!-- SECTION:memory:timeline:END -->
 
 <!-- SECTION:memory:components:START -->

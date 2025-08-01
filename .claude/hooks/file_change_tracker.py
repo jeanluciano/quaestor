@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Track file changes and remind about milestone updates."""
+"""Track file changes and remind about specification updates."""
 
 import sys
 from datetime import datetime, timedelta
@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 def track_file_changes():
-    """Detect recent file changes and remind about milestone tracking."""
+    """Detect recent file changes and remind about specification tracking."""
 
     project_root = Path(".")
     now = datetime.now()
@@ -52,27 +52,27 @@ def track_file_changes():
     if changes["src_files"] or changes["test_files"]:
         print("\n🎯 MILESTONE UPDATE REQUIRED:")
         print("   Implementation detected - please update:")
-        print("   1. Mark completed subtasks in .quaestor/milestones/*/tasks.yaml")
+        print("   1. Mark completed subtasks in .quaestor/specs/*.yaml")
         print("   2. Update progress percentage")
         print("   3. Add progress log entry to .quaestor/MEMORY.md")
 
         if changes["test_files"]:
             print("   4. Document test coverage improvements")
 
-    # Check if milestone files were also updated
-    milestone_updated = any("milestones" in f for f in changes["config_files"])
+    # Check if specification files were also updated
+    specification_updated = any("specs" in f for f in changes["config_files"])
     memory_updated = any("MEMORY.md" in f for f in changes["doc_files"])
 
-    if not milestone_updated:
+    if not specification_updated:
         print("\n⚠️  MISSING: Milestone files not updated")
-        print("   You changed implementation files but didn't update milestones")
+        print("   You changed implementation files but didn't update specifications")
 
     if not memory_updated:
         print("\n⚠️  MISSING: MEMORY.md not updated")
         print("   Add a progress log entry for your changes")
 
-    if milestone_updated and memory_updated:
-        print("\n✅ Good tracking! Both milestones and memory updated")
+    if specification_updated and memory_updated:
+        print("\n✅ Good tracking! Both specifications and memory updated")
 
 
 if __name__ == "__main__":

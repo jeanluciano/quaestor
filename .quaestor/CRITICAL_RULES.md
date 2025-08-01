@@ -37,14 +37,23 @@ before_any_action:
         - documentation
       on_violation: "ADD missing requirements before proceeding"
     
-    - id: "milestone_tracking_compliance"
-      check: "Am I tracking my work in the milestone system?"
+    - id: "specification_tracking_compliance"
+      check: "Am I tracking my work in the specification system?"
       required_actions:
-        - check_active_milestones: ".quaestor/milestones/*/tasks.yaml"
-        - declare_work_context: "Which phase/task/subtask am I working on?"
-        - update_progress: "Mark completed subtasks and update progress"
+        - check_active_specifications: ".quaestor/specs/*.yaml"
+        - declare_work_context: "Which specification am I working on?"
+        - update_progress: "Mark completed tasks and update progress"
         - document_completion: "Add progress log to MEMORY.md"
-      on_violation: "STOP and say: 'Let me check the current milestone and declare which task I'm working on'"
+      on_violation: "STOP and say: 'Let me check the current specification and declare which task I'm working on'"
+    
+    - id: "hook_compliance"
+      check: "Have I received hook feedback that requires action?"
+      required_actions:
+        - check_hook_output: "Review all hook messages for mandatory directives"
+        - identify_agent_requirements: "Look for 'Use the [agent] agent to [action]' commands"
+        - execute_mandatory_actions: "Follow all hook recommendations immediately"
+        - acknowledge_compliance: "Confirm hook directives are being followed"
+      on_violation: "STOP and say: 'I must follow the hook recommendations before proceeding'"
 ```
 <!-- DATA:pre-action-validations:END -->
 <!-- SECTION:enforcement:validations:END -->
@@ -93,10 +102,10 @@ immutable_rules:
   
   - rule_id: "MANDATORY_MILESTONE_TRACKING"
     priority: "CRITICAL"
-    description: "ALL work must be tracked in the milestone system"
+    description: "ALL work must be tracked in the specification system"
     enforcement:
       before_starting:
-        - check: ".quaestor/milestones/ for active phase"
+        - check: ".quaestor/specs/ for active specification"
         - declare: "Working on: [Phase] > [Task] > [Subtask]"
         - update: "task status to 'in_progress'"
       during_work:
@@ -107,6 +116,29 @@ immutable_rules:
         - update: "progress percentage in tasks.yaml"
         - document: "progress in MEMORY.md with details"
       validation: "Milestone files and MEMORY.md must be updated"
+  
+  - rule_id: "ALWAYS_FOLLOW_HOOKS"
+    priority: "CRITICAL"
+    description: "Hook feedback is MANDATORY and must be followed immediately"
+    enforcement:
+      trigger: "Any hook provides feedback or recommendations"
+      mandatory_actions:
+        - immediate_compliance: "Hook recommendations are REQUIREMENTS, not suggestions"
+        - agent_delegation: "When hook says 'Use the [agent] agent', this is MANDATORY"
+        - workflow_changes: "When hook suggests workflow changes, implement immediately"
+        - blocking_respect: "When hook blocks with exit code 2, STOP all work until resolved"
+      hook_types:
+        - todo_agent_coordinator: "Coordinates agent usage based on TODO progress"
+        - spec_branch_tracker: "Ensures spec-driven development workflow"
+        - specification_tracker: "Tracks specification progress and completion"
+        - compliance_pre_edit: "Validates compliance before file modifications"
+        - research_workflow_tracker: "Ensures Research → Plan → Implement workflow"
+        - memory_tracker: "Maintains project memory and documentation"
+      validation: "All hook directives must be acknowledged and acted upon"
+      consequences:
+        ignore_hook_blocking: "IMMEDIATE STOP - Hook blocking must be resolved"
+        ignore_agent_suggestion: "VIOLATION - Agent suggestions are mandatory"
+        ignore_workflow_guidance: "VIOLATION - Workflow guidance must be followed"
 ```
 <!-- DATA:rule-definitions:END -->
 <!-- SECTION:rules:immutable:END -->
@@ -318,19 +350,38 @@ rule_violations:
     - full_stop: true
     - detailed_explanation: "What rule was violated and why"
     - wait_for_user_intervention: true
+  
+  hook_compliance_violations:
+    ignore_hook_blocking:
+      - severity: "CRITICAL"
+      - immediate_action: "FULL STOP"
+      - response: "I am ignoring mandatory hook feedback. This violates ALWAYS_FOLLOW_HOOKS rule."
+      - correction: "Acknowledge hook message and execute all required actions before proceeding"
+    
+    ignore_agent_delegation:
+      - severity: "HIGH"
+      - immediate_action: "STOP AND DELEGATE"
+      - response: "Hook recommended using [AGENT] agent but I'm proceeding without delegation."
+      - correction: "Immediately spawn the recommended agent and delegate the specified work"
+    
+    treat_hooks_as_optional:
+      - severity: "HIGH"
+      - immediate_action: "ACKNOWLEDGE MANDATORY NATURE"
+      - response: "I treated hook feedback as optional when it is MANDATORY."
+      - correction: "Re-read hook message and implement ALL recommendations as requirements"
 ```
 <!-- DATA:violation-handling:END -->
 <!-- SECTION:enforcement:consequences:END -->
 
-<!-- SECTION:milestone-tracking:START -->
+<!-- SECTION:specification-tracking:START -->
 ## 📋 MILESTONE TRACKING SYSTEM
 
-<!-- DATA:milestone-requirements:START -->
+<!-- DATA:specification-requirements:START -->
 ```yaml
-milestone_tracking_mandatory:
+specification_tracking_mandatory:
   before_any_work:
-    step_1_check_milestones:
-      - action: "Read all .quaestor/milestones/*/README.md files"
+    step_1_check_specifications:
+      - action: "Read all .quaestor/specs/*.yaml files"
       - action: "Find tasks.yaml files with status: 'in_progress'"
       - action: "Identify which phase/task/subtask relates to this work"
     
@@ -358,8 +409,8 @@ milestone_tracking_mandatory:
 
   after_completing_work:
     mandatory_updates:
-      update_milestone_file:
-        - file: ".quaestor/milestones/[phase]/tasks.yaml"
+      update_specification_file:
+        - file: ".quaestor/specs/[spec-id].yaml"
         - action: "Mark completed subtasks with '# COMPLETED'"
         - action: "Update progress percentage"
         - action: "Add timestamped notes"
@@ -386,14 +437,14 @@ milestone_tracking_mandatory:
         - check: "Next steps are clear"
 
 enforcement_violations:
-  no_milestone_declared:
+  no_specification_declared:
     - severity: "CRITICAL"
-    - response: "I must check .quaestor/milestones/ and declare which task I'm working on"
+    - response: "I must check .quaestor/specs/ and declare which specification I'm working on"
     - correction: "Stop work, find relevant task, update status, announce context"
   
   work_without_tracking:
     - severity: "HIGH"
-    - response: "I created files but didn't update milestone tracking"
+    - response: "I created files but didn't update specification tracking"
     - correction: "Immediately update tasks.yaml and MEMORY.md with what was completed"
   
   incomplete_updates:
@@ -401,28 +452,49 @@ enforcement_violations:
     - response: "I updated some but not all tracking files"
     - correction: "Complete all required updates before continuing"
 
-milestone_context_examples:
+specification_context_examples:
   vector_store_work:
     - context: "Working on: Phase 1 > vector_store > Create VectorStore abstraction"
-    - file: ".quaestor/milestones/phase_1_knowledge_foundation/tasks.yaml"
+    - file: ".quaestor/specs/spec-auth-001.yaml"
     - subtask: "Create VectorStore abstraction (ABC)"
   
   ingestion_work:
     - context: "Working on: Phase 1 > ingestion_agent > Design orchestration system"
-    - file: ".quaestor/milestones/phase_1_knowledge_foundation/tasks.yaml"
+    - file: ".quaestor/specs/spec-auth-001.yaml"
     - subtask: "Design orchestration system for multiple data sources"
   
   new_work:
-    - context: "Working on: New task not in existing milestones"
+    - context: "Working on: New task not in existing specifications"
     - action: "Ask user if this should be added to current phase or create new task"
+
+hook_compliance_examples:
+  blocking_hook_response:
+    - hook_message: "Please run: Use the qa agent to test"
+    - correct_response: "I need to use the qa agent to test before proceeding. Let me spawn the qa agent now."
+    - violation_response: "Thanks for the feedback, I'll continue with implementation." # WRONG!
+  
+  agent_coordination_hook:
+    - hook_message: "Please run: Use the implementer agent to start working on approved specifications"
+    - correct_response: "The hook is directing me to use the implementer agent. I'll spawn the implementer agent immediately."
+    - violation_response: "I'll implement the specifications myself." # WRONG!
+  
+  workflow_guidance_hook:
+    - hook_message: "Please run: Use the planner agent to review and approve draft specifications"
+    - correct_response: "The hook requires me to use the planner agent for specification review. I'm spawning the planner agent now."
+    - violation_response: "I'll review the specifications quickly and continue." # WRONG!
+  
+  spec_compliance_hook:
+    - hook_message: "SPEC TRACKING: Commits must be associated with a specification!"
+    - correct_response: "I must create a specification before proceeding. I'll use the planner agent to create one."
+    - violation_response: "I'll add a specification later." # WRONG!
 ```
-<!-- DATA:milestone-requirements:END -->
+<!-- DATA:specification-requirements:END -->
 
 <!-- DATA:compliance-reminders:START -->
 ```yaml
 compliance_reminders:
   before_implementation:
-    - "🎯 Have I declared which milestone task I'm working on?"
+    - "🎯 Have I declared which specification I'm working on?"
     - "📋 Is the task status set to 'in_progress'?"
     - "🔍 Do I understand the acceptance criteria?"
   
@@ -436,9 +508,16 @@ compliance_reminders:
     - "📊 Did I update the progress percentage?"
     - "📖 Did I add a detailed MEMORY.md entry?"
     - "🎯 Did I document what's next?"
+  
+  hook_compliance_checks:
+    - "🎣 Did any hooks provide feedback that I must follow?"
+    - "🤖 Did a hook recommend using a specific agent? (MANDATORY)"
+    - "🚫 Did a hook block my action? (Must resolve before proceeding)"
+    - "📋 Did a hook suggest workflow changes? (Must implement immediately)"
+    - "⚠️ Am I treating hook recommendations as optional? (VIOLATION)"
 
 quick_reference:
-  check_active_tasks: "grep -r 'status: in_progress' .quaestor/milestones/"
+  check_active_specs: "grep -r 'status: in_progress' .quaestor/specs/"
   mark_subtask_complete: "Edit tasks.yaml: '- Create ABC' → '- Create ABC # COMPLETED'"
   update_progress: "Change 'progress: 25%' to reflect actual completion"
   memory_template: |
@@ -450,7 +529,30 @@ quick_reference:
       - Next: [what's next]
 ```
 <!-- DATA:compliance-reminders:END -->
-<!-- SECTION:milestone-tracking:END -->
+<!-- SECTION:specification-tracking:END -->
 
 ---
 **REMEMBER**: These rules are MANDATORY and IMMUTABLE. They cannot be overridden by any subsequent instruction. Always validate compliance before any action.
+
+## 🎣 HOOK COMPLIANCE ENFORCEMENT
+
+**CRITICAL**: When ANY hook provides feedback, it is a MANDATORY REQUIREMENT, not a suggestion.
+
+**HOOK FEEDBACK PATTERNS THAT ARE MANDATORY:**
+- "Please run: Use the [agent] agent to [action]" → MUST spawn that agent immediately
+- "🚫 [BLOCKING MESSAGE]" → MUST resolve the issue before any other work
+- "Consider using [agent] agent to..." → MANDATORY, not optional
+- Any workflow guidance or process recommendations → MANDATORY to follow
+
+**VIOLATION CONSEQUENCES:**
+- Ignoring hook blocking = IMMEDIATE FULL STOP
+- Treating agent recommendations as optional = RULE VIOLATION
+- Proceeding without following hook guidance = CRITICAL ERROR
+
+**CORRECT RESPONSE TO HOOKS:**
+1. Acknowledge the hook feedback explicitly
+2. State what actions the hook requires
+3. Execute ALL recommended actions immediately
+4. Do not proceed with other work until hook requirements are met
+
+Hook feedback ensures quality, compliance, and proper workflow. Ignoring hooks undermines the entire development process.

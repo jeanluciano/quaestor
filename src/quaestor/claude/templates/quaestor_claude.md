@@ -75,7 +75,7 @@ Run your project's test suite regularly (see Testing section below).
 
 ### Maintain MEMORY.md:
 Track progress in [MEMORY.md](./.quaestor/MEMORY.md) with sections for:
-- **Current Status**: What phase/milestone you're in
+- **Current Status**: What specification you're working on
 - **Active Work**: Current approach and tasks
 - **Timeline**: Goals and progress
 - **Next Actions**: Immediate, short-term, and long-term tasks
@@ -110,7 +110,7 @@ When you're stuck or confused:
 
 **Workflow Hooks**:
 - `research_workflow_tracker.py` - Enforces Research → Plan → Implement workflow
-- `milestone_tracker.py` - Tracks milestone progress and completion
+- `specification_tracker.py` - Tracks specification progress and completion
 - **Required Action**: Follow the exact workflow steps specified
 
 **Memory & Context Hooks**:
@@ -135,22 +135,22 @@ When you're stuck or confused:
 **Before any edit**:
 - Load CRITICAL_RULES.md
 - Check workflow phase compliance
-- Validate milestone task status
+- Validate specification task status
 - Ensure proper agent coordination
 
 **After completing work**:
 - Update MEMORY.md with progress
 - Mark TODOs as completed
 - Commit changes with proper messages
-- Update milestone tracking
+- Update specification tracking
 
 **Example Hook Compliance**:
 ```yaml
 # Hook says: "REQUIRED: Load CRITICAL_RULES.md first"
 # Your response: Load the file immediately, don't proceed without it
 
-# Hook says: "ERROR: No active milestone task found"
-# Your response: Create or activate a milestone task before continuing
+# Hook says: "ERROR: No active specification found"
+# Your response: Create or activate a specification before continuing
 
 # Hook says: "REQUIRED: Update MEMORY.md with progress"
 # Your response: Update MEMORY.md with current status and next steps
@@ -223,8 +223,8 @@ workflow_hooks:
       - "Milestone progress changed"
     actions:
       - scan_for_completed_todos: "Check TODO status"
-      - run_milestone_commit: "Auto-commit completed work"
-    command: "/quaestor:milestone-commit"
+      - run_specification_commit: "Auto-commit completed work"
+    command: "/quaestor:specification-commit"
   
   after_todo_completion:
     trigger: "TodoWrite marks item as completed"
@@ -233,7 +233,7 @@ workflow_hooks:
       - "Quality checks passing"
     actions:
       - update_memory_progress: "Sync to MEMORY.md"
-      - trigger_milestone_commit: "Create atomic commit"
+      - trigger_specification_commit: "Create atomic commit"
     automatic: true
   
   after_task_success:
@@ -246,8 +246,8 @@ workflow_hooks:
       - update_tracking: "Update progress"
     prompt_user: false
   
-  milestone_completion:
-    trigger: "All TODOs in milestone done"
+  specification_completion:
+    trigger: "All TODOs in specification done"
     conditions:
       - "All items completed"
       - "Quality gates passed"
@@ -262,23 +262,23 @@ workflow_hooks:
 
 **Automatic Triggers**:
 - Completing a TODO automatically triggers commit workflow
-- Updating MEMORY.md with progress runs milestone checks
-- Finishing all items in a milestone creates a PR
+- Updating MEMORY.md with progress runs specification checks
+- Finishing all items in a specification creates a PR
 
 **Manual Override**:
 ```bash
 # Disable hooks temporarily
-/quaestor:milestone-commit --no-hooks
+/quaestor:specification-commit --no-hooks
 
 # Run hooks manually
-/quaestor:milestone-commit --trigger
+/quaestor:specification-commit --trigger
 ```
 
 **Benefits**:
 - 🎯 Atomic commits for each completed task
 - 📊 Automatic progress tracking
 - 🔍 Quality enforcement before commits
-- 🚀 PRs created at milestone boundaries
+- 🚀 PRs created at specification boundaries
 <!-- SECTION:workflow-hooks:END -->
 
 # DEVELOPMENT WORKFLOW

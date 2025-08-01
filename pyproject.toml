@@ -54,7 +54,6 @@ packages = [
     "quaestor.core", 
     "quaestor.cli",
     "quaestor.utils",
-    "quaestor.integrations",
     "quaestor.claude",
     "quaestor.claude.hooks",
     "quaestor.claude.agents",

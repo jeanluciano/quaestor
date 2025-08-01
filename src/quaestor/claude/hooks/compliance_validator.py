@@ -13,45 +13,44 @@ class ComplianceChecker:
 
     def __init__(self, project_root):
         self.project_root = Path(project_root)
-        self.milestones_dir = self.project_root / ".quaestor" / "milestones"
+        self.specs_dir = self.project_root / ".quaestor" / "specs"
         self.memory_file = self.project_root / ".quaestor" / "MEMORY.md"
         self.critical_rules = self.project_root / ".quaestor" / "CRITICAL_RULES.md"
         self.workflow_state = self.project_root / ".quaestor" / ".workflow_state"
 
-    def check_milestone_awareness(self):
-        """Check if there's an active milestone task."""
+    def check_specification_awareness(self):
+        """Check if there's an active specification task."""
         issues = []
 
-        if not self.milestones_dir.exists():
+        if not self.specs_dir.exists():
             issues.append(
                 {
-                    "type": "missing_milestones",
+                    "type": "missing_specifications",
                     "severity": "medium",
-                    "message": "No .quaestor/milestones directory found",
+                    "message": "No .quaestor/specs directory found",
                 }
             )
             return issues
 
-        # Look for active tasks
-        active_tasks = []
-        for tasks_file in self.milestones_dir.rglob("tasks.yaml"):
+        # Look for active specifications
+        active_specs = []
+        for spec_file in self.specs_dir.rglob("*.yaml"):
             try:
-                with open(tasks_file) as f:
+                with open(spec_file) as f:
                     data = yaml.safe_load(f)
 
-                for task in data.get("tasks", []):
-                    if task.get("status") == "in_progress":
-                        active_tasks.append({"file": tasks_file, "task": task})
+                if data.get("status") == "in_progress":
+                    active_specs.append({"file": spec_file, "spec": data})
             except Exception:
                 continue
 
-        if not active_tasks:
+        if not active_specs:
             issues.append(
                 {
-                    "type": "no_active_task",
+                    "type": "no_active_specification",
                     "severity": "high",
-                    "message": "No task marked as 'in_progress' in milestone files",
-                    "fix": "Update a task status to 'in_progress' before starting work",
+                    "message": "No specification marked as 'in_progress' in spec files",
+                    "fix": "Update a specification status to 'in_progress' before starting work",
                 }
             )
 
@@ -77,26 +76,26 @@ class ComplianceChecker:
         if not recent_files:
             return issues  # No recent work
 
-        # Check if milestone files were also updated
-        milestone_updated = False
+        # Check if specification files were also updated
+        specification_updated = False
         memory_updated = False
 
         for f, _mtime in recent_files:
-            if "milestones" in str(f) and f.name == "tasks.yaml":
-                milestone_updated = True
+            if "specs" in str(f) and f.name.endswith(".yaml"):
+                specification_updated = True
             if f.name == "MEMORY.md":
                 memory_updated = True
 
         # Filter out only implementation files
         impl_files = [f for f, mtime in recent_files if str(f).endswith(".py") and "src/" in str(f)]
 
-        if impl_files and not milestone_updated:
+        if impl_files and not specification_updated:
             issues.append(
                 {
                     "type": "untracked_implementation",
                     "severity": "high",
-                    "message": f"Found {len(impl_files)} recently modified source files but no milestone updates",
-                    "fix": "Update relevant .quaestor/milestones/*/tasks.yaml with completed subtasks",
+                    "message": f"Found {len(impl_files)} recently modified source files but no specification updates",
+                    "fix": "Update relevant .quaestor/specs/*.yaml with completed tasks",
                 }
             )
 
@@ -196,7 +195,7 @@ class ComplianceChecker:
 
         # Run all checks
         checks = [
-            ("Milestone Awareness", self.check_milestone_awareness),
+            ("Specification Awareness", self.check_specification_awareness),
             ("Work Tracking", self.check_recent_work_tracking),
             ("Memory Quality", self.check_memory_quality),
             ("Workflow State", self.check_workflow_state),

@@ -468,11 +468,9 @@ def _init_common(target_dir: Path, force: bool, mode: str):
         "compliance_validator.py",
         "file_change_tracker.py",
         "memory_tracker.py",
-        "milestone_tracker.py",
         "research_workflow_tracker.py",
         "session_context_loader.py",
         "todo_agent_coordinator.py",
-        "todo_milestone_connector.py",
     ]
 
     for hook_file in available_hooks:
@@ -500,7 +498,6 @@ def _init_common(target_dir: Path, force: bool, mode: str):
             "debugger.md",
             "explorer.md",
             "implementer.md",
-            "milestone-manager.md",
             "planner.md",
             "qa.md",
             "refactorer.md",

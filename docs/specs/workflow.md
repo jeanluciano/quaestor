@@ -69,7 +69,7 @@ Shows:
 - Active specifications and their status
 - Implementation progress per spec
 - Test coverage
-- Milestone completion
+- Release readiness
 
 ### 5. Status Updates
 
@@ -181,7 +181,7 @@ Dashboard shows:
 
 Specifications include priority levels:
 - **Critical**: Must be done immediately
-- **High**: Important for current milestone
+- **High**: Important for current development cycle
 - **Medium**: Should be done soon
 - **Low**: Nice to have
 

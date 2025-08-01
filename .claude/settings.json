@@ -10,16 +10,6 @@
             "description": "Check compliance before edits and suggest agents"
           }
         ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/spec_branch_tracker.py",
-            "description": "Track specification-to-branch linkage"
-          }
-        ]
       }
     ],
     "PostToolUse": [

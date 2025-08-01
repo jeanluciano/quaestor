@@ -74,28 +74,28 @@ def is_implementation_file(file_path: str) -> bool:
     return path.suffix in implementation_extensions and "src" in str(path)
 
 
-def check_milestone_awareness(project_root: Path) -> dict[str, Any]:
-    """Check if there's an active milestone being worked on."""
-    milestones_dir = project_root / ".quaestor" / "milestones"
+def check_specification_awareness(project_root: Path) -> dict[str, Any]:
+    """Check if there's an active specification being worked on."""
+    specs_dir = project_root / ".quaestor" / "specs"
 
-    if not milestones_dir.exists():
-        return {"has_active": False, "reason": "No milestones directory"}
+    if not specs_dir.exists():
+        return {"has_active": False, "reason": "No specifications directory"}
 
     # Look for in_progress tasks
-    for tasks_file in milestones_dir.rglob("tasks.yaml"):
+    for spec_file in specs_dir.rglob("*.yaml"):
         try:
-            with open(tasks_file) as f:
+            with open(spec_file) as f:
                 content = f.read()
                 if "status: in_progress" in content or "status: 'in_progress'" in content:
-                    return {"has_active": True, "milestone": tasks_file.parent.name, "file": str(tasks_file)}
+                    return {"has_active": True, "specification": spec_file.stem, "file": str(spec_file)}
         except Exception:
             continue
 
-    return {"has_active": False, "reason": "No active milestone tasks"}
+    return {"has_active": False, "reason": "No active specification tasks"}
 
 
 def generate_workflow_violation_message(
-    workflow_state: dict[str, Any], file_path: str, milestone_status: dict[str, Any]
+    workflow_state: dict[str, Any], file_path: str, specification_status: dict[str, Any]
 ) -> str:
     """Generate appropriate message for workflow violations."""
 
@@ -148,21 +148,21 @@ Focus on:
 You've examined: {", ".join(workflow_state.get("research_files", [])[-3:])}
 """
 
-    elif not milestone_status["has_active"]:
+    elif not specification_status["has_active"]:
         return f"""
-⚠️ NO ACTIVE MILESTONE: Starting implementation without a tracked milestone.
+⚠️ NO ACTIVE SPECIFICATION: Starting implementation without a tracked specification.
 
 File to edit: {file_path}
 
-BEST PRACTICE: All implementation work should be tracked in a milestone
+BEST PRACTICE: All implementation work should be tracked in a specification
 
-Please run: Use the planner agent to create a milestone for this work
+Please run: Use the planner agent to create a specification for this work
 
 The planner should:
 1. Define the scope of changes
 2. Break down into subtasks
 3. Set success criteria
-4. Create milestone in .quaestor/milestones/
+4. Create specification in .quaestor/specs/
 
 This ensures proper tracking and helps with PR creation later.
 """
@@ -192,11 +192,11 @@ def main():
     # Load workflow state
     workflow_state = load_workflow_state(project_root)
 
-    # Check milestone status
-    milestone_status = check_milestone_awareness(project_root)
+    # Check specification status
+    specification_status = check_specification_awareness(project_root)
 
     # Generate violation message if needed
-    violation_message = generate_workflow_violation_message(workflow_state, file_path, milestone_status)
+    violation_message = generate_workflow_violation_message(workflow_state, file_path, specification_status)
 
     if violation_message:
         # Block the edit and provide guidance
