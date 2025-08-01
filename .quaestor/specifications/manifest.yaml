@@ -1,72 +1,130 @@
----
-milestone: "Project-Init Agent Integration"
-created: "2025-01-15"
-updated: "2025-01-15"
-total_specifications: 5
-completion_percentage: 20
-
+version: "1.0"
 specifications:
-  - id: "spec-agent-001"
+  spec-agent-001:
+    id: "spec-agent-001"
     title: "Update project-init.md frontmatter with agent-strategy"
-    status: "implemented"
-    type: "enhancement"
-    priority: "high"
-    branch: "feat/spec-agent-001-frontmatter-update"
-    created: "2025-01-15"
-    
-  - id: "spec-agent-002"
-    title: "Replace milestone/task terminology with specifications"
-    status: "draft"
-    type: "refactor"
-    priority: "high"
-    branch: null
-    created: "2025-01-15"
-    
-  - id: "spec-agent-003"
-    title: "Implement agent orchestration for project analysis"
-    status: "draft"
     type: "feature"
+    status: "implemented"
     priority: "high"
-    branch: null
-    created: "2025-01-15"
+    description: "Add agent orchestration configuration to project-init.md frontmatter"
+    rationale: "Enable agent-based analysis instead of monolithic command execution"
+    use_cases: []
+    contract:
+      inputs:
+        current_frontmatter:
+          type: "yaml"
+          description: "Existing project-init.md frontmatter"
+          required: true
+      outputs:
+        updated_frontmatter:
+          type: "yaml"
+          description: "Enhanced frontmatter with agent configuration"
+      behavior: []
+      constraints: []
+      error_handling: {}
+    acceptance_criteria: []
+    test_scenarios: []
+    dependencies: []
+    branch: "feat/spec-agent-001-frontmatter-update"
+    created_at: "2025-01-15T12:00:00"
+    updated_at: "2025-01-15T14:30:00"
+    metadata: {}
     
-  - id: "spec-agent-004"
-    title: "Update milestone-manager agent for specifications"
-    status: "draft"
+  spec-agent-002:
+    id: "spec-agent-002"
+    title: "Replace milestone/task terminology with specifications"
     type: "refactor"
-    priority: "medium"
-    branch: null
-    created: "2025-01-15"
+    status: "in_progress"
+    priority: "high"
+    description: "Update all references from milestones/tasks to specifications"
+    rationale: "Align with specification-driven development approach"
+    use_cases: []
+    contract:
+      inputs: {}
+      outputs: {}
+      behavior: []
+      constraints: []
+      error_handling: {}
+    acceptance_criteria: []
+    test_scenarios: []
+    dependencies: []
+    branch: "feat/spec-agent-002-terminology-update"
+    created_at: "2025-01-15T12:00:00"
+    updated_at: "2025-08-01T15:12:30"
+    metadata: {}
     
-  - id: "spec-agent-005"
-    title: "Create specification-driven workflow documentation"
-    status: "draft"
-    type: "documentation"
-    priority: "medium"
-    branch: null
-    created: "2025-01-15"
-
-status_summary:
-  draft: 4
-  approved: 0
-  in_progress: 0
-  implemented: 1
-  tested: 0
-  deployed: 0
-
-dependencies:
   spec-agent-003:
-    depends_on: ["spec-agent-001"]
-    reason: "Needs agent-strategy configuration"
+    id: "spec-agent-003"
+    title: "Implement agent orchestration for project analysis"
+    type: "feature"
+    status: "draft"
+    priority: "high"
+    description: "Create agent-based project analysis orchestration"
+    rationale: "Leverage specialized agents for different analysis aspects"
+    use_cases: []
+    contract:
+      inputs: {}
+      outputs: {}
+      behavior: []
+      constraints: []
+      error_handling: {}
+    acceptance_criteria: []
+    test_scenarios: []
+    dependencies: ["spec-agent-001"]
+    branch: null
+    created_at: "2025-01-15T12:00:00"
+    updated_at: "2025-01-15T12:00:00"
+    metadata: {}
+    
+  spec-agent-004:
+    id: "spec-agent-004"
+    title: "Update milestone-manager agent for specifications"
+    type: "refactor"
+    status: "draft"
+    priority: "medium"
+    description: "Transform milestone-manager to work with specifications"
+    rationale: "Support specification lifecycle management"
+    use_cases: []
+    contract:
+      inputs: {}
+      outputs: {}
+      behavior: []
+      constraints: []
+      error_handling: {}
+    acceptance_criteria: []
+    test_scenarios: []
+    dependencies: []
+    branch: null
+    created_at: "2025-01-15T12:00:00"
+    updated_at: "2025-01-15T12:00:00"
+    metadata: {}
+    
   spec-agent-005:
-    depends_on: ["spec-agent-002", "spec-agent-003"]
-    reason: "Needs updated terminology and agent patterns"
+    id: "spec-agent-005"
+    title: "Create specification-driven workflow documentation"
+    type: "documentation"
+    status: "draft"
+    priority: "medium"
+    description: "Document the specification-driven development workflow"
+    rationale: "Guide users in adopting specification-based approach"
+    use_cases: []
+    contract:
+      inputs: {}
+      outputs: {}
+      behavior: []
+      constraints: []
+      error_handling: {}
+    acceptance_criteria: []
+    test_scenarios: []
+    dependencies: ["spec-agent-002", "spec-agent-003"]
+    branch: null
+    created_at: "2025-01-15T12:00:00"
+    updated_at: "2025-01-15T12:00:00"
+    metadata: {}
 
-estimated_hours:
-  total: 23
-  by_spec:
-    spec-agent-001: 3
-    spec-agent-002: 4
-    spec-agent-003: 8
-    spec-agent-004: 5
-    spec-agent-005: 3
+branch_mapping:
+  "feat/spec-agent-001-frontmatter-update": "spec-agent-001"
+  "feat/spec-agent-002-terminology-update": "spec-agent-002"
+
+created_at: "2025-01-15T12:00:00"
+updated_at: "2025-08-01T15:12:30"
