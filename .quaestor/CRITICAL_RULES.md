@@ -28,10 +28,6 @@ before_any_action:
         - circular_dependencies_detected
       on_violation: "STOP and say: 'This seems complex. Let me step back and ask for guidance'"
     
-    - id: "source_vs_installation"
-      check: "Am I trying to fix bugs by editing .quaestor/ files?"
-      on_violation: "STOP! Edit src/ files instead. .quaestor/ contains user installations"
-    
     - id: "production_quality"
       check: "Does this meet production standards?"
       requires:
@@ -201,50 +197,6 @@ must_use_agents_when:
 ```
 <!-- DATA:agent-triggers:END -->
 <!-- SECTION:agent-delegation:mandatory:END -->
-
-<!-- SECTION:source-code-rule:START -->
-## 🚨 SOURCE CODE vs INSTALLATION FILES
-
-### CRITICAL DISTINCTION
-```yaml
-quaestor_file_rules:
-  NEVER_EDIT:
-    - path: ".quaestor/*"
-      reason: "These are USER'S INSTALLED FILES"
-      examples:
-        - ".quaestor/hooks/validation/research_enforcer.py"
-        - ".quaestor/VALIDATION.md"
-        - ".quaestor/PATTERNS.md"
-  
-  ALWAYS_EDIT:
-    - path: "src/quaestor/*"
-      reason: "This is the SOURCE CODE"
-      examples:
-        - "src/quaestor/assets/hooks/validation/research_enforcer.py"
-        - "src/quaestor/assets/templates/validation.md"
-        - "src/quaestor/core/template_engine.py"
-  
-  propagation:
-    - "Changes in src/ → User runs 'quaestor update' → Updates .quaestor/"
-    - "Direct .quaestor/ edits = LOST on next update"
-```
-
-### Common Mistakes
-```yaml
-mistakes_to_avoid:
-  - scenario: "User reports template has empty placeholders"
-    wrong: "Edit .quaestor/VALIDATION.md directly"
-    correct: "Fix src/quaestor/core/template_engine.py or templates"
-    
-  - scenario: "Hook has a bug"
-    wrong: "Fix .quaestor/hooks/*/file.py"
-    correct: "Fix src/quaestor/assets/hooks/*/file.py"
-    
-  - scenario: "Need to test changes"
-    wrong: "Modify .quaestor/ files for testing"
-    correct: "Reinstall with 'uv pip install -e .' after src/ changes"
-```
-<!-- SECTION:source-code-rule:END -->
 
 <!-- SECTION:complexity-triggers:START -->
 ## 🚨 COMPLEXITY TRIGGERS

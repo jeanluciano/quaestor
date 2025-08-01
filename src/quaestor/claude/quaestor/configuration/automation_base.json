@@ -1,0 +1,69 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{python_path} {hooks_dir}/compliance_pre_edit.py",
+            "description": "Check compliance before edits and suggest agents"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Read|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{python_path} {hooks_dir}/research_workflow_tracker.py",
+            "description": "Track research phase and guide workflow transitions"
+          }
+        ]
+      },
+      {
+        "matcher": "TodoWrite",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{python_path} {hooks_dir}/memory_tracker.py",
+            "description": "Sync memory with TODO completions"
+          },
+          {
+            "type": "command",
+            "command": "{python_path} {hooks_dir}/todo_milestone_connector.py",
+            "description": "Connect TODOs to milestones and suggest PRs"
+          },
+          {
+            "type": "command",
+            "command": "{python_path} {hooks_dir}/todo_agent_coordinator.py",
+            "description": "Coordinate agents based on TODO patterns"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{python_path} {hooks_dir}/milestone_tracker.py",
+            "description": "Track milestone progress and suggest agents"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{python_path} {hooks_dir}/session_context_loader.py",
+            "description": "Load project context and suggest agents at session start"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -114,7 +114,7 @@ intelligence-features: ["capability1", "capability2", ...]
 **Profile**: Standard (0.4 threshold)
 **Key Features**:
 - Completion detection with conflict checking
-- Auto-commit discovery and categorization
+- Commit discovery and categorization
 - Intelligent PR generation with reviewer detection
 
 ```bash
@@ -124,7 +124,7 @@ intelligence-features: ["capability1", "capability2", ...]
 
 ### 🚀 Automation Commands
 
-#### `/auto-commit` - Intelligent Commit Generation
+#### `/commit` - Intelligent Commit Generation
 **Purpose**: Automatically create conventional commits when TODOs are completed.
 
 **Intelligence**: Todo-completion-detection, commit-generation, milestone-tracking
@@ -135,8 +135,8 @@ intelligence-features: ["capability1", "capability2", ...]
 - Hook integration for automatic TODO completion triggers
 
 ```bash
-/auto-commit
-/auto-commit --dry-run --todo-id 42
+/commit
+/commit --dry-run --todo-id 42
 ```
 
 #### `/project-init` - Framework-Aware Project Setup

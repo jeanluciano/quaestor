@@ -57,7 +57,15 @@ class TestNewCLIStructure:
         """Test that the languages.yaml config file exists."""
         from pathlib import Path
 
-        config_path = Path(__file__).parent.parent / "src" / "quaestor" / "assets" / "configuration" / "languages.yaml"
+        config_path = (
+            Path(__file__).parent.parent
+            / "src"
+            / "quaestor"
+            / "claude"
+            / "quaestor"
+            / "configuration"
+            / "languages.yaml"
+        )
         assert config_path.exists(), f"languages.yaml not found at {config_path}"
 
     def test_init_command_help(self, runner):

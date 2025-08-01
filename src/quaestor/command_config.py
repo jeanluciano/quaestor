@@ -265,3 +265,20 @@ class CommandLoader:
             return []
 
         return [f.stem for f in self.config.override_dir.glob("*.md")]
+
+    def get_configuration(self, command_name: str) -> dict[str, Any] | None:
+        """Get configuration for a command."""
+        return self.config.get_command_config(command_name)
+
+    def get_override(self, command_name: str) -> str | None:
+        """Get override content for a command if it exists."""
+        override_path = self.config.get_override_path(command_name)
+        if override_path and override_path.exists():
+            return override_path.read_text()
+        return None
+
+    def has_configuration(self, command_name: str) -> bool:
+        """Check if a command has configuration or override."""
+        config = self.config.get_command_config(command_name)
+        has_override = self.config.has_override(command_name)
+        return bool(config) or has_override

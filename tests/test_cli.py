@@ -24,24 +24,22 @@ class TestInitCommand:
 
             def mock_read_text(package, resource):
                 files = {
-                    ("quaestor.templates", "CLAUDE_INCLUDE.md"): (
+                    ("quaestor.claude.quaestor.templates", "CLAUDE_INCLUDE.md"): (
                         "<!-- QUAESTOR CONFIG START -->\nQuaestor config\n<!-- QUAESTOR CONFIG END -->"
                     ),
                     ("quaestor", "QUAESTOR_CLAUDE.md"): "# QUAESTOR_CLAUDE.md test content",
                     ("quaestor", "CRITICAL_RULES.md"): "# CRITICAL_RULES test content",
-                    ("quaestor.templates", "ARCHITECTURE.template.md"): "# ARCHITECTURE template",
-                    ("quaestor.templates", "MEMORY.template.md"): "# MEMORY template",
-                    ("quaestor.templates", "PATTERNS.template.md"): "# PATTERNS template",
-                    ("quaestor.templates", "VALIDATION.template.md"): "# VALIDATION template",
-                    ("quaestor.templates", "AUTOMATION.template.md"): "# AUTOMATION template",
-                    ("quaestor.commands", "project-init.md"): "# project-init.md",
-                    ("quaestor.commands", "task.md"): "# task.md",
-                    ("quaestor.commands", "check.md"): "# check.md",
-                    ("quaestor.commands", "analyze.md"): "# analyze.md",
-                    ("quaestor.commands", "milestone.md"): "# milestone.md",
-                    ("quaestor.commands", "milestone-pr.md"): "# milestone-pr.md",
-                    ("quaestor.commands", "auto-commit.md"): "# auto-commit.md",
-                    ("quaestor.commands", "status.md"): "# status.md",
+                    ("quaestor.claude.quaestor.templates", "ARCHITECTURE.template.md"): "# ARCHITECTURE template",
+                    ("quaestor.claude.quaestor.templates", "MEMORY.template.md"): "# MEMORY template",
+                    ("quaestor.claude.quaestor.templates", "PATTERNS.template.md"): "# PATTERNS template",
+                    ("quaestor.claude.quaestor.templates", "VALIDATION.template.md"): "# VALIDATION template",
+                    ("quaestor.claude.quaestor.templates", "AUTOMATION.template.md"): "# AUTOMATION template",
+                    ("quaestor.claude.commands", "project-init.md"): "# project-init.md",
+                    ("quaestor.claude.commands", "research.md"): "# research.md",
+                    ("quaestor.claude.commands", "plan.md"): "# plan.md",
+                    ("quaestor.claude.commands", "task.md"): "# task.md",
+                    ("quaestor.claude.commands", "debug.md"): "# debug.md",
+                    ("quaestor.claude.commands", "review.md"): "# review.md",
                 }
                 return files.get((package, resource), f"# {resource} content")
 
@@ -115,9 +113,9 @@ class TestInitCommand:
                 }
                 if (package, filename) in files:
                     return files[(package, filename)]
-                elif package == "quaestor.templates":
+                elif package == "quaestor.claude.quaestor.templates":
                     return f"# {filename} template"
-                elif package == "quaestor.commands":
+                elif package == "quaestor.claude.commands":
                     return f"# {filename} content"
                 raise FileNotFoundError(f"Unknown file: {package}/{filename}")
 
@@ -174,31 +172,29 @@ class TestInitCommand:
         """Test that all command files are installed to ~/.claude/commands."""
         expected_commands = [
             "project-init.md",
+            "research.md",
+            "plan.md",
             "task.md",
-            "status.md",
-            "check.md",
-            "analyze.md",
-            "milestone.md",
-            "auto-commit.md",
-            "milestone-pr.md",
+            "debug.md",
+            "review.md",
         ]
 
         with patch("quaestor.cli.init.pkg_resources.read_text") as mock_read:
 
             def mock_read_text(package, resource):
                 files = {
-                    ("quaestor.templates", "CLAUDE_INCLUDE.md"): (
+                    ("quaestor.claude.quaestor.templates", "CLAUDE_INCLUDE.md"): (
                         "<!-- QUAESTOR CONFIG START -->\nQuaestor config\n<!-- QUAESTOR CONFIG END -->"
                     ),
                     ("quaestor", "QUAESTOR_CLAUDE.md"): "# QUAESTOR_CLAUDE.md",
                     ("quaestor", "CRITICAL_RULES.md"): "# CRITICAL_RULES.md",
-                    ("quaestor.templates", "ARCHITECTURE.template.md"): "# ARCHITECTURE",
-                    ("quaestor.templates", "MEMORY.template.md"): "# MEMORY",
-                    ("quaestor.templates", "PATTERNS.template.md"): "# PATTERNS",
-                    ("quaestor.templates", "VALIDATION.template.md"): "# VALIDATION",
-                    ("quaestor.templates", "AUTOMATION.template.md"): "# AUTOMATION",
+                    ("quaestor.claude.quaestor.templates", "ARCHITECTURE.template.md"): "# ARCHITECTURE",
+                    ("quaestor.claude.quaestor.templates", "MEMORY.template.md"): "# MEMORY",
+                    ("quaestor.claude.quaestor.templates", "PATTERNS.template.md"): "# PATTERNS",
+                    ("quaestor.claude.quaestor.templates", "VALIDATION.template.md"): "# VALIDATION",
+                    ("quaestor.claude.quaestor.templates", "AUTOMATION.template.md"): "# AUTOMATION",
                 }
-                if package == "quaestor.commands":
+                if package == "quaestor.claude.commands":
                     return f"# {resource}"
                 return files.get((package, resource), f"# {resource} content")
 
@@ -220,28 +216,22 @@ class TestInitCommand:
         with patch("quaestor.cli.init.pkg_resources.read_text") as mock_read:
 
             def side_effect(package, filename):
-                if package == "quaestor.assets.templates" and filename == "quaestor_claude.md":
+                if package == "quaestor.claude.quaestor.templates" and filename == "quaestor_claude.md":
                     return "# QUAESTOR_CLAUDE.md test content"
-                elif package == "quaestor.assets.templates" and filename == "critical_rules.md":
+                elif package == "quaestor.claude.quaestor.templates" and filename == "critical_rules.md":
                     return "# CRITICAL_RULES.md test content"
-                elif package == "quaestor.assets.templates" and filename == "claude_include.md":
+                elif package == "quaestor.claude.quaestor.templates" and filename == "claude_include.md":
                     return (
                         "<!-- QUAESTOR CONFIG START -->\nQuaestor config\n"
                         "<!-- QUAESTOR CONFIG END -->\n\n<!-- Your custom content below -->"
                     )
-                elif package == "quaestor.assets.templates" and filename == "architecture.md":
+                elif package == "quaestor.claude.quaestor.templates" and filename == "architecture.md":
                     return sample_architecture_manifest
-                elif package == "quaestor.assets.templates" and filename == "memory.md":
+                elif package == "quaestor.claude.quaestor.templates" and filename == "memory.md":
                     return sample_memory_manifest
-                elif package == "quaestor.assets.templates" and filename == "patterns.md":
-                    return "# PATTERNS template content"
-                elif package == "quaestor.assets.templates" and filename == "validation.md":
-                    return "# VALIDATION template content"
-                elif package == "quaestor.assets.templates" and filename == "automation.md":
-                    return "# AUTOMATION template content"
-                elif package == "quaestor.assets.configuration" and filename == "automation_base.json":
+                elif package == "quaestor.claude.quaestor.configuration" and filename == "automation_base.json":
                     return '{"hooks": {}}'
-                elif package == "quaestor.commands":
+                elif package == "quaestor.claude.commands":
                     return f"# {filename} content"
                 raise FileNotFoundError(f"Unknown file: {package}/{filename}")
 
@@ -273,16 +263,16 @@ class TestInitCommand:
 
             def mock_read_text(package, resource):
                 files = {
-                    ("quaestor.assets.templates", "claude_include.md"): (
+                    ("quaestor.claude.quaestor.templates", "claude_include.md"): (
                         "<!-- QUAESTOR CONFIG START -->\nQuaestor config\n"
                         "<!-- QUAESTOR CONFIG END -->\n\n<!-- Your custom content below -->"
                     ),
-                    ("quaestor.assets.templates", "quaestor_claude.md"): ("# QUAESTOR_CLAUDE.md test content"),
-                    ("quaestor.assets.templates", "critical_rules.md"): "# CRITICAL_RULES test content",
-                    ("quaestor.assets.templates", "architecture.md"): "# AI ARCHITECTURE template",
-                    ("quaestor.assets.templates", "memory.md"): "# AI MEMORY template",
+                    ("quaestor.claude.quaestor.templates", "quaestor_claude.md"): ("# QUAESTOR_CLAUDE.md test content"),
+                    ("quaestor.claude.quaestor.templates", "critical_rules.md"): "# CRITICAL_RULES test content",
+                    ("quaestor.claude.quaestor.templates", "architecture.md"): "# AI ARCHITECTURE template",
+                    ("quaestor.claude.quaestor.templates", "memory.md"): "# AI MEMORY template",
                 }
-                if package == "quaestor.commands":
+                if package == "quaestor.claude.commands":
                     return f"# {resource} content"
                 return files.get((package, resource), f"# {resource} content")
 

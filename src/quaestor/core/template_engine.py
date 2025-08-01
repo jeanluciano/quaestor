@@ -20,6 +20,7 @@ def _create_template_mappings(lang_config: dict[str, Any], project_type: str) ->
     # Map language config keys to template placeholder names
     mappings = {
         # VALIDATION.md placeholders
+        "lint_command": lang_config.get("lint_command", "Not configured"),
         "linter_config": lang_config.get("lint_command", "Not configured"),
         "type_checker": lang_config.get("type_check_command", "Not configured"),
         "test_coverage_threshold": lang_config.get("coverage_threshold", 80),
@@ -92,7 +93,7 @@ def get_project_data(project_dir: Path) -> dict[str, Any]:
     complexity_info = get_project_complexity_indicators(project_dir, project_type)
 
     # Load language-specific configuration
-    config_path = Path(__file__).parent.parent / "assets" / "configuration" / "languages.yaml"
+    config_path = Path(__file__).parent.parent / "claude" / "quaestor" / "configuration" / "languages.yaml"
     language_configs = load_yaml(config_path, {})
 
     # Get config for this project type, fallback to unknown

@@ -5,13 +5,19 @@ from pathlib import Path
 # Command files that get installed to ~/.claude/commands
 COMMAND_FILES = [
     "project-init.md",  # Initialize project documentation
-    "task.md",  # Unified task command (auto-detects language)
-    "status.md",  # Show project status
-    "check.md",  # Run quality validation
-    "analyze.md",  # Multi-dimensional code analysis
-    "milestone.md",  # Manage project milestones
-    "auto-commit.md",  # Auto-commit completed TODO items
-    "milestone-pr.md",  # Create PR for completed milestones
+    "research.md",  # Intelligent codebase exploration and discovery
+    "plan.md",  # Strategic planning and progress management
+    "task.md",  # Implementation with agent orchestration
+    "debug.md",  # Interactive debugging and troubleshooting
+    "review.md",  # Comprehensive review, validation, and shipping
+]
+
+# Deprecated commands (to be removed in future version)
+DEPRECATED_COMMANDS = [
+    "status.md",  # Absorbed into /plan
+    "check.md",  # Absorbed into /review
+    "analyze.md",  # Split between /research and /review
+    "commit.md",  # Absorbed into /review
 ]
 
 # File categorization for update logic
@@ -47,10 +53,7 @@ TEMPLATE_FILES = {
     "critical_rules.md": "CRITICAL_RULES.md",
     "architecture.md": "ARCHITECTURE.md",
     "memory.md": "MEMORY.md",
-    "patterns.md": "PATTERNS.md",
-    "validation.md": "VALIDATION.md",
-    "automation.md": "AUTOMATION.md",
 }
 
 # Template base path within assets
-TEMPLATE_BASE_PATH = "quaestor.assets.templates"
+TEMPLATE_BASE_PATH = "quaestor.claude.quaestor.templates"

@@ -40,9 +40,6 @@ project/
 ├── .quaestor/        # Documentation, memory & hooks (gitignored)
 │   ├── ARCHITECTURE.md
 │   ├── MEMORY.md
-│   ├── PATTERNS.md
-│   ├── VALIDATION.md
-│   ├── AUTOMATION.md
 │   ├── manifest.json # Version tracking for updates
 │   └── hooks/       # Hook scripts
 │       ├── workflow/
@@ -51,10 +48,10 @@ project/
 │   ├── task.md
 │   ├── status.md
 │   ├── analyze.md
-│   ├── milestone.md
+│   ├── plan.md
 │   ├── check.md
-│   ├── auto-commit.md
-│   ├── milestone-pr.md
+│   ├── commit.md
+│   ├── review.md
 │   └── project-init.md
 └── .gitignore        # Auto-updated (.quaestor/, .claude/settings.local.json)
 ```
@@ -69,10 +66,10 @@ project/
 │   │   ├── task.md
 │   │   ├── status.md
 │   │   ├── analyze.md
-│   │   ├── milestone.md
+│   │   ├── plan.md
 │   │   ├── check.md
-│   │   ├── auto-commit.md
-│   │   ├── milestone-pr.md
+│   │   ├── commit.md
+│   │   ├── review.md
 │   │   └── project-init.md
 │   └── settings.json # Hooks configuration
 ├── .quaestor/        # Shared documentation (committed)
@@ -80,9 +77,6 @@ project/
 │   ├── CRITICAL_RULES.md
 │   ├── ARCHITECTURE.md
 │   ├── MEMORY.md
-│   ├── PATTERNS.md
-│   ├── VALIDATION.md
-│   ├── AUTOMATION.md
 │   ├── manifest.json # Version tracking
 │   └── hooks/       # Hook scripts
 │       ├── workflow/

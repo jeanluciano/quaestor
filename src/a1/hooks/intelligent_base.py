@@ -7,8 +7,7 @@ from typing import Any
 # Add parent directories to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from quaestor.assets.hooks.shared_utils import WorkflowState, get_project_root
-from quaestor.automation.base import BaseHook
+from quaestor.claude.hooks.base import BaseHook, WorkflowState, get_project_root
 
 from ..enforcement import EnforcementContext, EnforcementLevel, RuleEnforcer
 from ..enforcement.enforcement_history import EnforcementHistory

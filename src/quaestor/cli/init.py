@@ -112,7 +112,7 @@ def _init_personal_mode(target_dir: Path, force: bool):
     # Create settings.local.json for hooks configuration (personal mode)
     settings_path = claude_dir / "settings.local.json"
     try:
-        settings_content = pkg_resources.read_text("quaestor.assets.configuration", "automation_base.json")
+        settings_content = pkg_resources.read_text("quaestor.claude.quaestor.configuration", "automation_base.json")
 
         # Replace placeholders in the template
         import sys
@@ -222,14 +222,14 @@ def _init_team_mode(target_dir: Path, force: bool, contextual: bool = True):
     claude_dir.mkdir(exist_ok=True)
     settings_path = claude_dir / "settings.json"
     try:
-        settings_content = pkg_resources.read_text("quaestor.assets.configuration", "automation_base.json")
+        settings_content = pkg_resources.read_text("quaestor.claude.quaestor.configuration", "automation_base.json")
 
         # Replace placeholders in the template
         import sys
 
         python_path = sys.executable
         project_root = str(target_dir.absolute())
-        hooks_dir = str(quaestor_dir / "hooks")  # Team mode: hooks in .quaestor/hooks
+        hooks_dir = str(claude_dir / "hooks")  # Team mode: hooks in .claude/hooks
 
         settings_content = settings_content.replace("{python_path}", python_path)
         settings_content = settings_content.replace("{project_root}", project_root)
@@ -280,7 +280,7 @@ def _merge_claude_md(target_dir: Path, use_rule_engine: bool = False) -> bool:
 
         # Get the include template
         try:
-            include_content = pkg_resources.read_text("quaestor.assets.templates", "claude_include.md")
+            include_content = pkg_resources.read_text("quaestor.claude.quaestor.templates", "claude_include.md")
         except Exception:
             # Fallback if template is missing
             include_content = """<!-- QUAESTOR CONFIG START -->
@@ -291,9 +291,6 @@ def _merge_claude_md(target_dir: Path, use_rule_engine: bool = False) -> bool:
 > 2. `.quaestor/CRITICAL_RULES.md` - Critical rules you must follow
 > 3. `.quaestor/ARCHITECTURE.md` - System design and structure (if available)
 > 4. `.quaestor/MEMORY.md` - Implementation patterns and decisions (if available)
-> 5. `.quaestor/PATTERNS.md` - Common implementation patterns (if available)
-> 6. `.quaestor/VALIDATION.md` - Quality gates and validation rules (if available)
-> 7. `.quaestor/AUTOMATION.md` - Hook behaviors and automation (if available)
 <!-- QUAESTOR CONFIG END -->
 
 <!-- Your custom content below -->
@@ -352,7 +349,7 @@ def _copy_system_files(quaestor_dir: Path, manifest: FileManifest, target_dir: P
     """Copy system files to .quaestor directory."""
     # Copy QUAESTOR_CLAUDE.md
     try:
-        quaestor_claude_content = pkg_resources.read_text("quaestor.assets.templates", "quaestor_claude.md")
+        quaestor_claude_content = pkg_resources.read_text("quaestor.claude.quaestor.templates", "quaestor_claude.md")
         quaestor_claude_path = quaestor_dir / "QUAESTOR_CLAUDE.md"
         quaestor_claude_path.write_text(quaestor_claude_content)
 
@@ -365,7 +362,7 @@ def _copy_system_files(quaestor_dir: Path, manifest: FileManifest, target_dir: P
 
     # Copy CRITICAL_RULES.md
     try:
-        critical_rules_content = pkg_resources.read_text("quaestor.assets.templates", "critical_rules.md")
+        critical_rules_content = pkg_resources.read_text("quaestor.claude.quaestor.templates", "critical_rules.md")
         critical_rules_path = quaestor_dir / "CRITICAL_RULES.md"
         critical_rules_path.write_text(critical_rules_content)
 
@@ -457,71 +454,76 @@ def _init_common(target_dir: Path, force: bool, mode: str):
     # Copy hook files
     console.print("\n[blue]Installing hook files:[/blue]")
 
-    # Both modes now install hooks to .quaestor/hooks
-    hooks_dir = quaestor_dir / "hooks"
+    # Team mode: hooks in .claude/hooks, Personal mode: hooks in .quaestor/hooks
+    if mode == "team":
+        hooks_dir = target_dir / ".claude" / "hooks"
+    else:
+        hooks_dir = quaestor_dir / "hooks"
 
-    # Create hooks directory structure
+    # Create hooks directory
     hooks_dir.mkdir(parents=True, exist_ok=True)
-    (hooks_dir / "workflow").mkdir(exist_ok=True)
-    (hooks_dir / "validation").mkdir(exist_ok=True)
 
-    # Copy all hook files from assets
+    # Copy all hook files from claude/hooks (flat structure)
     hooks_copied = 0
-    try:
-        # Copy shared_utils.py
+    available_hooks = [
+        "base.py",
+        "compliance_pre_edit.py",
+        "compliance_validator.py",
+        "file_change_tracker.py",
+        "memory_tracker.py",
+        "milestone_tracker.py",
+        "research_workflow_tracker.py",
+        "session_context_loader.py",
+        "todo_agent_coordinator.py",
+        "todo_milestone_connector.py",
+    ]
+
+    for hook_file in available_hooks:
         try:
-            utils_content = pkg_resources.read_text("quaestor.assets.hooks", "shared_utils.py")
-            (hooks_dir / "shared_utils.py").write_text(utils_content)
-            console.print("  [blue]✓[/blue] Installed shared_utils.py")
+            hook_content = pkg_resources.read_text("quaestor.claude.hooks", hook_file)
+            (hooks_dir / hook_file).write_text(hook_content)
+            console.print(f"  [blue]✓[/blue] Installed {hook_file}")
             hooks_copied += 1
         except Exception as e:
-            console.print(f"  [yellow]⚠[/yellow] Could not install shared_utils.py: {e}")
+            console.print(f"  [yellow]⚠[/yellow] Could not install {hook_file}: {e}")
 
-        # Copy workflow hooks
-        workflow_hooks = [
-            "automated_commit_trigger.py",
-            "context_refresher.py",
-            "file_change_tracker.py",
-            "implementation_declaration.py",
-            "implementation_tracker.py",
-            "memory_sync.py",
-            "memory_updater.py",
-            "research_tracker.py",
-            "research_workflow_tracker.py",
-            "todo_milestone_connector.py",
+    console.print(f"\n  [green]Installed {hooks_copied} hook files[/green]")
+
+    # Copy agent files for team mode
+    if mode == "team":
+        console.print("\n[blue]Installing agent files:[/blue]")
+
+        agents_dir = target_dir / ".claude" / "agents"
+        agents_dir.mkdir(parents=True, exist_ok=True)
+
+        # List of available agents
+        available_agents = [
+            "architect.md",
+            "compliance-enforcer.md",
+            "debugger.md",
+            "explorer.md",
+            "implementer.md",
+            "milestone-manager.md",
+            "planner.md",
+            "qa.md",
+            "refactorer.md",
+            "researcher.md",
+            "reviewer.md",
+            "security.md",
+            "workflow-coordinator.md",
         ]
 
-        for hook_file in workflow_hooks:
+        agents_copied = 0
+        for agent_file in available_agents:
             try:
-                hook_content = pkg_resources.read_text("quaestor.assets.hooks.workflow", hook_file)
-                (hooks_dir / "workflow" / hook_file).write_text(hook_content)
-                console.print(f"  [blue]✓[/blue] Installed workflow/{hook_file}")
-                hooks_copied += 1
+                agent_content = pkg_resources.read_text("quaestor.claude.agents", agent_file)
+                (agents_dir / agent_file).write_text(agent_content)
+                console.print(f"  [blue]✓[/blue] Installed {agent_file}")
+                agents_copied += 1
             except Exception as e:
-                console.print(f"  [yellow]⚠[/yellow] Could not install workflow/{hook_file}: {e}")
+                console.print(f"  [yellow]⚠[/yellow] Could not install {agent_file}: {e}")
 
-        # Copy validation hooks
-        validation_hooks = [
-            "compliance_validator.py",
-            "milestone_checker.py",
-            "milestone_validator.py",
-            "quality_checker.py",
-            "research_enforcer.py",
-        ]
-
-        for hook_file in validation_hooks:
-            try:
-                hook_content = pkg_resources.read_text("quaestor.assets.hooks.validation", hook_file)
-                (hooks_dir / "validation" / hook_file).write_text(hook_content)
-                console.print(f"  [blue]✓[/blue] Installed validation/{hook_file}")
-                hooks_copied += 1
-            except Exception as e:
-                console.print(f"  [yellow]⚠[/yellow] Could not install validation/{hook_file}: {e}")
-
-        console.print(f"\n  [green]Installed {hooks_copied} hook files[/green]")
-
-    except Exception as e:
-        console.print(f"  [red]✗[/red] Failed to copy hooks: {e}")
+        console.print(f"\n  [green]Installed {agents_copied} agent files[/green]")
 
     # Show configuration summary if any commands were configured
     if configured_count > 0:

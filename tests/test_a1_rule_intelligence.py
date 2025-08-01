@@ -15,8 +15,8 @@ from src.a1.enforcement import (
     OverrideSystem,
     RuleAdapter,
 )
+from src.a1.integration.quaestor_bridge import HookResult
 from src.a1.learning import PatternRecognizer
-from src.quaestor.automation import HookResult
 
 
 class TestGraduatedEnforcement:
@@ -361,7 +361,7 @@ class TestIntegration:
         # map_enforcement_to_hook_result doesn't exist in hooks module
         # Let's create a simple version for testing
         def map_enforcement_to_hook_result(level, message, suggestions):
-            from quaestor.automation import HookResult
+            from src.a1.integration.quaestor_bridge import HookResult
 
             # Create a combined message with suggestions
             full_message = message

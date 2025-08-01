@@ -223,8 +223,8 @@ class TestQuaestorUpdater:
         assert updates["new_version"] == "0.5.2"
         assert updates["needs_update"] is True
 
-    def test_optional_files_creation(self, temp_dir):
-        """Test that optional files (PATTERNS.md, VALIDATION.md, AUTOMATION.md) are created."""
+    def test_core_files_creation(self, temp_dir):
+        """Test that core files are created during update."""
         # Setup
         quaestor_dir = temp_dir / ".quaestor"
         quaestor_dir.mkdir()
@@ -242,9 +242,6 @@ class TestQuaestorUpdater:
                     "critical_rules.md": "<!-- QUAESTOR:version:1.0 -->\nCRITICAL_RULES content",
                     "architecture.md": "<!-- QUAESTOR:version:1.0 -->\nARCHITECTURE content",
                     "memory.md": "<!-- QUAESTOR:version:1.0 -->\nMEMORY content",
-                    "patterns.md": "<!-- QUAESTOR:version:1.0 -->\nPATTERNS content",
-                    "validation.md": "<!-- QUAESTOR:version:1.0 -->\nVALIDATION content",
-                    "automation.md": "<!-- QUAESTOR:version:1.0 -->\nAUTOMATION content",
                 }
                 return content_map.get(resource, "default content")
 
@@ -253,16 +250,14 @@ class TestQuaestorUpdater:
             with patch("quaestor.updater.__version__", "0.5.1"):
                 result = updater.update(backup=False, force=False, dry_run=False)
 
-        # Check that optional files were created
-        assert (quaestor_dir / "PATTERNS.md").exists()
-        assert (quaestor_dir / "VALIDATION.md").exists()
-        assert (quaestor_dir / "AUTOMATION.md").exists()
+        # Check that core files were created
+        assert (quaestor_dir / "ARCHITECTURE.md").exists()
+        assert (quaestor_dir / "MEMORY.md").exists()
 
         # Verify they're in the added list
         added_files = [f for f in result.added if f.startswith(".quaestor/")]
-        assert ".quaestor/PATTERNS.md" in added_files
-        assert ".quaestor/VALIDATION.md" in added_files
-        assert ".quaestor/AUTOMATION.md" in added_files
+        assert ".quaestor/ARCHITECTURE.md" in added_files
+        assert ".quaestor/MEMORY.md" in added_files
 
 
 class TestUpdateIntegration:

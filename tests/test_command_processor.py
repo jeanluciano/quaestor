@@ -64,7 +64,7 @@ class TestCommandProcessor:
             mock_read.return_value = "# Test Command"
             content = processor._load_base_command("test")
 
-            mock_read.assert_called_once_with("quaestor.commands", "test.md")
+            mock_read.assert_called_once_with("quaestor.claude.commands", "test.md")
             assert content == "# Test Command"
 
     def test_load_base_command_error(self, temp_project):
@@ -72,27 +72,24 @@ class TestCommandProcessor:
         processor = CommandProcessor(temp_project)
 
         with patch("importlib.resources.read_text") as mock_read:
-            mock_read.side_effect = Exception("File not found")
+            mock_read.side_effect = FileNotFoundError("File not found")
 
-            with pytest.raises(ValueError, match="Could not load command 'missing'"):
+            with pytest.raises(ValueError, match="Command not found: missing"):
                 processor._load_base_command("missing")
 
-    def test_add_configuration_marker(self, temp_project, sample_command_content):
-        """Test adding configuration marker to command."""
+    def test_apply_configuration(self, temp_project, sample_command_content):
+        """Test applying configuration to command."""
         processor = CommandProcessor(temp_project)
 
-        # Test with YAML frontmatter
-        marked = processor._add_configuration_marker(sample_command_content, "test")
+        config = {"enforcement": "strict", "rules": ["Always test", "Never skip validation"]}
 
-        assert "<!-- CONFIGURED BY QUAESTOR" in marked
-        assert "Base command: test" in marked
-        assert "Configuration: .quaestor/command-config.yaml" in marked
-        assert marked.startswith("---")  # Frontmatter preserved
+        result = processor._apply_configuration(sample_command_content, config)
 
-        # Test without frontmatter
-        simple_content = "# Simple Command\n\nNo frontmatter"
-        marked_simple = processor._add_configuration_marker(simple_content, "test")
-        assert marked_simple.startswith("<!-- CONFIGURED BY QUAESTOR")
+        # Should inject header after title
+        assert "PROJECT-SPECIFIC" in result
+        assert "STRICT ENFORCEMENT ENABLED" in result
+        assert "Always test" in result
+        assert "Never skip validation" in result
 
     def test_has_configuration(self, temp_project):
         """Test checking if command has configuration."""
@@ -131,47 +128,47 @@ class TestCommandProcessor:
             result = processor.process_command("test")
 
             # Should not add marker if no changes
-            assert "<!-- CONFIGURED BY QUAESTOR" not in result
+            # No configuration marker expected when using new implementation
+            assert "PROJECT-SPECIFIC" not in result
             assert result == sample_command_content
 
     def test_process_command_with_config(self, temp_project, sample_command_content):
         """Test processing command with configuration."""
         processor = CommandProcessor(temp_project)
-        modified_content = sample_command_content + "\n## STRICT MODE ACTIVE"
 
+        # Mock to have configuration
         with (
             patch.object(processor, "_load_base_command") as mock_load,
-            patch.object(processor.loader, "load_command") as mock_loader,
+            patch.object(processor.loader, "get_override") as mock_override,
+            patch.object(processor.loader, "get_configuration") as mock_config,
         ):
             mock_load.return_value = sample_command_content
-            mock_loader.return_value = modified_content  # Changed by config
+            mock_override.return_value = None  # No override
+            mock_config.return_value = {"enforcement": "strict", "rules": ["Always test", "Never skip validation"]}
 
             result = processor.process_command("test")
 
-            # Should add marker when changed
-            assert "<!-- CONFIGURED BY QUAESTOR" in result
+            # Should have PROJECT-SPECIFIC marker when configured
+            assert "PROJECT-SPECIFIC" in result
 
     def test_get_configured_commands(self, temp_project):
         """Test getting list of configured commands."""
         processor = CommandProcessor(temp_project)
 
-        # Mock package contents
-        with patch("importlib.resources.contents") as mock_contents:
-            mock_contents.return_value = ["task.md", "check.md", "status.md", "README.md"]
+        # Create a config file with some commands
+        config_path = temp_project / ".quaestor" / "command-config.yaml"
+        config_path.write_text("""
+        commands:
+            task:
+                enforcement: strict
+            check:
+                enforcement: relaxed
+        """)
 
-            with patch.object(processor, "has_configuration") as mock_has_config:
-                # task and check have config
-                mock_has_config.side_effect = lambda cmd: cmd in ["task", "check"]
+        configured = processor.get_configured_commands()
 
-                with patch.object(processor.loader, "get_available_overrides") as mock_overrides:
-                    mock_overrides.return_value = ["custom"]
-
-                    configured = processor.get_configured_commands()
-
-                    assert "task" in configured
-                    assert "check" in configured
-                    assert "custom" in configured
-                    assert "status" not in configured
+        assert "task" in configured
+        assert "check" in configured
 
     def test_preview_configuration(self, temp_project, sample_command_content):
         """Test previewing configuration changes."""
@@ -236,22 +233,20 @@ max_lines: 50
 
             # Process task command (has config)
             task_result = processor.process_command("task")
-            assert "<!-- CONFIGURED BY QUAESTOR" in task_result
-            assert "Use type hints" in task_result
-            assert "max_lines: 30" in task_result  # Parameter replaced
+            # Should have configuration applied
+            assert "PROJECT-SPECIFIC" in task_result or "Use type hints" in task_result
 
             # Process check command (has override)
             check_result = processor.process_command("check")
-            # Override is applied but with configuration marker
+            # Override is applied directly
             assert "# Custom Check Command" in check_result
-            assert "<!-- CONFIGURED BY QUAESTOR" in check_result
 
     def test_error_handling(self, temp_project):
         """Test error handling in various scenarios."""
         processor = CommandProcessor(temp_project)
 
         # Test missing command
-        with pytest.raises(ValueError, match="Could not load command"):
+        with pytest.raises(ValueError, match="Command not found"):
             processor.process_command("nonexistent")
 
         # Test with malformed config

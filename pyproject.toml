@@ -51,24 +51,29 @@ dev = [
 [tool.setuptools]
 packages = [
     "quaestor", 
-    "quaestor.commands", 
     "quaestor.core", 
-    "quaestor.automation", 
     "quaestor.cli",
     "quaestor.utils",
-    "quaestor.assets"
+    "quaestor.integrations",
+    "quaestor.claude",
+    "quaestor.claude.hooks",
+    "quaestor.claude.agents",
+    "quaestor.claude.commands",
+    "quaestor.claude.quaestor",
+    "quaestor.claude.quaestor.configuration",
+    "quaestor.claude.quaestor.templates"
 ]
 package-dir = {"" = "src"}
 
 [tool.setuptools.package-data]
 quaestor = [
     "*.md",
-    "commands/*.md",
-    "assets/templates/*.md",
-    "assets/templates/**/*.md",
-    "assets/configuration/*.yaml",
-    "assets/configuration/*.json",
-    "assets/hooks/**/*.py",
+    "claude/hooks/*.py",
+    "claude/agents/*.md",
+    "claude/commands/*.md",
+    "claude/quaestor/configuration/*.json",
+    "claude/quaestor/configuration/*.yaml",
+    "claude/quaestor/templates/*.md",
 ]
 
 [tool.pytest.ini_options]

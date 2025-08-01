@@ -1,0 +1,1 @@
+"""Quaestor template files."""

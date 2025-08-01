@@ -6,7 +6,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/hooks/workflow/implementation_declaration.py"
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/compliance_pre_edit.py",
+            "description": "Check compliance before edits and suggest agents"
           }
         ]
       }
@@ -17,7 +18,28 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/hooks/workflow/research_tracker.py /Users/jeanluciano/Dev/jeanluciano/quaestor"
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/research_workflow_tracker.py",
+            "description": "Track research phase and guide workflow transitions"
+          }
+        ]
+      },
+      {
+        "matcher": "TodoWrite",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/memory_tracker.py",
+            "description": "Sync memory with TODO completions"
+          },
+          {
+            "type": "command",
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/todo_milestone_connector.py",
+            "description": "Connect TODOs to milestones and suggest PRs"
+          },
+          {
+            "type": "command",
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/todo_agent_coordinator.py",
+            "description": "Coordinate agents based on TODO patterns"
           }
         ]
       },
@@ -26,34 +48,19 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/hooks/workflow/implementation_tracker.py /Users/jeanluciano/Dev/jeanluciano/quaestor"
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/milestone_tracker.py",
+            "description": "Track milestone progress and suggest agents"
           }
         ]
-      },
+      }
+    ],
+    "SessionStart": [
       {
-        "matcher": "TodoWrite",
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/hooks/workflow/memory_updater.py /Users/jeanluciano/Dev/jeanluciano/quaestor --from-todos"
-          }
-        ]
-      },
-      {
-        "matcher": "TodoWrite",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/hooks/workflow/todo_milestone_connector.py /Users/jeanluciano/Dev/jeanluciano/quaestor"
-          }
-        ]
-      },
-      {
-        "matcher": "TodoWrite",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/hooks/workflow/automated_commit_trigger.py /Users/jeanluciano/Dev/jeanluciano/quaestor"
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/session_context_loader.py",
+            "description": "Load project context and suggest agents at session start"
           }
         ]
       }

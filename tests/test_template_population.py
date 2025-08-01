@@ -3,13 +3,20 @@
 import tempfile
 from pathlib import Path
 
+import pytest
+
 from quaestor.core.template_engine import get_project_data, process_template
 
 
 class TestTemplatePopulation:
     """Test that templates are properly populated with project data."""
 
-    def test_validation_template_population(self, tmp_path):
+    def test_validation_template_population_removed(self, tmp_path):
+        """REMOVED: validation.md template was removed from the project."""
+        pytest.skip("validation.md template was removed")
+        return
+
+    def _test_validation_template_population(self, tmp_path):
         """Test VALIDATION.md template is populated correctly."""
         # Create a minimal Python project
         (tmp_path / "setup.py").write_text("# Setup file")
@@ -51,7 +58,12 @@ class TestTemplatePopulation:
         finally:
             template_path.unlink()
 
-    def test_automation_template_population(self, tmp_path):
+    def test_automation_template_population_removed(self, tmp_path):
+        """REMOVED: automation.md template was removed from the project."""
+        pytest.skip("automation.md template was removed")
+        return
+
+    def _test_automation_template_population(self, tmp_path):
         """Test AUTOMATION.md template is populated correctly."""
         # Create a minimal JavaScript project
         (tmp_path / "package.json").write_text('{"name": "test"}')
@@ -127,7 +139,12 @@ Coverage: {{test_coverage_threshold}}%
         finally:
             template_path.unlink()
 
-    def test_all_validation_placeholders_have_values(self):
+    def test_all_validation_placeholders_have_values_removed(self):
+        """REMOVED: validation.md template was removed from the project."""
+        pytest.skip("validation.md template was removed")
+        return
+
+    def _test_all_validation_placeholders_have_values(self):
         """Ensure all placeholders in validation.md have mappings."""
         # List of all placeholders used in validation.md
         validation_placeholders = [
@@ -163,7 +180,12 @@ Coverage: {{test_coverage_threshold}}%
             assert placeholder in mappings, f"Missing mapping for {placeholder}"
             assert mappings[placeholder] is not None
 
-    def test_all_automation_placeholders_have_values(self):
+    def test_all_automation_placeholders_have_values_removed(self):
+        """REMOVED: automation.md template was removed from the project."""
+        pytest.skip("automation.md template was removed")
+        return
+
+    def _test_all_automation_placeholders_have_values(self):
         """Ensure all placeholders in automation.md have mappings."""
         # List of all placeholders used in automation.md
         automation_placeholders = [

@@ -3,12 +3,29 @@
 from collections.abc import Callable
 from typing import Any
 
-from quaestor.automation import HookResult
-
 from ..enforcement import EnforcementContext, EnforcementLevel, RuleEnforcer
 from ..enforcement.enforcement_history import EnforcementHistory
 from ..enforcement.override_system import OverrideSystem
 from ..hooks.context_builder import ContextBuilder
+
+
+class HookResult:
+    """Result of a hook execution."""
+
+    def __init__(self, success: bool, message: str = "", data: dict[str, Any] | None = None):
+        self.success = success
+        self.message = message
+        self.data = data or {}
+
+    def to_json(self) -> str:
+        """Convert to JSON for Claude Code."""
+        import json
+
+        return json.dumps({"success": self.success, "message": self.message, "data": self.data})
+
+    def to_exit_code(self) -> int:
+        """Convert to exit code (0 for success, 1 for failure)."""
+        return 0 if self.success else 1
 
 
 class QuaestorRuleBridge:
