@@ -3,7 +3,7 @@ allowed-tools: [Read, Write, Edit, MultiEdit, Bash, Glob, Grep, TodoWrite, Task]
 description: "Execute production-quality implementation with intelligent orchestration"
 performance-profile: "complex"
 complexity-threshold: 0.7
-auto-activation: ["auto-persona", "milestone-integration", "quality-gates"]
+auto-activation: ["auto-persona", "specification-integration", "quality-gates"]
 intelligence-features: ["project-detection", "parallel-execution", "context-awareness"]
 agent-strategy:
   complexity > 0.7: [architect, implementer]
@@ -96,7 +96,7 @@ Execute → Validate → Fix (if ❌) → Continue
 - ✅ Zero linting errors  
 - ✅ Type checking clean (if applicable)
 - ✅ Documentation complete
-- ✅ Milestone progress updated
+- ✅ Specification status updated
 
 ## Complexity Management
 
@@ -111,20 +111,20 @@ Execute → Validate → Fix (if ❌) → Continue
 - **>50 files** → Multi-agent file delegation
 - **Multiple domains** → Specialized agent per domain
 
-## Milestone Integration
+## Specification Integration
 
 **Auto-Update Protocol:**
 ```yaml
 Pre-Implementation:
-  - Check: active milestones & match task context
-  - Declare: "Working on [Phase] > [Task] > [Subtask]"
-  - Update: task status → "in_progress"
+  - Check: active specifications & match context
+  - Declare: "Working on [Spec ID] - [Title]"
+  - Update: specification status → "in_progress"
 
 Post-Implementation:
-  - Mark: completed subtasks with "# COMPLETED"
-  - Update: progress percentage
+  - Check: acceptance criteria completion
+  - Update: specification status
   - Log: MEMORY.md with timestamp & outcomes
-  - Identify: next logical task in sequence
+  - Identify: next logical specification
 ```
 
 ## Task Discovery (No Arguments)
@@ -132,7 +132,7 @@ Post-Implementation:
 Discovery Protocol:
   1. Read: .quaestor/MEMORY.md
   2. Look for: next_task|pending|TODO|incomplete
-  3. Check: current_milestone progress
+  3. Check: specification status
   4. Output: "Found task: [description]" OR "No pending tasks"
 ```
 
@@ -178,7 +178,7 @@ Required:
 ```
 
 ## Final Response Protocol
-**Task complete. All quality gates passed. Milestone tracking updated. Ready for review.**
+**Task complete. All quality gates passed. Specification tracking updated. Ready for review.**
 
 ---
 *Command with orchestration for Claude integration and execution efficiency*

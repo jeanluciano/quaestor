@@ -150,7 +150,7 @@ Commit Strategy:
 
 TODO Integration:
   - Link commits to completed TODOs
-  - Update milestone progress
+  - Update specification status
   - Track completion evidence
 ```
 
@@ -204,13 +204,13 @@ Review Output:
 ```yaml
 PR Content Generation:
   Title: 
-    - Extract from milestone or changes
+    - Extract from specifications or changes
     - Follow team conventions
     - Include ticket numbers if found
     
   Description:
     ## Summary
-    [Auto-generated from milestone/changes]
+    [Auto-generated from specifications/changes]
     
     ## Changes
     [Organized by type with commit links]
@@ -233,7 +233,7 @@ PR Content Generation:
 Automation:
   - Labels: auto-detect from changes
   - Reviewers: from CODEOWNERS + history
-  - Projects: link to milestones
+  - Projects: link to specifications
   - CI/CD: trigger workflows
 ```
 
@@ -288,7 +288,7 @@ Debug → Review:
   - Ready for final validation
   
 Plan → Review:
-  - "Milestone complete"
+  - "Project phase complete"
   - Time to ship
 ```
 

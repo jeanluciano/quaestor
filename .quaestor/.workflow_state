@@ -1,6 +1,6 @@
 {
   "phase": "planning",
-  "last_research": "2025-08-01T16:29:44.010927",
+  "last_research": "2025-08-01T16:39:17.810261",
   "last_plan": null,
   "files_examined": 0,
   "research_files": [
@@ -40,7 +40,13 @@
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/specifications/spec-agent-005.yaml",
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/tests/performance/test_baseline.py",
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/commands/project-init.md",
-    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/.workflow_state"
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/.workflow_state",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/agents/architect.md",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/agents/compliance-enforcer.md",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/agents/planner.md",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/commands/impl.md",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/commands/plan.md",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/commands/review.md"
   ],
   "implementation_files": []
 }
