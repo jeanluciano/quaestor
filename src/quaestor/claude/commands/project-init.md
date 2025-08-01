@@ -16,7 +16,7 @@ agent-strategy:
 # /project-init - Intelligent Project Initialization
 
 ## Purpose
-Analyze project architecture, detect frameworks and patterns, then generate intelligent Quaestor setup with auto-populated documentation and milestones.
+Analyze project architecture, detect frameworks and patterns, then generate intelligent Quaestor setup with auto-populated documentation and specifications.
 
 ## Usage
 ```
@@ -37,7 +37,7 @@ Stack Analysis:
 ```
 
 ### Adaptive Setup
-- **New projects**: Generate starter architecture + milestones
+- **New projects**: Generate starter architecture + specifications
 - **Existing projects**: Analyze current state + fill gaps
 - **Migration**: Import existing docs + enhance with Quaestor
 
@@ -81,7 +81,7 @@ Code Smell Detection:
 ```yaml
 Generated Documents:
   - ARCHITECTURE.md: Detected patterns + structure
-  - MEMORY.md: Current state + auto-milestones  
+  - MEMORY.md: Current state + auto-specifications  
   - manifest.json: Project metadata + tracking
   - CRITICAL_RULES.md: Framework-specific guidelines
 ```
@@ -94,7 +94,7 @@ before_phase_4:
   MUST_PRESENT_ANALYSIS:
     - framework_detection_results
     - architecture_pattern_analysis  
-    - proposed_milestones
+    - proposed_specifications
     - quality_standards_detected
   
   MUST_GET_USER_CHOICE:
@@ -119,8 +119,8 @@ before_phase_4:
 - Complexity: [score]/1.0
 - Phase: [project_phase]
 
-**Proposed Milestones:**
-[list_proposed_milestones]
+**Proposed Specifications:**
+[list_proposed_specifications]
 
 **Quality Standards:**
 [detected_tools_and_standards]
@@ -131,11 +131,11 @@ before_phase_4:
 - 📝 Custom architecture description  
 - 🚫 Start with minimal setup
 
-## Milestone Creation:
-- ⭐ Create milestone files (.quaestor/milestones/*/README.md + tasks.yaml)
+## Specification Creation:
+- ⭐ Create specification files (.quaestor/specifications/*.yaml)
 - 📝 Documentation only (just populate MEMORY.md templates)
 
-What would you prefer for setup and milestones?
+What would you prefer for setup and specifications?
 ```
 
 ### Phase 4: Setup Completion 🚀 **[ONLY AFTER USER APPROVAL]**
@@ -150,23 +150,23 @@ Template Selection:
 Auto-Population:
   - Real paths from project structure
   - Detected components and responsibilities
-  - Inferred milestones from git history
+  - Inferred specifications from git history
   - Framework-specific quality standards
 ```
 
-**Conditional Milestone Creation:**
+**Conditional Specification Creation:**
 ```yaml
-if_user_chose_milestone_files:
+if_user_chose_specification_files:
   actions:
-    - create_directories: ".quaestor/milestones/[milestone_id]/"
+    - create_directories: ".quaestor/specifications/"
     - generate_readme: "Goals, success criteria, timeline"
-    - create_tasks_yaml: "Structured subtask tracking with status"
+    - create_spec_yaml: "Specification with contract and acceptance criteria"
     - initialize_notes: "Implementation notes and decisions"
   
 if_user_chose_documentation_only:
   actions:
-    - populate_memory_templates: "Update MEMORY.md with milestone information"
-    - skip_milestone_directories: "No .quaestor/milestones/ creation"
+    - populate_memory_templates: "Update MEMORY.md with specification information"
+    - skip_specification_directories: "No .quaestor/specifications/ creation"
 
 mandatory_for_both:
   - populate_architecture_md: "Real project analysis"
@@ -184,7 +184,7 @@ React Analysis:
   Architecture: SPA|SSR|Static Site patterns
   Quality Gates: ESLint + Prettier + TypeScript
   
-Generated Milestones:
+Generated Specifications:
   - Component Library Setup
   - State Management Implementation
   - Testing Infrastructure
@@ -199,22 +199,22 @@ Python Analysis:
   Testing: pytest|unittest setup
   Quality Gates: ruff + mypy + pytest
   
-Generated Milestones:
+Generated Specifications:
   - API Design & Models
   - Authentication System
   - Database Integration
   - Production Deployment
 ```
 
-## Adaptive Milestone Generation
+## Adaptive Specification Generation
 **Smart Phase Detection:**
 ```yaml
-Project Analysis → Milestone Generation:
+Project Analysis → Specification Generation:
   - New projects: Foundation → Core → Polish phases
   - In-progress: Analyze git history → identify next logical phase
   - Legacy: Assessment → Modernization → Enhancement
   
-Example Milestone Sets:
+Example Specification Sets:
   Startup (0-6 months):
     - "MVP Foundation"
     - "Core Features"
@@ -236,9 +236,9 @@ Example Milestone Sets:
 - ✅ Framework and architecture accurately detected
 - ✅ **USER VALIDATION COMPLETED** ← **MANDATORY**
 - ✅ Documents generated with real project data
-- ✅ Milestones aligned with project phase and goals
+- ✅ Specifications aligned with project phase and goals
 - ✅ Quality standards configured for tech stack
-- ✅ First milestone ready for /task execution
+- ✅ First specification ready for /impl execution
 
 **Framework Integration:**
 - ✅ Language-specific quality gates configured

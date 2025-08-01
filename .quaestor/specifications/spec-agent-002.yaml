@@ -2,10 +2,11 @@
 spec_id: "spec-agent-002"
 title: "Replace milestone/task terminology with specifications"
 type: "refactor"
-status: "draft"
+status: "implemented"
 created: "2025-01-15"
 author: "system"
 priority: "high"
+branch: "feat/spec-agent-002-terminology-update"
 ---
 
 # Specification: Replace milestone/task terminology with specifications

@@ -1,6 +1,6 @@
 {
   "phase": "planning",
-  "last_research": "2025-08-01T15:03:34.487337",
+  "last_research": "2025-08-01T15:13:32.503052",
   "last_plan": null,
   "files_examined": 0,
   "research_files": [
@@ -25,7 +25,11 @@
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/commands/research.md",
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/docs/PROJECT_INIT_UPDATES.md",
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/MEMORY.md",
-    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/specifications/spec-agent-001.yaml"
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/specifications/spec-agent-001.yaml",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/specifications/manifest.yaml",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/core/specifications.py",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/specifications/spec-agent-002.yaml",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/ARCHITECTURE.md"
   ],
   "implementation_files": []
 }

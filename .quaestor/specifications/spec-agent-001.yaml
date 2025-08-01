@@ -1,7 +1,7 @@
 ---
 spec_id: "spec-agent-001"
 title: "Update project-init.md frontmatter with agent-strategy"
-type: "enhancement"
+type: "feature"
 status: "implemented"
 created: "2025-01-15"
 author: "system"
