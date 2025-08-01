@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Coordinate agent usage based on TODO changes.
+"""Coordinate agent usage based on specification and TODO progress.
 
-This hook analyzes TODO patterns and completion rates to suggest appropriate
+This hook analyzes specification status and TODO patterns to suggest appropriate
 agents for different workflow phases. It helps maintain momentum by guiding
-Claude to the right specialist agent based on task progress.
+Claude to the right specialist agent based on development progress.
 """
 
 import json
@@ -31,6 +31,43 @@ def parse_hook_input() -> dict[str, Any]:
         return {}
     except Exception:
         return {}
+
+
+def analyze_spec_patterns(project_root: Path) -> dict[str, Any]:
+    """Analyze specification patterns to determine workflow state."""
+    try:
+        from quaestor.core.specifications import SpecificationManager, SpecStatus
+
+        manager = SpecificationManager(project_root)
+        all_specs = manager.list_specifications()
+
+        analysis = {
+            "total": len(all_specs),
+            "implemented": sum(
+                1 for s in all_specs if s.status in [SpecStatus.IMPLEMENTED, SpecStatus.TESTED, SpecStatus.DEPLOYED]
+            ),
+            "in_progress": sum(1 for s in all_specs if s.status == SpecStatus.IN_PROGRESS),
+            "approved": sum(1 for s in all_specs if s.status == SpecStatus.APPROVED),
+            "draft": sum(1 for s in all_specs if s.status == SpecStatus.DRAFT),
+            "completion_rate": 0,
+            "has_testing_needs": False,
+            "has_documentation_needs": False,
+            "has_implementation_ready": False,
+        }
+
+        if analysis["total"] > 0:
+            analysis["completion_rate"] = int((analysis["implemented"] / analysis["total"]) * 100)
+
+        # Check for specific needs
+        analysis["has_implementation_ready"] = analysis["approved"] > 0
+        analysis["has_testing_needs"] = analysis["in_progress"] > 0
+        analysis["has_documentation_needs"] = analysis["implemented"] > analysis["draft"]
+
+        return analysis
+
+    except ImportError:
+        # Specifications not available, fall back to empty analysis
+        return {"total": 0, "completion_rate": 0}
 
 
 def analyze_todo_patterns(todos: list[dict[str, Any]]) -> dict[str, Any]:
@@ -102,6 +139,96 @@ def get_milestone_progress(project_root: Path) -> dict[str, Any]:
     return {"has_milestone": False}
 
 
+def generate_spec_agent_suggestion(
+    spec_analysis: dict[str, Any], milestone: dict[str, Any], recent_completions: list[dict[str, Any]]
+) -> tuple[bool, str]:
+    """Generate agent suggestions based on specification analysis."""
+
+    # Scenario 1: High completion rate - suggest spec-driven next steps
+    if spec_analysis["total"] > 0 and spec_analysis["completion_rate"] >= 80:
+        return (
+            False,
+            f"""
+🎯 High Specification Completion Rate: {spec_analysis["completion_rate"]}%!
+
+Completed {spec_analysis["implemented"]}/{spec_analysis["total"]} specifications.
+
+Consider using the milestone-manager agent to:
+- Review milestone completion
+- Prepare for release/deployment
+- Plan next development phase
+""",
+        )
+
+    # Scenario 2: Specifications ready for implementation
+    if spec_analysis["has_implementation_ready"] and spec_analysis["approved"] > 0:
+        return (
+            True,
+            f"""
+🚀 Specifications Ready for Implementation!
+
+Found {spec_analysis["approved"]} approved specifications ready to implement.
+
+Please run: Use the implementer agent to start working on approved specifications
+
+The implementer agent should:
+1. Review approved specification contracts
+2. Create implementation branches following spec naming
+3. Implement according to acceptance criteria
+4. Update specification status as work progresses
+5. Write tests based on spec test scenarios
+
+Use '/plan --spec' to see and select a specification to implement.
+""",
+        )
+
+    # Scenario 3: Specifications need testing
+    if spec_analysis["has_testing_needs"] and spec_analysis["in_progress"] > 0:
+        return (
+            True,
+            f"""
+🧪 In-Progress Specifications Need Testing!
+
+Found {spec_analysis["in_progress"]} specifications currently being implemented.
+
+Please run: Use the qa agent to ensure test coverage for in-progress specifications
+
+The QA agent should:
+1. Review specification test scenarios
+2. Implement tests based on acceptance criteria
+3. Validate contract compliance
+4. Test edge cases and error handling
+5. Update specification status to TESTED when complete
+
+This ensures specifications are properly validated before marking as complete.
+""",
+        )
+
+    # Scenario 4: Too many draft specifications
+    if spec_analysis["draft"] > spec_analysis["approved"] and spec_analysis["draft"] > 2:
+        return (
+            True,
+            f"""
+📋 Many Draft Specifications Need Review!
+
+Found {spec_analysis["draft"]} draft specifications vs {spec_analysis["approved"]} approved.
+
+Please run: Use the planner agent to review and approve draft specifications
+
+The planner agent should:
+1. Review draft specification contracts
+2. Validate acceptance criteria are clear
+3. Ensure test scenarios are comprehensive
+4. Check for specification dependencies
+5. Approve specifications ready for implementation
+
+Use '/plan' to review current specifications.
+""",
+        )
+
+    return False, ""
+
+
 def generate_agent_suggestion(
     analysis: dict[str, Any], milestone: dict[str, Any], recent_completions: list[dict[str, Any]]
 ) -> tuple[bool, str]:
@@ -139,7 +266,7 @@ Recent completions:
         return (
             True,
             f"""
-🏁 Approaching Milestone Completion: {analysis["completion_rate"]}% TODOs done, Milestone '{milestone["name"]}' at {milestone["progress"]}%
+🏁 Approaching Milestone Completion: {analysis["completion_rate"]}% TODOs done, Milestone at {milestone["progress"]}%
 
 You're close to completing this milestone!
 
@@ -179,7 +306,7 @@ Please run: Use the qa agent to implement comprehensive tests for the completed 
 
 The QA agent should:
 1. Write unit tests for all new functions/methods
-2. Add integration tests for feature workflows  
+2. Add integration tests for feature workflows
 3. Ensure edge cases are covered
 4. Validate error handling paths
 5. Update test documentation
@@ -274,8 +401,9 @@ def main():
     if not todos:
         sys.exit(0)
 
-    # Analyze TODO patterns
-    analysis = analyze_todo_patterns(todos)
+    # Analyze both specifications and TODO patterns
+    spec_analysis = analyze_spec_patterns(project_root)
+    todo_analysis = analyze_todo_patterns(todos)
 
     # Get recent completions for context
     recent_completions = [todo for todo in todos if todo.get("status") == "completed"][-5:]  # Last 5 completed
@@ -283,8 +411,10 @@ def main():
     # Get milestone progress
     milestone = get_milestone_progress(project_root)
 
-    # Generate agent suggestion
-    should_block, message = generate_agent_suggestion(analysis, milestone, recent_completions)
+    # Generate agent suggestion based on specifications first, then TODOs
+    should_block, message = generate_spec_agent_suggestion(spec_analysis, milestone, recent_completions)
+    if not should_block:
+        should_block, message = generate_agent_suggestion(todo_analysis, milestone, recent_completions)
 
     if should_block:
         # Block and suggest agent

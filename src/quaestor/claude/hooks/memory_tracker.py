@@ -9,7 +9,7 @@ actual development activities.
 import json
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -35,36 +35,41 @@ def parse_hook_input() -> dict[str, Any]:
         return {}
 
 
-def extract_completed_todos(hook_data: dict[str, Any]) -> list[dict[str, Any]]:
-    """Extract completed TODOs from TodoWrite output."""
-    completed_todos = []
+def extract_completed_specs(hook_data: dict[str, Any]) -> list[dict[str, Any]]:
+    """Extract completed specifications from hook data."""
+    completed_specs = []
 
-    # Check if this is a TodoWrite event
-    if hook_data.get("toolName") != "TodoWrite":
-        return completed_todos
+    # Check if this is a specification update event
+    tool_name = hook_data.get("toolName", "")
+    if tool_name not in ["Edit", "Write", "MultiEdit"]:
+        return completed_specs
 
-    # Get the todos from the output
-    output = hook_data.get("output", {})
-    todos = output.get("todos", [])
+    # Check if we're updating specification status
+    params = hook_data.get("params", {})
+    if isinstance(params, dict):
+        file_path = params.get("file_path", "")
+        if "specifications" in file_path or "MEMORY.md" in file_path:
+            # Extract spec status updates from content
+            new_content = params.get("new_string", "")
+            if "IMPLEMENTED" in new_content or "TESTED" in new_content:
+                # Parse spec ID from content
+                spec_id_match = re.search(r'spec[_-]id["\']?:\s*["\']?([a-zA-Z]+-[a-zA-Z0-9-]+)', new_content)
+                if spec_id_match:
+                    completed_specs.append(
+                        {
+                            "id": spec_id_match.group(1),
+                            "content": f"Implemented specification {spec_id_match.group(1)}",
+                            "priority": "high",
+                        }
+                    )
 
-    # Find completed items
-    for todo in todos:
-        if todo.get("status") == "completed":
-            completed_todos.append(
-                {
-                    "id": todo.get("id"),
-                    "content": todo.get("content", "Completed task"),
-                    "priority": todo.get("priority", "medium"),
-                }
-            )
-
-    return completed_todos
+    return completed_specs
 
 
 def update_memory_file(
-    project_root: Path, completed_todos: list[dict[str, Any]], milestone_info: dict[str, Any] | None = None
+    project_root: Path, completed_specs: list[dict[str, Any]], milestone_info: dict[str, Any] | None = None
 ) -> bool:
-    """Update MEMORY.md with completed work."""
+    """Update MEMORY.md with completed specifications."""
     memory_file = project_root / ".quaestor" / "MEMORY.md"
 
     if not memory_file.exists():
@@ -100,12 +105,14 @@ def update_memory_file(
             else:
                 content += progress_section
 
-        # Add completed todos
-        if completed_todos:
-            todo_section = "\n**Completed TODOs:**\n"
-            for todo in completed_todos:
-                priority_emoji = {"high": "🔴", "medium": "🟡", "low": "🟢"}.get(todo["priority"], "⚪")
-                todo_section += f"- {priority_emoji} {todo['content']}\n"
+        # Add completed specifications
+        if completed_specs:
+            spec_section = "\n**Completed Specifications:**\n"
+            for spec in completed_specs:
+                priority_emoji = {"critical": "🔴", "high": "🟠", "medium": "🟡", "low": "🟢"}.get(
+                    spec["priority"], "⚪"
+                )
+                spec_section += f"- {priority_emoji} {spec['content']}\n"
 
             # Insert after today's header
             today_match = re.search(rf"(###\s+{today})", content)
@@ -114,7 +121,7 @@ def update_memory_file(
                 # Skip any existing newlines
                 while insert_pos < len(content) and content[insert_pos] == "\n":
                     insert_pos += 1
-                content = content[:insert_pos] + todo_section + content[insert_pos:]
+                content = content[:insert_pos] + spec_section + content[insert_pos:]
 
         # Update milestone progress if provided
         if milestone_info:
@@ -171,8 +178,8 @@ def find_active_milestone(project_root: Path) -> tuple[Path | None, dict[str, An
     return None, None
 
 
-def update_milestone_progress(tasks_file: Path, completed_todos: list[dict[str, Any]]) -> dict[str, Any]:
-    """Update milestone task progress based on completed TODOs."""
+def update_milestone_progress(tasks_file: Path, completed_specs: list[dict[str, Any]]) -> dict[str, Any]:
+    """Update milestone progress based on completed specifications."""
     try:
         with open(tasks_file) as f:
             content = f.read()
@@ -183,16 +190,16 @@ def update_milestone_progress(tasks_file: Path, completed_todos: list[dict[str, 
         completed_pattern = r"^\s*-\s+.+#\s*COMPLETED"
         completed_subtasks = re.findall(completed_pattern, content, re.MULTILINE)
 
-        # Mark some subtasks as complete based on TODOs
-        todos_to_mark = min(len(completed_todos), len(all_subtasks) - len(completed_subtasks))
+        # Mark some subtasks as complete based on completed specs
+        specs_to_mark = min(len(completed_specs), len(all_subtasks) - len(completed_subtasks))
 
-        if todos_to_mark > 0:
+        if specs_to_mark > 0:
             # Find incomplete subtasks and mark them
             lines = content.split("\n")
             marked = 0
 
             for i, line in enumerate(lines):
-                if marked >= todos_to_mark:
+                if marked >= specs_to_mark:
                     break
 
                 # Check if this is an incomplete subtask
@@ -204,7 +211,7 @@ def update_milestone_progress(tasks_file: Path, completed_todos: list[dict[str, 
 
         # Calculate new progress
         total = len(all_subtasks)
-        completed = len(completed_subtasks) + todos_to_mark
+        completed = len(completed_subtasks) + specs_to_mark
         progress = int((completed / total * 100) if total > 0 else 0)
 
         # Update progress in file
@@ -212,7 +219,7 @@ def update_milestone_progress(tasks_file: Path, completed_todos: list[dict[str, 
 
         # Add notes about the update
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
-        note = f"\n- {timestamp}: Updated via memory sync - {len(completed_todos)} TODOs completed"
+        note = f"\n- {timestamp}: Updated via memory sync - {len(completed_specs)} specs completed"
 
         # Insert note after notes: line
         notes_match = re.search(r"notes:\s*\n", content)
@@ -273,7 +280,7 @@ def check_memory_staleness(project_root: Path) -> dict[str, Any]:
 
 
 def generate_documentation_suggestion(
-    completed_todos: list[dict[str, Any]], memory_staleness: dict[str, Any], milestone_info: dict[str, Any] | None
+    completed_specs: list[dict[str, Any]], memory_staleness: dict[str, Any], milestone_info: dict[str, Any] | None
 ) -> tuple[bool, str]:
     """Generate agent suggestions for documentation tasks.
 
@@ -281,19 +288,19 @@ def generate_documentation_suggestion(
         Tuple of (should_block, message)
     """
 
-    # Scenario 1: Many TODOs completed but memory is stale
-    if len(completed_todos) > 5 and memory_staleness.get("is_stale", False):
+    # Scenario 1: Many specifications completed but memory is stale
+    if len(completed_specs) > 3 and memory_staleness.get("is_stale", False):
         return (
             True,
             f"""
 📚 DOCUMENTATION LAG DETECTED!
 
-Completed {len(completed_todos)} TODOs but {memory_staleness.get("reason", "documentation is out of date")}.
+Completed {len(completed_specs)} specifications but {memory_staleness.get("reason", "documentation is out of date")}.
 
 Please run: Use the architect agent to update project documentation and memory
 
 The architect agent should:
-1. Review all {len(completed_todos)} completed TODOs
+1. Review all {len(completed_specs)} completed specifications
 2. Update MEMORY.md with architectural decisions made
 3. Document any new patterns or conventions introduced
 4. Add implementation details for complex features
@@ -318,7 +325,7 @@ Please run: Use the architect agent to create comprehensive milestone documentat
 The architect agent should:
 1. Document all architectural decisions made during this milestone
 2. Create or update design diagrams
-3. List all APIs or interfaces created/modified  
+3. List all APIs or interfaces created/modified
 4. Document configuration changes
 5. Note any technical debt incurred
 6. Prepare knowledge transfer documentation
@@ -328,18 +335,18 @@ This ensures the milestone's learnings are captured before moving on.
         )
 
     # Scenario 3: Pattern changes detected
-    high_priority_completed = sum(1 for t in completed_todos if t.get("priority") == "high")
+    high_priority_completed = sum(1 for t in completed_specs if t.get("priority") == "high")
     if high_priority_completed >= 3:
-        todo_content = "\n".join([f"- {t.get('content', '')}" for t in completed_todos[:5]])
+        spec_content = "\n".join([f"- {t.get('content', '')}" for t in completed_specs[:5]])
 
-        if any(word in todo_content.lower() for word in ["refactor", "redesign", "migrate", "update pattern"]):
+        if any(word in spec_content.lower() for word in ["refactor", "redesign", "migrate", "update pattern"]):
             return (
                 True,
                 f"""
 🏗️ ARCHITECTURAL CHANGES DETECTED!
 
 High-priority refactoring/redesign work completed:
-{todo_content}
+{spec_content}
 
 Please run: Use the architect agent to document the architectural changes
 
@@ -365,14 +372,14 @@ def main():
     hook_data = parse_hook_input()
     project_root = get_project_root()
 
-    # Extract completed TODOs
-    completed_todos = extract_completed_todos(hook_data)
+    # Extract completed specifications
+    completed_specs = extract_completed_specs(hook_data)
 
-    if not completed_todos:
-        # No completed TODOs, check for other triggers
+    if not completed_specs:
+        # No completed specifications, check for other triggers
         tool_name = hook_data.get("toolName", "")
         if tool_name in ["Write", "Edit", "MultiEdit"]:
-            print("💡 Remember to update TODOs and milestones after implementation work")
+            print("💡 Remember to update specification status after implementation work")
         return 0
 
     # Check memory staleness
@@ -383,10 +390,10 @@ def main():
 
     milestone_info = None
     if tasks_file and task_info:
-        milestone_info = update_milestone_progress(tasks_file, completed_todos)
+        milestone_info = update_milestone_progress(tasks_file, completed_specs)
 
     # Generate documentation agent suggestion
-    should_block, agent_message = generate_documentation_suggestion(completed_todos, memory_staleness, milestone_info)
+    should_block, agent_message = generate_documentation_suggestion(completed_specs, memory_staleness, milestone_info)
 
     if should_block and agent_message:
         # Block with agent suggestion
@@ -394,7 +401,7 @@ def main():
         return 2
 
     # Regular processing
-    print(f"📝 Found {len(completed_todos)} completed TODO(s)")
+    print(f"📝 Found {len(completed_specs)} completed specification(s)")
 
     if tasks_file and task_info:
         print(f"📊 Updating milestone: {task_info['milestone']}")
@@ -405,7 +412,7 @@ def main():
 
     # Update MEMORY.md
     print("📝 Updating MEMORY.md...")
-    if update_memory_file(project_root, completed_todos, milestone_info):
+    if update_memory_file(project_root, completed_specs, milestone_info):
         print("✅ MEMORY.md updated successfully")
 
     # Summary

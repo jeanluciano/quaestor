@@ -1,0 +1,22 @@
+{
+  "name": "Specification Branch Tracker",
+  "description": "Tracks specification-to-branch linkage and enforces spec-driven development workflow",
+  "version": "1.0.0",
+  "hook_points": ["pre-commit", "pre-push", "post-checkout"],
+  "required_tools": ["git"],
+  "configuration": {
+    "enforce_spec_linkage": true,
+    "auto_link_from_branch_name": true,
+    "require_in_progress_for_push": true,
+    "spec_branch_patterns": [
+      "feat/spec-{id}-{title}",
+      "fix/spec-{id}-{title}",
+      "spec/{id}-{title}"
+    ]
+  },
+  "messages": {
+    "no_spec_linked": "Branch must be linked to a specification",
+    "spec_not_found": "Specification referenced in branch name does not exist",
+    "invalid_spec_status": "Specification status does not allow this operation"
+  }
+}

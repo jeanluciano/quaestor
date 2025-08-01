@@ -30,46 +30,66 @@ status:
 <!-- DATA:project-summary:START -->
 ```yaml
 project_focus: "[Describe your project's current focus]"
+specifications:
+  implemented: [X]
+  in_progress: [Y]
+  approved: [Z]
+  total: [Total]
 progress:
-  completed:
-    - "[Completed item 1]"
-    - "[Completed item 2]"
-  in_progress:
-    - "[In progress item 1]"
-    - "[In progress item 2]"
-  planned:
-    - "[Planned item 1]"
-    - "[Planned item 2]"
+  completed_specs:
+    - "[spec-id]: [Spec title]"
+    - "[spec-id]: [Spec title]"
+  active_specs:
+    - "[spec-id]: [Spec title] ([X%] complete)"
+    - "[spec-id]: [Spec title] ([X%] complete)"
+  upcoming_specs:
+    - "[spec-id]: [Spec title]"
+    - "[spec-id]: [Spec title]"
 ```
 <!-- DATA:project-summary:END -->
 <!-- SECTION:memory:summary:END -->
 <!-- SECTION:memory:status:END -->
 
-<!-- SECTION:memory:next-tasks:START -->
-## Next Tasks
+<!-- SECTION:memory:specifications:START -->
+## Active Specifications
 
-<!-- DATA:next-tasks:START -->
+<!-- DATA:specifications:START -->
 ```yaml
-next_task: "[The immediate next task to work on when /task is called without arguments]"
+active_specs:
+  in_progress:
+    - id: "[spec-id]"
+      title: "[Specification title]"
+      branch: "[feat/spec-id-title]"
+      contract_defined: true/false
+      tests_written: "[X/Y]"
+      implementation: "[X%]"
+  
+  approved:
+    - id: "[spec-id]"
+      title: "[Specification title]"
+      priority: "[high/medium/low]"
+      estimated_effort: "[Time estimate]"
+  
+  draft:
+    - id: "[spec-id]"
+      title: "[Specification title]"
+      needs: "[contract definition/acceptance criteria]"
 
-pending_tasks:
-  - task: "[High priority task 1]"
-    context: "[Why this is important]"
-    estimate: "[Time estimate]"
-  - task: "[Task 2]"
-    context: "[Context]"
-    estimate: "[Time estimate]"
+next_spec: "[The next specification to implement]"
 ```
-<!-- DATA:next-tasks:END -->
-<!-- SECTION:memory:next-tasks:END -->
+<!-- DATA:specifications:END -->
+<!-- SECTION:memory:specifications:END -->
 
 <!-- SECTION:memory:active-work:START -->
 ## Active Work
 
 <!-- DATA:active-work:START -->
 ```yaml
+current_spec: "[Current specification being implemented]"
 overview: "[Describe what you're currently working on]"
 approach: "[Detail your implementation strategy]"
+contract_status: "[Defined/In Review/Approved]"
+test_status: "[Not Started/In Progress/Complete]"
 blockers: []
 decisions_needed: []
 ```
@@ -87,18 +107,22 @@ milestones:
     status: "[Status]"
     progress: "[X]%"
     goal: "[Description of what this milestone achieves]"
-    completed:
-      - task: "[Completed task]"
-        date: "[Date if helpful]"
-        notes: "[Brief description]"
-    in_progress:
-      - task: "[Current task]"
-        assignee: "[Who if team project]"
-        eta: "[Estimated completion]"
-    todo:
-      - task: "[Planned task]"
-        priority: "[High/Medium/Low]"
-        estimate: "[Time estimate]"
+    specifications:
+      completed:
+        - spec_id: "[spec-id]"
+          title: "[Spec title]"
+          date: "[Date if helpful]"
+          notes: "[Brief description]"
+      in_progress:
+        - spec_id: "[spec-id]"
+          title: "[Spec title]"
+          branch: "[Branch name]"
+          completion: "[X%]"
+      planned:
+        - spec_id: "[spec-id]"
+          title: "[Spec title]"
+          priority: "[High/Medium/Low]"
+          estimate: "[Time estimate]"
   
   - id: "milestone_2"
     name: "[Name]"
@@ -306,17 +330,15 @@ lessons:
 actions:
   immediate:
     timeframe: "This Week"
-    tasks:
-      - id: "immediate_1"
-        task: "[High priority task]"
+    specifications:
+      - spec_id: "[spec-id]"
+        title: "[Specification title]"
+        action: "[Define contract/Implement/Test]"
         owner: "[Assignee if applicable]"
         due: "[Due date]"
-      - id: "immediate_2"
-        task: "[High priority task]"
-        owner: "[Assignee if applicable]"
-        due: "[Due date]"
-      - id: "immediate_3"
-        task: "[High priority task]"
+      - spec_id: "[spec-id]"
+        title: "[Specification title]"
+        action: "[Define contract/Implement/Test]"
         owner: "[Assignee if applicable]"
         due: "[Due date]"
   

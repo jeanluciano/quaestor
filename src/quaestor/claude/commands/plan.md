@@ -1,31 +1,33 @@
 ---
 allowed-tools: [Read, Edit, MultiEdit, Write, Bash, Grep, Glob, LS, Task, TodoWrite]
-description: "Strategic planning, milestone management, and progress tracking with multi-agent orchestration"
+description: "Specification-driven planning, milestone management, and progress tracking with multi-agent orchestration"
 performance-profile: "complex"
 complexity-threshold: 0.5
-auto-activation: ["milestone-planning", "progress-visualization", "strategic-analysis"]
-intelligence-features: ["velocity-tracking", "architecture-planning", "resource-estimation"]
+auto-activation: ["specification-planning", "milestone-planning", "progress-visualization", "strategic-analysis"]
+intelligence-features: ["spec-tracking", "velocity-tracking", "architecture-planning", "contract-validation"]
 agent-strategy:
+  specification_design: planner
   system_design: architect
   milestone_planning: architect
-  task_breakdown: [architect, implementer]
+  spec_breakdown: [planner, architect, implementer]
   risk_assessment: security
   progress_analysis: researcher
 ---
 
-# /plan - Strategic Planning & Progress Management
+# /plan - Specification-Driven Planning & Progress Management
 
 ## Purpose
-Plan work, manage milestones, track progress, and make strategic decisions. Combines milestone management with progress visualization and architectural planning.
+Design specifications, plan work through spec-driven development, manage milestones, track progress, and make strategic decisions. Combines specification management with progress visualization and architectural planning.
 
 ## Usage
 ```
-/plan                           # Show progress dashboard
+/plan                           # Show progress dashboard with specs
+/plan --spec "User Auth"        # Create new specification
 /plan --create "MVP Complete"   # Create new milestone
 /plan --complete               # Complete current milestone
 /plan --analyze                # Deep strategic analysis
-/plan --velocity              # Show velocity metrics
 /plan --architecture          # Architectural planning mode
+/plan --link                   # Link current branch to spec
 ```
 
 ## Auto-Intelligence
@@ -33,23 +35,29 @@ Plan work, manage milestones, track progress, and make strategic decisions. Comb
 ### Multi-Mode Planning
 ```yaml
 Mode Detection:
-  - No args → Progress dashboard
+  - No args → Progress dashboard with specs
+  - --spec → Specification creation wizard
   - --create → Milestone creation wizard
   - --complete → Completion validation
   - --analyze → Strategic analysis
-  - --velocity → Performance metrics
   - --architecture → System design planning
+  - --link → Branch-to-spec linkage
 ```
 
 ### Agent Orchestration
 ```yaml
+Specification Design:
+  - planner: Create specs with contracts
+  - architect: Validate technical approach
+  - implementer: Estimate complexity
+  
 Progress Analysis:
-  - researcher: Gather metrics and history
+  - researcher: Gather spec status and metrics
   - architect: Analyze system evolution
   
 Milestone Planning:
   - architect: Design milestone structure
-  - implementer: Estimate effort
+  - planner: Break down into specifications
   - security: Risk assessment
   
 Strategic Analysis:
@@ -64,11 +72,12 @@ Strategic Analysis:
 **Default Mode - Comprehensive Status Overview:**
 ```yaml
 Data Collection (Parallel):
+  - Specification status: active specs and their states
   - Git metrics: commits, velocity, contributors
-  - Task status: MEMORY.md parsing
-  - Quality metrics: test/lint status
+  - Spec implementation: MEMORY.md and spec manifest parsing
+  - Quality metrics: test/lint status per spec
   - Architecture health: dependency analysis
-  - Milestone progress: completion tracking
+  - Milestone progress: spec-based completion tracking
 
 Visual Presentation:
   🎯 Project: [Name] • Phase: [Current Milestone]
@@ -76,14 +85,23 @@ Visual Presentation:
   📈 Progress Overview:
   Overall: [████████░░] 80% • Velocity: ↑15% this week
   
+  📋 Active Specifications:
+  • [feat-auth-001] User Authentication
+    Status: IN_PROGRESS • Branch: feat/spec-auth-001-user-auth
+    Contract: ✅ Defined • Tests: [████░░░░░░] 4/10
+    
+  • [feat-api-002] REST API Design  
+    Status: IMPLEMENTED • Branch: feat/spec-api-002-rest-design
+    Contract: ✅ Defined • Tests: [██████████] 10/10
+  
   📊 Current Milestone: [Name]
-  Tasks:    [███████░░░] 7/10 complete
+  Specs:    [███████░░░] 7/10 complete
   Quality:  [██████████] All checks passing ✅
   Docs:     [████████░░] 80% updated
   
   ⚡ Velocity Metrics:
-  • This Week: 12 commits, 4 tasks completed
-  • Average: 2.3 tasks/week, 87% on-time delivery
+  • This Week: 12 commits, 4 specs completed
+  • Average: 2.3 specs/week, 87% on-time delivery
   • Trend: 📈 Accelerating
   
   🏗️ Architecture Health:
@@ -92,12 +110,13 @@ Visual Presentation:
   • Dependencies: All up to date ✅
   
   💡 Insights:
-  • Strong momentum on authentication module
-  • Consider addressing TODO backlog (12 items)
+  • Strong momentum on authentication specs
+  • 3 specs awaiting implementation
   • Ready for milestone completion review
   
   🎯 Recommended Next Action:
-  → Complete remaining 3 tasks
+  → Complete remaining 3 specifications
+  → Run: /plan --spec to create next spec
   → Run: /plan --complete when ready
 ```
 
@@ -175,6 +194,62 @@ Planning Intelligence:
   - Estimate: duration based on current velocity
 ```
 
+## Specification Creation Workflow (--spec)
+
+### Guided Specification Process
+```yaml
+Context Gathering:
+  1. Title: "What feature/fix are you planning?"
+  2. Type: "Is this a feature, bugfix, refactor, etc?"
+  3. Description: "What exactly needs to be built?"
+  4. Rationale: "Why is this needed?"
+
+Contract Definition:
+  1. Inputs: "What data/parameters are required?"
+  2. Outputs: "What will be produced/returned?"
+  3. Behavior: "What are the key rules/logic?"
+  4. Constraints: "Any performance/security requirements?"
+
+Acceptance Criteria:
+  - Define: measurable success conditions
+  - Create: test scenarios with Given/When/Then
+  - Link: to existing specifications if dependent
+
+Branch Creation:
+  - Generate: spec-compliant branch name
+  - Link: specification to branch
+  - Update: spec status to IN_PROGRESS
+```
+
+### Specification Output Template
+```yaml
+Specification Created:
+  ID: feat-auth-001
+  Title: User Authentication System
+  Type: feature
+  Priority: high
+  Status: DRAFT → IN_PROGRESS
+  
+  Contract:
+    Inputs:
+      - username: string (required)
+      - password: string (required, min 8 chars)
+    Outputs:
+      - token: JWT string
+      - user: User object
+    Behavior:
+      - Validate credentials against database
+      - Generate JWT with 24h expiration
+      - Log authentication attempts
+      
+  Branch: feat/spec-auth-001-user-authentication
+  
+  Next Steps:
+  1. Review specification contract
+  2. Implement according to acceptance criteria
+  3. Update spec status as you progress
+```
+
 ## Milestone Creation Workflow
 
 ### Guided Creation Process
@@ -185,11 +260,16 @@ Context Gathering:
   3. Criteria: "How will we measure success?"
   4. Duration: "Estimated timeframe?"
 
+Specification Planning:
+  - Identify: specifications needed for milestone
+  - Prioritize: critical vs nice-to-have specs
+  - Estimate: complexity and dependencies
+  
 Template Generation:
   - Create: structured milestone section in MEMORY.md
-  - Initialize: task tracking + progress indicators
+  - Initialize: specification tracking
   - Set: measurable success criteria
-  - Link: to existing architecture + patterns
+  - Link: to specification manifest
 ```
 
 ### Creation Output Template
@@ -240,39 +320,6 @@ Output Structure:
   3. [Architecture evolution path]
 ```
 
-### Velocity Tracking Mode (--velocity)
-**Performance Metrics and Trends:**
-```yaml
-Metrics Collection:
-  - Commit frequency and size
-  - Task completion rates
-  - Milestone duration trends
-  - Quality gate success rates
-
-Visualization:
-  📈 Velocity Dashboard
-  
-  📊 This Week vs Average:
-  Commits:     ████████ 12 (avg: 8)  ↑50%
-  Tasks:       ██████ 4 (avg: 3)      ↑33%
-  Code Churn:  ███ +847/-213 lines
-  
-  📉 Historical Trends (4 weeks):
-  Week 1: ████ 4 tasks
-  Week 2: ██████ 6 tasks
-  Week 3: ███ 3 tasks
-  Week 4: ████████ 8 tasks
-  
-  ⏱️ Milestone Velocity:
-  • Current pace: 2.3 tasks/week
-  • Estimated completion: ~2 weeks
-  • Confidence level: High (87%)
-  
-  🎯 Efficiency Insights:
-  • Peak productivity: Tue-Thu
-  • Blockers: PR review delays
-  • Recommendation: Batch similar tasks
-```
 
 ### Architecture Planning Mode (--architecture)
 **System Design and Evolution Planning:**
@@ -318,8 +365,16 @@ Planning Output:
 
 ## Success Criteria
 
+**Specification Creation:**
+- ✅ Clear contract with inputs/outputs defined
+- ✅ Acceptance criteria measurable and testable
+- ✅ Test scenarios documented
+- ✅ Branch created and linked to spec
+- ✅ Specification tracked in manifest
+
 **Milestone Completion:**
-- ✅ All planned tasks demonstrably complete
+- ✅ All planned specifications implemented
+- ✅ Spec contracts validated and tested
 - ✅ Quality gates passed (tests, linting, types)
 - ✅ Documentation updated and current
 - ✅ Success criteria measurably achieved
@@ -327,19 +382,21 @@ Planning Output:
 
 **Milestone Creation:**
 - ✅ Clear, measurable objectives defined
-- ✅ Concrete deliverables identified
+- ✅ Specifications identified and prioritized
 - ✅ Success criteria established
 - ✅ Progress tracking initialized
-- ✅ Integration with existing project patterns
+- ✅ Integration with specification system
 
 ## Integration Points
 
 **Quaestor Ecosystem:**
-- **MEMORY.md** → Primary milestone tracking
+- **specifications/** → Specification manifest and tracking
+- **MEMORY.md** → Primary milestone and spec progress
 - **ARCHITECTURE.md** → Update with architectural decisions
-- **milestones/** → Detailed task tracking (if exists)
-- **Git tags** → Optional milestone tagging
-- **Quality system** → Integrated validation before completion
+- **milestones/** → Milestone-level tracking
+- **Git branches** → Automatic spec-to-branch linkage
+- **Quality system** → Integrated validation per specification
+- **Hooks** → spec_branch_tracker for workflow enforcement
 
 ---
-*Intelligent milestone management with evidence-based completion and automated progress tracking*
+*Intelligent specification-driven planning with contract-based development and automated progress tracking*

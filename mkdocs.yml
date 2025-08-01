@@ -1,0 +1,98 @@
+site_name: Quaestor
+site_description: Context management for AI-assisted development
+site_author: Jean Luciano
+site_url: https://jeanluciano.github.io/quaestor
+
+repo_name: jeanluciano/quaestor
+repo_url: https://github.com/jeanluciano/quaestor
+
+theme:
+  name: material
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+
+plugins:
+  - search
+  - git-revision-date-localized:
+      enable_creation_date: true
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quickstart.md
+    - Configuration: getting-started/configuration.md
+  - Agents:
+    - Overview: agents/overview.md
+    - Planner Agent: agents/planner.md
+    - Architect Agent: agents/architect.md
+    - Implementer Agent: agents/implementer.md
+    - QA Agent: agents/qa.md
+  - Hooks & Automation:
+    - Overview: hooks/overview.md
+    - Specification Tracking: hooks/spec-tracking.md
+    - Milestone Integration: hooks/milestones.md
+    - Custom Hooks: hooks/custom.md
+  - Specification-Driven Development:
+    - Overview: specs/overview.md
+    - Creating Specifications: specs/creating.md
+    - Implementation Workflow: specs/workflow.md
+  - Commands:
+    - /plan: commands/plan.md
+    - /impl: commands/impl.md
+    - /research: commands/research.md
+    - /review: commands/review.md
+  - Advanced:
+    - Architecture: advanced/architecture.md
+    - Memory Management: advanced/memory.md
+    - Claude Code Integration: advanced/claude-code.md
+  - API Reference:
+    - Specifications API: api/specifications.md
+    - CLI Commands: api/cli.md
+  - Contributing: contributing.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/jeanluciano/quaestor
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/quaestor/
+
+copyright: Copyright &copy; 2024 Jean Luciano

@@ -12,15 +12,15 @@ agent-strategy:
   testing_required: [qa, implementer]
 ---
 
-# /task - Intelligent Implementation Command
+# /impl - Intelligent Implementation Command
 
 ## Purpose
-Execute production-quality features with auto-detected language standards, intelligent tool orchestration, and milestone integration.
+Execute production-quality features with auto-detected language standards, intelligent tool orchestration, and specification integration.
 
 ## Usage
 ```
-/task "implement user authentication system"
-/task [description] [--strategy systematic|agile|focused] [--parallel]
+/impl "implement user authentication system"
+/impl [description] [--strategy systematic|agile|focused] [--parallel]
 ```
 
 ## Auto-Intelligence
@@ -38,15 +38,15 @@ Execute production-quality features with auto-detected language standards, intel
 ## Workflow: Research → Plan → Implement → Validate
 
 ### Phase 1: Discovery & Research 🔍
-**No Arguments?** → Check `.quaestor/MEMORY.md` for `next_task:` or pending items
+**No Arguments?** → Check `.quaestor/MEMORY.md` for `next_spec:` or active specifications
 
-**Milestone Integration:**
+**Specification Integration:**
 ```yaml
 🎯 Context Check:
-- Scan: .quaestor/milestones/*/tasks.yaml
-- Match: keywords → active tasks
+- Scan: .quaestor/specifications/manifest.yaml
+- Match: keywords → active specifications
 - Update: status → "in_progress"
-- Progress: track completion %
+- Link: current branch to specification
 ```
 
 **Research Protocol:**

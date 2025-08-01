@@ -168,7 +168,7 @@ def validate_tracking(work_done: dict[str, Any], milestone_updates: dict[str, An
             {
                 "type": "missing_milestone_update",
                 "severity": "high",
-                "message": f"Implementation work detected ({len(work_done['src_files'])} files) but no milestone files updated",
+                "message": f"Implementation work detected ({len(work_done['src_files'])} files) - no milestone update",
                 "fix": "Update relevant .quaestor/milestones/*/tasks.yaml with progress",
             }
         )
@@ -268,13 +268,13 @@ Found changes in:
 - {len(work_done.get("src_files", []))} source files
 - {len(work_done.get("test_files", []))} test files
 
-Please run: Use the planner agent to create a milestone for this work
+Please run: Use the planner agent to create specifications for this work
 
 The planner agent should:
 1. Analyze the scope of changes
-2. Create a milestone in .quaestor/milestones/
-3. Define objectives and success criteria
-4. Break down into trackable subtasks
+2. Create specifications with clear contracts
+3. Define acceptance criteria and test scenarios
+4. Link specifications to git branches
 5. Set initial progress based on completed work
 
 This ensures all work is properly tracked and documented.
@@ -305,8 +305,6 @@ You're almost there! Keep up the great work.
 
 def main():
     """Main hook entry point."""
-    # Parse input
-    hook_data = parse_hook_input()
     project_root = get_project_root()
 
     # Check milestone status

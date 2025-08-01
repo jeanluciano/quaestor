@@ -124,7 +124,7 @@ The researcher should examine:
 - Similar components or modules
 - Configuration requirements
 
-Example command: "Use the researcher agent to understand the codebase patterns before implementing changes to {Path(file_path).name}"
+Example: Use the researcher agent to understand codebase patterns before implementing changes
 """
 
     elif phase == "researching" and files_examined < 3:

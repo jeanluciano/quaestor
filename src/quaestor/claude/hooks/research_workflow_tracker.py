@@ -164,7 +164,7 @@ Sometimes perfect understanding isn't needed to start.
 🔍 Starting fresh! Remember the Quaestor workflow:
 
 1. Research Phase: Use the researcher agent to understand existing patterns
-2. Planning Phase: Use the planner agent to design your approach  
+2. Planning Phase: Use the planner agent to design your approach
 3. Implementation Phase: Use the implementer agent to write code
 
 This structured approach leads to better outcomes.
