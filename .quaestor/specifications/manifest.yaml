@@ -34,7 +34,7 @@ specifications:
     id: "spec-agent-002"
     title: "Replace milestone/task terminology with specifications"
     type: "refactor"
-    status: "in_progress"
+    status: "implemented"
     priority: "high"
     description: "Update all references from milestones/tasks to specifications"
     rationale: "Align with specification-driven development approach"
@@ -50,7 +50,7 @@ specifications:
     dependencies: []
     branch: "feat/spec-agent-002-terminology-update"
     created_at: "2025-01-15T12:00:00"
-    updated_at: "2025-08-01T15:12:30"
+    updated_at: "2025-08-01T15:14:30"
     metadata: {}
     
   spec-agent-003:
@@ -127,4 +127,4 @@ branch_mapping:
   "feat/spec-agent-002-terminology-update": "spec-agent-002"
 
 created_at: "2025-01-15T12:00:00"
-updated_at: "2025-08-01T15:12:30"
+updated_at: "2025-08-01T15:14:30"
