@@ -17,7 +17,7 @@ class TestHooksConfiguration:
         """Ensure automation_base.json uses correct placeholders."""
         import importlib.resources as pkg_resources
 
-        automation_json = pkg_resources.read_text("quaestor.claude.quaestor.configuration", "automation_base.json")
+        automation_json = pkg_resources.read_text("quaestor.claude.hooks", "automation_base.json")
         data = json.loads(automation_json)
 
         # Check that we use placeholders, not hardcoded paths
@@ -39,7 +39,7 @@ class TestHooksConfiguration:
         """Ensure automation_base.json references actual hook files."""
         import importlib.resources as pkg_resources
 
-        automation_json = pkg_resources.read_text("quaestor.claude.quaestor.configuration", "automation_base.json")
+        automation_json = pkg_resources.read_text("quaestor.claude.hooks", "automation_base.json")
         data = json.loads(automation_json)
 
         # Updated for new hook structure
@@ -218,7 +218,7 @@ class TestHooksConfiguration:
             pass
 
         # Parse automation_base.json
-        automation_json = pkg_resources.read_text("quaestor.claude.quaestor.configuration", "automation_base.json")
+        automation_json = pkg_resources.read_text("quaestor.claude.hooks", "automation_base.json")
         data = json.loads(automation_json)
 
         # Extract hook names from commands

@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import pytest
 
-from quaestor.command_processor import CommandProcessor
+from quaestor.core.command_processor import CommandProcessor
 
 
 @pytest.fixture
@@ -52,7 +52,7 @@ class TestCommandProcessor:
         processor = CommandProcessor(temp_project)
         assert processor.project_dir == temp_project
         assert hasattr(processor, "loader")
-        from quaestor.command_config import CommandLoader
+        from quaestor.core.command_config import CommandLoader
 
         assert isinstance(processor.loader, CommandLoader)
 

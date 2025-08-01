@@ -6,7 +6,7 @@ import pytest
 import yaml
 from typer.testing import CliRunner
 
-from quaestor.cli.main import app
+from quaestor.cli.app import app
 from quaestor.constants import COMMAND_FILES
 
 

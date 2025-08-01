@@ -59,9 +59,7 @@ packages = [
     "quaestor.claude.hooks",
     "quaestor.claude.agents",
     "quaestor.claude.commands",
-    "quaestor.claude.quaestor",
-    "quaestor.claude.quaestor.configuration",
-    "quaestor.claude.quaestor.templates"
+    "quaestor.claude.templates"
 ]
 package-dir = {"" = "src"}
 
@@ -69,11 +67,11 @@ package-dir = {"" = "src"}
 quaestor = [
     "*.md",
     "claude/hooks/*.py",
+    "claude/hooks/*.json",
     "claude/agents/*.md",
     "claude/commands/*.md",
-    "claude/quaestor/configuration/*.json",
-    "claude/quaestor/configuration/*.yaml",
-    "claude/quaestor/templates/*.md",
+    "claude/templates/*.md",
+    "core/*.yaml",
 ]
 
 [tool.pytest.ini_options]

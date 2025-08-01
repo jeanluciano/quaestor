@@ -6,7 +6,7 @@ import typer
 from rich.console import Console
 from rich.prompt import Confirm
 
-from quaestor.command_config import CommandConfig
+from quaestor.core.command_config import CommandConfig
 
 console = Console()
 
@@ -107,8 +107,8 @@ def configure_command(
 
     # Apply configurations - regenerate commands
     if apply:
-        from quaestor.command_processor import CommandProcessor
         from quaestor.constants import COMMAND_FILES
+        from quaestor.core.command_processor import CommandProcessor
 
         processor = CommandProcessor(target_dir)
 
@@ -145,8 +145,8 @@ def configure_command(
 
     # Preview configuration effects
     if preview:
-        from quaestor.command_processor import CommandProcessor
         from quaestor.constants import COMMAND_FILES
+        from quaestor.core.command_processor import CommandProcessor
 
         processor = CommandProcessor(target_dir)
 

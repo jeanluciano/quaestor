@@ -58,7 +58,15 @@ def is_implementation_file(file_path: str) -> bool:
     path = Path(file_path)
 
     # Skip non-implementation files
-    if any(part in path.parts for part in [".quaestor", "tests", "test", "docs", "__pycache__"]):
+    if any(part in path.parts for part in [".quaestor", ".claude", "tests", "test", "docs", "__pycache__"]):
+        return False
+
+    # Skip configuration, setup, and build files
+    if path.name in ["setup.py", "pyproject.toml", "package.json", "Makefile", "requirements.txt"]:
+        return False
+
+    # Skip hook files specifically
+    if "hooks" in path.parts:
         return False
 
     # Check if it's a source code file

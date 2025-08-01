@@ -3,7 +3,7 @@
 import pytest
 import yaml
 
-from quaestor.command_config import CommandConfig, CommandLoader
+from quaestor.core.command_config import CommandConfig, CommandLoader
 
 
 @pytest.fixture

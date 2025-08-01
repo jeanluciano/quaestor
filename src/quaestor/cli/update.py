@@ -8,7 +8,7 @@ from rich.prompt import Confirm
 
 from quaestor.constants import QUAESTOR_DIR_NAME
 from quaestor.core.project_metadata import FileManifest
-from quaestor.updater import QuaestorUpdater, print_update_result
+from quaestor.core.updater import QuaestorUpdater, print_update_result
 
 console = Console()
 

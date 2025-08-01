@@ -3,7 +3,7 @@
 from unittest.mock import patch
 
 from quaestor.core.project_metadata import FileManifest, FileType
-from quaestor.updater import QuaestorUpdater, UpdateResult
+from quaestor.core.updater import QuaestorUpdater, UpdateResult
 
 
 class TestFileManifest:

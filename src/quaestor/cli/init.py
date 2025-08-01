@@ -18,8 +18,8 @@ from quaestor.constants import (
 )
 from quaestor.core.project_metadata import FileManifest, FileType, extract_version_from_content
 from quaestor.core.template_engine import get_project_data, process_template
+from quaestor.core.updater import QuaestorUpdater, print_update_result
 from quaestor.core.validation_engine import RuleEngine
-from quaestor.updater import QuaestorUpdater, print_update_result
 from quaestor.utils import update_gitignore
 
 console = Console()
@@ -112,7 +112,7 @@ def _init_personal_mode(target_dir: Path, force: bool):
     # Create settings.local.json for hooks configuration (personal mode)
     settings_path = claude_dir / "settings.local.json"
     try:
-        settings_content = pkg_resources.read_text("quaestor.claude.quaestor.configuration", "automation_base.json")
+        settings_content = pkg_resources.read_text("quaestor.claude.hooks", "automation_base.json")
 
         # Replace placeholders in the template
         import sys
@@ -222,7 +222,7 @@ def _init_team_mode(target_dir: Path, force: bool, contextual: bool = True):
     claude_dir.mkdir(exist_ok=True)
     settings_path = claude_dir / "settings.json"
     try:
-        settings_content = pkg_resources.read_text("quaestor.claude.quaestor.configuration", "automation_base.json")
+        settings_content = pkg_resources.read_text("quaestor.claude.hooks", "automation_base.json")
 
         # Replace placeholders in the template
         import sys
@@ -280,7 +280,7 @@ def _merge_claude_md(target_dir: Path, use_rule_engine: bool = False) -> bool:
 
         # Get the include template
         try:
-            include_content = pkg_resources.read_text("quaestor.claude.quaestor.templates", "claude_include.md")
+            include_content = pkg_resources.read_text("quaestor.claude.templates", "claude_include.md")
         except Exception:
             # Fallback if template is missing
             include_content = """<!-- QUAESTOR CONFIG START -->
@@ -349,7 +349,7 @@ def _copy_system_files(quaestor_dir: Path, manifest: FileManifest, target_dir: P
     """Copy system files to .quaestor directory."""
     # Copy QUAESTOR_CLAUDE.md
     try:
-        quaestor_claude_content = pkg_resources.read_text("quaestor.claude.quaestor.templates", "quaestor_claude.md")
+        quaestor_claude_content = pkg_resources.read_text("quaestor.claude.templates", "quaestor_claude.md")
         quaestor_claude_path = quaestor_dir / "QUAESTOR_CLAUDE.md"
         quaestor_claude_path.write_text(quaestor_claude_content)
 
@@ -362,7 +362,7 @@ def _copy_system_files(quaestor_dir: Path, manifest: FileManifest, target_dir: P
 
     # Copy CRITICAL_RULES.md
     try:
-        critical_rules_content = pkg_resources.read_text("quaestor.claude.quaestor.templates", "critical_rules.md")
+        critical_rules_content = pkg_resources.read_text("quaestor.claude.templates", "critical_rules.md")
         critical_rules_path = quaestor_dir / "CRITICAL_RULES.md"
         critical_rules_path.write_text(critical_rules_content)
 
@@ -425,7 +425,7 @@ def _init_common(target_dir: Path, force: bool, mode: str):
         console.print("Installing to .claude/commands (project commands)")
 
     # Use command processor to apply configurations
-    from quaestor.command_processor import CommandProcessor
+    from quaestor.core.command_processor import CommandProcessor
 
     processor = CommandProcessor(target_dir)
 

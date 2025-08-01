@@ -1,1 +1,0 @@
-"""Quaestor configuration files."""

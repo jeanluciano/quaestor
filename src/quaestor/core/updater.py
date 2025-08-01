@@ -308,7 +308,7 @@ class QuaestorUpdater:
                 # Read new content
                 if resource_name.startswith("templates/"):
                     new_content = pkg_resources.read_text(
-                        "quaestor.claude.quaestor.templates", resource_name.replace("templates/", "")
+                        "quaestor.claude.templates", resource_name.replace("templates/", "")
                     )
                 else:
                     new_content = pkg_resources.read_text("quaestor", resource_name)
@@ -376,7 +376,7 @@ class QuaestorUpdater:
             # Get latest include template
             import importlib.resources as pkg_resources
 
-            include_content = pkg_resources.read_text("quaestor.claude.quaestor.templates", "claude_include.md")
+            include_content = pkg_resources.read_text("quaestor.claude.templates", "claude_include.md")
 
             # Extract config section from template
             config_start_idx = include_content.find(QUAESTOR_CONFIG_START)
