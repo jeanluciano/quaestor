@@ -103,7 +103,7 @@ specifications:
     id: "spec-agent-005"
     title: "Create specification-driven workflow documentation"
     type: "documentation"
-    status: "approved"
+    status: "in_progress"
     priority: "medium"
     description: "Document the specification-driven development workflow"
     rationale: "Guide users in adopting specification-based approach"
@@ -117,9 +117,9 @@ specifications:
     acceptance_criteria: []
     test_scenarios: []
     dependencies: ["spec-agent-002", "spec-agent-003"]
-    branch: null
+    branch: "feat/spec-agent-005-workflow-documentation"
     created_at: "2025-01-15T12:00:00"
-    updated_at: "2025-01-15T12:00:00"
+    updated_at: "2025-08-01T16:13:30"
     metadata: {}
 
 branch_mapping:
@@ -127,6 +127,7 @@ branch_mapping:
   "feat/spec-agent-002-terminology-update": "spec-agent-002"
   "feat/spec-agent-003-agent-orchestration": "spec-agent-003"
   "feat/spec-agent-004-milestone-manager-update": "spec-agent-004"
+  "feat/spec-agent-005-workflow-documentation": "spec-agent-005"
 
 created_at: "2025-01-15T12:00:00"
-updated_at: "2025-08-01T15:52:00"
+updated_at: "2025-08-01T16:13:30"

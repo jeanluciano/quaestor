@@ -2,10 +2,11 @@
 spec_id: "spec-agent-005"
 title: "Create specification-driven workflow documentation"
 type: "documentation"
-status: "approved"
+status: "tested"
 created: "2025-01-15"
 author: "system"
 priority: "medium"
+branch: "feat/spec-agent-005-workflow-documentation"
 ---
 
 # Specification: Create specification-driven workflow documentation
