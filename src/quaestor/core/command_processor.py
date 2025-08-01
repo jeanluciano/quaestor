@@ -48,7 +48,7 @@ class CommandProcessor:
         try:
             return pkg_resources.read_text("quaestor.claude.commands", f"{command_name}.md")
         except FileNotFoundError:
-            raise ValueError(f"Command not found: {command_name}")
+            raise ValueError(f"Command not found: {command_name}") from None
 
     def _apply_configuration(self, content: str, config: dict) -> str:
         """Apply configuration to command content.
