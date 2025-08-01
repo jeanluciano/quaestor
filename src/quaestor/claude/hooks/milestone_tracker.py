@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-"""Comprehensive milestone tracking and validation hook.
+"""Specification progress tracking and validation hook.
 
-This hook combines milestone progress checking and validation to ensure
-work is properly tracked in milestone files and MEMORY.md.
+This hook monitors specification progress and ensures work is properly
+tracked in specifications and MEMORY.md.
 """
 
 import json
-import re
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -34,33 +33,41 @@ def parse_hook_input() -> dict[str, Any]:
         return {}
 
 
-def check_milestone_completion(project_root: Path) -> dict[str, Any]:
-    """Check if current milestone is complete based on MEMORY.md."""
-    memory_file = project_root / ".quaestor" / "MEMORY.md"
-
-    if not memory_file.exists():
-        return {"status": "no_memory", "message": "MEMORY.md not found"}
-
+def check_spec_progress(project_root: Path) -> dict[str, Any]:
+    """Check specification progress."""
     try:
-        content = memory_file.read_text()
+        from quaestor.core.specifications import SpecificationManager, SpecStatus
 
-        # Look for milestone progress
-        milestone_pattern = r"current_milestone:\s*['\"]?([^'\"]+)['\"]?"
-        progress_pattern = r"progress:\s*(\d+)%"
+        manager = SpecificationManager(project_root)
+        all_specs = manager.list_specifications()
 
-        milestone_match = re.search(milestone_pattern, content)
-        progress_match = re.search(progress_pattern, content)
+        if not all_specs:
+            return {"status": "no_specs", "message": "No specifications found"}
 
-        if milestone_match and progress_match:
-            milestone = milestone_match.group(1)
-            progress = int(progress_match.group(1))
+        # Count specs by status
+        status_counts = {}
+        for status in SpecStatus:
+            status_counts[status.value] = sum(1 for s in all_specs if s.status == status)
 
-            return {"status": "active", "milestone": milestone, "progress": progress, "complete": progress >= 100}
-        else:
-            return {"status": "no_milestone", "message": "No active milestone found"}
+        completed = sum(
+            1 for s in all_specs if s.status in [SpecStatus.IMPLEMENTED, SpecStatus.TESTED, SpecStatus.DEPLOYED]
+        )
 
+        progress = int((completed / len(all_specs)) * 100) if all_specs else 0
+
+        return {
+            "status": "active",
+            "total_specs": len(all_specs),
+            "completed_specs": completed,
+            "progress": progress,
+            "status_counts": status_counts,
+            "complete": progress >= 100,
+        }
+
+    except ImportError:
+        return {"status": "no_spec_system", "message": "Specification system not available"}
     except Exception as e:
-        return {"status": "error", "message": f"Error checking milestone: {e}"}
+        return {"status": "error", "message": f"Error checking specs: {e}"}
 
 
 def get_recent_work(project_root: Path, hours: int = 6) -> dict[str, Any]:
@@ -121,23 +128,23 @@ def get_recent_work(project_root: Path, hours: int = 6) -> dict[str, Any]:
     return work_detected if has_work else None
 
 
-def check_milestone_updates(project_root: Path, hours: int = 6) -> dict[str, Any]:
-    """Check for recent milestone and memory updates."""
+def check_spec_updates(project_root: Path, hours: int = 6) -> dict[str, Any]:
+    """Check for recent specification and memory updates."""
     now = datetime.now()
     recent_cutoff = now - timedelta(hours=hours)
 
-    milestones_dir = project_root / ".quaestor" / "milestones"
+    specs_dir = project_root / ".quaestor" / "specifications"
     memory_file = project_root / ".quaestor" / "MEMORY.md"
 
-    updates = {"milestone_files": [], "memory_updated": False, "timestamp": now.isoformat()}
+    updates = {"spec_files": [], "memory_updated": False, "timestamp": now.isoformat()}
 
-    # Check milestone files
-    if milestones_dir.exists():
-        for f in milestones_dir.rglob("tasks.yaml"):
+    # Check specification files
+    if specs_dir.exists():
+        for f in specs_dir.glob("*.yaml"):
             try:
                 mtime = datetime.fromtimestamp(f.stat().st_mtime)
                 if mtime > recent_cutoff:
-                    updates["milestone_files"].append(str(f.relative_to(project_root)))
+                    updates["spec_files"].append(str(f.relative_to(project_root)))
             except OSError:
                 continue
 
@@ -153,149 +160,107 @@ def check_milestone_updates(project_root: Path, hours: int = 6) -> dict[str, Any
     return updates
 
 
-def validate_tracking(work_done: dict[str, Any], milestone_updates: dict[str, Any]) -> list[dict[str, Any]]:
+def validate_tracking(work_done: dict[str, Any], spec_updates: dict[str, Any]) -> list[dict[str, Any]]:
     """Validate that tracking matches work done."""
     issues = []
 
     # Determine work type
     has_implementation = bool(work_done["src_files"])
     has_tests = bool(work_done["test_files"])
-    has_docs = bool(work_done["doc_files"])
 
-    # Check milestone updates for implementation work
-    if has_implementation and not milestone_updates["milestone_files"]:
+    # Check spec updates for implementation work
+    if has_implementation and not spec_updates["spec_files"]:
         issues.append(
             {
-                "type": "missing_milestone_update",
+                "type": "missing_spec_update",
                 "severity": "high",
-                "message": f"Implementation work detected ({len(work_done['src_files'])} files) - no milestone update",
-                "fix": "Update relevant .quaestor/milestones/*/tasks.yaml with progress",
+                "message": f"Implementation work detected ({len(work_done['src_files'])} files) - no spec update",
+                "fix": "Update relevant specifications with progress or status changes",
             }
         )
 
     # Check memory updates for any significant work
-    if (has_implementation or has_tests) and not milestone_updates["memory_updated"]:
+    if (has_implementation or has_tests) and not spec_updates["memory_updated"]:
         issues.append(
             {
                 "type": "missing_memory_update",
-                "severity": "high",
-                "message": "Implementation/test work detected but MEMORY.md not updated",
-                "fix": "Add progress entry to .quaestor/MEMORY.md",
-            }
-        )
-
-    # Documentation work is lower priority
-    if has_docs and not has_implementation and not milestone_updates["memory_updated"]:
-        issues.append(
-            {
-                "type": "undocumented_docs",
-                "severity": "low",
-                "message": "Documentation updates not tracked in MEMORY.md",
-                "fix": "Consider adding a note about documentation updates",
+                "severity": "medium",
+                "message": "Work completed but MEMORY.md not updated",
+                "fix": "Update MEMORY.md with progress notes",
             }
         )
 
     return issues
 
 
-def generate_agent_suggestion(
-    milestone_status: dict[str, Any], work_done: dict[str, Any] | None, issues: list[dict[str, Any]]
-) -> tuple[bool, str]:
-    """Generate agent suggestions based on milestone and work status.
+def generate_spec_suggestion(spec_status: dict[str, Any], issues: list[dict[str, Any]]) -> tuple[bool, str]:
+    """Generate specification-related suggestions.
 
     Returns:
         Tuple of (should_block, message)
     """
 
-    # Scenario 1: Milestone complete - suggest PR creation
-    if milestone_status.get("complete", False):
-        milestone_name = milestone_status.get("milestone", "current milestone")
-        return (
-            True,
-            f"""
-🎉 Milestone '{milestone_name}' is 100% complete!
-
-REQUIRED: Create a pull request for this completed milestone.
-
-Please run: Use the milestone-manager agent to create a PR for the completed milestone '{milestone_name}'
-
-The milestone-manager agent should:
-1. Generate a comprehensive PR description from milestone objectives
-2. List all completed tasks and features
-3. Include test coverage information
-4. Document any breaking changes
-5. Create the PR using gh CLI
-6. Update MEMORY.md with completion details
-7. Archive the milestone and suggest next steps
-
-This ensures proper documentation and review of your completed work.
-""",
-        )
-
-    # Scenario 2: High severity tracking issues
+    # High severity issues should block
     high_severity_issues = [i for i in issues if i["severity"] == "high"]
     if high_severity_issues:
-        issue_descriptions = "\n".join([f"- {i['message']}" for i in high_severity_issues[:3]])
+        issue_messages = "\n".join([f"• {issue['message']}" for issue in high_severity_issues])
+        fixes = "\n".join([f"• {issue['fix']}" for issue in high_severity_issues])
+
         return (
             True,
             f"""
-⚠️ CRITICAL: Milestone tracking issues detected!
+🚫 SPECIFICATION TRACKING ISSUES DETECTED!
 
-Found {len(high_severity_issues)} high-priority tracking issues:
-{issue_descriptions}
+The following issues must be resolved:
+{issue_messages}
 
-Please run: Use the compliance-enforcer agent to fix milestone tracking issues
+Required actions:
+{fixes}
 
-The compliance-enforcer agent should:
-1. Update milestone files with current progress
-2. Sync MEMORY.md with completed work
-3. Mark completed subtasks appropriately
-4. Calculate accurate progress percentages
-5. Document any deviations from plan
+Please run: Use the planner agent to update specification tracking
 
-Proper tracking ensures project visibility and helps with PR creation.
+The planner should:
+1. Review completed work
+2. Update specification status
+3. Ensure MEMORY.md reflects current state
+4. Mark specifications as implemented/tested where appropriate
 """,
         )
 
-    # Scenario 3: Significant work without milestone
-    if work_done and milestone_status["status"] == "no_milestone" and len(work_done.get("src_files", [])) > 3:
+    # Check specification completion
+    if spec_status.get("complete", False) and spec_status.get("status") == "active":
+        total = spec_status.get("total_specs", 0)
+        completed = spec_status.get("completed_specs", 0)
         return (
             True,
             f"""
-📋 NO MILESTONE: Significant implementation work detected without an active milestone!
+🎉 ALL SPECIFICATIONS COMPLETE: {completed}/{total} specifications done!
 
-Found changes in:
-- {len(work_done.get("src_files", []))} source files
-- {len(work_done.get("test_files", []))} test files
+Time to wrap up this development phase:
 
-Please run: Use the planner agent to create specifications for this work
+Please run: Use the planner agent to finalize the specification cycle
 
-The planner agent should:
-1. Analyze the scope of changes
-2. Create specifications with clear contracts
-3. Define acceptance criteria and test scenarios
-4. Link specifications to git branches
-5. Set initial progress based on completed work
+The planner should:
+1. Create a comprehensive completion summary
+2. Document lessons learned
+3. Update project MEMORY.md
+4. Plan next development phase
+5. Consider creating a release/PR
 
-This ensures all work is properly tracked and documented.
+Congratulations on completing all specifications!
 """,
         )
 
-    # Scenario 4: Approaching milestone completion
-    if milestone_status["status"] == "active" and 80 <= milestone_status.get("progress", 0) < 100:
-        milestone_name = milestone_status.get("milestone", "current milestone")
+    # Medium severity issues - provide guidance but don't block
+    if issues:
+        issue_messages = "\n".join([f"• {issue['message']}" for issue in issues])
         return (
             False,
             f"""
-🏁 Approaching Completion: Milestone '{milestone_name}' is {milestone_status["progress"]}% complete!
+⚠️  Tracking Reminders:
+{issue_messages}
 
-Consider using the milestone-manager agent to:
-- Review remaining tasks
-- Ensure all objectives are met
-- Prepare for PR creation
-- Plan the next milestone
-
-You're almost there! Keep up the great work.
+Consider updating tracking files when convenient.
 """,
         )
 
@@ -307,78 +272,33 @@ def main():
     """Main hook entry point."""
     project_root = get_project_root()
 
-    # Check milestone status
-    milestone_status = check_milestone_completion(project_root)
+    # Check specification status
+    spec_status = check_spec_progress(project_root)
 
     # Check for recent work
     work_done = get_recent_work(project_root)
 
-    # Check for milestone updates
-    milestone_updates = (
-        check_milestone_updates(project_root) if work_done else {"milestone_files": [], "memory_updated": False}
-    )
+    # Check for specification updates
+    spec_updates = check_spec_updates(project_root) if work_done else {"spec_files": [], "memory_updated": False}
 
     # Validate tracking
-    issues = validate_tracking(work_done, milestone_updates) if work_done else []
+    issues = validate_tracking(work_done, spec_updates) if work_done else []
 
-    # Generate agent suggestion first
-    should_block, agent_message = generate_agent_suggestion(milestone_status, work_done, issues)
+    # Generate suggestions
+    should_block, message = generate_spec_suggestion(spec_status, issues)
 
-    if should_block and agent_message:
-        # Block with agent suggestion
-        print(agent_message.strip(), file=sys.stderr)
-        return 2
+    if should_block and message:
+        print(message.strip(), file=sys.stderr)
+        return 1
+    elif message:
+        print(message.strip())
 
-    # Regular status reporting (non-blocking)
-
-    # Print milestone status
-    if milestone_status["status"] == "active":
-        milestone = milestone_status["milestone"]
-        progress = milestone_status["progress"]
-
-        if milestone_status["complete"]:
-            print(f"🎉 Milestone '{milestone}' is complete! Consider creating a PR.")
-        else:
-            print(f"📊 Milestone '{milestone}' is {progress}% complete")
-    elif milestone_status["status"] == "no_milestone":
-        print("ℹ️  No active milestone found in MEMORY.md")
-
-    if not work_done:
-        print("✅ No recent implementation work detected")
-    else:
-        # Report recent work
-        print("\n📁 Recent work detected:")
-        if work_done["src_files"]:
-            print(f"   - {len(work_done['src_files'])} source files")
-        if work_done["test_files"]:
-            print(f"   - {len(work_done['test_files'])} test files")
-        if work_done["config_files"]:
-            print(f"   - {len(work_done['config_files'])} config files")
-        if work_done["doc_files"]:
-            print(f"   - {len(work_done['doc_files'])} documentation files")
-
-    if not issues:
-        if work_done:
-            print("\n✅ Milestone tracking is complete and up-to-date!")
-    else:
-        # Report non-critical issues
-        medium_issues = [i for i in issues if i["severity"] == "medium"]
-        if medium_issues:
-            print("\n⚠️  Tracking suggestions:")
-            for issue in medium_issues:
-                print(f"   - {issue['message']}")
-                print(f"     Fix: {issue['fix']}")
-
-        # Low severity issues
-        low_severity = [i for i in issues if i["severity"] == "low"]
-        if low_severity:
-            print("\n💡 Minor suggestions:")
-            for issue in low_severity:
-                print(f"   - {issue['message']}")
-
-    # Add non-blocking agent message if any
-    if not should_block and agent_message:
-        print(f"\n{agent_message.strip()}")
+    # Provide status update if no issues
+    if spec_status.get("status") == "active" and not issues:
+        progress = spec_status.get("progress", 0)
+        total = spec_status.get("total_specs", 0)
+        completed = spec_status.get("completed_specs", 0)
+        print(f"📊 Specifications: {completed}/{total} complete ({progress}%)")
 
     return 0
 
