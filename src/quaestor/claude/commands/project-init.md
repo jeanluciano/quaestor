@@ -167,15 +167,28 @@ before_phase_4:
 - Phase: [project_phase]
 
 **Proposed Specifications:**
-[list_proposed_specifications]
+1. [spec-001]: [Title] (priority: [high/medium/low])
+   - Type: [feature/enhancement/bugfix]
+   - Estimated: [duration]
+   - Description: [brief description]
+   
+2. [spec-002]: [Title] (priority: [high/medium/low])
+   - Type: [feature/enhancement/bugfix]
+   - Estimated: [duration]
+   - Description: [brief description]
+   
+3. [spec-003]: [Title] (priority: [high/medium/low])
+   - Type: [feature/enhancement/bugfix]
+   - Estimated: [duration]
+   - Description: [brief description]
 
 **Quality Standards:**
 [detected_tools_and_standards]
 
 ## Your Options:
-- ✅ Proceed with detected setup
-- 🔄 Modify detected patterns
-- 📝 Custom architecture description  
+- ✅ Proceed with detected setup and specifications
+- 🔄 Modify specification list
+- 📝 Define custom specifications
 - 🚫 Start with minimal setup
 
 ## Specification Creation:
@@ -284,6 +297,120 @@ Performance Monitoring:
   - Parallel execution to maximize efficiency
 ```
 
+## Specification-Driven Workflow Guide
+
+### Understanding Specifications
+**What is a Specification?**
+```yaml
+Specification Structure:
+  - ID: Unique identifier (e.g., spec-auth-001)
+  - Title: Clear, actionable description
+  - Type: feature|enhancement|bugfix|refactor|documentation
+  - Priority: critical|high|medium|low
+  - Contract: Defines inputs, outputs, and behavior
+  - Acceptance Criteria: Measurable success conditions
+  - Test Scenarios: Validation requirements
+```
+
+### Specification Lifecycle
+```mermaid
+graph LR
+    A[Draft] --> B[Approved]
+    B --> C[In Progress]
+    C --> D[Implemented]
+    D --> E[Tested]
+    E --> F[Deployed]
+    F --> G[Archived]
+```
+
+### Creating Specifications
+**Agent-Generated Specification Example:**
+```yaml
+spec_id: "spec-auth-001"
+title: "Implement JWT-based authentication"
+type: "feature"
+priority: "high"
+
+contract:
+  inputs:
+    username: string (required)
+    password: string (required, min 8 chars)
+  outputs:
+    token: JWT string
+    user: User object
+  behavior:
+    - Validate credentials against database
+    - Generate JWT with 24h expiration
+    - Handle invalid credentials gracefully
+
+acceptance_criteria:
+  - User can login with valid credentials
+  - Invalid credentials return 401 error
+  - Token expires after 24 hours
+  - Refresh token mechanism works
+
+test_scenarios:
+  - name: "Valid login"
+    given: "User with correct credentials"
+    when: "Login endpoint is called"
+    then: "JWT token is returned"
+```
+
+### Working with Specifications
+**Commands:**
+- `/plan --spec` - Create new specification
+- `/impl spec-id` - Implement a specification
+- `/plan` - View specification progress
+
+**Workflow:**
+1. Agent analysis generates initial specifications
+2. Review and approve specifications
+3. Link specification to feature branch
+4. Implement according to contract
+5. Validate against acceptance criteria
+6. Update status through lifecycle
+
+### Agent Invocation Examples
+**How Agents Work Together:**
+```yaml
+Phase 1 - Parallel Analysis:
+  researcher agent:
+    Input: Project directory
+    Output: Framework, dependencies, tools
+    Example: "Detected: React 18.2, TypeScript 5.0, Jest, ESLint"
+  
+  architect agent:
+    Input: Codebase structure
+    Output: Patterns, architecture, complexity
+    Example: "Found: Component-based, Redux state, 0.7 complexity"
+  
+  security agent:
+    Input: Code and dependencies
+    Output: Vulnerabilities, recommendations
+    Example: "2 outdated deps, auth pattern needed"
+
+Phase 2 - Specification Generation:
+  planner agent:
+    Input: Consolidated analysis from Phase 1
+    Output: Prioritized specifications
+    Example Output:
+      spec-001: Upgrade dependencies (critical)
+      spec-002: Add authentication (high)
+      spec-003: Refactor state management (medium)
+```
+
+**Visual Specification Roadmap:**
+```
+┌─────────────────────┐     ┌─────────────────────┐     ┌─────────────────────┐
+│   Foundation        │     │   Core Features     │     │   Enhancement       │
+│   (Week 1-2)        │ --> │   (Week 3-6)        │ --> │   (Week 7+)         │
+├─────────────────────┤     ├─────────────────────┤     ├─────────────────────┤
+│ • spec-001: Setup   │     │ • spec-004: API     │     │ • spec-007: Perf    │
+│ • spec-002: Auth    │     │ • spec-005: CRUD    │     │ • spec-008: Scale   │
+│ • spec-003: DB      │     │ • spec-006: Tests   │     │ • spec-009: Monitor │
+└─────────────────────┘     └─────────────────────┘     └─────────────────────┘
+```
+
 ## Adaptive Specification Generation
 **Smart Phase Detection:**
 ```yaml
@@ -323,6 +450,52 @@ Example Specification Sets:
 - ✅ Testing patterns and tools detected
 - ✅ Build and deployment awareness established
 - ✅ Performance benchmarks appropriate for stack
+
+### Real-World Validation Example
+**What Users Actually See:**
+```
+## Project Analysis Validation ✋
+
+**Detected Configuration:**
+- Framework: React with TypeScript
+- Architecture: Component-based with Redux
+- Complexity: 0.7/1.0
+- Phase: Growth (6-18 months)
+
+**Proposed Specifications:**
+1. [spec-auth-001]: JWT Authentication System (priority: high)
+   - Type: feature
+   - Estimated: 2 weeks
+   - Description: Implement secure JWT-based auth with refresh tokens
+   
+2. [spec-api-002]: REST API Integration Layer (priority: high)
+   - Type: enhancement
+   - Estimated: 1 week
+   - Description: Create typed API client with error handling
+   
+3. [spec-perf-003]: Component Performance Optimization (priority: medium)
+   - Type: enhancement
+   - Estimated: 1 week
+   - Description: Add React.memo and useMemo for heavy components
+
+**Quality Standards:**
+- Testing: Jest + React Testing Library
+- Linting: ESLint with Airbnb config
+- Type checking: TypeScript strict mode
+- CI/CD: GitHub Actions detected
+
+## Your Options:
+- ✅ Proceed with detected setup and specifications
+- 🔄 Modify specification list
+- 📝 Define custom specifications
+- 🚫 Start with minimal setup
+
+## Specification Creation:
+- ⭐ Create specification files (.quaestor/specifications/*.yaml)
+- 📝 Documentation only (just populate MEMORY.md templates)
+
+What would you prefer for setup and specifications?
+```
 
 ---
 *Intelligent framework detection with adaptive project setup and auto-generated documentation*
