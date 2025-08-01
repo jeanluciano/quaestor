@@ -1,0 +1,133 @@
+---
+spec_id: "spec-agent-004"
+title: "Update milestone-manager agent for specifications"
+type: "refactor"
+status: "implemented"
+created: "2025-01-15"
+author: "system"
+priority: "medium"
+branch: "feat/spec-agent-004-milestone-manager-update"
+---
+
+# Specification: Update milestone-manager agent for specifications
+
+## Use Case Overview
+
+**ID**: spec-agent-004  
+**Primary Actor**: Developer updating milestone-manager agent  
+**Goal**: Adapt milestone-manager to work with specifications instead of milestones  
+**Priority**: medium
+
+## Context & Background
+
+The milestone-manager agent currently tracks milestones and tasks.yaml files. It needs to be updated to work with the new specification-driven system while maintaining backward compatibility for existing projects.
+
+## Main Success Scenario
+
+1. Developer updates agent description and metadata
+2. Developer modifies activation keywords for specifications
+3. Developer updates file paths and patterns
+4. Developer adapts tracking logic for specifications
+5. Developer ensures backward compatibility
+6. Agent works seamlessly with both systems
+
+## Contract Definition
+
+### Inputs
+```yaml
+inputs:
+  current_agent:
+    type: "markdown"
+    description: "Current milestone-manager.md agent definition"
+    required: true
+  compatibility_mode:
+    type: "boolean"
+    description: "Whether to maintain backward compatibility"
+    default: true
+```
+
+### Outputs
+```yaml
+outputs:
+  updated_agent:
+    type: "markdown"
+    description: "Updated agent supporting specifications"
+    features:
+      - Specification tracking
+      - Progress calculation
+      - PR generation
+      - Backward compatibility
+```
+
+### Behavior Rules
+- Agent must activate for both "milestone" and "specification" keywords
+- File patterns must include both old and new structures
+- Progress calculation adapts based on project type
+- PR generation uses appropriate terminology
+- No breaking changes for existing milestone projects
+
+## Acceptance Criteria
+
+- [ ] Description updated to mention specification tracking
+- [ ] Activation keywords include: ["specification", "spec", "progress", "complete"]
+- [ ] context_patterns includes "**/specifications/**" and "manifest.yaml"
+- [ ] Progress calculation works with specification statuses
+- [ ] PR template references specification completion
+- [ ] Agent detects project type (milestone vs specification)
+- [ ] Backward compatibility maintained for milestone projects
+- [ ] Documentation reflects dual-mode operation
+
+## Test Scenarios
+
+### Scenario 1: Specification keyword activation
+```gherkin
+Given the updated milestone-manager agent
+When user says "specification progress" or "spec complete"
+Then agent should activate
+And should recognize specification context
+```
+
+### Scenario 2: Specification tracking
+```gherkin
+Given a project with specifications
+When agent assesses progress
+Then it should read specification manifest
+And calculate progress based on spec statuses
+And generate appropriate progress report
+```
+
+### Scenario 3: Backward compatibility
+```gherkin
+Given a project with traditional milestones
+When agent is invoked
+Then it should detect milestone structure
+And operate in milestone mode
+And use milestone terminology
+```
+
+## Implementation Notes
+
+Key updates needed:
+1. Rename agent to "milestone-spec-manager" or keep name for compatibility
+2. Update activation patterns to include specification terms
+3. Add logic to detect project type (specification vs milestone)
+4. Modify progress calculation for specification statuses
+5. Update PR generation templates
+6. Enhance documentation with dual-mode examples
+
+Example detection logic:
+```python
+if (project_root / ".quaestor" / "specifications").exists():
+    mode = "specification"
+else:
+    mode = "milestone"  # backward compatibility
+```
+
+## Dependencies
+
+- Independent of other specifications
+- Should coordinate with spec-agent-002 for consistent terminology
+
+## Estimated Effort
+
+4-5 hours including compatibility testing

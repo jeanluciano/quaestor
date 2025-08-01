@@ -1,0 +1,150 @@
+---
+spec_id: "spec-agent-003"
+title: "Implement agent orchestration for project analysis"
+type: "feature"
+status: "implemented"
+created: "2025-01-15"
+author: "system"
+priority: "high"
+branch: "feat/spec-agent-003-agent-orchestration"
+---
+
+# Specification: Implement agent orchestration for project analysis
+
+## Use Case Overview
+
+**ID**: spec-agent-003  
+**Primary Actor**: project-init command orchestrating agents  
+**Goal**: Transform monolithic analysis into coordinated agent work  
+**Priority**: high
+
+## Context & Background
+
+Currently, project-init performs all analysis internally with hardcoded logic. This specification implements agent orchestration to leverage specialized agents for framework detection, architecture analysis, and specification generation.
+
+## Main Success Scenario
+
+1. User runs /project-init command
+2. Command spawns researcher agent for framework detection
+3. Command spawns architect agent for pattern analysis
+4. Command spawns security agent for security audit
+5. Command consolidates findings from all agents
+6. Command uses planner agent to generate specifications
+7. User receives comprehensive analysis from specialized agents
+
+## Contract Definition
+
+### Inputs
+```yaml
+inputs:
+  project_path:
+    type: "path"
+    description: "Root directory of project to analyze"
+    required: true
+  analysis_requirements:
+    type: "object"
+    properties:
+      depth: "quick|standard|deep"
+      scope: "full|targeted"
+      frameworks: "auto-detect|specified"
+```
+
+### Outputs
+```yaml
+outputs:
+  analysis_results:
+    type: "object"
+    properties:
+      framework_detection:
+        source: "researcher agent"
+        includes: ["language", "framework", "dependencies"]
+      architecture_analysis:
+        source: "architect agent"
+        includes: ["patterns", "structure", "complexity"]
+      security_assessment:
+        source: "security agent"
+        includes: ["vulnerabilities", "patterns", "recommendations"]
+      specifications:
+        source: "planner agent"
+        includes: ["initial_specs", "roadmap", "priorities"]
+```
+
+### Behavior Rules
+- Agents can be spawned in parallel for analysis phases
+- Consolidation must wait for all agent results
+- Planner agent uses consolidated findings as context
+- Error handling for agent failures with graceful degradation
+- Maintain performance with <30s total analysis time
+
+## Acceptance Criteria
+
+- [ ] Phase 1 includes researcher agent invocation for framework detection
+- [ ] Phase 1 includes architect agent invocation for architecture analysis
+- [ ] Phase 1 includes security agent invocation for security patterns
+- [ ] Parallel agent execution is implemented where possible
+- [ ] Results are properly consolidated before Phase 2
+- [ ] Phase 2 uses planner agent for specification generation
+- [ ] Agent invocations include proper context and instructions
+- [ ] Error handling exists for agent failures
+- [ ] Performance target of <30s is met
+
+## Test Scenarios
+
+### Scenario 1: Framework detection with researcher
+```gherkin
+Given a Python Django project
+When project-init analyzes the project
+Then researcher agent should be invoked
+And it should identify Django framework
+And it should list key dependencies
+```
+
+### Scenario 2: Parallel agent execution
+```gherkin
+Given project-init starts analysis
+When Phase 1 begins
+Then researcher and architect agents should run concurrently
+And security agent should run concurrently
+And results should be consolidated before proceeding
+```
+
+### Scenario 3: Specification generation
+```gherkin
+Given analysis results from Phase 1
+When Phase 2 specification generation begins
+Then planner agent should receive consolidated context
+And it should generate initial specifications
+And specifications should reflect discovered patterns
+```
+
+## Implementation Notes
+
+Example agent invocations:
+
+```markdown
+Use the researcher agent to analyze the project structure and identify:
+- Primary programming language and framework
+- Project structure patterns (MVC, DDD, etc.)
+- Key dependencies and libraries
+- Test framework and coverage
+
+Use the architect agent to evaluate:
+- System architecture patterns
+- Component relationships
+- API design patterns
+- Database architecture
+
+Use the planner agent to create specifications for a [framework] project:
+- Current state: [analysis_results]
+- Project phase: [new|growth|legacy]
+- Priority areas: [from_analysis]
+```
+
+## Dependencies
+
+- Requires spec-agent-001 (agent-strategy configuration)
+- Task tool must be available
+
+## Estimated Effort
+
+6-8 hours including agent invocation patterns and consolidation logic

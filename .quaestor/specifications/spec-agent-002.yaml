@@ -1,0 +1,122 @@
+---
+spec_id: "spec-agent-002"
+title: "Replace milestone/task terminology with specifications"
+type: "refactor"
+status: "tested"
+created: "2025-01-15"
+author: "system"
+priority: "high"
+branch: "feat/spec-agent-002-terminology-update"
+---
+
+# Specification: Replace milestone/task terminology with specifications
+
+## Use Case Overview
+
+**ID**: spec-agent-002  
+**Primary Actor**: Developer updating terminology  
+**Goal**: Systematically replace all milestone/task references with specification terminology  
+**Priority**: high
+
+## Context & Background
+
+Project-init.md currently uses the old milestone-based terminology throughout. To align with the new specification-driven development approach, all references need to be updated while preserving functionality.
+
+## Main Success Scenario
+
+1. Developer identifies all milestone/task references in project-init.md
+2. Developer replaces each reference with appropriate specification terminology
+3. Developer updates user-facing messages and templates
+4. Developer validates no functional changes occurred
+5. System uses specification terminology consistently
+
+## Contract Definition
+
+### Inputs
+```yaml
+inputs:
+  current_content:
+    type: "markdown"
+    description: "Current project-init.md with milestone references"
+    required: true
+  terminology_map:
+    type: "map"
+    description: "Mapping of old terms to new terms"
+    values:
+      milestone: "specification"
+      milestones: "specifications"
+      task: "spec"
+      tasks.yaml: "specifications/*.yaml"
+```
+
+### Outputs
+```yaml
+outputs:
+  updated_content:
+    type: "markdown"
+    description: "Updated content with specification terminology"
+    constraints:
+      - No functional changes
+      - All user messages updated
+      - Consistent terminology throughout
+```
+
+### Behavior Rules
+- Replace terminology while preserving meaning and functionality
+- Update file paths to specification structure
+- Maintain markdown formatting and structure
+- Update command references from /task to /impl
+
+## Acceptance Criteria
+
+- [ ] Line 7: "milestone-generation" → "specification-generation"
+- [ ] Line 13: "milestones" → "specifications"
+- [ ] Line 129: ".quaestor/milestones/*/README.md + tasks.yaml" → ".quaestor/specifications/*.yaml"
+- [ ] Line 235: "First milestone ready for /task execution" → "First specification ready for /impl execution"
+- [ ] All user-facing messages use specification terminology
+- [ ] File paths reference .quaestor/specifications/ structure
+- [ ] Command references updated to /impl instead of /task
+
+## Test Scenarios
+
+### Scenario 1: No milestone references remain
+```gherkin
+Given the updated project-init.md
+When searching for "milestone" or "tasks.yaml"
+Then only historically contextual references should remain
+And all functional references should use specification terminology
+```
+
+### Scenario 2: User messages are consistent
+```gherkin
+Given the validation templates and output messages
+When reviewing user-facing text
+Then all should reference specifications not milestones
+And should guide users to create specifications not tasks
+```
+
+### Scenario 3: File paths are correct
+```gherkin
+Given references to file structures
+When checking paths
+Then they should point to .quaestor/specifications/
+And should reference *.yaml files not tasks.yaml
+```
+
+## Implementation Notes
+
+Key replacements to make:
+- "milestone" → "specification" (context-aware)
+- "milestones" → "specifications"
+- "task" → "spec" (where appropriate)
+- "/task" command → "/impl" command
+- ".quaestor/milestones/" → ".quaestor/specifications/"
+- "tasks.yaml" → specification YAML files
+
+## Dependencies
+
+- Can be implemented in parallel with spec-agent-001
+
+## Estimated Effort
+
+3-4 hours for systematic replacement and validation
