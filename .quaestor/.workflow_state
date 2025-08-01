@@ -1,6 +1,6 @@
 {
   "phase": "planning",
-  "last_research": "2025-08-01T14:40:39.225837",
+  "last_research": "2025-08-01T15:03:34.487337",
   "last_plan": null,
   "files_examined": 0,
   "research_files": [
@@ -17,7 +17,15 @@
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/a1/learning/learning_manager.py",
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/a1/core/context.py",
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/commands/impl.md",
-    "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/core/command_processor.py"
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/core/command_processor.py",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/commands/project-init.md",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/templates/specification.md",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/templates/MEMORY.md",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/agents/milestone-manager.md",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/commands/research.md",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/docs/PROJECT_INIT_UPDATES.md",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/MEMORY.md",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/specifications/spec-agent-001.yaml"
   ],
   "implementation_files": []
 }
