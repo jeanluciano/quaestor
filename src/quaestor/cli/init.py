@@ -455,10 +455,7 @@ def _init_common(target_dir: Path, force: bool, mode: str):
     console.print("\n[blue]Installing hook files:[/blue]")
 
     # Team mode: hooks in .claude/hooks, Personal mode: hooks in .quaestor/hooks
-    if mode == "team":
-        hooks_dir = target_dir / ".claude" / "hooks"
-    else:
-        hooks_dir = quaestor_dir / "hooks"
+    hooks_dir = target_dir / ".claude" / "hooks" if mode == "team" else quaestor_dir / "hooks"
 
     # Create hooks directory
     hooks_dir.mkdir(parents=True, exist_ok=True)

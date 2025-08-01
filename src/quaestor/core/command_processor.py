@@ -32,10 +32,7 @@ class CommandProcessor:
 
         # Apply configurations
         config = self.loader.get_configuration(command_name)
-        if config:
-            processed_content = self._apply_configuration(base_content, config)
-        else:
-            processed_content = base_content
+        processed_content = self._apply_configuration(base_content, config) if config else base_content
 
         return processed_content
 
