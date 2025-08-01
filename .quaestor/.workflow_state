@@ -1,6 +1,6 @@
 {
   "phase": "planning",
-  "last_research": "2025-08-01T15:13:32.503052",
+  "last_research": "2025-08-01T15:40:24.952043",
   "last_plan": null,
   "files_examined": 0,
   "research_files": [
@@ -29,7 +29,15 @@
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/specifications/manifest.yaml",
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/core/specifications.py",
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/specifications/spec-agent-002.yaml",
-    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/ARCHITECTURE.md"
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/ARCHITECTURE.md",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/templates/critical_rules.md",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/hooks/todo_agent_coordinator.py",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/hooks/spec_branch_tracker.py",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/templates/quaestor_claude.md",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/compliance_validator.py",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/specifications/spec-agent-003.yaml",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/specifications/spec-agent-004.yaml",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.quaestor/specifications/spec-agent-005.yaml"
   ],
   "implementation_files": []
 }

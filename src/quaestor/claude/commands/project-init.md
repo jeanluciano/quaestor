@@ -45,45 +45,92 @@ Stack Analysis:
 
 ### Phase 1: Project Analysis 🔍
 
-**Intelligent Discovery:**
+**Agent-Orchestrated Discovery:**
+
+Use the Task tool to spawn specialized agents for parallel analysis:
+
 ```yaml
-Framework Detection:
-  - package.json → React|Vue|Angular|Express
-  - requirements.txt → Django|FastAPI|Flask
-  - Cargo.toml → Axum|Actix|Rocket
-  - go.mod → Gin|Echo|Fiber
+Parallel Agent Execution:
+  1. Framework & Dependency Analysis:
+     Agent: researcher
+     Mission: "Analyze the project structure and identify:
+       - Primary programming language and framework
+       - Project dependencies from package.json/requirements.txt/Cargo.toml/go.mod
+       - Test framework and current coverage
+       - Build tools and scripts
+       Output as structured YAML with framework, dependencies, and tools"
   
-Architecture Patterns:
-  - Features/ → Vertical Slice Architecture
-  - Domain/ → Domain-Driven Design
-  - controllers/models/views → MVC
-  - services/ → Service Layer
+  2. Architecture Pattern Analysis:
+     Agent: architect
+     Mission: "Evaluate the codebase architecture:
+       - Identify architecture patterns (MVC, DDD, VSA, Clean Architecture)
+       - Map component relationships and boundaries
+       - Assess API design patterns
+       - Analyze database architecture
+       - Identify technical debt and complexity hotspots
+       Output as structured analysis with patterns, strengths, and concerns"
+  
+  3. Security Assessment:
+     Agent: security
+     Mission: "Perform security analysis on the project:
+       - Identify security patterns and anti-patterns
+       - Check for common vulnerabilities
+       - Assess authentication/authorization approach
+       - Review data handling and encryption
+       - Evaluate dependency security
+       Output as security assessment with risks and recommendations"
 ```
 
-**Code Quality Analysis:**
+**Result Consolidation:**
+After all agents complete, consolidate findings into a unified analysis:
 ```yaml
-Pattern Detection:
-  - VSA: Features/ folders → Jimmy Bogard's pattern
-  - DDD: Domain/Application/Infrastructure layers
-  - Clean Architecture: Entities/UseCases/Adapters
-  - Enterprise Patterns: Repository|Service|UnitOfWork
-  
-Code Smell Detection:
-  - Bloaters: Long methods, large classes
-  - OOP Abusers: Switch statements, refused bequest
-  - Change Preventers: Divergent change, shotgun surgery
-  - Dispensables: Dead code, lazy classes
-  - Couplers: Feature envy, message chains
+Consolidated Analysis:
+  Framework: [from researcher]
+  Architecture: [from architect]
+  Security: [from security]
+  Complexity: [calculated score]
+  Phase: [new|growth|legacy based on analysis]
 ```
 
 ### Phase 2: Intelligent Generation ⚡
-**Auto-Document Creation:**
+**Agent-Driven Specification Creation:**
+
+Use the planner agent to generate specifications based on consolidated analysis:
+
+```yaml
+Specification Generation:
+  Agent: planner
+  Context: [Consolidated analysis from Phase 1]
+  Mission: "Based on the project analysis, create initial specifications:
+    - Project type: [framework] in [phase] phase
+    - Architecture: [patterns identified]
+    - Security concerns: [from security analysis]
+    - Current gaps: [from architect analysis]
+    
+    Generate 3-5 initial specifications that address:
+    1. Foundation/setup needs for this project type
+    2. Architecture improvements based on patterns found
+    3. Security enhancements needed
+    4. Technical debt identified
+    5. Testing/quality improvements
+    
+    For each specification provide:
+    - Title and description
+    - Priority (critical/high/medium/low)
+    - Estimated effort
+    - Dependencies
+    
+    Output as structured YAML suitable for Quaestor specifications"
+```
+
+**Document Generation:**
+Based on agent outputs, generate:
 ```yaml
 Generated Documents:
-  - ARCHITECTURE.md: Detected patterns + structure
-  - MEMORY.md: Current state + auto-specifications  
-  - manifest.json: Project metadata + tracking
-  - CRITICAL_RULES.md: Framework-specific guidelines
+  - ARCHITECTURE.md: From architect agent analysis
+  - MEMORY.md: With specifications from planner agent
+  - .quaestor/specifications/: Initial spec files
+  - CRITICAL_RULES.md: Framework-specific from analysis
 ```
 
 ### Phase 3: User Validation ✅ **[MANDATORY - DO NOT SKIP]**
@@ -204,6 +251,37 @@ Generated Specifications:
   - Authentication System
   - Database Integration
   - Production Deployment
+```
+
+## Agent Error Handling
+
+**Graceful Degradation for Agent Failures:**
+```yaml
+Error Handling Strategy:
+  If researcher agent fails:
+    - Fall back to basic file detection (package.json, requirements.txt)
+    - Log: "Framework detection limited - manual review recommended"
+    - Continue with available data
+  
+  If architect agent fails:
+    - Use simplified pattern detection based on folder structure
+    - Log: "Architecture analysis incomplete - patterns may be missed"
+    - Continue with basic analysis
+  
+  If security agent fails:
+    - Flag for manual security review
+    - Log: "Security assessment skipped - manual review required"
+    - Continue without security recommendations
+  
+  If planner agent fails:
+    - Generate basic specification templates
+    - Log: "Specification generation limited - customize as needed"
+    - Provide manual specification guide
+
+Performance Monitoring:
+  - Total time limit: 30 seconds
+  - Individual agent timeout: 10 seconds
+  - Parallel execution to maximize efficiency
 ```
 
 ## Adaptive Specification Generation
