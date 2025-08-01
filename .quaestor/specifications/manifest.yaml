@@ -34,7 +34,7 @@ specifications:
     id: "spec-agent-002"
     title: "Replace milestone/task terminology with specifications"
     type: "refactor"
-    status: "implemented"
+    status: "tested"
     priority: "high"
     description: "Update all references from milestones/tasks to specifications"
     rationale: "Align with specification-driven development approach"
@@ -57,7 +57,7 @@ specifications:
     id: "spec-agent-003"
     title: "Implement agent orchestration for project analysis"
     type: "feature"
-    status: "draft"
+    status: "tested"
     priority: "high"
     description: "Create agent-based project analysis orchestration"
     rationale: "Leverage specialized agents for different analysis aspects"
@@ -71,16 +71,16 @@ specifications:
     acceptance_criteria: []
     test_scenarios: []
     dependencies: ["spec-agent-001"]
-    branch: null
+    branch: "feat/spec-agent-003-agent-orchestration"
     created_at: "2025-01-15T12:00:00"
-    updated_at: "2025-01-15T12:00:00"
+    updated_at: "2025-08-01T20:28:51"
     metadata: {}
     
   spec-agent-004:
     id: "spec-agent-004"
     title: "Update milestone-manager agent for specifications"
     type: "refactor"
-    status: "draft"
+    status: "approved"
     priority: "medium"
     description: "Transform milestone-manager to work with specifications"
     rationale: "Support specification lifecycle management"
@@ -103,7 +103,7 @@ specifications:
     id: "spec-agent-005"
     title: "Create specification-driven workflow documentation"
     type: "documentation"
-    status: "draft"
+    status: "approved"
     priority: "medium"
     description: "Document the specification-driven development workflow"
     rationale: "Guide users in adopting specification-based approach"
@@ -125,6 +125,7 @@ specifications:
 branch_mapping:
   "feat/spec-agent-001-frontmatter-update": "spec-agent-001"
   "feat/spec-agent-002-terminology-update": "spec-agent-002"
+  "feat/spec-agent-003-agent-orchestration": "spec-agent-003"
 
 created_at: "2025-01-15T12:00:00"
-updated_at: "2025-08-01T15:14:30"
+updated_at: "2025-08-01T20:28:51"

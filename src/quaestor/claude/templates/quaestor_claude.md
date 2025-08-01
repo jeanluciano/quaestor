@@ -25,6 +25,7 @@ rule_enforcement:
 - [ ] Have I checked complexity triggers?
 - [ ] Am I using multiple agents when appropriate?
 - [ ] Is my approach production-quality?
+- [ ] Have I checked hook feedback?
 <!-- CHECKLIST:pre-action:END -->
 
 <!-- CRITICAL:rules:enforcement:END -->
@@ -32,6 +33,7 @@ rule_enforcement:
 ## Important
 - **Production Quality**: We're building production-quality code TOGETHER. Your role is to create maintainable, efficient solutions while catching potential issues early.
 - **Mandatory Compliance**: ALL instructions within this document MUST BE FOLLOWED, these are not optional unless explicitly stated.
+- **Hook Compliance**: Hook feedback is MANDATORY and must be treated as requirements, not suggestions. All hook outputs must be addressed before proceeding.
 - **Ask for Help**: ASK FOR CLARIFICATION when you seem stuck or overly complex, I'll redirect you - my guidance helps you stay on track.
 - **Reference Examples**: When in doubt about implementation details, refer to the existing `/examples` implementation as a reference.
 - **CRITICAL**: Rules in [CRITICAL_RULES.md](./.quaestor/CRITICAL_RULES.md) override everything else.
@@ -60,6 +62,7 @@ See CRITICAL_RULES.md for mandatory agent usage triggers and requirements.
 - Before starting a new major component
 - When something feels wrong
 - Before declaring "done"
+- **After receiving hook feedback** - MANDATORY compliance required
 
 Run your project's test suite regularly (see Testing section below).
 
@@ -90,6 +93,69 @@ When you're stuck or confused:
 <!-- WORKFLOW:problem-solving:END -->
 
 **Remember**: My insights on better approaches are valued - please ask for them!
+
+## Hook System Integration
+
+### MANDATORY Hook Compliance
+
+<!-- SECTION:hook-compliance:START -->
+**CRITICAL**: Hooks provide MANDATORY feedback, not suggestions. All hook outputs must be treated as requirements and addressed before proceeding with any action.
+
+### Hook Types and Required Actions
+
+**Compliance Hooks**:
+- `compliance_validator.py` - Validates project compliance requirements
+- `compliance_pre_edit.py` - Pre-edit validation checks
+- **Required Action**: Fix ALL compliance issues before proceeding
+
+**Workflow Hooks**:
+- `research_workflow_tracker.py` - Enforces Research → Plan → Implement workflow
+- `milestone_tracker.py` - Tracks milestone progress and completion
+- **Required Action**: Follow the exact workflow steps specified
+
+**Memory & Context Hooks**:
+- `memory_tracker.py` - Maintains MEMORY.md synchronization
+- `session_context_loader.py` - Loads required context files
+- **Required Action**: Update all specified files and load required context
+
+**Task Coordination Hooks**:
+- `todo_agent_coordinator.py` - Coordinates multi-agent task execution
+- `spec_branch_tracker.py` - Tracks specification branch requirements
+- **Required Action**: Follow multi-agent coordination requirements
+
+### Hook Feedback Processing
+
+1. **Read ALL hook output completely**
+2. **Address EVERY requirement listed**
+3. **Do not proceed until ALL hook feedback is resolved**
+4. **Treat hook failures as blocking errors**
+
+### Common Hook Requirements
+
+**Before any edit**:
+- Load CRITICAL_RULES.md
+- Check workflow phase compliance
+- Validate milestone task status
+- Ensure proper agent coordination
+
+**After completing work**:
+- Update MEMORY.md with progress
+- Mark TODOs as completed
+- Commit changes with proper messages
+- Update milestone tracking
+
+**Example Hook Compliance**:
+```yaml
+# Hook says: "REQUIRED: Load CRITICAL_RULES.md first"
+# Your response: Load the file immediately, don't proceed without it
+
+# Hook says: "ERROR: No active milestone task found"
+# Your response: Create or activate a milestone task before continuing
+
+# Hook says: "REQUIRED: Update MEMORY.md with progress"
+# Your response: Update MEMORY.md with current status and next steps
+```
+<!-- SECTION:hook-compliance:END -->
 
 # PROJECT OVERVIEW
 
@@ -217,6 +283,17 @@ workflow_hooks:
 
 # DEVELOPMENT WORKFLOW
 
+### Hook-Compliant Development Process
+
+<!-- CHECKLIST:hook-compliant-dev:START -->
+1. **Pre-Work Hook Validation**: Check all hook feedback before starting
+2. **Research Phase**: Load required context files as specified by hooks
+3. **Planning Phase**: Follow workflow tracker requirements  
+4. **Implementation Phase**: Address compliance feedback throughout
+5. **Post-Work Hook Updates**: Update tracking files as required
+6. **Completion Validation**: Ensure all hook requirements are met
+<!-- CHECKLIST:hook-compliant-dev:END -->
+
 ### Testing and Linting
 - Run tests: `[your test command, e.g., npm test, pytest tests/]`
 - Run specific test: `[your specific test command]`
@@ -230,6 +307,7 @@ workflow_hooks:
 1. Follow established patterns in the codebase
 2. Ensure backward compatibility when making changes
 3. Use feature flags for gradual rollout of new features
+4. **MANDATORY**: Address all hook compliance issues before proceeding
 <!-- CHECKLIST:codebase-work:END -->
 
 ### Development Process
@@ -240,4 +318,5 @@ workflow_hooks:
 3. Keep commits small and focused
 4. Write clear commit messages
 5. Update documentation as you go
+6. **CRITICAL**: Follow hook feedback as mandatory requirements
 <!-- CHECKLIST:dev-process:END -->

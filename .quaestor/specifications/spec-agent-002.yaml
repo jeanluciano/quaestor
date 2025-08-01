@@ -2,7 +2,7 @@
 spec_id: "spec-agent-002"
 title: "Replace milestone/task terminology with specifications"
 type: "refactor"
-status: "implemented"
+status: "tested"
 created: "2025-01-15"
 author: "system"
 priority: "high"
