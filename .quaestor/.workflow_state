@@ -1,6 +1,6 @@
 {
   "phase": "planning",
-  "last_research": "2025-08-01T19:48:17.650711",
+  "last_research": "2025-08-01T19:54:55.412512",
   "last_plan": null,
   "files_examined": 0,
   "research_files": [
@@ -16,7 +16,11 @@
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/tests/test_hooks_system.py",
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/tests/test_updater.py",
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/tests/test_new_cli_structure.py",
-    "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/core/updater.py"
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/core/updater.py",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/mkdocs.yml",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.github/workflows/docs.yml",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.github/workflows/test.yml",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/.github/workflows/publish.yml"
   ],
   "implementation_files": []
 }
