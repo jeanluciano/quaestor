@@ -5,6 +5,61 @@ All notable changes to Quaestor will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2025-08-01
+
+### Added
+- **Complete Agent System** - 13 specialized AI agents for Claude Code (MAJOR FEATURE!)
+  - `architect.md` - System design and architecture planning
+  - `compliance-enforcer.md` - Ensures code standards and patterns
+  - `debugger.md` - Systematic debugging and error resolution
+  - `explorer.md` - Codebase navigation and understanding
+  - `implementer.md` - Feature development and code writing
+  - `planner.md` - Strategic planning and task breakdown
+  - `qa.md` - Testing and quality assurance
+  - `refactorer.md` - Code improvement and optimization
+  - `researcher.md` - Codebase analysis and pattern discovery
+  - `reviewer.md` - Code review and validation
+  - `security.md` - Security analysis and vulnerability detection
+  - `spec-manager.md` - Specification lifecycle management
+  - `workflow-coordinator.md` - Orchestrates development phases
+- **Agent Installation** - Agents automatically installed during `quaestor init`
+- **Comprehensive Documentation** for all agents and hooks
+- **`impl.md` command** replaces `task.md` for implementation
+
+### Changed (Breaking)
+- **BREAKING**: Complete transition from milestone-based to specification-driven development
+  - All "milestone" references replaced with "specification" throughout codebase
+  - Renamed `milestone_tracker.py` to `spec_tracker.py`
+  - Commands now use specification terminology instead of milestone
+  - This affects all hooks, agents, and command interfaces
+
+### Fixed
+- All unit tests now passing after refactoring
+- GitHub Actions updated to latest versions (fixes deprecation warnings)
+- Added `.workflow_state` to gitignore
+- CLI module path issues in tests
+- Hook template consistency tests
+- Hook and agent installation during init
+
+### Improved
+- Complete mkdocs.yml navigation structure
+- Test suite reliability and coverage
+- Installation process includes all new agents and hooks
+- Project structure reorganized for better modularity
+
+### Migration Instructions
+Due to breaking changes in this release, existing users should:
+
+1. **Recommended**: Run `quaestor init --force` to get the new agent system and updated hooks
+2. **Manual Migration**: If you have customizations:
+   - Back up your `.quaestor/` and `.claude/` directories
+   - Run `quaestor init --force`
+   - Restore any customizations from your backup
+   - Update any references from "milestone" to "specification" in your custom files
+   - Update hook references from `milestone_tracker.py` to `spec_tracker.py`
+
+Note: The updater in this version does not automatically update hooks and agents. This will be addressed in a future release.
+
 ## [0.5.1] - 2025-01-19
 
 ### Fixed
