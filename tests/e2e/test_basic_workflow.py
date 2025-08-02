@@ -38,7 +38,7 @@ def quaestor_command():
         return result.stdout.strip()
 
     # Otherwise use Python module
-    return [sys.executable, "-m", "quaestor.cli.main"]
+    return [sys.executable, "-m", "quaestor.cli.app"]
 
 
 class TestBasicWorkflow:

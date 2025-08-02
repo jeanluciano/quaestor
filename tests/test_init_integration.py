@@ -118,15 +118,15 @@ class TestInitIntegration:
         # Should show configured commands
         assert "(configured)" in result.output
         # Check that commands were installed with configuration
-        assert "Installed task.md" in result.output or "Regenerated task.md" in result.output
+        assert "Installed impl.md" in result.output or "Regenerated impl.md" in result.output
 
         # Check task command has configuration applied
-        task_file = project_with_config / ".claude" / "commands" / "task.md"
-        assert task_file.exists()
-        task_content = task_file.read_text()
+        impl_file = project_with_config / ".claude" / "commands" / "impl.md"
+        assert impl_file.exists()
+        impl_content = impl_file.read_text()
 
         # Verify configuration was applied
-        assert "PROJECT-SPECIFIC" in task_content
+        assert "PROJECT-SPECIFIC" in impl_content
         # Check that configuration was applied (content may vary based on processing)
         # Parameters are not included in the output currently
 
@@ -286,8 +286,8 @@ minimum_test_coverage: 80
         assert result.exit_code == 0
 
         # Verify processor was used
-        task_file = project_with_config / ".claude" / "commands" / "task.md"
-        content = task_file.read_text()
+        impl_file = project_with_config / ".claude" / "commands" / "impl.md"
+        content = impl_file.read_text()
 
         # New implementation uses PROJECT-SPECIFIC headers
         assert "PROJECT-SPECIFIC" in content or "STRICT ENFORCEMENT" in content

@@ -7,7 +7,7 @@ COMMAND_FILES = [
     "project-init.md",  # Initialize project documentation
     "research.md",  # Intelligent codebase exploration and discovery
     "plan.md",  # Strategic planning and progress management
-    "task.md",  # Implementation with agent orchestration
+    "impl.md",  # Implementation with agent orchestration
     "debug.md",  # Interactive debugging and troubleshooting
     "review.md",  # Comprehensive review, validation, and shipping
 ]

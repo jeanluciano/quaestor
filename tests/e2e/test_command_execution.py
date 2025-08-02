@@ -34,7 +34,7 @@ class TestCommandExecution:
 
     def test_help_command_output(self, initialized_project):
         """Test help command provides usage information."""
-        cmd = [sys.executable, "-m", "quaestor.cli.main", "--help"]
+        cmd = [sys.executable, "-m", "quaestor.cli.app", "--help"]
         result = subprocess.run(cmd, cwd=initialized_project, capture_output=True, text=True)
 
         assert result.returncode == 0
@@ -48,7 +48,7 @@ class TestCommandExecution:
     def test_update_command_manifest_check(self, initialized_project):
         """Test update command correctly checks manifest."""
         # First update should show up to date
-        cmd = [sys.executable, "-m", "quaestor.cli.main", "update", "--force"]
+        cmd = [sys.executable, "-m", "quaestor.cli.app", "update", "--force"]
         result = subprocess.run(cmd, cwd=initialized_project, capture_output=True, text=True)
         assert result.returncode == 0
         assert "up to date" in result.stdout.lower()
@@ -68,7 +68,7 @@ class TestCommandExecution:
 
     def test_configure_command_workflow(self, initialized_project):
         """Test configure command with different options."""
-        base_cmd = [sys.executable, "-m", "quaestor.cli.main", "configure"]
+        base_cmd = [sys.executable, "-m", "quaestor.cli.app", "configure"]
 
         # 1. Initialize configuration
         result = subprocess.run(base_cmd + ["--init"], cwd=initialized_project, capture_output=True, text=True)
@@ -173,7 +173,7 @@ class TestCommandWithConfiguration:
             yaml.dump(config_data, f)
 
         # Apply configuration
-        cmd = [sys.executable, "-m", "quaestor.cli.main", "configure", "--apply"]
+        cmd = [sys.executable, "-m", "quaestor.cli.app", "configure", "--apply"]
         result = subprocess.run(cmd, cwd=initialized_project, capture_output=True, text=True)
 
         # Just verify command ran successfully
@@ -224,7 +224,7 @@ Always check the deployment status first.
             yaml.dump(config_data, f)
 
         # Apply
-        cmd = [sys.executable, "-m", "quaestor.cli.main", "configure", "--apply"]
+        cmd = [sys.executable, "-m", "quaestor.cli.app", "configure", "--apply"]
         result = subprocess.run(cmd, cwd=initialized_project, capture_output=True, text=True)
         assert result.returncode == 0
 

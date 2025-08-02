@@ -37,7 +37,7 @@ class TestInitCommand:
                     ("quaestor.claude.commands", "project-init.md"): "# project-init.md",
                     ("quaestor.claude.commands", "research.md"): "# research.md",
                     ("quaestor.claude.commands", "plan.md"): "# plan.md",
-                    ("quaestor.claude.commands", "task.md"): "# task.md",
+                    ("quaestor.claude.commands", "impl.md"): "# impl.md",
                     ("quaestor.claude.commands", "debug.md"): "# debug.md",
                     ("quaestor.claude.commands", "review.md"): "# review.md",
                 }
@@ -174,7 +174,7 @@ class TestInitCommand:
             "project-init.md",
             "research.md",
             "plan.md",
-            "task.md",
+            "impl.md",
             "debug.md",
             "review.md",
         ]
