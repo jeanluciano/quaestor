@@ -92,8 +92,8 @@ class TestQuaestorUpdater:
 
         updater = QuaestorUpdater(temp_dir, manifest)
 
-        # Mock the version check
-        with patch("quaestor.updater.__version__", "0.2.4"):
+        # Mock the version check - need to patch where it's used
+        with patch("quaestor.core.updater.__version__", "0.2.4"):
             updates = updater.check_for_updates(show_diff=False)
 
         assert updates["needs_update"] is False
@@ -110,8 +110,8 @@ class TestQuaestorUpdater:
 
         updater = QuaestorUpdater(temp_dir, manifest)
 
-        # Mock the version check
-        with patch("quaestor.updater.__version__", "0.2.4"):
+        # Mock the version check - need to patch where it's used
+        with patch("quaestor.core.updater.__version__", "0.2.4"):
             updates = updater.check_for_updates(show_diff=False)
 
         assert updates["needs_update"] is True
@@ -137,7 +137,7 @@ class TestQuaestorUpdater:
         updater = QuaestorUpdater(temp_dir, manifest)
 
         # Mock package resources
-        with patch("quaestor.updater.pkg_resources.read_text") as mock_read:
+        with patch("quaestor.core.updater.pkg_resources.read_text") as mock_read:
             mock_read.return_value = "<!-- QUAESTOR:version:1.1 -->\nNew content"
             result = updater.update()
 
@@ -159,7 +159,7 @@ class TestQuaestorUpdater:
         updater = QuaestorUpdater(temp_dir, manifest)
 
         # Mock package resources with new content
-        with patch("quaestor.updater.pkg_resources.read_text") as mock_read:
+        with patch("quaestor.core.updater.pkg_resources.read_text") as mock_read:
             mock_read.return_value = "<!-- QUAESTOR:version:1.1 -->\nNew critical rules"
             updater.update()
 
@@ -216,7 +216,7 @@ class TestQuaestorUpdater:
         updater = QuaestorUpdater(temp_dir, manifest)
 
         # Check for updates should detect version from file
-        with patch("quaestor.updater.__version__", "0.5.2"):
+        with patch("quaestor.core.updater.__version__", "0.5.2"):
             updates = updater.check_for_updates(show_diff=False)
 
         assert updates["current_version"] == "0.5.1"
@@ -234,7 +234,7 @@ class TestQuaestorUpdater:
         updater = QuaestorUpdater(temp_dir, manifest)
 
         # Mock templates
-        with patch("quaestor.updater.pkg_resources.read_text") as mock_read:
+        with patch("quaestor.core.updater.pkg_resources.read_text") as mock_read:
 
             def read_text_side_effect(package, resource):
                 content_map = {
@@ -247,7 +247,7 @@ class TestQuaestorUpdater:
 
             mock_read.side_effect = read_text_side_effect
 
-            with patch("quaestor.updater.__version__", "0.5.1"):
+            with patch("quaestor.core.updater.__version__", "0.5.1"):
                 result = updater.update(backup=False, force=False, dry_run=False)
 
         # Check that core files were created
@@ -293,7 +293,7 @@ class TestUpdateIntegration:
         updater = QuaestorUpdater(temp_dir, manifest2)
 
         # Mock new versions of files
-        with patch("quaestor.updater.pkg_resources.read_text") as mock_read:
+        with patch("quaestor.core.updater.pkg_resources.read_text") as mock_read:
             # Need to handle multiple calls to read_text for different files
             def read_text_side_effect(package, resource):
                 if resource == "quaestor_claude.md":
@@ -311,7 +311,7 @@ class TestUpdateIntegration:
 
             mock_read.side_effect = read_text_side_effect
 
-            with patch("quaestor.updater.__version__", "0.2.4"):
+            with patch("quaestor.core.updater.__version__", "0.2.4"):
                 result = updater.update()
 
         # Verify results

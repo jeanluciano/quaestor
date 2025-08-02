@@ -198,20 +198,20 @@ class TestHooksConfiguration:
         """Ensure hook names in automation_base.json match actual filenames."""
         import importlib.resources as pkg_resources
 
-        # Get all hook files
-        workflow_hooks = set()
-        try:
-            # List workflow hooks
-            for item in [
-                "implementation_declaration.py",
-                "research_tracker.py",
-                "implementation_tracker.py",
-                "memory_updater.py",
-                "automated_commit_trigger.py",
-            ]:
-                workflow_hooks.add(f"workflow/{item}")
-        except Exception:
-            pass
+        # Get all hook files from the flat structure
+        available_hooks = set(
+            [
+                "base.py",
+                "compliance_pre_edit.py",
+                "compliance_validator.py",
+                "file_change_tracker.py",
+                "memory_tracker.py",
+                "research_workflow_tracker.py",
+                "session_context_loader.py",
+                "spec_tracker.py",
+                "todo_agent_coordinator.py",
+            ]
+        )
 
         # Parse automation_base.json
         automation_json = pkg_resources.read_text("quaestor.claude.hooks", "automation_base.json")
@@ -230,8 +230,8 @@ class TestHooksConfiguration:
                         referenced_hooks.add(hook_file)
 
         # All referenced hooks should exist
-        assert referenced_hooks.issubset(workflow_hooks), (
-            f"Referenced hooks not found: {referenced_hooks - workflow_hooks}"
+        assert referenced_hooks.issubset(available_hooks), (
+            f"Referenced hooks not found: {referenced_hooks - available_hooks}"
         )
 
 

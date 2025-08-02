@@ -1,6 +1,6 @@
 {
   "phase": "planning",
-  "last_research": "2025-08-01T19:42:02.651893",
+  "last_research": "2025-08-01T19:48:17.650711",
   "last_plan": null,
   "files_examined": 0,
   "research_files": [
@@ -12,7 +12,11 @@
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/tests/e2e/test_basic_workflow.py",
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/commands/impl.md",
     "/Users/jeanluciano/Dev/jeanluciano/quaestor/tests/test_init_integration.py",
-    "/Users/jeanluciano/Dev/jeanluciano/quaestor/tests/test_cli.py"
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/tests/test_cli.py",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/tests/test_hooks_system.py",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/tests/test_updater.py",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/tests/test_new_cli_structure.py",
+    "/Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/core/updater.py"
   ],
   "implementation_files": []
 }
