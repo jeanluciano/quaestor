@@ -208,7 +208,7 @@ Use these commands to maintain consistency and follow best practices.
 
 # WORKFLOW HOOKS
 
-### Automated Milestone Commits
+### Automated Specification Commits
 
 <!-- SECTION:workflow-hooks:START -->
 ## Workflow Automation Hooks
@@ -220,7 +220,7 @@ workflow_hooks:
     trigger: "MEMORY.md modified"
     conditions:
       - "Contains completed TODO items"
-      - "Milestone progress changed"
+      - "Specification progress changed"
     actions:
       - scan_for_completed_todos: "Check TODO status"
       - run_specification_commit: "Auto-commit completed work"

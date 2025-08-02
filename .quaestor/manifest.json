@@ -1,29 +1,29 @@
 {
   "version": "1.0",
   "quaestor_version": "0.5.2",
-  "created_at": "2025-08-01T17:38:23.651360",
-  "last_updated": "2025-08-01T17:38:23.986826",
+  "created_at": "2025-08-01T19:28:17.815393",
+  "last_updated": "2025-08-01T19:28:18.129400",
   "files": {
     ".quaestor/QUAESTOR_CLAUDE.md": {
       "type": "user-editable",
       "version": "1.0",
-      "installed_at": "2025-08-01T17:38:23.986507",
-      "original_checksum": "727070797d3edfaf7ad1fa364909b10e287197f87778fec967dfecb3b9ff7d15",
-      "current_checksum": "727070797d3edfaf7ad1fa364909b10e287197f87778fec967dfecb3b9ff7d15",
+      "installed_at": "2025-08-01T19:28:18.129075",
+      "original_checksum": "81cdcf7af589aedcd7d3bfea0341faad2234cf3dc7655b4f0fd6118ac24e2583",
+      "current_checksum": "81cdcf7af589aedcd7d3bfea0341faad2234cf3dc7655b4f0fd6118ac24e2583",
       "user_modified": false
     },
     ".quaestor/CRITICAL_RULES.md": {
       "type": "user-editable",
       "version": "1.0",
-      "installed_at": "2025-08-01T17:38:23.986630",
-      "original_checksum": "78dadd103be5fdcca43806802ecdbdcf766a5c086a1a6add9103c71beb56ef2d",
-      "current_checksum": "78dadd103be5fdcca43806802ecdbdcf766a5c086a1a6add9103c71beb56ef2d",
+      "installed_at": "2025-08-01T19:28:18.129176",
+      "original_checksum": "134867323caa30518f7b669290558423a0ae98ea33209dd9adc9517c5b0c11f0",
+      "current_checksum": "134867323caa30518f7b669290558423a0ae98ea33209dd9adc9517c5b0c11f0",
       "user_modified": false
     },
     ".quaestor/ARCHITECTURE.md": {
       "type": "user-editable",
       "version": "1.0",
-      "installed_at": "2025-08-01T17:38:23.986763",
+      "installed_at": "2025-08-01T19:28:18.129322",
       "original_checksum": "2f303a49e472da1fc0e76c026e3188a0b9e671df188a5b1982cd1f7517bba98d",
       "current_checksum": "2f303a49e472da1fc0e76c026e3188a0b9e671df188a5b1982cd1f7517bba98d",
       "user_modified": false
@@ -31,7 +31,7 @@
     ".quaestor/MEMORY.md": {
       "type": "user-editable",
       "version": "1.0",
-      "installed_at": "2025-08-01T17:38:23.986824",
+      "installed_at": "2025-08-01T19:28:18.129398",
       "original_checksum": "70c8bb9e0efcee0cd2bb5f4ad099a18b84d18892de004e4f0db1a6222b43504d",
       "current_checksum": "70c8bb9e0efcee0cd2bb5f4ad099a18b84d18892de004e4f0db1a6222b43504d",
       "user_modified": false

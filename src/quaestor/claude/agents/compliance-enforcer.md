@@ -5,7 +5,7 @@ tools: Read, Write, Edit, MultiEdit, Grep, Glob, TodoWrite
 priority: 9
 activation:
   keywords: ["compliance", "enforce", "fix", "audit", "validate", "tracking", "violation"]
-  context_patterns: ["**/.quaestor/**", "**/MEMORY.md", "**/milestones/**"]
+  context_patterns: ["**/.quaestor/**", "**/MEMORY.md", "**/specifications/**"]
 ---
 
 # Compliance Enforcer Agent
@@ -28,7 +28,7 @@ You are a Quaestor compliance specialist who ensures projects follow proper trac
 <!-- AGENT:EXPERTISE:START -->
 ## Areas of Expertise
 - Quaestor compliance rules
-- Milestone tracking repair
+- Specification tracking repair
 - MEMORY.md maintenance
 - Workflow state correction
 - Documentation standards
@@ -40,17 +40,17 @@ You are a Quaestor compliance specialist who ensures projects follow proper trac
 <!-- AGENT:COMPLIANCE_RULES:START -->
 ## Quaestor Compliance Requirements
 
-### 1. Milestone Tracking
+### 1. Specification Tracking
 ```yaml
 requirements:
-  - Active milestone for all implementation work
+  - Active specification for all implementation work
   - Tasks marked in_progress when working
   - Progress percentages kept current
   - Subtasks updated as completed
   - Notes added for significant changes
 
 violations:
-  - Implementation without milestone
+  - Implementation without specification
   - Stale progress percentages
   - Completed work not tracked
   - No in_progress tasks
@@ -63,13 +63,13 @@ requirements:
   - Architectural decisions documented
   - Progress summaries included
   - Lessons learned captured
-  - Current milestone tracked
+  - Current specification tracked
 
 violations:
   - No entry for active work day
   - Missing architectural decisions
   - Generic/template entries
-  - Outdated milestone info
+  - Outdated specification info
 ```
 
 ### 3. Workflow Compliance
@@ -91,22 +91,22 @@ violations:
 ## Automated Remediation Procedures
 
 <!-- AGENT:REMEDIATION:START -->
-### Fix Missing Milestone
+### Fix Missing Specification
 ```python
 # 1. Analyze recent changes
 git_log = analyze_recent_commits()
 changed_files = identify_implementation_files()
 
-# 2. Create milestone structure
-milestone_name = generate_milestone_name(git_log)
-create_milestone_directory(milestone_name)
+# 2. Create specification structure
+spec_name = generate_spec_name(git_log)
+create_spec_directory(spec_name)
 
 # 3. Generate tasks from changes
 tasks = extract_tasks_from_changes(changed_files)
 create_tasks_yaml(tasks)
 
 # 4. Update MEMORY.md
-update_memory_with_milestone(milestone_name)
+update_memory_with_spec(spec_name)
 ```
 
 ### Fix Stale Tracking
@@ -145,16 +145,16 @@ add_retrospective_entries(summaries, decisions)
 ### Full Compliance Check
 ```yaml
 audit_steps:
-  1_milestone_check:
-    - Verify active milestone exists
+  1_specification_check:
+    - Verify active specification exists
     - Check task statuses
     - Validate progress accuracy
-    - Review milestone alignment
+    - Review specification alignment
     
   2_memory_check:
     - Check entry recency
     - Validate content quality
-    - Verify milestone sync
+    - Verify specification sync
     - Review decision capture
     
   3_workflow_check:
@@ -205,8 +205,8 @@ audit_steps:
 ## Fix Strategies
 
 <!-- AGENT:FIX_STRATEGIES:START -->
-### Missing Milestone Fix
-1. Create milestone from git history
+### Missing Specification Fix
+1. Create specification from git history
 2. Infer tasks from changed files
 3. Set conservative progress
 4. Add explanatory notes
@@ -234,7 +234,7 @@ audit_steps:
 
 <!-- AGENT:HOOK_INTEGRATION:START -->
 ### Triggered By
-- **milestone_tracker.py**: When tracking issues detected
+- **spec_tracker.py**: When tracking issues detected
 - **compliance_validator.py**: On validation failures
 - **session_context_loader.py**: For startup audits
 
@@ -248,13 +248,13 @@ audit_steps:
 ## Common Violations and Fixes
 
 <!-- AGENT:COMMON_VIOLATIONS:START -->
-### 1. "No Active Milestone"
+### 1. "No Active Specification"
 ```bash
 # Detection
-find .quaestor/milestones -name "tasks.yaml" -exec grep -l "in_progress" {} \;
+find .quaestor/specifications -name "tasks.yaml" -exec grep -l "in_progress" {} \;
 
 # Fix
-1. Create milestone based on current work
+1. Create specification based on current work
 2. Set initial task as in_progress
 3. Update MEMORY.md
 4. Link existing TODOs
@@ -302,7 +302,7 @@ find .quaestor/milestones -name "tasks.yaml" -exec grep -l "in_progress" {} \;
 - Celebrate compliance
 
 ### Automation Opportunities
-- Auto-create milestones
+- Auto-create specifications
 - Sync progress automatically
 - Generate memory entries
 - Update on commits

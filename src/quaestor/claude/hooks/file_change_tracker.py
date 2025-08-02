@@ -50,7 +50,7 @@ def track_file_changes():
 
     # Smart reminders based on change types
     if changes["src_files"] or changes["test_files"]:
-        print("\n🎯 MILESTONE UPDATE REQUIRED:")
+        print("\n🎯 SPECIFICATION UPDATE REQUIRED:")
         print("   Implementation detected - please update:")
         print("   1. Mark completed subtasks in .quaestor/specs/*.yaml")
         print("   2. Update progress percentage")
@@ -64,7 +64,7 @@ def track_file_changes():
     memory_updated = any("MEMORY.md" in f for f in changes["doc_files"])
 
     if not specification_updated:
-        print("\n⚠️  MISSING: Milestone files not updated")
+        print("\n⚠️  MISSING: Specification files not updated")
         print("   You changed implementation files but didn't update specifications")
 
     if not memory_updated:

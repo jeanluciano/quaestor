@@ -23,7 +23,7 @@ def initialized_project():
         subprocess.run(["git", "config", "user.name", "Test User"], cwd=repo_path, check=True, capture_output=True)
 
         # Initialize Quaestor
-        cmd = [sys.executable, "-m", "quaestor.cli.main", "init", "--mode", "team"]
+        cmd = [sys.executable, "-m", "quaestor.cli.app", "init", "--mode", "team"]
         subprocess.run(cmd, cwd=repo_path, check=True, capture_output=True)
 
         yield repo_path
@@ -213,7 +213,7 @@ Always check the deployment status first.
             "commands": {
                 "task": {"enforcement": "strict", "require_planning": True},
                 "check": {"enforcement": "relaxed", "auto_fix": True},
-                "milestone": {"enforcement": "default", "parameters": {"auto_create_pr": True}},
+                "specification": {"enforcement": "default", "parameters": {"auto_create_pr": True}},
             }
         }
 
@@ -237,4 +237,4 @@ Always check the deployment status first.
         assert saved_config["commands"]["task"]["enforcement"] == "strict"
         assert "check" in saved_config["commands"]
         assert saved_config["commands"]["check"]["enforcement"] == "relaxed"
-        assert "milestone" in saved_config["commands"]
+        assert "specification" in saved_config["commands"]

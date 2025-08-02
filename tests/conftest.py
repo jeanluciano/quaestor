@@ -47,11 +47,11 @@ def sample_memory_manifest() -> str:
 - **Overall Progress**: 60%
 
 ## Project Timeline
-### Milestone 1: Core Features (Complete)
+### Phase 1: Core Features (Complete)
 - ✅ Basic order processing
 - ✅ User authentication
 
-### Milestone 2: Advanced Features (In Progress)
+### Phase 2: Advanced Features (In Progress)
 - 🚧 Payment integration
 - ⬜ Inventory tracking
 
@@ -194,7 +194,7 @@ def command_config_sample():
                 "custom_rules": ["Always use type hints", "Document all public functions"],
             },
             "check": {"enforcement": "relaxed", "auto_fix": True},
-            "milestone": {"enforcement": "default", "parameters": {"auto_create_pr": True}},
+            "specification": {"enforcement": "default", "parameters": {"auto_create_pr": True}},
         }
     }
 

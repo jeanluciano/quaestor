@@ -100,7 +100,7 @@ immutable_rules:
         - test_coverage
       validation: "Code review checklist must pass"
   
-  - rule_id: "MANDATORY_MILESTONE_TRACKING"
+  - rule_id: "MANDATORY_SPECIFICATION_TRACKING"
     priority: "CRITICAL"
     description: "ALL work must be tracked in the specification system"
     enforcement:
@@ -115,7 +115,7 @@ immutable_rules:
         - mark: "completed subtasks with '# COMPLETED'"
         - update: "progress percentage in tasks.yaml"
         - document: "progress in MEMORY.md with details"
-      validation: "Milestone files and MEMORY.md must be updated"
+      validation: "Specification files and MEMORY.md must be updated"
   
   - rule_id: "ALWAYS_FOLLOW_HOOKS"
     priority: "CRITICAL"
@@ -374,7 +374,7 @@ rule_violations:
 <!-- SECTION:enforcement:consequences:END -->
 
 <!-- SECTION:specification-tracking:START -->
-## 📋 MILESTONE TRACKING SYSTEM
+## 📋 SPECIFICATION TRACKING SYSTEM
 
 <!-- DATA:specification-requirements:START -->
 ```yaml
@@ -429,7 +429,7 @@ specification_tracking_mandatory:
               - Next: [what's next in this task]
       
       verification_checklist:
-        - check: "Milestone task status updated"
+        - check: "Specification task status updated"
         - check: "Subtasks marked complete with '# COMPLETED'"
         - check: "Progress percentage reflects reality"
         - check: "MEMORY.md has detailed progress entry"

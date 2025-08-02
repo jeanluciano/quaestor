@@ -35,36 +35,35 @@ def parse_hook_input() -> dict[str, Any]:
         return {}
 
 
-def check_current_milestone(project_root: Path) -> dict[str, Any]:
-    """Check current milestone status from MEMORY.md and milestone files."""
+def check_current_specification(project_root: Path) -> dict[str, Any]:
+    """Check current specification status from MEMORY.md and specification files."""
     memory_file = project_root / ".quaestor" / "MEMORY.md"
-    milestones_dir = project_root / ".quaestor" / "milestones"
+    specs_dir = project_root / ".quaestor" / "specs"
 
-    result = {"active": False, "name": "", "progress": 0, "remaining_tasks": 0, "in_progress_task": None}
+    result = {"active": False, "id": "", "progress": 0, "remaining_tasks": 0, "in_progress_task": None}
 
-    # Check MEMORY.md for current milestone
+    # Check MEMORY.md for current specification
     if memory_file.exists():
         try:
             content = memory_file.read_text()
-            milestone_match = re.search(r"current_milestone:\s*['\"]?([^'\"]+)['\"]?", content)
+            spec_match = re.search(r"current_specification:\s*['\"]?([^'\"]+)['\"]?", content)
             progress_match = re.search(r"progress:\s*(\d+)%", content)
 
-            if milestone_match:
+            if spec_match:
                 result["active"] = True
-                result["name"] = milestone_match.group(1)
+                result["id"] = spec_match.group(1)
                 if progress_match:
                     result["progress"] = int(progress_match.group(1))
         except Exception:
             pass
 
-    # Check milestone files for in-progress tasks
-    if milestones_dir.exists() and result["active"]:
-        milestone_dir = milestones_dir / result["name"]
-        tasks_file = milestone_dir / "tasks.yaml"
+    # Check specification files for in-progress tasks
+    if specs_dir.exists() and result["active"]:
+        spec_file = specs_dir / f"{result['id']}.yaml"
 
-        if tasks_file.exists():
+        if spec_file.exists():
             try:
-                with open(tasks_file) as f:
+                with open(spec_file) as f:
                     content = f.read()
 
                 # Count remaining tasks (simplified parsing)
@@ -160,7 +159,7 @@ def get_next_workflow_step(workflow_state: dict[str, Any]) -> str:
         else:
             return "Move to planning phase with planner agent"
     elif phase == "planning":
-        return "Create implementation plan and milestones"
+        return "Create implementation plan and specifications"
     elif phase == "implementing":
         return "Continue implementation, update TODOs"
     else:
@@ -168,7 +167,7 @@ def get_next_workflow_step(workflow_state: dict[str, Any]) -> str:
 
 
 def generate_session_context(
-    milestone_status: dict[str, Any], workflow_state: dict[str, Any], recent_activity: dict[str, Any], source: str
+    spec_status: dict[str, Any], workflow_state: dict[str, Any], recent_activity: dict[str, Any], source: str
 ) -> str:
     """Generate context message for session start."""
 
@@ -180,25 +179,25 @@ def generate_session_context(
     else:
         context_parts.append("=== SESSION CONTEXT ===")
 
-    # Active milestone information
-    if milestone_status["active"]:
-        milestone_info = [f"ACTIVE MILESTONE: {milestone_status['name']} ({milestone_status['progress']}% complete)"]
+    # Active specification information
+    if spec_status["active"]:
+        spec_info = [f"ACTIVE SPECIFICATION: {spec_status['id']} ({spec_status['progress']}% complete)"]
 
-        if milestone_status["remaining_tasks"] > 0:
-            milestone_info.append(f"- Remaining tasks: {milestone_status['remaining_tasks']}")
+        if spec_status["remaining_tasks"] > 0:
+            spec_info.append(f"- Remaining tasks: {spec_status['remaining_tasks']}")
 
-        if milestone_status["in_progress_task"]:
-            milestone_info.append(f"- Current task: {milestone_status['in_progress_task']}")
+        if spec_status["in_progress_task"]:
+            spec_info.append(f"- Current task: {spec_status['in_progress_task']}")
 
-        if milestone_status["progress"] >= 80:
-            milestone_info.append("- 🎯 Nearing completion! Consider using 'milestone-manager' agent to prepare for PR")
+        if spec_status["progress"] >= 80:
+            spec_info.append("- 🎯 Nearing completion! Consider using 'reviewer' agent to prepare for PR")
         else:
-            milestone_info.append("- Suggested: Use 'milestone-manager' agent to review progress")
+            spec_info.append("- Suggested: Use 'planner' agent to review progress")
 
-        context_parts.append("\n".join(milestone_info))
+        context_parts.append("\n".join(spec_info))
     else:
         context_parts.append(
-            "NO ACTIVE MILESTONE\n" + "- Suggested: Use 'planner' agent to create a milestone for your work"
+            "NO ACTIVE SPECIFICATION\n" + "- Suggested: Use 'planner' agent to create a specification for your work"
         )
 
     # Workflow state information
@@ -251,12 +250,12 @@ def generate_session_context(
     # Workflow recommendations
     recommendations = ["\nQUAESTOR WORKFLOW RECOMMENDATIONS:"]
 
-    if not milestone_status["active"] and workflow_state["phase"] == "idle":
+    if not spec_status["active"] and workflow_state["phase"] == "idle":
         recommendations.extend(
             [
                 "1. Start with 'researcher' agent to understand the codebase",
                 "2. Use 'planner' agent to create implementation strategy",
-                "3. Track work with milestones and TODOs",
+                "3. Track work with specifications and TODOs",
                 "4. Maintain MEMORY.md with progress updates",
             ]
         )
@@ -266,7 +265,7 @@ def generate_session_context(
                 "1. Use 'qa' agent to test your changes",
                 "2. Use 'reviewer' agent before committing",
                 "3. Update TODOs to track progress",
-                "4. Keep milestone status current",
+                "4. Keep specification status current",
             ]
         )
     else:
@@ -274,7 +273,7 @@ def generate_session_context(
             [
                 "1. Follow research → plan → implement workflow",
                 "2. Use specialized agents for each phase",
-                "3. Maintain milestone and TODO tracking",
+                "3. Maintain specification and TODO tracking",
                 "4. Commit regularly with clear messages",
             ]
         )
@@ -302,12 +301,12 @@ def main():
         sys.exit(0)
 
     # Gather project state
-    milestone_status = check_current_milestone(project_root)
+    spec_status = check_current_specification(project_root)
     workflow_state = load_workflow_state(project_root)
     recent_activity = analyze_recent_changes(project_root)
 
     # Generate context
-    context = generate_session_context(milestone_status, workflow_state, recent_activity, source)
+    context = generate_session_context(spec_status, workflow_state, recent_activity, source)
 
     # Output as JSON for SessionStart hook
     output = {"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": context}}

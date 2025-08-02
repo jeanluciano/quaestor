@@ -117,30 +117,30 @@ def analyze_todo_patterns(todos: list[dict[str, Any]]) -> dict[str, Any]:
     return analysis
 
 
-def get_milestone_progress(project_root: Path) -> dict[str, Any]:
-    """Get current milestone progress from MEMORY.md."""
+def get_specification_progress(project_root: Path) -> dict[str, Any]:
+    """Get current specification progress from MEMORY.md."""
     memory_file = project_root / ".quaestor" / "MEMORY.md"
 
     if not memory_file.exists():
-        return {"has_milestone": False}
+        return {"has_specification": False}
 
     try:
         content = memory_file.read_text()
         import re
 
-        milestone_match = re.search(r"current_milestone:\s*['\"]?([^'\"]+)['\"]?", content)
+        spec_match = re.search(r"current_specification:\s*['\"]?([^'\"]+)['\"]?", content)
         progress_match = re.search(r"progress:\s*(\d+)%", content)
 
-        if milestone_match and progress_match:
-            return {"has_milestone": True, "name": milestone_match.group(1), "progress": int(progress_match.group(1))}
+        if spec_match and progress_match:
+            return {"has_specification": True, "name": spec_match.group(1), "progress": int(progress_match.group(1))}
     except Exception:
         pass
 
-    return {"has_milestone": False}
+    return {"has_specification": False}
 
 
 def generate_spec_agent_suggestion(
-    spec_analysis: dict[str, Any], milestone: dict[str, Any], recent_completions: list[dict[str, Any]]
+    spec_analysis: dict[str, Any], specification: dict[str, Any], recent_completions: list[dict[str, Any]]
 ) -> tuple[bool, str]:
     """Generate agent suggestions based on specification analysis."""
 
@@ -153,8 +153,8 @@ def generate_spec_agent_suggestion(
 
 Completed {spec_analysis["implemented"]}/{spec_analysis["total"]} specifications.
 
-Consider using the milestone-manager agent to:
-- Review milestone completion
+Consider using the planner agent to:
+- Review specification completion
 - Prepare for release/deployment
 - Plan next development phase
 """,
@@ -230,7 +230,7 @@ Use '/plan' to review current specifications.
 
 
 def generate_agent_suggestion(
-    analysis: dict[str, Any], milestone: dict[str, Any], recent_completions: list[dict[str, Any]]
+    analysis: dict[str, Any], specification: dict[str, Any], recent_completions: list[dict[str, Any]]
 ) -> tuple[bool, str]:
     """Generate agent suggestion based on TODO analysis.
 
@@ -261,22 +261,27 @@ Recent completions:
 """,
         )
 
-    # Scenario 2: High completion rate approaching milestone completion
-    if analysis["completion_rate"] >= 80 and milestone.get("has_milestone") and milestone.get("progress", 0) >= 80:
+    # Scenario 2: High completion rate approaching specification completion
+    if (
+        analysis["completion_rate"] >= 80
+        and specification.get("has_specification")
+        and specification.get("progress", 0) >= 80
+    ):
         return (
             True,
             f"""
-🏁 Approaching Milestone Completion: {analysis["completion_rate"]}% TODOs done, Milestone at {milestone["progress"]}%
+🏁 Approaching Specification Completion: {analysis["completion_rate"]}% TODOs done,
+Specification at {specification["progress"]}%
 
-You're close to completing this milestone!
+You're close to completing this specification!
 
-Please run: Use the milestone-manager agent to prepare for milestone completion
+Please run: Use the planner agent to prepare for specification completion
 
-The milestone-manager should:
-1. Review all completed work against milestone objectives
+The planner should:
+1. Review all completed work against specification objectives
 2. Update final progress percentages
 3. Prepare PR description with completed features
-4. Document any deferred items for next milestone
+4. Document any deferred items for next specification
 5. Create comprehensive completion summary
 """,
         )
@@ -351,7 +356,7 @@ Please run: Use the planner agent to reorganize and prioritize remaining work
 The planner should:
 1. Review all pending TODOs
 2. Identify dependencies and blockers
-3. Re-prioritize based on milestone goals
+3. Re-prioritize based on specification goals
 4. Break down complex tasks into smaller steps
 5. Create an execution plan for next phase
 
@@ -365,8 +370,8 @@ This will help restore momentum.
 ✅ All TODOs Complete! Great job!
 
 Consider:
-1. Creating a PR if milestone is complete
-2. Planning the next milestone
+1. Creating a PR if specification is complete
+2. Planning the next specification
 3. Celebrating your progress! 🎉
 """
         return False, message
@@ -378,8 +383,8 @@ Consider:
 • Pending: {analysis["pending"]} ({analysis["high_priority_pending"]} high priority)
 """
 
-    if milestone.get("has_milestone"):
-        message += f"\n📍 Milestone '{milestone['name']}': {milestone['progress']}% complete"
+    if specification.get("has_specification"):
+        message += f"\n📍 Specification '{specification['name']}': {specification['progress']}% complete"
 
     return False, message
 
@@ -408,13 +413,13 @@ def main():
     # Get recent completions for context
     recent_completions = [todo for todo in todos if todo.get("status") == "completed"][-5:]  # Last 5 completed
 
-    # Get milestone progress
-    milestone = get_milestone_progress(project_root)
+    # Get specification progress
+    specification = get_specification_progress(project_root)
 
     # Generate agent suggestion based on specifications first, then TODOs
-    should_block, message = generate_spec_agent_suggestion(spec_analysis, milestone, recent_completions)
+    should_block, message = generate_spec_agent_suggestion(spec_analysis, specification, recent_completions)
     if not should_block:
-        should_block, message = generate_agent_suggestion(todo_analysis, milestone, recent_completions)
+        should_block, message = generate_agent_suggestion(todo_analysis, specification, recent_completions)
 
     if should_block:
         # Block and suggest agent

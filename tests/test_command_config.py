@@ -249,7 +249,7 @@ All tests must pass.
         assert "commands" in data
         assert "task" in data["commands"]
         assert "check" in data["commands"]
-        assert "milestone" in data["commands"]
+        assert "specification" in data["commands"]
 
         # Verify task config
         task = data["commands"]["task"]

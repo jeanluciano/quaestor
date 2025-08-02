@@ -235,8 +235,8 @@ class TestInitIntegration:
         assert "compliance_pre_edit.py" in settings_content
         assert "research_workflow_tracker.py" in settings_content
         assert "memory_tracker.py" in settings_content
-        assert "todo_milestone_connector.py" in settings_content
-        assert "milestone_tracker.py" in settings_content
+        # assert "todo_milestone_connector.py" in settings_content  # Removed milestone connector
+        assert "spec_tracker.py" in settings_content
 
         # Should not have old paths
         assert "hooks/implementation_declaration.py" not in settings_content

@@ -33,11 +33,6 @@
           },
           {
             "type": "command",
-            "command": "{python_path} {hooks_dir}/todo_milestone_connector.py",
-            "description": "Connect TODOs to milestones and suggest PRs"
-          },
-          {
-            "type": "command",
             "command": "{python_path} {hooks_dir}/todo_agent_coordinator.py",
             "description": "Coordinate agents based on TODO patterns"
           }
@@ -48,8 +43,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "{python_path} {hooks_dir}/milestone_tracker.py",
-            "description": "Track milestone progress and suggest agents"
+            "command": "{python_path} {hooks_dir}/spec_tracker.py",
+            "description": "Track specification progress and suggest agents"
           }
         ]
       }

@@ -70,12 +70,12 @@ entry_criteria:
 activities:
   - Deploy planner agent
   - Create implementation strategy
-  - Define milestones
+  - Define specifications
   - Break down tasks
   - Estimate effort
 
 exit_criteria:
-  - Milestone created
+  - Specification created
   - Tasks defined
   - Approach documented
   - Ready to implement
@@ -87,7 +87,7 @@ handoff_to: implementer
 ```yaml
 entry_criteria:
   - Plan approved
-  - Milestone active
+  - Specification active
   - Tasks defined
   
 activities:
@@ -198,9 +198,9 @@ sequential_agents:
    - Message: "Research required before implementation"
 
 2. **Premature Implementation**
-   - Detection: No active milestone
-   - Recovery: Deploy planner for milestone creation
-   - Message: "Plan and milestone required"
+   - Detection: No active specification
+   - Recovery: Deploy planner for specification creation
+   - Message: "Plan and specification required"
 
 3. **Stalled Workflow**
    - Detection: No activity > 2 hours
@@ -220,7 +220,7 @@ sequential_agents:
 - **research_workflow_tracker.py**: Monitors research progress
 - **compliance_pre_edit.py**: Enforces workflow before edits
 - **session_context_loader.py**: Loads workflow state at start
-- **milestone_tracker.py**: Ensures milestone alignment
+- **spec_tracker.py**: Ensures specification alignment
 
 ### Event Responses
 ```yaml
@@ -230,7 +230,7 @@ on_research_complete:
   - Suggest: "Use planner agent"
 
 on_plan_complete:
-  - Verify milestone created
+  - Verify specification created
   - Generate implementer handoff
   - Suggest: "Use implementer agent"
 
@@ -281,7 +281,7 @@ Bug Report → Debugger → Root Cause
 
 ### Planning Phase Gate
 - [ ] Clear implementation approach
-- [ ] Milestone created
+- [ ] Specification created
 - [ ] Tasks estimated
 - [ ] Risks identified
 

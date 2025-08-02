@@ -65,9 +65,24 @@ nav:
     - Architect Agent: agents/architect.md
     - Implementer Agent: agents/implementer.md
     - QA Agent: agents/qa.md
+    - Researcher Agent: agents/researcher.md
+    - Security Agent: agents/security.md
+    - Reviewer Agent: agents/reviewer.md
+    - Debugger Agent: agents/debugger.md
+    - Explorer Agent: agents/explorer.md
+    - Refactorer Agent: agents/refactorer.md
+    - Compliance Enforcer: agents/compliance-enforcer.md
+    - Spec Manager: agents/spec-manager.md
+    - Workflow Coordinator: agents/workflow-coordinator.md
   - Hooks & Automation:
     - Overview: hooks/overview.md
     - Specification Tracking: hooks/spec-tracking.md
+    - Memory Tracking: hooks/memory-tracking.md
+    - TODO Agent Coordinator: hooks/todo-agent-coordinator.md
+    - Session Context Loader: hooks/session-context-loader.md
+    - Research Workflow Tracker: hooks/research-workflow-tracker.md
+    - Compliance Hooks: hooks/compliance.md
+    - File Change Tracker: hooks/file-change-tracker.md
     - Custom Hooks: hooks/custom.md
   - Specification-Driven Development:
     - Overview: specs/overview.md
@@ -78,13 +93,12 @@ nav:
     - /impl: commands/impl.md
     - /research: commands/research.md
     - /review: commands/review.md
+    - /debug: commands/debug.md
+    - /project-init: commands/project-init.md
   - Advanced:
     - Architecture: advanced/architecture.md
     - Memory Management: advanced/memory.md
     - Claude Code Integration: advanced/claude-code.md
-  - API Reference:
-    - Specifications API: api/specifications.md
-    - CLI Commands: api/cli.md
   - Contributing: contributing.md
 
 extra:

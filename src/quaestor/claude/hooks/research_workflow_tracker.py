@@ -124,7 +124,7 @@ Please run: Use the planner agent to create a detailed implementation plan
 The planner agent should:
 1. Review the {files_examined} researched files and findings
 2. Identify implementation approach and patterns to follow
-3. Create a milestone with clear objectives
+3. Create a specification with clear objectives
 4. Break down work into manageable subtasks
 5. Estimate effort and identify risks
 6. Define success criteria and test strategy

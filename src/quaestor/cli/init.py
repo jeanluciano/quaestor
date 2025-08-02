@@ -470,6 +470,7 @@ def _init_common(target_dir: Path, force: bool, mode: str):
         "memory_tracker.py",
         "research_workflow_tracker.py",
         "session_context_loader.py",
+        "spec_tracker.py",
         "todo_agent_coordinator.py",
     ]
 
@@ -504,6 +505,7 @@ def _init_common(target_dir: Path, force: bool, mode: str):
             "researcher.md",
             "reviewer.md",
             "security.md",
+            "spec-manager.md",
             "workflow-coordinator.md",
         ]
 

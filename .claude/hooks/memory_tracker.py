@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Memory and milestone synchronization hook.
+"""Memory and specification synchronization hook.
 
-This hook updates MEMORY.md and milestone files based on TODO completions
+This hook updates MEMORY.md and specification files based on TODO completions
 and detected work progress. It ensures project memory stays in sync with
 actual development activities.
 """
@@ -67,7 +67,7 @@ def extract_completed_specs(hook_data: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def update_memory_file(
-    project_root: Path, completed_specs: list[dict[str, Any]], milestone_info: dict[str, Any] | None = None
+    project_root: Path, completed_specs: list[dict[str, Any]], spec_info: dict[str, Any] | None = None
 ) -> bool:
     """Update MEMORY.md with completed specifications."""
     memory_file = project_root / ".quaestor" / "MEMORY.md"
@@ -123,14 +123,14 @@ def update_memory_file(
                     insert_pos += 1
                 content = content[:insert_pos] + spec_section + content[insert_pos:]
 
-        # Update milestone progress if provided
-        if milestone_info:
-            milestone_name = milestone_info.get("name", "")
-            progress = milestone_info.get("progress", 0)
+        # Update specification progress if provided
+        if spec_info:
+            spec_id = spec_info.get("id", "")
+            progress = spec_info.get("progress", 0)
 
-            # Update milestone status in memory
-            milestone_pattern = rf"(current_milestone:\s*['\"]?){re.escape(milestone_name)}(['\"]?)"
-            content = re.sub(milestone_pattern, rf"\1{milestone_name}\2", content)
+            # Update specification status in memory
+            spec_pattern = rf"(current_specification:\s*['\"]?){re.escape(spec_id)}(['\"]?)"
+            content = re.sub(spec_pattern, rf"\1{spec_id}\2", content)
 
             # Update progress
             progress_pattern = r"progress:\s*\d+%"
@@ -146,18 +146,18 @@ def update_memory_file(
         return False
 
 
-def find_active_milestone(project_root: Path) -> tuple[Path | None, dict[str, Any] | None]:
-    """Find the currently active milestone and task."""
-    milestones_dir = project_root / ".quaestor" / "milestones"
+def find_active_specification(project_root: Path) -> tuple[Path | None, dict[str, Any] | None]:
+    """Find the currently active specification and task."""
+    specs_dir = project_root / ".quaestor" / "specs"
 
-    if not milestones_dir.exists():
+    if not specs_dir.exists():
         return None, None
 
-    # Look for tasks.yaml files with in_progress tasks
-    for tasks_file in milestones_dir.rglob("tasks.yaml"):
+    # Look for specification files with in_progress tasks
+    for spec_file in specs_dir.glob("*.yaml"):
         try:
             # Simple YAML parsing (avoid external dependency)
-            with open(tasks_file) as f:
+            with open(spec_file) as f:
                 content = f.read()
 
             # Look for in_progress status
@@ -168,20 +168,20 @@ def find_active_milestone(project_root: Path) -> tuple[Path | None, dict[str, An
             ):
                 # Extract basic task info
                 task_info = {
-                    "file": tasks_file,
-                    "milestone": tasks_file.parent.name,
+                    "file": spec_file,
+                    "specification": spec_file.stem,
                 }
-                return tasks_file, task_info
+                return spec_file, task_info
         except Exception:
             continue
 
     return None, None
 
 
-def update_milestone_progress(tasks_file: Path, completed_specs: list[dict[str, Any]]) -> dict[str, Any]:
-    """Update milestone progress based on completed specifications."""
+def update_specification_progress(spec_file: Path, completed_specs: list[dict[str, Any]]) -> dict[str, Any]:
+    """Update specification progress based on completed tasks."""
     try:
-        with open(tasks_file) as f:
+        with open(spec_file) as f:
             content = f.read()
 
         # Count subtasks (simplified - looks for list items)
@@ -228,18 +228,18 @@ def update_milestone_progress(tasks_file: Path, completed_specs: list[dict[str, 
             content = content[:insert_pos] + note + "\n" + content[insert_pos:]
 
         # Write back
-        with open(tasks_file, "w") as f:
+        with open(spec_file, "w") as f:
             f.write(content)
 
         return {
-            "name": tasks_file.parent.name,
+            "id": spec_file.stem,
             "progress": progress,
             "completed_count": completed,
             "total_count": total,
         }
 
     except Exception as e:
-        print(f"❌ Error updating milestone: {e}")
+        print(f"❌ Error updating specification: {e}")
         return {}
 
 
@@ -280,7 +280,7 @@ def check_memory_staleness(project_root: Path) -> dict[str, Any]:
 
 
 def generate_documentation_suggestion(
-    completed_specs: list[dict[str, Any]], memory_staleness: dict[str, Any], milestone_info: dict[str, Any] | None
+    completed_specs: list[dict[str, Any]], memory_staleness: dict[str, Any], spec_info: dict[str, Any] | None
 ) -> tuple[bool, str]:
     """Generate agent suggestions for documentation tasks.
 
@@ -311,26 +311,26 @@ Keeping documentation current ensures knowledge retention and helps onboard team
 """,
         )
 
-    # Scenario 2: Milestone nearing completion without proper documentation
-    if milestone_info and milestone_info.get("progress", 0) >= 80:
+    # Scenario 2: Specification nearing completion without proper documentation
+    if spec_info and spec_info.get("progress", 0) >= 80:
         return (
             True,
             f"""
-📖 MILESTONE DOCUMENTATION NEEDED!
+📖 SPECIFICATION DOCUMENTATION NEEDED!
 
-Milestone '{milestone_info.get("name", "current")}' is {milestone_info.get("progress", 0)}% complete.
+Specification '{spec_info.get("id", "current")}' is {spec_info.get("progress", 0)}% complete.
 
-Please run: Use the architect agent to create comprehensive milestone documentation
+Please run: Use the architect agent to create comprehensive specification documentation
 
 The architect agent should:
-1. Document all architectural decisions made during this milestone
+1. Document all architectural decisions made during this specification
 2. Create or update design diagrams
 3. List all APIs or interfaces created/modified
 4. Document configuration changes
 5. Note any technical debt incurred
 6. Prepare knowledge transfer documentation
 
-This ensures the milestone's learnings are captured before moving on.
+This ensures the specification's learnings are captured before moving on.
 """,
         )
 
@@ -385,15 +385,15 @@ def main():
     # Check memory staleness
     memory_staleness = check_memory_staleness(project_root)
 
-    # Find active milestone
-    tasks_file, task_info = find_active_milestone(project_root)
+    # Find active specification
+    spec_file, task_info = find_active_specification(project_root)
 
-    milestone_info = None
-    if tasks_file and task_info:
-        milestone_info = update_milestone_progress(tasks_file, completed_specs)
+    spec_info = None
+    if spec_file and task_info:
+        spec_info = update_specification_progress(spec_file, completed_specs)
 
     # Generate documentation agent suggestion
-    should_block, agent_message = generate_documentation_suggestion(completed_specs, memory_staleness, milestone_info)
+    should_block, agent_message = generate_documentation_suggestion(completed_specs, memory_staleness, spec_info)
 
     if should_block and agent_message:
         # Block with agent suggestion
@@ -403,24 +403,24 @@ def main():
     # Regular processing
     print(f"📝 Found {len(completed_specs)} completed specification(s)")
 
-    if tasks_file and task_info:
-        print(f"📊 Updating milestone: {task_info['milestone']}")
+    if spec_file and task_info:
+        print(f"📊 Updating specification: {task_info['specification']}")
 
-        if milestone_info and milestone_info.get("progress", 0) >= 100:
-            print(f"🎉 Milestone '{milestone_info['name']}' is now complete!")
+        if spec_info and spec_info.get("progress", 0) >= 100:
+            print(f"🎉 Specification '{spec_info['id']}' is now complete!")
             print("💡 Consider creating a PR with: gh pr create")
 
     # Update MEMORY.md
     print("📝 Updating MEMORY.md...")
-    if update_memory_file(project_root, completed_specs, milestone_info):
+    if update_memory_file(project_root, completed_specs, spec_info):
         print("✅ MEMORY.md updated successfully")
 
     # Summary
-    if milestone_info:
-        progress = milestone_info.get("progress", 0)
-        completed = milestone_info.get("completed_count", 0)
-        total = milestone_info.get("total_count", 0)
-        print(f"\n📊 Milestone Progress: {completed}/{total} tasks ({progress}%)")
+    if spec_info:
+        progress = spec_info.get("progress", 0)
+        completed = spec_info.get("completed_count", 0)
+        total = spec_info.get("total_count", 0)
+        print(f"\n📊 Specification Progress: {completed}/{total} tasks ({progress}%)")
 
     # Add staleness warning if not blocking
     if memory_staleness.get("is_stale") and not should_block:

@@ -195,7 +195,7 @@ Coverage: {{test_coverage_threshold}}%
             "auto_commit_rules",
             "branch_rules",
             "pr_automation",
-            "milestone_automation",
+            "specification_automation",
             "context_rules",
             "rule_enforcement",
             "template_automation",

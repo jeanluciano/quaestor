@@ -47,8 +47,7 @@ class TestHooksConfiguration:
             "compliance_pre_edit.py",
             "research_workflow_tracker.py",
             "memory_tracker.py",
-            "milestone_tracker.py",
-            "todo_milestone_connector.py",
+            "spec_tracker.py",
             "todo_agent_coordinator.py",
             "session_context_loader.py",
         }
@@ -85,8 +84,7 @@ class TestHooksConfiguration:
             "compliance_pre_edit.py",
             "research_workflow_tracker.py",
             "memory_tracker.py",
-            "milestone_tracker.py",
-            "todo_milestone_connector.py",
+            "spec_tracker.py",
             "todo_agent_coordinator.py",
             "session_context_loader.py",
             "base.py",  # Base hook class
@@ -108,8 +106,7 @@ class TestHooksConfiguration:
             "compliance_pre_edit.py",
             "research_workflow_tracker.py",
             "memory_tracker.py",
-            "milestone_tracker.py",
-            "todo_milestone_connector.py",
+            "spec_tracker.py",
         ]
 
         for hook_file in hook_files:
@@ -210,7 +207,6 @@ class TestHooksConfiguration:
                 "research_tracker.py",
                 "implementation_tracker.py",
                 "memory_updater.py",
-                "todo_milestone_connector.py",
                 "automated_commit_trigger.py",
             ]:
                 workflow_hooks.add(f"workflow/{item}")
@@ -273,7 +269,6 @@ class TestHooksCopyingInInit:
                 "research_tracker.py",
                 "implementation_tracker.py",
                 "memory_updater.py",
-                "todo_milestone_connector.py",
             ]
 
             for hook in expected_hooks:
