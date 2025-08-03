@@ -12,6 +12,8 @@ from typing import Any
 
 from quaestor.utils.yaml_utils import load_yaml, save_yaml
 
+from .folder_manager import FolderManager
+
 
 class SpecType(Enum):
     """Types of specifications."""
@@ -29,12 +31,9 @@ class SpecStatus(Enum):
     """Status of a specification."""
 
     DRAFT = "draft"
-    APPROVED = "approved"
-    IN_PROGRESS = "in_progress"
-    IMPLEMENTED = "implemented"
-    TESTED = "tested"
-    DEPLOYED = "deployed"
-    ARCHIVED = "archived"
+    STAGED = "staged"
+    ACTIVE = "active"
+    COMPLETED = "completed"
 
 
 class SpecPriority(Enum):
@@ -116,8 +115,12 @@ class SpecificationManager:
         self.manifest_path = self.specs_dir / "manifest.yaml"
         self._manifest: SpecManifest | None = None
 
-        # Ensure directories exist
+        # Initialize FolderManager for lifecycle management
+        self.folder_manager = FolderManager(self.specs_dir)
+
+        # Ensure directories exist (including folder structure)
         self.specs_dir.mkdir(parents=True, exist_ok=True)
+        self.folder_manager.create_folder_structure()
 
     def load_manifest(self) -> SpecManifest:
         """Load the specification manifest."""
@@ -127,7 +130,44 @@ class SpecificationManager:
                 self._manifest = self._deserialize_manifest(manifest_data)
             else:
                 self._manifest = SpecManifest()
+
+            # Also load specs from folder structure
+            self._sync_manifest_with_folders()
+
         return self._manifest
+
+    def _sync_manifest_with_folders(self) -> None:
+        """Sync manifest with specifications in folder structure."""
+        if self._manifest is None:
+            return
+
+        # Scan all folders for spec files
+        for folder in ["draft", "active", "completed"]:
+            folder_path = self.specs_dir / folder
+            if not folder_path.exists():
+                continue
+
+            for spec_file in folder_path.glob("*.yaml"):
+                if spec_file.name == "manifest.yaml":
+                    continue
+
+                # Load spec from file
+                spec_data = load_yaml(spec_file, {})
+                if spec_data:
+                    spec = self._deserialize_spec(spec_data)
+
+                    # Update status based on folder
+                    folder_to_status = {
+                        "draft": SpecStatus.DRAFT,
+                        "active": SpecStatus.ACTIVE,
+                        "completed": SpecStatus.COMPLETED,
+                    }
+                    expected_status = folder_to_status.get(folder)
+                    if expected_status and spec.status != expected_status:
+                        spec.status = expected_status
+
+                    # Add to manifest if not present or update
+                    self._manifest.specifications[spec.id] = spec
 
     def save_manifest(self) -> bool:
         """Save the specification manifest."""
@@ -211,6 +251,10 @@ class SpecificationManager:
         if spec is None:
             return None
 
+        # Check if status is changing to ACTIVE
+        old_status = spec.status
+        new_status = updates.get("status")
+
         # Apply updates
         for key, value in updates.items():
             if hasattr(spec, key):
@@ -219,7 +263,15 @@ class SpecificationManager:
         spec.updated_at = datetime.now()
         manifest.updated_at = datetime.now()
 
-        # Save changes
+        # If transitioning to ACTIVE, enforce active limit
+        if old_status != SpecStatus.ACTIVE and new_status == SpecStatus.ACTIVE:
+            can_activate, messages = self.enforce_active_limit()
+            if not can_activate:
+                # Revert status change
+                spec.status = old_status
+                return None
+
+        # Save changes (will handle folder moves automatically)
         self.save_manifest()
         self._save_spec_file(spec)
 
@@ -244,7 +296,7 @@ class SpecificationManager:
         # Update branch mapping
         manifest.branch_mapping[branch] = spec_id
         spec.branch = branch
-        spec.status = SpecStatus.IN_PROGRESS
+        spec.status = SpecStatus.ACTIVE
         spec.updated_at = datetime.now()
         manifest.updated_at = datetime.now()
 
@@ -312,6 +364,86 @@ class SpecificationManager:
 
         return specs
 
+    def migrate_to_folder_structure(self) -> bool:
+        """Migrate existing flat specifications to folder structure.
+
+        Returns:
+            True if migration successful
+        """
+        result = self.folder_manager.migrate_flat_specifications()
+
+        if result.success:
+            # Reload manifest to pick up migrated specs
+            self._manifest = None
+            self.load_manifest()
+
+        return result.success
+
+    def enforce_active_limit(self) -> tuple[bool, list[str]]:
+        """Enforce the limit on active specifications.
+
+        Returns:
+            Tuple of (success, list of messages)
+        """
+        return self.folder_manager.enforce_active_limit()
+
+    def complete_specification(self, spec_id: str) -> bool:
+        """Mark a specification as completed and move to completed folder.
+
+        Args:
+            spec_id: Specification ID
+
+        Returns:
+            True if successful
+        """
+        spec = self.get_specification(spec_id)
+        if spec is None:
+            return False
+
+        # Update status
+        spec.status = SpecStatus.COMPLETED
+        spec.updated_at = datetime.now()
+
+        # Save will automatically move to completed folder
+        manifest = self.load_manifest()
+        manifest.specifications[spec_id] = spec
+        manifest.updated_at = datetime.now()
+        self.save_manifest()
+
+        return self._save_spec_file(spec)
+
+    def activate_specification(self, spec_id: str) -> bool:
+        """Activate a specification, moving it to active folder.
+
+        Args:
+            spec_id: Specification ID
+
+        Returns:
+            True if successful
+        """
+        # Check active limit first
+        can_activate, messages = self.enforce_active_limit()
+        if not can_activate:
+            for msg in messages:
+                print(f"Warning: {msg}")
+            return False
+
+        spec = self.get_specification(spec_id)
+        if spec is None:
+            return False
+
+        # Update status
+        spec.status = SpecStatus.ACTIVE
+        spec.updated_at = datetime.now()
+
+        # Save will automatically move to active folder
+        manifest = self.load_manifest()
+        manifest.specifications[spec_id] = spec
+        manifest.updated_at = datetime.now()
+        self.save_manifest()
+
+        return self._save_spec_file(spec)
+
     def _generate_spec_id(self, spec_type: SpecType, title: str) -> str:
         """Generate a unique specification ID.
 
@@ -349,7 +481,7 @@ class SpecificationManager:
         return spec_id
 
     def _save_spec_file(self, spec: Specification) -> bool:
-        """Save a specification to its file.
+        """Save a specification to its file in the appropriate folder.
 
         Args:
             spec: Specification to save
@@ -357,7 +489,36 @@ class SpecificationManager:
         Returns:
             True if successful
         """
-        spec_file = self.specs_dir / f"{spec.id}.yaml"
+        # Determine target folder based on status
+        status_to_folder = {
+            SpecStatus.DRAFT: "draft",
+            SpecStatus.STAGED: "draft",  # Staged specs still in draft folder
+            SpecStatus.ACTIVE: "active",
+            SpecStatus.COMPLETED: "completed",
+        }
+
+        target_folder = status_to_folder.get(spec.status, "draft")
+        spec_file = self.specs_dir / target_folder / f"{spec.id}.yaml"
+
+        # Ensure the spec file is in the right folder
+        # Check all folders to find existing file
+        existing_file = None
+        for folder in ["draft", "active", "completed"]:
+            potential_file = self.specs_dir / folder / f"{spec.id}.yaml"
+            if potential_file.exists():
+                existing_file = potential_file
+                break
+
+        # If spec exists and needs to move to different folder
+        if existing_file and existing_file.parent.name != target_folder:
+            result = self.folder_manager.move_specification(existing_file, target_folder)
+            if not result.success:
+                return False
+            # Update spec_file to the new location
+            if result.moved_files:
+                spec_file = Path(result.moved_files[0])
+
+        # Save specification data
         spec_data = self._serialize_spec(spec)
         return save_yaml(spec_file, spec_data)
 

@@ -6,14 +6,20 @@ across draft/, active/, and completed/ directories with git integration.
 """
 
 import contextlib
-import fcntl
 import logging
+import platform
 import shutil
 import subprocess
 import time
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
+
+# Platform-specific imports
+if platform.system() != "Windows":
+    import fcntl
+else:
+    import msvcrt
 
 from ..utils.file_utils import create_directory
 
@@ -113,7 +119,11 @@ class FolderManager:
             start_time = time.time()
             while time.time() - start_time < timeout:
                 try:
-                    fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    if platform.system() != "Windows":
+                        fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    else:
+                        # Windows file locking
+                        msvcrt.locking(lock_file.fileno(), msvcrt.LK_NBLCK, 1)
                     lock_acquired = True
                     break
                 except OSError:
@@ -126,7 +136,12 @@ class FolderManager:
                 yield lock_file
             finally:
                 if lock_acquired:
-                    fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+                    if platform.system() != "Windows":
+                        fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+                    else:
+                        # Windows unlock
+                        with contextlib.suppress(OSError):
+                            msvcrt.locking(lock_file.fileno(), msvcrt.LK_UNLCK, 1)
 
     def move_specification(self, spec_path: Path, target_folder: str) -> FolderOperationResult:
         """
@@ -142,71 +157,73 @@ class FolderManager:
         if target_folder not in self.FOLDER_NAMES:
             return FolderOperationResult(success=False, message=f"Invalid target folder: {target_folder}")
 
-        start_time = time.time()
-
         try:
             with self._file_lock():
-                # Validate active folder limit
-                if target_folder == "active":
-                    active_count = self._count_specifications("active")
-                    if active_count >= self.MAX_ACTIVE_SPECS:
-                        return FolderOperationResult(
-                            success=False,
-                            message=f"Active folder limit reached ({self.MAX_ACTIVE_SPECS} specs). "
-                            f"Complete one before activating another.",
-                        )
-
-                # Prepare paths
-                spec_name = spec_path.name
-                target_path = self.base_path / target_folder / spec_name
-
-                # Check if already in target
-                if spec_path.parent.name == target_folder:
-                    return FolderOperationResult(
-                        success=True, message=f"Specification already in {target_folder} folder"
-                    )
-
-                # Perform atomic move with rollback capability
-                backup_path = None
-                try:
-                    # Create backup for rollback
-                    if target_path.exists():
-                        backup_path = target_path.with_suffix(".backup")
-                        shutil.copy2(target_path, backup_path)
-
-                    # Use git mv if file is tracked, otherwise regular move
-                    if self._is_git_tracked(spec_path):
-                        self._git_move(spec_path, target_path)
-                    else:
-                        shutil.move(str(spec_path), str(target_path))
-                        self._git_add(target_path)
-
-                    # Clean up backup
-                    if backup_path and backup_path.exists():
-                        backup_path.unlink()
-
-                    elapsed = time.time() - start_time
-                    if elapsed > self.OPERATION_TIMEOUT:
-                        logger.warning(f"Move operation took {elapsed:.3f}s, exceeding 100ms target")
-
-                    return FolderOperationResult(
-                        success=True,
-                        message=f"Moved {spec_name} to {target_folder} folder",
-                        moved_files=[str(target_path)],
-                    )
-
-                except Exception as e:
-                    # Rollback on failure
-                    if backup_path and backup_path.exists():
-                        shutil.move(str(backup_path), str(target_path))
-                        return FolderOperationResult(
-                            success=False, message=f"Move failed, rolled back: {str(e)}", rollback_performed=True
-                        )
-                    raise
+                return self._move_spec_internal(spec_path, target_folder)
 
         except Exception as e:
             logger.error(f"Failed to move specification: {e}")
             return FolderOperationResult(success=False, message=f"Move operation failed: {str(e)}")
+
+    def _move_spec_internal(self, spec_path: Path, target_folder: str) -> FolderOperationResult:
+        """Internal move method that doesn't acquire lock (assumes lock is already held)."""
+        start_time = time.time()
+
+        # Validate active folder limit
+        if target_folder == "active":
+            active_count = self._count_specifications("active")
+            if active_count >= self.MAX_ACTIVE_SPECS:
+                return FolderOperationResult(
+                    success=False,
+                    message=f"Active folder limit reached ({self.MAX_ACTIVE_SPECS} specs). "
+                    f"Complete one before activating another.",
+                )
+
+        # Prepare paths
+        spec_name = spec_path.name
+        target_path = self.base_path / target_folder / spec_name
+
+        # Check if already in target
+        if spec_path.parent.name == target_folder:
+            return FolderOperationResult(success=True, message=f"Specification already in {target_folder} folder")
+
+        # Perform atomic move with rollback capability
+        backup_path = None
+        try:
+            # Create backup for rollback
+            if target_path.exists():
+                backup_path = target_path.with_suffix(".backup")
+                shutil.copy2(target_path, backup_path)
+
+            # Use git mv if file is tracked, otherwise regular move
+            if self._is_git_tracked(spec_path):
+                self._git_move(spec_path, target_path)
+            else:
+                shutil.move(str(spec_path), str(target_path))
+                self._git_add(target_path)
+
+            # Clean up backup
+            if backup_path and backup_path.exists():
+                backup_path.unlink()
+
+            elapsed = time.time() - start_time
+            if elapsed > self.OPERATION_TIMEOUT:
+                logger.warning(f"Move operation took {elapsed:.3f}s, exceeding 100ms target")
+
+            return FolderOperationResult(
+                success=True,
+                message=f"Moved {spec_name} to {target_folder} folder",
+                moved_files=[str(target_path)],
+            )
+
+        except Exception as e:
+            # Rollback on failure
+            if backup_path and backup_path.exists():
+                shutil.move(str(backup_path), str(target_path))
+                return FolderOperationResult(
+                    success=False, message=f"Move failed, rolled back: {str(e)}", rollback_performed=True
+                )
+            raise
 
     def migrate_flat_specifications(self) -> FolderOperationResult:
         """
@@ -238,7 +255,8 @@ class FolderManager:
                     status = self._determine_spec_status(spec_path)
                     target_folder = self._status_to_folder(status)
 
-                    result = self.move_specification(spec_path, target_folder)
+                    # Use internal move without lock since we already have it
+                    result = self._move_spec_internal(spec_path, target_folder)
                     if result.success:
                         migrated_files.extend(result.moved_files or [])
                     else:
