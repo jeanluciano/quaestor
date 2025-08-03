@@ -4,11 +4,10 @@ description: "Intelligent project analysis with auto-framework detection and ada
 performance-profile: "complex"
 complexity-threshold: 0.6
 auto-activation: ["framework-detection", "pattern-analysis", "adaptive-setup"]
-intelligence-features: ["architecture-detection", "stack-analysis", "specification-generation"]
+intelligence-features: ["architecture-detection", "stack-analysis", "documentation-generation"]
 agent-strategy:
   project_analysis: [researcher, architect]
   security_audit: security
-  spec_generation: planner
   documentation: [architect, implementer]
   quality_definition: qa
 ---
@@ -16,7 +15,7 @@ agent-strategy:
 # /project-init - Intelligent Project Initialization
 
 ## Purpose
-Analyze project architecture, detect frameworks and patterns, then generate intelligent Quaestor setup with auto-populated documentation and specifications.
+Analyze project architecture, detect frameworks and patterns, then generate intelligent Quaestor setup with auto-populated documentation.
 
 ## Usage
 ```
@@ -37,7 +36,7 @@ Stack Analysis:
 ```
 
 ### Adaptive Setup
-- **New projects**: Generate starter architecture + specifications
+- **New projects**: Generate starter architecture + documentation
 - **Existing projects**: Analyze current state + fill gaps
 - **Migration**: Import existing docs + enhance with Quaestor
 
@@ -92,46 +91,16 @@ Consolidated Analysis:
   Phase: [new|growth|legacy based on analysis]
 ```
 
-### Phase 2: Intelligent Generation ⚡
-**Agent-Driven Specification Creation:**
-
-Use the planner agent to generate specifications based on consolidated analysis:
-
-```yaml
-Specification Generation:
-  Agent: planner
-  Context: [Consolidated analysis from Phase 1]
-  Mission: "Based on the project analysis, create initial specifications:
-    - Project type: [framework] in [phase] phase
-    - Architecture: [patterns identified]
-    - Security concerns: [from security analysis]
-    - Current gaps: [from architect analysis]
-    
-    Generate 3-5 initial specifications that address:
-    1. Foundation/setup needs for this project type
-    2. Architecture improvements based on patterns found
-    3. Security enhancements needed
-    4. Technical debt identified
-    5. Testing/quality improvements
-    
-    For each specification provide:
-    - Title and description
-    - Priority (critical/high/medium/low)
-    - Estimated effort
-    - Dependencies
-    
-    Output as structured YAML suitable for Quaestor specifications"
-```
-
-**Document Generation:**
-Based on agent outputs, generate:
+### Phase 2: Document Generation ⚡
+**Based on agent analysis, generate:**
 ```yaml
 Generated Documents:
   - ARCHITECTURE.md: From architect agent analysis
-  - MEMORY.md: With specifications from planner agent
-  - .quaestor/specifications/: Initial spec files
   - CRITICAL_RULES.md: Framework-specific from analysis
+  - QUAESTOR_CLAUDE.md: AI collaboration guidelines
 ```
+
+**Note:** Use `/plan --spec` command to create project specifications after initialization.
 
 ### Phase 3: User Validation ✅ **[MANDATORY - DO NOT SKIP]**
 
@@ -141,7 +110,6 @@ before_phase_4:
   MUST_PRESENT_ANALYSIS:
     - framework_detection_results
     - architecture_pattern_analysis  
-    - proposed_specifications
     - quality_standards_detected
   
   MUST_GET_USER_CHOICE:
@@ -166,36 +134,16 @@ before_phase_4:
 - Complexity: [score]/1.0
 - Phase: [project_phase]
 
-**Proposed Specifications:**
-1. [spec-001]: [Title] (priority: [high/medium/low])
-   - Type: [feature/enhancement/bugfix]
-   - Estimated: [duration]
-   - Description: [brief description]
-   
-2. [spec-002]: [Title] (priority: [high/medium/low])
-   - Type: [feature/enhancement/bugfix]
-   - Estimated: [duration]
-   - Description: [brief description]
-   
-3. [spec-003]: [Title] (priority: [high/medium/low])
-   - Type: [feature/enhancement/bugfix]
-   - Estimated: [duration]
-   - Description: [brief description]
-
 **Quality Standards:**
 [detected_tools_and_standards]
 
 ## Your Options:
-- ✅ Proceed with detected setup and specifications
-- 🔄 Modify specification list
-- 📝 Define custom specifications
+- ✅ Proceed with detected setup
+- 🔄 Modify detected patterns
+- 📝 Custom architecture description
 - 🚫 Start with minimal setup
 
-## Specification Creation:
-- ⭐ Create specification files (.quaestor/specifications/*.yaml)
-- 📝 Documentation only (just populate MEMORY.md templates)
-
-What would you prefer for setup and specifications?
+What would you prefer for the initial setup?
 ```
 
 ### Phase 4: Setup Completion 🚀 **[ONLY AFTER USER APPROVAL]**
@@ -210,28 +158,17 @@ Template Selection:
 Auto-Population:
   - Real paths from project structure
   - Detected components and responsibilities
-  - Inferred specifications from git history
+  - Inferred patterns from git history
   - Framework-specific quality standards
 ```
 
-**Conditional Specification Creation:**
+**Document Population:**
 ```yaml
-if_user_chose_specification_files:
-  actions:
-    - create_directories: ".quaestor/specifications/"
-    - generate_readme: "Goals, success criteria, timeline"
-    - create_spec_yaml: "Specification with contract and acceptance criteria"
-    - initialize_notes: "Implementation notes and decisions"
-  
-if_user_chose_documentation_only:
-  actions:
-    - populate_memory_templates: "Update MEMORY.md with specification information"
-    - skip_specification_directories: "No .quaestor/specifications/ creation"
-
-mandatory_for_both:
+mandatory_actions:
   - populate_architecture_md: "Real project analysis"
   - update_critical_rules: "Framework-specific guidelines"
   - configure_quality_standards: "Testing and linting setup"
+  - create_initial_specifications: "Draft/ folder for new specs"
 ```
 
 ## Framework-Specific Intelligence
@@ -244,11 +181,11 @@ React Analysis:
   Architecture: SPA|SSR|Static Site patterns
   Quality Gates: ESLint + Prettier + TypeScript
   
-Generated Specifications:
-  - Component Library Setup
-  - State Management Implementation
-  - Testing Infrastructure
-  - Performance Optimization
+Detected Patterns:
+  - Component-based architecture
+  - State management approach
+  - Testing infrastructure
+  - Build and deployment setup
 ```
 
 ### Python/Backend Projects
@@ -259,11 +196,11 @@ Python Analysis:
   Testing: pytest|unittest setup
   Quality Gates: ruff + mypy + pytest
   
-Generated Specifications:
-  - API Design & Models
-  - Authentication System
-  - Database Integration
-  - Production Deployment
+Detected Patterns:
+  - API architecture style
+  - Authentication approach
+  - Database patterns
+  - Deployment configuration
 ```
 
 ## Agent Error Handling
@@ -286,10 +223,10 @@ Error Handling Strategy:
     - Log: "Security assessment skipped - manual review required"
     - Continue without security recommendations
   
-  If planner agent fails:
-    - Generate basic specification templates
-    - Log: "Specification generation limited - customize as needed"
-    - Provide manual specification guide
+  If any agent fails:
+    - Continue with available analysis
+    - Log failure for user awareness
+    - Provide manual guidance
 
 Performance Monitoring:
   - Total time limit: 30 seconds
@@ -297,78 +234,23 @@ Performance Monitoring:
   - Parallel execution to maximize efficiency
 ```
 
-## Specification-Driven Workflow Guide
+## Getting Started After Initialization
 
-### Understanding Specifications
-**What is a Specification?**
-```yaml
-Specification Structure:
-  - ID: Unique identifier (e.g., spec-auth-001)
-  - Title: Clear, actionable description
-  - Type: feature|enhancement|bugfix|refactor|documentation
-  - Priority: critical|high|medium|low
-  - Contract: Defines inputs, outputs, and behavior
-  - Acceptance Criteria: Measurable success conditions
-  - Test Scenarios: Validation requirements
-```
+### Next Steps
+1. Review generated documentation:
+   - `.quaestor/ARCHITECTURE.md` - Project structure analysis
+   - `.quaestor/CRITICAL_RULES.md` - Framework-specific guidelines
+   - `.quaestor/specifications/` - Folder structure for specs
 
-### Specification Lifecycle
-```mermaid
-graph LR
-    A[Draft] --> B[Approved]
-    B --> C[In Progress]
-    C --> D[Implemented]
-    D --> E[Tested]
-    E --> F[Deployed]
-    F --> G[Archived]
-```
+2. Create project specifications:
+   - Use `/plan --spec` to create new specifications
+   - Use `/plan` to view project progress
+   - Use `/impl` to implement specifications
 
-### Creating Specifications
-**Agent-Generated Specification Example:**
-```yaml
-spec_id: "spec-auth-001"
-title: "Implement JWT-based authentication"
-type: "feature"
-priority: "high"
-
-contract:
-  inputs:
-    username: string (required)
-    password: string (required, min 8 chars)
-  outputs:
-    token: JWT string
-    user: User object
-  behavior:
-    - Validate credentials against database
-    - Generate JWT with 24h expiration
-    - Handle invalid credentials gracefully
-
-acceptance_criteria:
-  - User can login with valid credentials
-  - Invalid credentials return 401 error
-  - Token expires after 24 hours
-  - Refresh token mechanism works
-
-test_scenarios:
-  - name: "Valid login"
-    given: "User with correct credentials"
-    when: "Login endpoint is called"
-    then: "JWT token is returned"
-```
-
-### Working with Specifications
-**Commands:**
-- `/plan --spec` - Create new specification
-- `/impl spec-id` - Implement a specification
-- `/plan` - View specification progress
-
-**Workflow:**
-1. Agent analysis generates initial specifications
-2. Review and approve specifications
-3. Link specification to feature branch
-4. Implement according to contract
-5. Validate against acceptance criteria
-6. Update status through lifecycle
+3. Start development:
+   - Follow the Research → Plan → Implement workflow
+   - Use appropriate agents for complex tasks
+   - Maintain documentation as you progress
 
 ### Agent Invocation Examples
 **How Agents Work Together:**
@@ -388,52 +270,31 @@ Phase 1 - Parallel Analysis:
     Input: Code and dependencies
     Output: Vulnerabilities, recommendations
     Example: "2 outdated deps, auth pattern needed"
-
-Phase 2 - Specification Generation:
-  planner agent:
-    Input: Consolidated analysis from Phase 1
-    Output: Prioritized specifications
-    Example Output:
-      spec-001: Upgrade dependencies (critical)
-      spec-002: Add authentication (high)
-      spec-003: Refactor state management (medium)
 ```
 
-**Visual Specification Roadmap:**
-```
-┌─────────────────────┐     ┌─────────────────────┐     ┌─────────────────────┐
-│   Foundation        │     │   Core Features     │     │   Enhancement       │
-│   (Week 1-2)        │ --> │   (Week 3-6)        │ --> │   (Week 7+)         │
-├─────────────────────┤     ├─────────────────────┤     ├─────────────────────┤
-│ • spec-001: Setup   │     │ • spec-004: API     │     │ • spec-007: Perf    │
-│ • spec-002: Auth    │     │ • spec-005: CRUD    │     │ • spec-008: Scale   │
-│ • spec-003: DB      │     │ • spec-006: Tests   │     │ • spec-009: Monitor │
-└─────────────────────┘     └─────────────────────┘     └─────────────────────┘
-```
-
-## Adaptive Specification Generation
-**Smart Phase Detection:**
+## Project Phase Detection
+**Smart Phase Analysis:**
 ```yaml
-Project Analysis → Specification Generation:
-  - New projects: Foundation → Core → Polish phases
-  - In-progress: Analyze git history → identify next logical phase
-  - Legacy: Assessment → Modernization → Enhancement
+Project Analysis → Phase Detection:
+  - New projects: Foundation phase
+  - In-progress: Analyze git history → identify current phase
+  - Legacy: Assessment and modernization needs
   
-Example Specification Sets:
+Project Phases:
   Startup (0-6 months):
-    - "MVP Foundation"
-    - "Core Features"
-    - "User Feedback Integration"
+    - MVP Foundation
+    - Core Features
+    - User Feedback Integration
   
   Growth (6-18 months):
-    - "Performance Optimization"
-    - "Feature Expansion"
-    - "Production Hardening"
+    - Performance Optimization
+    - Feature Expansion
+    - Production Hardening
   
   Enterprise (18+ months):
-    - "Architecture Evolution"
-    - "Scalability Improvements"
-    - "Platform Maturation"
+    - Architecture Evolution
+    - Scalability Improvements
+    - Platform Maturation
 ```
 
 ## Success Criteria
@@ -441,9 +302,8 @@ Example Specification Sets:
 - ✅ Framework and architecture accurately detected
 - ✅ **USER VALIDATION COMPLETED** ← **MANDATORY**
 - ✅ Documents generated with real project data
-- ✅ Specifications aligned with project phase and goals
 - ✅ Quality standards configured for tech stack
-- ✅ First specification ready for /impl execution
+- ✅ Project ready for development
 
 **Framework Integration:**
 - ✅ Language-specific quality gates configured
@@ -462,22 +322,6 @@ Example Specification Sets:
 - Complexity: 0.7/1.0
 - Phase: Growth (6-18 months)
 
-**Proposed Specifications:**
-1. [spec-auth-001]: JWT Authentication System (priority: high)
-   - Type: feature
-   - Estimated: 2 weeks
-   - Description: Implement secure JWT-based auth with refresh tokens
-   
-2. [spec-api-002]: REST API Integration Layer (priority: high)
-   - Type: enhancement
-   - Estimated: 1 week
-   - Description: Create typed API client with error handling
-   
-3. [spec-perf-003]: Component Performance Optimization (priority: medium)
-   - Type: enhancement
-   - Estimated: 1 week
-   - Description: Add React.memo and useMemo for heavy components
-
 **Quality Standards:**
 - Testing: Jest + React Testing Library
 - Linting: ESLint with Airbnb config
@@ -485,16 +329,14 @@ Example Specification Sets:
 - CI/CD: GitHub Actions detected
 
 ## Your Options:
-- ✅ Proceed with detected setup and specifications
-- 🔄 Modify specification list
-- 📝 Define custom specifications
+- ✅ Proceed with detected setup
+- 🔄 Modify detected patterns
+- 📝 Custom architecture description
 - 🚫 Start with minimal setup
 
-## Specification Creation:
-- ⭐ Create specification files (.quaestor/specifications/*.yaml)
-- 📝 Documentation only (just populate MEMORY.md templates)
+What would you prefer for the initial setup?
 
-What would you prefer for setup and specifications?
+**Note:** After initialization, use `/plan --spec` to create project specifications.
 ```
 
 ---

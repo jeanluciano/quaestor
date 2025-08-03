@@ -28,6 +28,9 @@ Design specifications, plan work through spec-driven development, manage project
 /plan --analyze                # Deep strategic analysis
 /plan --architecture          # Architectural planning mode
 /plan --link                   # Link current branch to spec
+/plan --activate <spec-id>     # Move spec from draft to active
+/plan --archive <spec-id>      # Move spec from active to completed
+/plan --migrate                # Migrate flat specs to folders
 ```
 
 ## Auto-Intelligence
@@ -35,13 +38,16 @@ Design specifications, plan work through spec-driven development, manage project
 ### Multi-Mode Planning
 ```yaml
 Mode Detection:
-  - No args → Progress dashboard with specs
-  - --spec → Specification creation wizard
+  - No args → Progress dashboard with folder stats
+  - --spec → Specification creation wizard (creates in draft/)
   - --create → Project phase creation wizard
   - --complete → Completion validation
   - --analyze → Strategic analysis
   - --architecture → System design planning
   - --link → Branch-to-spec linkage
+  - --activate → Move spec to active/ folder
+  - --archive → Move spec to completed/ folder
+  - --migrate → Migrate flat specs to folders
 ```
 
 ### Agent Orchestration
@@ -68,16 +74,39 @@ Strategic Analysis:
 
 ## Execution: Analyze → Plan → Track → Archive
 
+### Folder Management Integration
+**Automatic folder-based specification lifecycle:**
+```yaml
+On First Run:
+  - Initialize FolderManager with .quaestor/specifications/
+  - Create folder structure: draft/, active/, completed/
+  - Migrate existing flat specifications to appropriate folders
+  - Update manifest with folder locations
+
+Folder Operations:
+  - New spec → Create in draft/
+  - Start work → Move to active/ (max 3)
+  - Complete → Move to completed/
+  - All moves atomic with git tracking
+
+Specification Context:
+  - Use active/ folder specs as source of truth
+  - No separate MEMORY.md file needed
+  - Context loaded directly from active specifications
+  - Completed specs archived in completed/ folder
+```
+
 ### Phase 0: Progress Dashboard 📊
 **Default Mode - Comprehensive Status Overview:**
 ```yaml
 Data Collection (Parallel):
-  - Specification status: active specs and their states
+  - Folder statistics: draft/active/completed counts via FolderManager
+  - Active specifications: Read from active/ folder (max 3)
+  - Active work: Read directly from active specifications
   - Git metrics: commits, velocity, contributors
-  - Spec implementation: MEMORY.md and spec manifest parsing
   - Quality metrics: test/lint status per spec
   - Architecture health: dependency analysis
-  - Project progress: spec-based completion tracking
+  - Project progress: folder-based completion tracking
 
 Visual Presentation:
   🎯 Project: [Name] • Phase: [Current Phase]
@@ -85,13 +114,18 @@ Visual Presentation:
   📈 Progress Overview:
   Overall: [████████░░] 80% • Velocity: ↑15% this week
   
-  📋 Active Specifications:
+  📁 Specification Folders:
+  • draft/: 5 specs ready to start
+  • active/: 2/3 slots used (can add 1 more)
+  • completed/: 12 specs archived
+  
+  📋 Active Specifications (active/):
   • [feat-auth-001] User Authentication
-    Status: IN_PROGRESS • Branch: feat/spec-auth-001-user-auth
+    Folder: active/ • Branch: feat/spec-auth-001-user-auth
     Contract: ✅ Defined • Tests: [████░░░░░░] 4/10
     
   • [feat-api-002] REST API Design  
-    Status: IMPLEMENTED • Branch: feat/spec-api-002-rest-design
+    Folder: active/ • Branch: feat/spec-api-002-rest-design
     Contract: ✅ Defined • Tests: [██████████] 10/10
   
   📊 Current Phase: [Name]
@@ -125,7 +159,7 @@ Visual Presentation:
 ```yaml
 Discovery:
   - Read: .quaestor/MEMORY.md → current phase section
-  - Parse: planned|in_progress|completed items
+  - Parse: planned|active|completed items
   - Check: .quaestor/specifications/*.yaml files
   - Assess: overall completion percentage
 ```
@@ -196,6 +230,17 @@ Planning Intelligence:
 
 ## Specification Creation Workflow (--spec)
 
+### Initial Setup
+```yaml
+Directory Structure:
+  - Use FolderManager to create folder structure:
+    - draft/     # New specifications start here
+    - active/    # In-progress (max 3 specifications)
+    - completed/ # Finished specifications
+  - Automatic migration of existing flat specifications
+  - Git integration for history preservation
+```
+
 ### Guided Specification Process
 ```yaml
 Context Gathering:
@@ -218,7 +263,7 @@ Acceptance Criteria:
 Branch Creation:
   - Generate: spec-compliant branch name
   - Link: specification to branch
-  - Update: spec status to IN_PROGRESS
+  - Update: spec status to ACTIVE
 ```
 
 ### Specification Output Template
@@ -228,7 +273,7 @@ Specification Created:
   Title: User Authentication System
   Type: feature
   Priority: high
-  Status: DRAFT → IN_PROGRESS
+  Status: DRAFT → ACTIVE
   
   Contract:
     Inputs:
@@ -243,11 +288,13 @@ Specification Created:
       - Log authentication attempts
       
   Branch: feat/spec-auth-001-user-authentication
+  Folder: draft/ → Will move to active/ when work begins
   
   Next Steps:
   1. Review specification contract
-  2. Implement according to acceptance criteria
-  3. Update spec status as you progress
+  2. Run /plan --activate spec-auth-001 to move to active/
+  3. Implement according to acceptance criteria
+  4. Run /plan --complete spec-auth-001 to archive
 ```
 
 ## Project Phase Creation Workflow
@@ -373,8 +420,8 @@ Planning Output:
 - ✅ Specification tracked in manifest
 
 **Phase Completion:**
-- ✅ All planned specifications implemented
-- ✅ Spec contracts validated and tested
+- ✅ All planned specifications completed
+- ✅ Spec contracts validated and complete
 - ✅ Quality gates passed (tests, linting, types)
 - ✅ Documentation updated and current
 - ✅ Success criteria measurably achieved
@@ -396,7 +443,35 @@ Planning Output:
 - **specifications/** → Specification-level tracking
 - **Git branches** → Automatic spec-to-branch linkage
 - **Quality system** → Integrated validation per specification
-- **Hooks** → spec_branch_tracker for workflow enforcement
+- **Hooks** → specification tracking and validation
+
+## Implementation Guide
+
+**Using FolderManager:**
+```python
+from quaestor.core.folder_manager import FolderManager
+
+# Initialize manager
+folder_mgr = FolderManager(Path(".quaestor/specifications"))
+
+# First run - setup folders
+result = folder_mgr.create_folder_structure()
+if result.success:
+    # Migrate existing specs
+    folder_mgr.migrate_flat_specifications()
+
+# Move spec to active
+result = folder_mgr.move_specification(
+    Path("draft/spec-auth-001.yaml"), 
+    "active"
+)
+```
+
+**Folder Operations:**
+- Create spec → Save to draft/
+- Activate → Check limit, move to active/
+- Complete → Move to completed/, update memory
+- All operations atomic with rollback
 
 ---
-*Intelligent specification-driven planning with contract-based development and automated progress tracking*
+*Intelligent specification-driven planning with folder-based lifecycle management*

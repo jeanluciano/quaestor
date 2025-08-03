@@ -5,21 +5,13 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python /Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/hooks/user_prompt_submit.py"
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/user_prompt_submit.py",
+            "description": "Detect mode and provide appropriate feedback"
           }
         ]
       }
     ],
     "PreToolUse": [
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python /Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/hooks/compliance_pre_edit.py"
-          }
-        ]
-      }
     ],
     "PostToolUse": [
       {
@@ -27,16 +19,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python /Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/hooks/research_workflow_tracker.py"
-          }
-        ]
-      },
-      {
-        "matcher": "TodoWrite",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python /Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/hooks/memory_tracker.py"
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/research_workflow_tracker.py",
+            "description": "Track research phase and guide workflow transitions"
           }
         ]
       },
@@ -45,7 +29,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python /Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/hooks/spec_tracker.py"
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/spec_tracker.py",
+            "description": "Track specification progress and suggest agents"
           }
         ]
       }
@@ -55,7 +40,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python /Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/hooks/session_context_loader.py"
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/session_context_loader.py",
+            "description": "Load project context and suggest agents at session start"
           }
         ]
       }

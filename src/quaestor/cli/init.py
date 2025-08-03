@@ -467,11 +467,10 @@ def _init_common(target_dir: Path, force: bool, mode: str):
         "compliance_pre_edit.py",
         "compliance_validator.py",
         "file_change_tracker.py",
-        "memory_tracker.py",
         "research_workflow_tracker.py",
         "session_context_loader.py",
         "spec_tracker.py",
-        "todo_agent_coordinator.py",
+        "user_prompt_submit.py",
     ]
 
     for hook_file in available_hooks:

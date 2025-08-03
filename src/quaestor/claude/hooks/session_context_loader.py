@@ -7,7 +7,6 @@ helpful context. Adapts behavior based on session mode:
 - Drive mode: Minimal context loading, simple mode indicator
 """
 
-import re
 import subprocess
 import sys
 from datetime import datetime
@@ -72,35 +71,45 @@ class SessionContextLoaderHook(BaseHook):
         self.output_json(output, exit_code=0)
 
     def check_current_specification(self) -> dict[str, Any]:
-        """Check current specification status from MEMORY.md and specification files."""
-        memory_file = self.project_root / ".quaestor" / "MEMORY.md"
+        """Check current specification status from active specification files."""
         specs_dir = self.project_root / ".quaestor" / "specifications"
+        active_dir = specs_dir / "active"
 
         result = {"active": False, "id": "", "progress": 0, "remaining_tasks": 0, "in_progress_task": None}
 
-        # Check MEMORY.md for current specification
-        if memory_file.exists():
+        # Check active folder for specifications
+        if active_dir.exists():
             try:
-                content = memory_file.read_text()
-                spec_match = re.search(r"current_specification:\s*['\"]?([^'\"]+)['\"]?", content)
-                progress_match = re.search(r"progress:\s*(\d+)%", content)
+                # Get all active specification files
+                active_specs = list(active_dir.glob("*.yaml"))
 
-                if spec_match:
+                if active_specs:
+                    # Use the first active spec (should be limited to 3 by FolderManager)
+                    spec_file = active_specs[0]
                     result["active"] = True
-                    result["id"] = spec_match.group(1)
-                    if progress_match:
-                        result["progress"] = int(progress_match.group(1))
-            except Exception:
-                pass
+                    result["id"] = spec_file.stem
 
-        # Check specification files for in-progress tasks
-        if specs_dir.exists() and result["active"]:
-            spec_file = specs_dir / f"{result['id']}.yaml"
-
-            if spec_file.exists():
-                try:
+                    # Parse specification content
                     with open(spec_file) as f:
                         content = f.read()
+
+                    # Extract progress from phases
+                    import yaml
+
+                    try:
+                        spec_data = yaml.safe_load(content)
+                        phases = spec_data.get("phases", {})
+                        if phases:
+                            completed_phases = sum(
+                                1
+                                for phase in phases.values()
+                                if isinstance(phase, dict) and phase.get("status") == "completed"
+                            )
+                            total_phases = len(phases)
+                            result["progress"] = int((completed_phases / total_phases) * 100) if total_phases > 0 else 0
+                    except:
+                        # Fallback to simple parsing
+                        pass
 
                     # Count remaining tasks (simplified parsing)
                     pending_count = content.count("status: pending") + content.count("status: 'pending'")
@@ -121,8 +130,8 @@ class SessionContextLoaderHook(BaseHook):
                                         result["in_progress_task"] = task_name
                                         break
                                 break
-                except Exception:
-                    pass
+            except Exception:
+                pass
 
         return result
 
@@ -291,7 +300,7 @@ class SessionContextLoaderHook(BaseHook):
                     "1. Start with 'researcher' agent to understand the codebase",
                     "2. Use 'planner' agent to create implementation strategy",
                     "3. Track work with specifications and TODOs",
-                    "4. Maintain MEMORY.md with progress updates",
+                    "4. Use active specifications to track progress",
                 ]
             )
         elif workflow_state.get("phase") == "implementing" and recent_activity["has_uncommitted_changes"]:

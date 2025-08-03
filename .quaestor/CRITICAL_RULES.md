@@ -43,7 +43,7 @@ before_any_action:
         - check_active_specifications: ".quaestor/specs/*.yaml"
         - declare_work_context: "Which specification am I working on?"
         - update_progress: "Mark completed tasks and update progress"
-        - document_completion: "Add progress log to MEMORY.md"
+        - document_completion: "Update specification phase status"
       on_violation: "STOP and say: 'Let me check the current specification and declare which task I'm working on'"
     
     - id: "hook_compliance"
@@ -114,8 +114,8 @@ immutable_rules:
       after_completing:
         - mark: "completed subtasks with '# COMPLETED'"
         - update: "progress percentage in tasks.yaml"
-        - document: "progress in MEMORY.md with details"
-      validation: "Specification files and MEMORY.md must be updated"
+        - document: "progress in specification files"
+      validation: "Specification files must be updated with progress"
   
   - rule_id: "ALWAYS_FOLLOW_HOOKS"
     priority: "CRITICAL"
@@ -242,16 +242,6 @@ stop_and_ask_when:
     - nested_depth: "> 3"
       action: "STOP: Refactor to reduce nesting"
   
-  python_specific:
-    - typer_command_complexity: "> 5 parameters"
-      action: "STOP: Use configuration object or break into subcommands"
-    - missing_type_hints: "detected in function signatures"
-      action: "STOP: Add proper type hints for all parameters and return values"
-    - bare_except_clauses: "detected"
-      action: "STOP: Specify exception types explicitly"
-    - mutable_default_arguments: "detected"
-      action: "STOP: Use None and initialize inside function"
-  
   architectural_complexity:
     - circular_dependencies: "detected"
       action: "STOP: Ask for architectural guidance"
@@ -321,21 +311,6 @@ before_considering_complete:
     - error_handling_complete: true
     - input_validation_present: true
     - documentation_updated: true
-  
-  python_standards:
-    - type_hints_complete: true
-    - docstrings_present: true
-    - ruff_linting_passes: true
-    - pytest_coverage_above_90: true
-    - no_bare_except_clauses: true
-    - imports_organized: true
-  
-  typer_cli_standards:
-    - command_help_text_clear: true
-    - parameter_types_specified: true
-    - error_messages_user_friendly: true
-    - rich_output_formatted: true
-    - command_grouping_logical: true
   
   review_checklist:
     - follows_existing_patterns: true
@@ -439,23 +414,18 @@ specification_tracking_mandatory:
         - action: "Add timestamped notes"
         - action: "Update status if all subtasks done"
       
-      update_memory:
-        - file: ".quaestor/MEMORY.md"
-        - section: "## Progress Log"
-        - template: |
-            ### YYYY-MM-DD
-            - **COMPLETED**: [Task Name] ([Phase] - [task_id], subtask [X/Y])
-              - Implementation: [what was built]
-              - Files created: [list key files]
-              - Tests added: [count and description]
-              - Status: [X]% complete
-              - Next: [what's next in this task]
+      update_specification:
+        - file: ".quaestor/specifications/active/[spec-id].yaml"
+        - section: "phases:"
+        - action: "Update phase status to 'completed'"
+        - action: "Add completion notes"
+        - action: "Document implementation details"
       
       verification_checklist:
         - check: "Specification task status updated"
         - check: "Subtasks marked complete with '# COMPLETED'"
         - check: "Progress percentage reflects reality"
-        - check: "MEMORY.md has detailed progress entry"
+        - check: "Specification phase status updated"
         - check: "Notes document key decisions"
         - check: "Next steps are clear"
 
@@ -468,7 +438,7 @@ enforcement_violations:
   work_without_tracking:
     - severity: "HIGH"
     - response: "I created files but didn't update specification tracking"
-    - correction: "Immediately update tasks.yaml and MEMORY.md with what was completed"
+    - correction: "Immediately update specification files with what was completed"
   
   incomplete_updates:
     - severity: "HIGH"
@@ -497,7 +467,7 @@ hook_compliance_examples:
     - violation_response: "Thanks for the feedback, I'll continue with implementation." # WRONG!
   
   agent_coordination_hook:
-    - hook_message: "Please run: Use the implementer agent to start working on staged specifications"
+    - hook_message: "Please run: Use the implementer agent to start working on approved specifications"
     - correct_response: "The hook is directing me to use the implementer agent. I'll spawn the implementer agent immediately."
     - violation_response: "I'll implement the specifications myself." # WRONG!
   
@@ -529,7 +499,7 @@ compliance_reminders:
   after_implementation:
     - "✅ Did I mark completed subtasks with '# COMPLETED'?"
     - "📊 Did I update the progress percentage?"
-    - "📖 Did I add a detailed MEMORY.md entry?"
+    - "📖 Did I update the specification phases?"
     - "🎯 Did I document what's next?"
   
   hook_compliance_checks:
@@ -543,13 +513,14 @@ quick_reference:
   check_active_specs: "grep -r 'status: in_progress' .quaestor/specs/"
   mark_subtask_complete: "Edit tasks.yaml: '- Create ABC' → '- Create ABC # COMPLETED'"
   update_progress: "Change 'progress: 25%' to reflect actual completion"
-  memory_template: |
-    ### 2025-01-12
-    - **COMPLETED**: [Task] ([Phase] - [task_id], subtask [X/Y])
-      - Details of what was implemented
-      - Files: [list]
-      - Tests: [description]
-      - Next: [what's next]
+  phase_update_template: |
+    phases:
+      phase_1:
+        status: completed
+        completed_date: YYYY-MM-DD
+        implementation_notes: "Details of what was implemented"
+        files_created: [list]
+        tests_added: [description]
 ```
 <!-- DATA:compliance-reminders:END -->
 <!-- SECTION:specification-tracking:END -->

@@ -224,6 +224,30 @@ class BaseHook:
             self.logger.error(f"Unexpected error in {self.hook_name}: {e}", exc_info=True)
             self.output_error(f"Unexpected error: {e}", blocking=False)
 
+    # Context-aware utility for checking active work
+
+    def has_active_work(self) -> bool:
+        """Check if there's active work in progress.
+
+        Returns:
+            True if there's an active specification or implementation phase
+        """
+        try:
+            workflow_state = WorkflowState(get_project_root())
+
+            # Check for active specification
+            if workflow_state.state.get("current_specification"):
+                return True
+
+            # Check for active implementation phase
+            if workflow_state.state.get("phase") in ["implementing", "planning", "researching"]:
+                return True
+
+            return False
+        except Exception as e:
+            self.logger.debug(f"Could not check active work: {e}")
+            return False
+
 
 # Utility functions for common operations
 

@@ -22,7 +22,7 @@ DEPRECATED_COMMANDS = [
 
 # File categorization for update logic
 SYSTEM_FILES = ["CRITICAL_RULES.md", "hooks.json", "QUAESTOR_CLAUDE.md"]
-USER_EDITABLE_FILES = ["ARCHITECTURE.md", "MEMORY.md", "MANIFEST.yaml", "CLAUDE.md"]
+USER_EDITABLE_FILES = ["ARCHITECTURE.md", "MANIFEST.yaml", "CLAUDE.md"]
 
 # Version extraction patterns
 VERSION_PATTERNS = [
@@ -52,7 +52,6 @@ TEMPLATE_FILES = {
     "quaestor_claude.md": "QUAESTOR_CLAUDE.md",
     "critical_rules.md": "CRITICAL_RULES.md",
     "architecture.md": "ARCHITECTURE.md",
-    "memory.md": "MEMORY.md",
 }
 
 # Template base path within assets

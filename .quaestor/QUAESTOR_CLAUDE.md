@@ -66,19 +66,6 @@ See CRITICAL_RULES.md for mandatory agent usage triggers and requirements.
 
 Run your project's test suite regularly (see Testing section below).
 
-## Working Memory Management
-
-### When context gets long:
-- Re-read this CLAUDE.md file
-- Check MEMORY.md for current project status
-- Document current state before major changes
-
-### Maintain MEMORY.md:
-Track progress in [MEMORY.md](./.quaestor/MEMORY.md) with sections for:
-- **Current Status**: What specification you're working on
-- **Active Work**: Current approach and tasks
-- **Timeline**: Goals and progress
-- **Next Actions**: Immediate, short-term, and long-term tasks
 
 ### Problem-Solving Together
 
@@ -113,15 +100,13 @@ When you're stuck or confused:
 - `specification_tracker.py` - Tracks specification progress and completion
 - **Required Action**: Follow the exact workflow steps specified
 
-**Memory & Context Hooks**:
-- `memory_tracker.py` - Maintains MEMORY.md synchronization
-- `session_context_loader.py` - Loads required context files
-- **Required Action**: Update all specified files and load required context
+**Context Hooks**:
+- `session_context_loader.py` - Loads active specifications and context
+- **Required Action**: Load active specifications and required context
 
-**Task Coordination Hooks**:
-- `todo_agent_coordinator.py` - Coordinates multi-agent task execution
-- `spec_branch_tracker.py` - Tracks specification branch requirements
-- **Required Action**: Follow multi-agent coordination requirements
+**Specification Tracking Hooks**:
+- `spec_tracker.py` - Tracks specification progress and validation
+- **Required Action**: Follow specification progress requirements
 
 ### Hook Feedback Processing
 
@@ -139,10 +124,10 @@ When you're stuck or confused:
 - Ensure proper agent coordination
 
 **After completing work**:
-- Update MEMORY.md with progress
-- Mark TODOs as completed
+- Update specification phase status
+- Mark tasks as completed in spec files
 - Commit changes with proper messages
-- Update specification tracking
+- Move completed specs to completed/ folder
 
 **Example Hook Compliance**:
 ```yaml
@@ -152,8 +137,8 @@ When you're stuck or confused:
 # Hook says: "ERROR: No active specification found"
 # Your response: Create or activate a specification before continuing
 
-# Hook says: "REQUIRED: Update MEMORY.md with progress"
-# Your response: Update MEMORY.md with current status and next steps
+# Hook says: "REQUIRED: Update specification progress"
+# Your response: Update the active specification file with phase completion
 ```
 <!-- SECTION:hook-compliance:END -->
 
@@ -167,7 +152,7 @@ When you're stuck or confused:
 
 ### Project Documentation
 For detailed information about the project:
-- **[MEMORY.md](./.quaestor/MEMORY.md)**: Current project state and progress tracking
+- **[Active Specifications](./.quaestor/specifications/active/)**: Current work in progress
 - **[ARCHITECTURE.md](./.quaestor/ARCHITECTURE.md)**: Technical architecture and design principles
 
 # ARCHITECTURE & CODE GUIDELINES
@@ -216,18 +201,18 @@ Use these commands to maintain consistency and follow best practices.
 <!-- DATA:hook-configuration:START -->
 ```yaml
 workflow_hooks:
-  after_memory_update:
-    trigger: "MEMORY.md modified"
+  after_spec_update:
+    trigger: "Specification file modified"
     conditions:
-      - "Contains completed TODO items"
-      - "Specification progress changed"
+      - "Phase marked completed"
+      - "All acceptance criteria met"
     actions:
-      - scan_for_completed_todos: "Check TODO status"
+      - scan_for_completed_phases: "Check phase status"
       - run_specification_commit: "Auto-commit completed work"
     command: "/quaestor:specification-commit"
   
-  after_todo_completion:
-    trigger: "TodoWrite marks item as completed"
+  after_task_completion:
+    trigger: "Task marked as completed"
     conditions:
       - "All related changes saved"
       - "Quality checks passing"
@@ -240,14 +225,14 @@ workflow_hooks:
     trigger: "Task command completes successfully"
     conditions:
       - "All checks green"
-      - "TODO marked complete"
+      - "Task marked complete"
     actions:
       - commit_changes: "Create commit for task"
       - update_tracking: "Update progress"
     prompt_user: false
   
   specification_completion:
-    trigger: "All TODOs in specification done"
+    trigger: "All tasks in specification done"
     conditions:
       - "All items completed"
       - "Quality gates passed"
@@ -261,8 +246,8 @@ workflow_hooks:
 ### Hook Usage
 
 **Automatic Triggers**:
-- Completing a TODO automatically triggers commit workflow
-- Updating MEMORY.md with progress runs specification checks
+- Completing a task automatically triggers commit workflow
+- Updating specification files with progress runs validation checks
 - Finishing all items in a specification creates a PR
 
 **Manual Override**:

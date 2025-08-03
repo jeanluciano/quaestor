@@ -70,15 +70,15 @@ Run your project's test suite regularly (see Testing section below).
 
 ### When context gets long:
 - Re-read this CLAUDE.md file
-- Check MEMORY.md for current project status
+- Check active specifications in .quaestor/specifications/active/
 - Document current state before major changes
 
-### Maintain MEMORY.md:
-Track progress in [MEMORY.md](./.quaestor/MEMORY.md) with sections for:
-- **Current Status**: What specification you're working on
-- **Active Work**: Current approach and tasks
-- **Timeline**: Goals and progress
-- **Next Actions**: Immediate, short-term, and long-term tasks
+### Active Work Tracking:
+Track progress directly in your specification files:
+- **Active Specs**: Located in .quaestor/specifications/active/
+- **Current Work**: Update phase status in spec files
+- **Progress**: Track completed phases in specifications
+- **Next Actions**: Listed in specification phases
 
 ### Problem-Solving Together
 
@@ -113,10 +113,9 @@ When you're stuck or confused:
 - `specification_tracker.py` - Tracks specification progress and completion
 - **Required Action**: Follow the exact workflow steps specified
 
-**Memory & Context Hooks**:
-- `memory_tracker.py` - Maintains MEMORY.md synchronization
-- `session_context_loader.py` - Loads required context files
-- **Required Action**: Update all specified files and load required context
+**Context Hooks**:
+- `session_context_loader.py` - Loads active specifications and context
+- **Required Action**: Load active specifications and required context
 
 **Specification Tracking Hooks**:
 - `spec_tracker.py` - Tracks specification progress and validation
@@ -138,10 +137,10 @@ When you're stuck or confused:
 - Ensure proper agent coordination
 
 **After completing work**:
-- Update MEMORY.md with progress
-- Mark tasks as completed
+- Update specification phase status
+- Mark tasks as completed in spec files
 - Commit changes with proper messages
-- Update specification tracking
+- Move completed specs to completed/ folder
 
 **Example Hook Compliance**:
 ```yaml
@@ -151,8 +150,8 @@ When you're stuck or confused:
 # Hook says: "ERROR: No active specification found"
 # Your response: Create or activate a specification before continuing
 
-# Hook says: "REQUIRED: Update MEMORY.md with progress"
-# Your response: Update MEMORY.md with current status and next steps
+# Hook says: "REQUIRED: Update specification progress"
+# Your response: Update the active specification file with phase completion
 ```
 <!-- SECTION:hook-compliance:END -->
 
@@ -166,7 +165,7 @@ When you're stuck or confused:
 
 ### Project Documentation
 For detailed information about the project:
-- **[MEMORY.md](./.quaestor/MEMORY.md)**: Current project state and progress tracking
+- **[Active Specifications](./.quaestor/specifications/active/)**: Current work in progress
 - **[ARCHITECTURE.md](./.quaestor/ARCHITECTURE.md)**: Technical architecture and design principles
 
 # ARCHITECTURE & CODE GUIDELINES
@@ -215,13 +214,13 @@ Use these commands to maintain consistency and follow best practices.
 <!-- DATA:hook-configuration:START -->
 ```yaml
 workflow_hooks:
-  after_memory_update:
-    trigger: "MEMORY.md modified"
+  after_spec_update:
+    trigger: "Specification file modified"
     conditions:
-      - "Contains completed tasks"
-      - "Specification progress changed"
+      - "Phase marked completed"
+      - "All acceptance criteria met"
     actions:
-      - scan_for_completed_tasks: "Check task status"
+      - scan_for_completed_phases: "Check phase status"
       - run_specification_commit: "Auto-commit completed work"
     command: "/quaestor:specification-commit"
   
@@ -261,7 +260,7 @@ workflow_hooks:
 
 **Automatic Triggers**:
 - Completing a task automatically triggers commit workflow
-- Updating MEMORY.md with progress runs specification checks
+- Updating specification files with progress runs validation checks
 - Finishing all items in a specification creates a PR
 
 **Manual Override**:

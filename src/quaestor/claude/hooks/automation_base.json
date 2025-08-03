@@ -12,16 +12,6 @@
       }
     ],
     "PreToolUse": [
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "{python_path} {hooks_dir}/compliance_pre_edit.py",
-            "description": "Check compliance before edits and suggest agents"
-          }
-        ]
-      }
     ],
     "PostToolUse": [
       {
@@ -31,16 +21,6 @@
             "type": "command",
             "command": "{python_path} {hooks_dir}/research_workflow_tracker.py",
             "description": "Track research phase and guide workflow transitions"
-          }
-        ]
-      },
-      {
-        "matcher": "TodoWrite",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "{python_path} {hooks_dir}/memory_tracker.py",
-            "description": "Sync memory with TODO completions"
           }
         ]
       },

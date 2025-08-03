@@ -89,11 +89,11 @@ Folder Operations:
   - Complete → Move to completed/
   - All moves atomic with git tracking
 
-Memory Management:
-  - Use MemoryManager for minimal MEMORY.md
-  - Auto-generate from active/ folder only
-  - Archive context with completed specs
-  - Keep under 50 lines to prevent bloat
+Specification Context:
+  - Use active/ folder specs as source of truth
+  - No separate MEMORY.md file needed
+  - Context loaded directly from active specifications
+  - Completed specs archived in completed/ folder
 ```
 
 ### Phase 0: Progress Dashboard 📊
@@ -102,7 +102,7 @@ Memory Management:
 Data Collection (Parallel):
   - Folder statistics: draft/active/completed counts via FolderManager
   - Active specifications: Read from active/ folder (max 3)
-  - Memory status: Generated from MemoryManager (<50 lines)
+  - Active work: Read directly from active specifications
   - Git metrics: commits, velocity, contributors
   - Quality metrics: test/lint status per spec
   - Architecture health: dependency analysis
@@ -450,11 +450,9 @@ Planning Output:
 **Using FolderManager:**
 ```python
 from quaestor.core.folder_manager import FolderManager
-from quaestor.core.memory_manager import MemoryManager
 
-# Initialize managers
+# Initialize manager
 folder_mgr = FolderManager(Path(".quaestor/specifications"))
-memory_mgr = MemoryManager(Path("."), folder_mgr)
 
 # First run - setup folders
 result = folder_mgr.create_folder_structure()
@@ -467,9 +465,6 @@ result = folder_mgr.move_specification(
     Path("draft/spec-auth-001.yaml"), 
     "active"
 )
-
-# Update memory file
-memory_mgr.update_memory_file()
 ```
 
 **Folder Operations:**

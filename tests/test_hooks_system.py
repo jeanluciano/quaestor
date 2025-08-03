@@ -46,7 +46,6 @@ class TestHooksConfiguration:
         expected_hooks = {
             "compliance_pre_edit.py",
             "research_workflow_tracker.py",
-            "memory_tracker.py",
             "spec_tracker.py",
             "session_context_loader.py",
         }
@@ -82,7 +81,6 @@ class TestHooksConfiguration:
         expected_hooks = [
             "compliance_pre_edit.py",
             "research_workflow_tracker.py",
-            "memory_tracker.py",
             "spec_tracker.py",
             "session_context_loader.py",
             "base.py",  # Base hook class
@@ -103,7 +101,6 @@ class TestHooksConfiguration:
         hook_files = [
             "compliance_pre_edit.py",
             "research_workflow_tracker.py",
-            "memory_tracker.py",
             "spec_tracker.py",
         ]
 
@@ -203,7 +200,6 @@ class TestHooksConfiguration:
                 "compliance_pre_edit.py",
                 "compliance_validator.py",
                 "file_change_tracker.py",
-                "memory_tracker.py",
                 "research_workflow_tracker.py",
                 "session_context_loader.py",
                 "spec_tracker.py",
@@ -262,10 +258,10 @@ class TestHooksCopyingInInit:
             # These are the hooks that should be copied
             expected_hooks = [
                 "shared_utils.py",
-                "implementation_declaration.py",
-                "research_tracker.py",
-                "implementation_tracker.py",
-                "memory_updater.py",
+                "compliance_pre_edit.py",
+                "research_workflow_tracker.py",
+                "spec_tracker.py",
+                "session_context_loader.py",
             ]
 
             for hook in expected_hooks:
@@ -318,7 +314,6 @@ class TestTemplateCopying:
             "QUAESTOR_CLAUDE.md",
             "CRITICAL_RULES.md",
             "ARCHITECTURE.md",
-            "MEMORY.md",
         }
 
         actual_files = set(TEMPLATE_FILES.values())
@@ -339,7 +334,6 @@ class TestTemplateCopying:
             ".quaestor/QUAESTOR_CLAUDE.md",
             ".quaestor/CRITICAL_RULES.md",
             ".quaestor/ARCHITECTURE.md",
-            ".quaestor/MEMORY.md",
         ]
 
         for ref in expected_references:

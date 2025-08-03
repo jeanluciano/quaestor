@@ -96,8 +96,8 @@ Consolidated Analysis:
 ```yaml
 Generated Documents:
   - ARCHITECTURE.md: From architect agent analysis
-  - MEMORY.md: Initial project context and decisions
   - CRITICAL_RULES.md: Framework-specific from analysis
+  - QUAESTOR_CLAUDE.md: AI collaboration guidelines
 ```
 
 **Note:** Use `/plan --spec` command to create project specifications after initialization.
@@ -168,7 +168,7 @@ mandatory_actions:
   - populate_architecture_md: "Real project analysis"
   - update_critical_rules: "Framework-specific guidelines"
   - configure_quality_standards: "Testing and linting setup"
-  - initialize_memory_md: "Project context and decisions"
+  - create_initial_specifications: "Draft/ folder for new specs"
 ```
 
 ## Framework-Specific Intelligence
@@ -239,8 +239,8 @@ Performance Monitoring:
 ### Next Steps
 1. Review generated documentation:
    - `.quaestor/ARCHITECTURE.md` - Project structure analysis
-   - `.quaestor/MEMORY.md` - Project context and decisions
    - `.quaestor/CRITICAL_RULES.md` - Framework-specific guidelines
+   - `.quaestor/specifications/` - Folder structure for specs
 
 2. Create project specifications:
    - Use `/plan --spec` to create new specifications
