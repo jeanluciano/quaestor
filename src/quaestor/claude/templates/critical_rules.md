@@ -128,8 +128,6 @@ immutable_rules:
         - workflow_changes: "When hook suggests workflow changes, implement immediately"
         - blocking_respect: "When hook blocks with exit code 2, STOP all work until resolved"
       hook_types:
-        - todo_agent_coordinator: "Coordinates agent usage based on TODO progress"
-        - spec_branch_tracker: "Ensures spec-driven development workflow"
         - specification_tracker: "Tracks specification progress and completion"
         - compliance_pre_edit: "Validates compliance before file modifications"
         - research_workflow_tracker: "Ensures Research → Plan → Implement workflow"

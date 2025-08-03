@@ -2,7 +2,7 @@
 spec_id: "auth-001"
 title: "User Authentication Flow"
 type: "feature"
-status: "approved"
+status: "staged"
 created: "2024-01-20"
 author: "planner-agent"
 ---

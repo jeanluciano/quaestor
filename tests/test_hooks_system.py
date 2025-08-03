@@ -48,7 +48,6 @@ class TestHooksConfiguration:
             "research_workflow_tracker.py",
             "memory_tracker.py",
             "spec_tracker.py",
-            "todo_agent_coordinator.py",
             "session_context_loader.py",
         }
 
@@ -85,7 +84,6 @@ class TestHooksConfiguration:
             "research_workflow_tracker.py",
             "memory_tracker.py",
             "spec_tracker.py",
-            "todo_agent_coordinator.py",
             "session_context_loader.py",
             "base.py",  # Base hook class
         ]
@@ -209,7 +207,6 @@ class TestHooksConfiguration:
                 "research_workflow_tracker.py",
                 "session_context_loader.py",
                 "spec_tracker.py",
-                "todo_agent_coordinator.py",
             ]
         )
 

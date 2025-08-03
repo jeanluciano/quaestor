@@ -192,14 +192,14 @@ class TestSpecificationManager:
         updates = {
             "title": "Updated Title",
             "description": "Updated description",
-            "status": SpecStatus.APPROVED,
+            "status": SpecStatus.STAGED,
         }
         updated_spec = spec_manager.update_specification(spec.id, updates)
 
         assert updated_spec is not None
         assert updated_spec.title == "Updated Title"
         assert updated_spec.description == "Updated description"
-        assert updated_spec.status == SpecStatus.APPROVED
+        assert updated_spec.status == SpecStatus.STAGED
         assert updated_spec.updated_at > original_updated_at
 
     def test_update_nonexistent_specification(self, spec_manager):
@@ -224,7 +224,7 @@ class TestSpecificationManager:
         # Verify updates
         updated_spec = spec_manager.get_specification(spec.id)
         assert updated_spec.branch == "feature/branch-test"
-        assert updated_spec.status == SpecStatus.IN_PROGRESS
+        assert updated_spec.status == SpecStatus.ACTIVE
 
         # Verify branch mapping
         manifest = spec_manager.load_manifest()
@@ -286,8 +286,8 @@ class TestSpecificationManager:
             priority=SpecPriority.LOW,
         )
 
-        # Update one to approved status
-        spec_manager.update_specification(spec2.id, {"status": SpecStatus.APPROVED})
+        # Update one to staged status
+        spec_manager.update_specification(spec2.id, {"status": SpecStatus.STAGED})
 
         # Test all specifications
         all_specs = spec_manager.list_specifications()
@@ -297,9 +297,9 @@ class TestSpecificationManager:
         draft_specs = spec_manager.list_specifications(status=SpecStatus.DRAFT)
         assert len(draft_specs) == 2
 
-        approved_specs = spec_manager.list_specifications(status=SpecStatus.APPROVED)
-        assert len(approved_specs) == 1
-        assert approved_specs[0].id == spec2.id
+        staged_specs = spec_manager.list_specifications(status=SpecStatus.STAGED)
+        assert len(staged_specs) == 1
+        assert staged_specs[0].id == spec2.id
 
         # Test filter by type
         feature_specs = spec_manager.list_specifications(spec_type=SpecType.FEATURE)
@@ -397,7 +397,7 @@ class TestSpecificationSerialization:
             id="feat-test-001",
             title="Test Specification",
             type=SpecType.FEATURE,
-            status=SpecStatus.APPROVED,
+            status=SpecStatus.STAGED,
             priority=SpecPriority.HIGH,
             description="A comprehensive test specification",
             rationale="Testing serialization functionality",
@@ -663,7 +663,7 @@ class TestSpecificationIntegration:
         manager.update_specification(
             spec.id,
             {
-                "status": SpecStatus.APPROVED,
+                "status": SpecStatus.STAGED,
                 "use_cases": ["Use case 1", "Use case 2"],
                 "acceptance_criteria": ["AC1", "AC2"],
             },
@@ -672,21 +672,21 @@ class TestSpecificationIntegration:
         # 3. Link to branch and start implementation
         manager.link_spec_to_branch(spec.id, "feature/workflow-test")
         updated_spec = manager.get_specification(spec.id)
-        assert updated_spec.status == SpecStatus.IN_PROGRESS
+        assert updated_spec.status == SpecStatus.ACTIVE
         assert updated_spec.branch == "feature/workflow-test"
 
         # 4. Mark as implemented
-        manager.update_specification(spec.id, {"status": SpecStatus.IMPLEMENTED})
+        manager.update_specification(spec.id, {"status": SpecStatus.COMPLETED})
 
         # 5. Mark as tested
-        manager.update_specification(spec.id, {"status": SpecStatus.TESTED})
+        manager.update_specification(spec.id, {"status": SpecStatus.COMPLETED})
 
         # 6. Mark as deployed
-        final_spec = manager.update_specification(spec.id, {"status": SpecStatus.DEPLOYED})
+        final_spec = manager.update_specification(spec.id, {"status": SpecStatus.COMPLETED})
 
-        assert final_spec.status == SpecStatus.DEPLOYED
+        assert final_spec.status == SpecStatus.COMPLETED
 
         # Verify we can retrieve by branch
         branch_spec = manager.get_spec_by_branch("feature/workflow-test")
         assert branch_spec.id == spec.id
-        assert branch_spec.status == SpecStatus.DEPLOYED
+        assert branch_spec.status == SpecStatus.COMPLETED

@@ -118,10 +118,9 @@ When you're stuck or confused:
 - `session_context_loader.py` - Loads required context files
 - **Required Action**: Update all specified files and load required context
 
-**Task Coordination Hooks**:
-- `todo_agent_coordinator.py` - Coordinates multi-agent task execution
-- `spec_branch_tracker.py` - Tracks specification branch requirements
-- **Required Action**: Follow multi-agent coordination requirements
+**Specification Tracking Hooks**:
+- `spec_tracker.py` - Tracks specification progress and validation
+- **Required Action**: Follow specification progress requirements
 
 ### Hook Feedback Processing
 
@@ -140,7 +139,7 @@ When you're stuck or confused:
 
 **After completing work**:
 - Update MEMORY.md with progress
-- Mark TODOs as completed
+- Mark tasks as completed
 - Commit changes with proper messages
 - Update specification tracking
 
@@ -219,15 +218,15 @@ workflow_hooks:
   after_memory_update:
     trigger: "MEMORY.md modified"
     conditions:
-      - "Contains completed TODO items"
+      - "Contains completed tasks"
       - "Specification progress changed"
     actions:
-      - scan_for_completed_todos: "Check TODO status"
+      - scan_for_completed_tasks: "Check task status"
       - run_specification_commit: "Auto-commit completed work"
     command: "/quaestor:specification-commit"
   
-  after_todo_completion:
-    trigger: "TodoWrite marks item as completed"
+  after_task_completion:
+    trigger: "Task marked as completed"
     conditions:
       - "All related changes saved"
       - "Quality checks passing"
@@ -240,14 +239,14 @@ workflow_hooks:
     trigger: "Task command completes successfully"
     conditions:
       - "All checks green"
-      - "TODO marked complete"
+      - "Task marked complete"
     actions:
       - commit_changes: "Create commit for task"
       - update_tracking: "Update progress"
     prompt_user: false
   
   specification_completion:
-    trigger: "All TODOs in specification done"
+    trigger: "All tasks in specification done"
     conditions:
       - "All items completed"
       - "Quality gates passed"
@@ -261,7 +260,7 @@ workflow_hooks:
 ### Hook Usage
 
 **Automatic Triggers**:
-- Completing a TODO automatically triggers commit workflow
+- Completing a task automatically triggers commit workflow
 - Updating MEMORY.md with progress runs specification checks
 - Finishing all items in a specification creates a PR
 

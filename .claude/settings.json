@@ -1,13 +1,22 @@
 {
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python /Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/hooks/user_prompt_submit.py"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Write|Edit|MultiEdit",
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/compliance_pre_edit.py",
-            "description": "Check compliance before edits and suggest agents"
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python /Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/hooks/compliance_pre_edit.py"
           }
         ]
       }
@@ -18,8 +27,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/research_workflow_tracker.py",
-            "description": "Track research phase and guide workflow transitions"
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python /Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/hooks/research_workflow_tracker.py"
           }
         ]
       },
@@ -28,13 +36,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/memory_tracker.py",
-            "description": "Sync memory with TODO completions"
-          },
-          {
-            "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/todo_agent_coordinator.py",
-            "description": "Coordinate agents based on TODO patterns"
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python /Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/hooks/memory_tracker.py"
           }
         ]
       },
@@ -43,8 +45,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/spec_tracker.py",
-            "description": "Track specification progress and suggest agents"
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python /Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/hooks/spec_tracker.py"
           }
         ]
       }
@@ -54,8 +55,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/session_context_loader.py",
-            "description": "Load project context and suggest agents at session start"
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python /Users/jeanluciano/Dev/jeanluciano/quaestor/src/quaestor/claude/hooks/session_context_loader.py"
           }
         ]
       }

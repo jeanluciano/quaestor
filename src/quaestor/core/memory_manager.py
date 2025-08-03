@@ -11,7 +11,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from ..utils.yaml_utils import load_yaml, save_yaml
+from ..utils.yaml_utils import load_yaml
 from .folder_manager import FolderManager
 
 logger = logging.getLogger(__name__)
@@ -108,51 +108,6 @@ class MemoryManager:
 
         except Exception as e:
             logger.error(f"Failed to update memory file: {e}")
-            return False
-
-    def archive_completed_specification(self, spec_id: str) -> bool:
-        """
-        Archive memory content for a completed specification.
-
-        Args:
-            spec_id: Specification identifier to archive
-
-        Returns:
-            True if archiving successful, False otherwise
-        """
-        try:
-            # Find specification in completed folder
-            completed_path = self.folder_manager.base_path / "completed" / f"{spec_id}.yaml"
-            if not completed_path.exists():
-                logger.warning(f"Completed specification {spec_id} not found")
-                return False
-
-            # Extract progress information
-            spec_data = load_yaml(completed_path)
-
-            # Create archive entry
-            archive_entry = {
-                "spec_id": spec_id,
-                "title": spec_data.get("title", "Unknown"),
-                "completed_at": datetime.now().isoformat(),
-                "implementation_summary": self._extract_implementation_summary(spec_data),
-                "files_created": spec_data.get("implementation_details", {}).get("files_to_create", []),
-                "files_modified": spec_data.get("implementation_details", {}).get("files_to_modify", []),
-            }
-
-            # Append to specification file as completion metadata
-            if "completion_metadata" not in spec_data:
-                spec_data["completion_metadata"] = archive_entry
-                save_yaml(completed_path, spec_data)
-
-            # Remove from active memory
-            self.update_memory_file()
-
-            logger.info(f"Archived memory for specification {spec_id}")
-            return True
-
-        except Exception as e:
-            logger.error(f"Failed to archive specification {spec_id}: {e}")
             return False
 
     def _get_active_specifications(self) -> list[dict[str, Any]]:
@@ -253,15 +208,6 @@ class MemoryManager:
 
         return int((completed_phases / total_phases) * 100) if total_phases > 0 else 0
 
-    def _extract_implementation_summary(self, spec_data: dict[str, Any]) -> str:
-        """Extract implementation summary from specification."""
-        # Try to get from completion metadata first
-        if "completion_metadata" in spec_data:
-            return spec_data["completion_metadata"].get("summary", "")
-
-        # Otherwise, use description
-        return spec_data.get("description", "No summary available")[:200]
-
     def _render_memory_template(self, content: MemoryContent) -> str:
         """Render memory content using minimal template."""
         # If template exists, use it; otherwise use embedded template
@@ -316,3 +262,124 @@ class MemoryManager:
 ---
 *Auto-generated from active specifications. See .quaestor/specifications/active/ for details.*
 """
+
+    def archive_completed_specification(self, spec_id: str, spec_data: dict[str, Any]) -> bool:
+        """Archive a completed specification in memory.
+
+        Args:
+            spec_id: Specification ID
+            spec_data: Specification data including title, dates, achievements
+
+        Returns:
+            True if successful
+        """
+        memory_file = self.memory_file
+        if not memory_file.exists():
+            # Create initial memory file if it doesn't exist
+            self.update_memory_file()
+
+        try:
+            # Read current memory
+            current_content = memory_file.read_text()
+
+            # Create completion entry
+            completion_date = datetime.now().strftime("%Y-%m-%d")
+            completion_entry = f"""
+### {completion_date} - Specification Completed: {spec_id}
+
+**Completed**: {spec_data.get("title", "Unknown")}
+**Duration**: {spec_data.get("start_date", "Unknown")} to {completion_date}
+**Key Achievements**:
+{self._format_achievements(spec_data.get("acceptance_criteria", []))}
+
+**Learnings**:
+{self._format_learnings(spec_data.get("learnings", []))}
+
+**Metrics**:
+- Implementation scope: {spec_data.get("scope", "Unknown")}
+- Complexity: {spec_data.get("complexity", "Unknown")}
+- Status: ✅ Completed
+"""
+
+            # Find insertion point (after active specifications section)
+            lines = current_content.split("\n")
+            insert_index = self._find_completion_section(lines)
+
+            # Insert completion entry
+            if insert_index >= 0:
+                lines.insert(insert_index, completion_entry)
+                updated_content = "\n".join(lines)
+            else:
+                # Append at end if section not found
+                updated_content = current_content + "\n" + completion_entry
+
+            # Ensure content stays under limit
+            updated_content = self._trim_old_completions(updated_content)
+
+            # Write back
+            memory_file.write_text(updated_content)
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to archive specification {spec_id}: {e}")
+            return False
+
+    def _format_achievements(self, criteria: list[str]) -> str:
+        """Format acceptance criteria as achievements."""
+        if not criteria:
+            return "- Specification requirements met"
+        return "\n".join([f"- ✅ {criterion}" for criterion in criteria[:5]])  # Limit to 5
+
+    def _format_learnings(self, learnings: list[str]) -> str:
+        """Format learnings list."""
+        if not learnings:
+            return "- Implementation completed successfully"
+        return "\n".join([f"- {learning}" for learning in learnings[:3]])  # Limit to 3
+
+    def _find_completion_section(self, lines: list[str]) -> int:
+        """Find where to insert completion entries."""
+        # Look for completions section or end of active specs
+        for i, line in enumerate(lines):
+            if "## Completed Specifications" in line or "## Recent Completions" in line:
+                return i + 1
+
+        # Find end of active specifications section
+        for i, line in enumerate(lines):
+            if line.startswith("## Active Specifications"):
+                # Find next section or end
+                for j in range(i + 1, len(lines)):
+                    if lines[j].startswith("##"):
+                        return j
+                return len(lines)
+
+        # Default to end
+        return len(lines)
+
+    def _trim_old_completions(self, content: str) -> str:
+        """Trim old completion entries to stay under line limit."""
+        lines = content.split("\n")
+
+        # Count completion entries
+        completion_starts = []
+        for i, line in enumerate(lines):
+            if "Specification Completed:" in line:
+                completion_starts.append(i)
+
+        # If too many completions, remove oldest
+        if len(completion_starts) > 5:  # Keep only 5 most recent
+            # Find the end of the oldest completion
+            oldest_start = completion_starts[0]
+            oldest_end = completion_starts[1] if len(completion_starts) > 1 else len(lines)
+
+            # Remove oldest completion
+            del lines[oldest_start:oldest_end]
+
+        # Ensure total lines under limit
+        if len(lines) > self.MAX_MEMORY_LINES:
+            # Trim from the middle (old progress entries)
+            trim_start = self.MAX_MEMORY_LINES // 2
+            trim_count = len(lines) - self.MAX_MEMORY_LINES + 5
+            del lines[trim_start : trim_start + trim_count]
+            lines.insert(trim_start, "... (older entries trimmed) ...")
+
+        return "\n".join(lines)

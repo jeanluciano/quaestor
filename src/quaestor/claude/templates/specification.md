@@ -2,7 +2,7 @@
 spec_id: "{{ spec_id }}"
 title: "{{ title }}"
 type: "{{ type }}"  # feature|fix|enhancement|refactor
-status: "{{ status }}"  # draft|approved|implementing|testing|complete
+status: "{{ status }}"  # draft|staged|active|completed
 created: "{{ created_date }}"
 author: "{{ author }}"
 ---

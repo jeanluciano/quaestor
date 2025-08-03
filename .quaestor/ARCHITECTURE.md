@@ -12,8 +12,8 @@
 <!-- DATA:architecture-pattern:START -->
 ```yaml
 pattern:
-  selected: "[Choose: MVC, DDD, Microservices, Monolithic, etc.]"
-  description: "Brief description of why this pattern was chosen"
+  selected: "Modular Monolithic with Plugin Architecture"
+  description: "CLI tool with modular components, hook-based extensibility, and clear separation of concerns. Chosen for simplicity, maintainability, and extensibility."
 ```
 <!-- DATA:architecture-pattern:END -->
 
@@ -104,30 +104,42 @@ alternatives:
 <!-- DATA:key-components:START -->
 ```yaml
 components:
-  - name: "[Component Name]"
-    responsibility: "[Description of the component's responsibility]"
-    dependencies: []
-  - name: "[Component Name]"
-    responsibility: "[Description of the component's responsibility]"
-    dependencies: []
-  - name: "[Component Name]"
-    responsibility: "[Description of the component's responsibility]"
-    dependencies: []
+  - name: "Core Engine"
+    responsibility: "Configuration management, project analysis, specification handling"
+    dependencies: ["yaml", "file system"]
+  - name: "CLI Interface"
+    responsibility: "Command processing, user interaction, Rich output formatting"
+    dependencies: ["typer", "rich", "core engine"]
+  - name: "Hook System"
+    responsibility: "Workflow enforcement, automation, extensibility"
+    dependencies: ["core engine", "specification system"]
+  - name: "Specification System"
+    responsibility: "Specification lifecycle management, validation, tracking"
+    dependencies: ["yaml validation", "file system"]
+  - name: "Claude Integration"
+    responsibility: "AI agent coordination, template management, command execution"
+    dependencies: ["hook system", "specification system"]
 ```
 <!-- DATA:key-components:END -->
 
 <!-- DATA:domain-concepts:START -->
 ```yaml
 concepts:
-  - name: "[Concept]"
-    description: "[Description of what this represents in your system]"
-    related_to: []
-  - name: "[Concept]"
-    description: "[Description of what this represents in your system]"
-    related_to: []
-  - name: "[Concept]"
-    description: "[Description of what this represents in your system]"
-    related_to: []
+  - name: "Specification"
+    description: "YAML-based contract defining features with inputs, outputs, acceptance criteria, and test scenarios"
+    related_to: ["workflow", "hooks", "validation"]
+  - name: "Hook"
+    description: "Python scripts that enforce workflow rules, validate compliance, and provide automation"
+    related_to: ["specifications", "workflow", "claude integration"]
+  - name: "Session Mode"
+    description: "Framework vs Drive mode determining how aggressive workflow enforcement is"
+    related_to: ["hooks", "user experience"]
+  - name: "Project Analysis"
+    description: "Automatic detection of project type, language, and appropriate defaults"
+    related_to: ["configuration", "templates"]
+  - name: "Agent Coordination"
+    description: "Multi-agent task delegation and orchestration for complex work"
+    related_to: ["claude integration", "specifications"]
 ```
 <!-- DATA:domain-concepts:END -->
 
@@ -197,30 +209,39 @@ apis:
 <!-- DATA:directory-structure:START -->
 ```yaml
 structure:
-  - path: "src/"
+  - path: "src/quaestor/"
     contains:
-      - path: "[layer1]/"
-        description: "[Description of this layer]"
+      - path: "core/"
+        description: "Core business logic and domain models"
         subdirs:
-          - path: "[component]/"
-            description: "[Description]"
-          - path: "[component]/"
-            description: "[Description]"
-      - path: "[layer2]/"
-        description: "[Description of this layer]"
+          - path: "project_analysis.py"
+            description: "Project type detection and analysis"
+          - path: "configuration.py"
+            description: "Configuration management and validation"
+          - path: "specifications.py"
+            description: "Specification lifecycle management"
+          - path: "validation_engine.py"
+            description: "YAML and specification validation"
+      - path: "cli/"
+        description: "Command-line interface and user interaction"
         subdirs:
-          - path: "[component]/"
-            description: "[Description]"
-          - path: "[component]/"
-            description: "[Description]"
-      - path: "[layer3]/"
-        description: "[Description of this layer]"
-      - path: "shared/"
+          - path: "app.py"
+            description: "Main Typer application"
+          - path: "init.py"
+            description: "Project initialization commands"
+          - path: "configure.py"
+            description: "Configuration management commands"
+      - path: "claude/"
+        description: "Claude integration and AI coordination"
+        subdirs:
+          - path: "hooks/"
+            description: "Workflow enforcement and automation scripts"
+          - path: "agents/"
+            description: "Agent definitions and coordination logic"
+          - path: "commands/"
+            description: "Claude command templates and processors"
+      - path: "utils/"
         description: "Shared utilities and helpers"
-      - path: "config/"
-        description: "Configuration files"
-      - path: "examples/"
-        description: "Reference implementations"
 ```
 <!-- DATA:directory-structure:END -->
 

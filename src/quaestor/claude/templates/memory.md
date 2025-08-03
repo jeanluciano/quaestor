@@ -33,7 +33,7 @@ project_focus: "[Describe your project's current focus]"
 specifications:
   implemented: [X]
   in_progress: [Y]
-  approved: [Z]
+  staged: [Z]
   total: [Total]
 progress:
   completed_specs:
@@ -64,7 +64,7 @@ active_specs:
       tests_written: "[X/Y]"
       implementation: "[X%]"
   
-  approved:
+  staged:
     - id: "[spec-id]"
       title: "[Specification title]"
       priority: "[high/medium/low]"

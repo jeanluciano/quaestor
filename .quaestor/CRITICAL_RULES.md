@@ -128,8 +128,6 @@ immutable_rules:
         - workflow_changes: "When hook suggests workflow changes, implement immediately"
         - blocking_respect: "When hook blocks with exit code 2, STOP all work until resolved"
       hook_types:
-        - todo_agent_coordinator: "Coordinates agent usage based on TODO progress"
-        - spec_branch_tracker: "Ensures spec-driven development workflow"
         - specification_tracker: "Tracks specification progress and completion"
         - compliance_pre_edit: "Validates compliance before file modifications"
         - research_workflow_tracker: "Ensures Research → Plan → Implement workflow"
@@ -244,6 +242,16 @@ stop_and_ask_when:
     - nested_depth: "> 3"
       action: "STOP: Refactor to reduce nesting"
   
+  python_specific:
+    - typer_command_complexity: "> 5 parameters"
+      action: "STOP: Use configuration object or break into subcommands"
+    - missing_type_hints: "detected in function signatures"
+      action: "STOP: Add proper type hints for all parameters and return values"
+    - bare_except_clauses: "detected"
+      action: "STOP: Specify exception types explicitly"
+    - mutable_default_arguments: "detected"
+      action: "STOP: Use None and initialize inside function"
+  
   architectural_complexity:
     - circular_dependencies: "detected"
       action: "STOP: Ask for architectural guidance"
@@ -313,6 +321,21 @@ before_considering_complete:
     - error_handling_complete: true
     - input_validation_present: true
     - documentation_updated: true
+  
+  python_standards:
+    - type_hints_complete: true
+    - docstrings_present: true
+    - ruff_linting_passes: true
+    - pytest_coverage_above_90: true
+    - no_bare_except_clauses: true
+    - imports_organized: true
+  
+  typer_cli_standards:
+    - command_help_text_clear: true
+    - parameter_types_specified: true
+    - error_messages_user_friendly: true
+    - rich_output_formatted: true
+    - command_grouping_logical: true
   
   review_checklist:
     - follows_existing_patterns: true
@@ -474,7 +497,7 @@ hook_compliance_examples:
     - violation_response: "Thanks for the feedback, I'll continue with implementation." # WRONG!
   
   agent_coordination_hook:
-    - hook_message: "Please run: Use the implementer agent to start working on approved specifications"
+    - hook_message: "Please run: Use the implementer agent to start working on staged specifications"
     - correct_response: "The hook is directing me to use the implementer agent. I'll spawn the implementer agent immediately."
     - violation_response: "I'll implement the specifications myself." # WRONG!
   

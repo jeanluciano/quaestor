@@ -1,5 +1,16 @@
 {
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{python_path} {hooks_dir}/user_prompt_submit.py",
+            "description": "Detect mode and provide appropriate feedback"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Write|Edit|MultiEdit",
@@ -30,11 +41,6 @@
             "type": "command",
             "command": "{python_path} {hooks_dir}/memory_tracker.py",
             "description": "Sync memory with TODO completions"
-          },
-          {
-            "type": "command",
-            "command": "{python_path} {hooks_dir}/todo_agent_coordinator.py",
-            "description": "Coordinate agents based on TODO patterns"
           }
         ]
       },

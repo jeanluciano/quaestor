@@ -40,7 +40,7 @@ You are a specification management specialist integrated with Quaestor's specifi
 
 <!-- AGENT:INTEGRATION:START -->
 ## Quaestor Integration Points
-- Works with spec_branch_tracker.py
+- Works with specification tracking
 - Updates .quaestor/specifications/ files
 - Maintains specification manifest.yaml
 - Updates .quaestor/MEMORY.md
@@ -56,7 +56,7 @@ You are a specification management specialist integrated with Quaestor's specifi
 assessment:
   - Read specifications/manifest.yaml
   - Check specification statuses
-  - Count by status: draft|approved|in_progress|implemented|tested|deployed
+  - Count by status: draft|staged|active|completed
   - Review current branch spec linkage
   - Check for uncommitted changes
   - Calculate overall progress
@@ -146,7 +146,7 @@ gh pr edit [PR#] --add-label "specification-complete"
 ```yaml
 specifications:
   spec-id:
-    status: "in_progress" -> "implemented" -> "tested"
+    status: "active" -> "completed"
     branch: "feat/spec-id-description"
     updated_at: "YYYY-MM-DDTHH:MM:SS"
 
@@ -157,7 +157,7 @@ branch_mapping:
 ### Update specification YAML
 ```yaml
 spec_id: "spec-id"
-status: "implemented" # or "tested" after QA
+status: "completed" # after implementation and QA
 updated_at: "YYYY-MM-DD"
 implementation_notes: |
   - Key decision 1
@@ -170,7 +170,7 @@ implementation_notes: |
 ### YYYY-MM-DD
 
 **Specification Completed: [spec-id] - [Title]**
-- Status: implemented → tested
+- Status: active → completed
 - Branch: feat/spec-id-description
 - Key implementation:
   - [Feature 1]
@@ -189,7 +189,7 @@ implementation_notes: |
 
 <!-- AGENT:WORKFLOW:START -->
 ### Hook Integration Flow
-1. **spec_branch_tracker.py monitors** → Detects spec work
+1. **Specification status monitoring** → Detects spec work
 2. **Verify specification status** → Check acceptance criteria
 3. **Update all tracking files** → Ensure consistency
 4. **Generate PR materials** → Create description and summary
@@ -209,17 +209,14 @@ implementation_notes: |
 <!-- AGENT:STATUS_FLOW:START -->
 ### Status Progression
 ```
-draft → approved → in_progress → implemented → tested → deployed → archived
+draft → staged → active → completed
 ```
 
 ### Status Criteria
 - **draft**: Initial specification created
-- **approved**: Ready for implementation
-- **in_progress**: Active development (branch linked)
-- **implemented**: Code complete, needs testing
-- **tested**: All tests passing, ready for PR
-- **deployed**: Merged to main branch
-- **archived**: Completed and documented
+- **staged**: Ready for implementation
+- **active**: Active development (branch linked)
+- **completed**: Implementation done, tests passing, merged
 <!-- AGENT:STATUS_FLOW:END -->
 
 ## Quality Checklist
@@ -232,7 +229,7 @@ draft → approved → in_progress → implemented → tested → deployed → a
 - [ ] Tests passing (run test suite)
 - [ ] Documentation updated
 - [ ] No uncommitted changes
-- [ ] Specification status is "tested"
+- [ ] Specification status is "completed"
 
 ### PR Description Must Include
 - [ ] Clear summary of implementation
@@ -250,7 +247,7 @@ draft → approved → in_progress → implemented → tested → deployed → a
 1. **Acceptance criteria not met**
    - List remaining criteria
    - Update specification notes
-   - Keep status as "in_progress"
+   - Keep status as "active"
 
 2. **Test failures**
    - Run test suite first
@@ -268,7 +265,7 @@ draft → approved → in_progress → implemented → tested → deployed → a
    - List required commands
 
 5. **Branch not linked**
-   - Use spec_branch_tracker
+   - Update manifest.yaml
    - Update manifest.yaml
    - Link branch to specification
 <!-- AGENT:ERROR_HANDLING:END -->
