@@ -152,7 +152,7 @@ class TestQuaestorUpdater:
         manifest = FileManifest(quaestor_dir / "manifest.json")
 
         # Create a system file
-        critical_file = quaestor_dir / "CRITICAL_RULES.md"
+        critical_file = quaestor_dir / "CONTEXT.md"
         critical_file.write_text("Old content")
         manifest.track_file(critical_file, FileType.SYSTEM, "1.0", temp_dir)
 
@@ -209,8 +209,8 @@ class TestQuaestorUpdater:
         manifest = FileManifest(quaestor_dir / "manifest.json")
         # Don't set version in manifest
 
-        # Create QUAESTOR_CLAUDE.md with version
-        quaestor_claude = quaestor_dir / "QUAESTOR_CLAUDE.md"
+        # Create CONTEXT.md with version
+        quaestor_claude = quaestor_dir / "CONTEXT.md"
         quaestor_claude.write_text("<!-- QUAESTOR:version:0.5.1 -->\nTest content")
 
         updater = QuaestorUpdater(temp_dir, manifest)
@@ -238,8 +238,7 @@ class TestQuaestorUpdater:
 
             def read_text_side_effect(package, resource):
                 content_map = {
-                    "quaestor_claude.md": "<!-- QUAESTOR:version:1.0 -->\nQUAESTOR_CLAUDE content",
-                    "critical_rules.md": "<!-- QUAESTOR:version:1.0 -->\nCRITICAL_RULES content",
+                    "claude_context.md": "<!-- QUAESTOR:version:1.0 -->\nCLAUDE_CONTEXT content",
                     "architecture.md": "<!-- QUAESTOR:version:1.0 -->\nARCHITECTURE content",
                     "memory.md": "<!-- QUAESTOR:version:1.0 -->\nMEMORY content",
                 }
@@ -268,8 +267,8 @@ class TestUpdateIntegration:
         quaestor_dir.mkdir()
 
         # Create initial files
-        quaestor_claude_md = quaestor_dir / "QUAESTOR_CLAUDE.md"
-        quaestor_claude_md.write_text("<!-- QUAESTOR:version:1.0 -->\nOriginal content")
+        claude_context_md = quaestor_dir / "CONTEXT.md"
+        claude_context_md.write_text("<!-- QUAESTOR:version:1.0 -->\nOriginal content")
 
         arch_md = quaestor_dir / "ARCHITECTURE.md"
         arch_md.write_text("<!-- QUAESTOR:version:1.0 -->\nOriginal architecture")
@@ -277,7 +276,7 @@ class TestUpdateIntegration:
         # Create and populate manifest
         manifest = FileManifest(quaestor_dir / "manifest.json")
         manifest.set_quaestor_version("0.2.3")
-        manifest.track_file(quaestor_claude_md, FileType.SYSTEM, "1.0", temp_dir)
+        manifest.track_file(claude_context_md, FileType.SYSTEM, "1.0", temp_dir)
         manifest.track_file(arch_md, FileType.USER_EDITABLE, "1.0", temp_dir)
         manifest.save()
 
@@ -294,15 +293,13 @@ class TestUpdateIntegration:
         with patch("quaestor.core.updater.pkg_resources.read_text") as mock_read:
             # Need to handle multiple calls to read_text for different files
             def read_text_side_effect(package, resource):
-                if resource == "quaestor_claude.md":
-                    return "<!-- QUAESTOR:version:1.1 -->\nUpdated QUAESTOR_CLAUDE content"
-                elif resource == "critical_rules.md":
-                    return "<!-- QUAESTOR:version:1.1 -->\nUpdated CRITICAL_RULES content"
+                if resource == "context.md":
+                    return "<!-- QUAESTOR:version:1.1 -->\nUpdated CONTEXT content"
                 elif resource == "architecture.md":
                     return "<!-- QUAESTOR:version:1.1 -->\nUpdated architecture"
                 elif resource == "memory.md":
                     return "<!-- QUAESTOR:version:1.1 -->\nUpdated memory"
-                elif resource == "claude_include.md":
+                elif resource == "include.md":
                     return "<!-- QUAESTOR CONFIG START -->\nUpdated include\n<!-- QUAESTOR CONFIG END -->"
                 else:
                     raise FileNotFoundError(f"Resource {resource} not found")
@@ -313,7 +310,7 @@ class TestUpdateIntegration:
                 result = updater.update()
 
         # Verify results
-        assert ".quaestor/QUAESTOR_CLAUDE.md" in result.updated  # System file updated
+        assert ".quaestor/CONTEXT.md" in result.updated  # System file updated
         assert ".quaestor/ARCHITECTURE.md" in result.skipped  # User file skipped
-        assert quaestor_claude_md.read_text() == "<!-- QUAESTOR:version:1.1 -->\nUpdated QUAESTOR_CLAUDE content"
+        assert claude_context_md.read_text() == "<!-- QUAESTOR:version:1.1 -->\nUpdated CONTEXT content"
         assert "User customized" in arch_md.read_text()  # User changes preserved

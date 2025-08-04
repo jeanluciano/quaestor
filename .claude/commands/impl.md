@@ -35,18 +35,28 @@ Execute production-quality features with auto-detected language standards, intel
 - **Agile**: Feature development (0.3-0.7 complexity)  
 - **Focused**: Bug fixes (<0.3 complexity)
 
+## Execution
+
+**Use the implementer agent to build features according to the specification.**
+
+For complex implementations:
+- **Use the architect agent** for system design decisions (complexity > 0.7)
+- **Use the security agent** when implementing auth, encryption, or access control
+- **Use the qa agent** to create tests alongside implementation
+- **Use the refactorer agent** for multi-file changes requiring consistency
+
 ## Workflow: Research → Plan → Implement → Validate
 
 ### Phase 1: Discovery & Research 🔍
-**No Arguments?** → Check `.quaestor/MEMORY.md` for `active_specs:` or in-progress specifications
+**No Arguments?** → Check `.quaestor/spec/active/` for in-progress specifications
 
 **Specification Integration:**
 ```yaml
 🎯 Context Check:
-- Scan: .quaestor/specifications/manifest.yaml
-- Match: keywords → active specifications
-- Update: status → "in_progress"
-- Link: current branch to specification
+- Scan: .quaestor/spec/draft/*.yaml for matching spec
+- Move: draft spec → active/ folder (if space available)
+- Update: spec status → "in_progress"
+- Track: implementation in spec phases
 ```
 
 **Research Protocol:**
@@ -116,25 +126,25 @@ Execute → Validate → Fix (if ❌) → Continue
 **Auto-Update Protocol:**
 ```yaml
 Pre-Implementation:
-  - Check: active specifications & match implementation context
+  - Check: .quaestor/spec/draft/ for matching spec ID
+  - Move: spec from draft/ → active/ (max 3 active)
   - Declare: "Working on Spec: [ID] - [Title]"
-  - Update: specification status → "in_progress"
-  - Link: current branch to specification
+  - Update: phase status in spec file
 
 Post-Implementation:
-  - Update: specification status → "implemented"
-  - Log: MEMORY.md with timestamp & outcomes
+  - Update: phase status → "completed"
   - Track: acceptance criteria completion
-  - Identify: next specification or testing phase
+  - Move: spec to completed/ when all phases done
+  - Create: git commit with spec reference
 ```
 
 ## Specification Discovery (No Arguments)
 ```yaml
 Discovery Protocol:
-  1. Read: .quaestor/MEMORY.md
-  2. Look for: active_specs|in_progress|approved|draft
-  3. Check: .quaestor/specifications/manifest.yaml
-  4. Output: "Found spec: [ID] - [Title]" OR "No active specifications"
+  1. Check: .quaestor/spec/active/*.yaml (current work)
+  2. If empty: Check .quaestor/spec/draft/*.yaml (available work)
+  3. Match: spec ID from command argument
+  4. Output: "Found spec: [ID] - [Title]" OR "No matching specification"
 ```
 
 ## Quality Gates by Language

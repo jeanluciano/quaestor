@@ -1,12 +1,14 @@
-<!-- META:document:critical-rules -->
+<!-- META:document:claude-context -->
 <!-- META:priority:MAXIMUM -->
 <!-- META:enforcement:MANDATORY -->
 <!-- QUAESTOR:version:1.0 -->
 
-# CRITICAL RULES - MUST BE FOLLOWED AT ALL COSTS
+# CLAUDE CONTEXT - QUAESTOR AI DEVELOPMENT FRAMEWORK
+
+## 1. CRITICAL ENFORCEMENT
 
 <!-- SECTION:enforcement:validations:START -->
-## ⚠️ AUTOMATIC ENFORCEMENT CHECKS
+### ⚠️ AUTOMATIC ENFORCEMENT CHECKS
 
 <!-- DATA:pre-action-validations:START -->
 ```yaml
@@ -58,8 +60,7 @@ before_any_action:
 <!-- DATA:pre-action-validations:END -->
 <!-- SECTION:enforcement:validations:END -->
 
-<!-- SECTION:rules:immutable:START -->
-## 🔴 IMMUTABLE RULES
+### 🔴 IMMUTABLE RULES
 
 <!-- DATA:rule-definitions:START -->
 ```yaml
@@ -94,7 +95,7 @@ immutable_rules:
     enforcement:
       required_elements:
         - comprehensive_error_handling
-        - input_validation
+        - input_validation  
         - edge_case_handling
         - proper_logging
         - test_coverage
@@ -139,12 +140,12 @@ immutable_rules:
         ignore_workflow_guidance: "VIOLATION - Workflow guidance must be followed"
 ```
 <!-- DATA:rule-definitions:END -->
-<!-- SECTION:rules:immutable:END -->
 
-<!-- SECTION:workflow:mandatory:START -->
-## 📋 MANDATORY WORKFLOW
+## 2. MANDATORY WORKFLOW
 
 <!-- WORKFLOW:research-plan-implement:START -->
+### 📋 Research → Plan → Implement
+
 ```yaml
 mandatory_workflow:
   name: "Research → Plan → Implement"
@@ -190,10 +191,8 @@ mandatory_workflow:
         must_pass: "All quality checks"
 ```
 <!-- WORKFLOW:research-plan-implement:END -->
-<!-- SECTION:workflow:mandatory:END -->
 
-<!-- SECTION:agent-delegation:mandatory:START -->
-## 🤖 MANDATORY AGENT USAGE
+### 🤖 Agent Orchestration Requirements
 
 <!-- DATA:agent-triggers:START -->
 ```yaml
@@ -226,10 +225,8 @@ must_use_agents_when:
       - agent_4: "Implement improvements"
 ```
 <!-- DATA:agent-triggers:END -->
-<!-- SECTION:agent-delegation:mandatory:END -->
 
-<!-- SECTION:complexity-triggers:START -->
-## 🚨 COMPLEXITY TRIGGERS
+### 🚨 Complexity Management
 
 <!-- DATA:complexity-detection:START -->
 ```yaml
@@ -259,10 +256,8 @@ stop_and_ask_when:
       action: "STOP: Highlight concerns and get guidance"
 ```
 <!-- DATA:complexity-detection:END -->
-<!-- SECTION:complexity-triggers:END -->
 
-<!-- SECTION:ultrathink:triggers:START -->
-## 🧠 ULTRATHINK TRIGGERS
+### 🧠 Ultrathink Requirements
 
 <!-- DATA:ultrathink-requirements:START -->
 ```yaml
@@ -296,83 +291,67 @@ must_ultrathink_for:
       required_output: "Performance analysis and benchmarks"
 ```
 <!-- DATA:ultrathink-requirements:END -->
-<!-- SECTION:ultrathink:triggers:END -->
 
-<!-- SECTION:quality-gates:START -->
-## ✅ QUALITY GATES
+## 3. PROJECT CONTEXT
 
-<!-- DATA:quality-requirements:START -->
-```yaml
-before_considering_complete:
-  code_quality:
-    - tests_written: true
-    - tests_passing: true
-    - edge_cases_handled: true
-    - error_handling_complete: true
-    - input_validation_present: true
-    - documentation_updated: true
-  
-  review_checklist:
-    - follows_existing_patterns: true
-    - no_code_duplication: true
-    - proper_abstraction_level: true
-    - performance_acceptable: true
-    - security_reviewed: true
-    - maintainable_code: true
-  
-  final_validation:
-    - would_deploy_to_production: true
-    - colleague_could_understand: true
-    - handles_failure_gracefully: true
-```
-<!-- DATA:quality-requirements:END -->
-<!-- SECTION:quality-gates:END -->
+### Project Information
+- **Quaestor**: AI context management framework for development teams
+- **Core Purpose**: Maintain project memory, enforce development standards, and orchestrate AI agents
+- **Architecture**: Plugin-based system with hooks, templates, and agent coordination
 
-<!-- SECTION:enforcement:consequences:START -->
-## ⛔ ENFORCEMENT CONSEQUENCES
+### Development Approach
+- **Production Quality**: All code must be production-ready with comprehensive error handling
+- **Hook Compliance**: Hook feedback is MANDATORY and must be treated as requirements
+- **Contextual Rules**: Generate appropriate rules based on project complexity analysis
+- **Agent Orchestration**: Use multiple agents for complex tasks to improve outcomes
 
-<!-- DATA:violation-handling:START -->
-```yaml
-rule_violations:
-  immediate_actions:
-    - stop_current_work: true
-    - acknowledge_violation: "I violated [RULE_NAME]. Let me correct this."
-    - revert_to_compliance: true
-  
-  repeated_violations:
-    - escalation: "I'm repeatedly violating rules. I need to reset my approach."
-    - request_guidance: true
-    - document_lessons_learned: true
-  
-  critical_violations:
-    - full_stop: true
-    - detailed_explanation: "What rule was violated and why"
-    - wait_for_user_intervention: true
-  
-  hook_compliance_violations:
-    ignore_hook_blocking:
-      - severity: "CRITICAL"
-      - immediate_action: "FULL STOP"
-      - response: "I am ignoring mandatory hook feedback. This violates ALWAYS_FOLLOW_HOOKS rule."
-      - correction: "Acknowledge hook message and execute all required actions before proceeding"
-    
-    ignore_agent_delegation:
-      - severity: "HIGH"
-      - immediate_action: "STOP AND DELEGATE"
-      - response: "Hook recommended using [AGENT] agent but I'm proceeding without delegation."
-      - correction: "Immediately spawn the recommended agent and delegate the specified work"
-    
-    treat_hooks_as_optional:
-      - severity: "HIGH"
-      - immediate_action: "ACKNOWLEDGE MANDATORY NATURE"
-      - response: "I treated hook feedback as optional when it is MANDATORY."
-      - correction: "Re-read hook message and implement ALL recommendations as requirements"
-```
-<!-- DATA:violation-handling:END -->
-<!-- SECTION:enforcement:consequences:END -->
+### Key Components
+- **Template System**: Manages project documentation and context templates
+- **Hook System**: Enforces development workflow and quality standards
+- **Agent System**: Coordinates specialized AI agents for different tasks
+- **Specification Tracking**: Tracks work progress against project specifications
 
-<!-- SECTION:specification-tracking:START -->
-## 📋 SPECIFICATION TRACKING SYSTEM
+### Code Style Guidelines
+- **Language**: Python 3.12+ with type hints
+- **Formatting**: Ruff for linting and formatting
+- **Testing**: Pytest with comprehensive coverage
+- **Documentation**: Google-style docstrings
+- **Error Handling**: Comprehensive exception handling with proper logging
+- **Imports**: Standard library, third-party, local imports (in order)
+
+### Architecture Patterns
+- **Dependency Injection**: Use for testability and modularity
+- **Plugin Architecture**: Extensible hook and agent systems
+- **Template Processing**: Dynamic content generation with context awareness
+- **Configuration Management**: Layered configuration with validation
+
+## 4. SYSTEM INTEGRATION
+
+### Hook System Compliance
+
+<!-- SECTION:hook-compliance:START -->
+**CRITICAL**: Hook feedback is MANDATORY and must be treated as requirements, not suggestions.
+
+#### Hook Types and Actions
+- **Compliance Hooks**: `compliance_pre_edit.py` - Fix ALL issues before proceeding
+- **Workflow Hooks**: `workflow_tracker.py` - Follow exact workflow steps
+- **Specification Hooks**: `spec_tracker.py` - Update tracking as required
+- **Context Hooks**: `session_context_loader.py` - Load required context
+
+#### Required Hook Processing
+1. **Read ALL hook output completely**
+2. **Address EVERY requirement listed**
+3. **Do not proceed until ALL feedback is resolved**
+4. **Treat hook failures as blocking errors**
+
+#### Hook Feedback Patterns (MANDATORY)
+- "Please run: Use the [agent] agent to [action]" → MUST spawn that agent immediately
+- "🚫 [BLOCKING MESSAGE]" → MUST resolve before any other work  
+- "Consider using [agent] agent to..." → MANDATORY, not optional
+- Any workflow guidance → MANDATORY to follow
+<!-- SECTION:hook-compliance:END -->
+
+### Specification Tracking System
 
 <!-- DATA:specification-requirements:START -->
 ```yaml
@@ -399,154 +378,172 @@ specification_tracking_mandatory:
       - what: "Tests added or updated"
       - what: "Key implementation decisions"
       - what: "Any deviations from original plan"
-    
-    update_notes:
-      - when: "Completing each subtask"
-      - format: "Add timestamped notes to tasks.yaml"
-      - include: "Brief description of what was completed"
 
   after_completing_work:
     mandatory_updates:
-      update_specification_file:
-        - file: ".quaestor/specs/[spec-id].yaml"
-        - action: "Mark completed subtasks with '# COMPLETED'"
-        - action: "Update progress percentage"
-        - action: "Add timestamped notes"
-        - action: "Update status if all subtasks done"
-      
-      update_specification:
-        - file: ".quaestor/specifications/active/[spec-id].yaml"
-        - section: "phases:"
-        - action: "Update phase status to 'completed'"
-        - action: "Add completion notes"
-        - action: "Document implementation details"
-      
-      verification_checklist:
-        - check: "Specification task status updated"
-        - check: "Subtasks marked complete with '# COMPLETED'"
-        - check: "Progress percentage reflects reality"
-        - check: "Specification phase status updated"
-        - check: "Notes document key decisions"
-        - check: "Next steps are clear"
-
-enforcement_violations:
-  no_specification_declared:
-    - severity: "CRITICAL"
-    - response: "I must check .quaestor/specs/ and declare which specification I'm working on"
-    - correction: "Stop work, find relevant task, update status, announce context"
-  
-  work_without_tracking:
-    - severity: "HIGH"
-    - response: "I created files but didn't update specification tracking"
-    - correction: "Immediately update specification files with what was completed"
-  
-  incomplete_updates:
-    - severity: "HIGH"
-    - response: "I updated some but not all tracking files"
-    - correction: "Complete all required updates before continuing"
-
-specification_context_examples:
-  vector_store_work:
-    - context: "Working on: Phase 1 > vector_store > Create VectorStore abstraction"
-    - file: ".quaestor/specs/spec-auth-001.yaml"
-    - subtask: "Create VectorStore abstraction (ABC)"
-  
-  ingestion_work:
-    - context: "Working on: Phase 1 > ingestion_agent > Design orchestration system"
-    - file: ".quaestor/specs/spec-auth-001.yaml"
-    - subtask: "Design orchestration system for multiple data sources"
-  
-  new_work:
-    - context: "Working on: New task not in existing specifications"
-    - action: "Ask user if this should be added to current phase or create new task"
-
-hook_compliance_examples:
-  blocking_hook_response:
-    - hook_message: "Please run: Use the qa agent to test"
-    - correct_response: "I need to use the qa agent to test before proceeding. Let me spawn the qa agent now."
-    - violation_response: "Thanks for the feedback, I'll continue with implementation." # WRONG!
-  
-  agent_coordination_hook:
-    - hook_message: "Please run: Use the implementer agent to start working on approved specifications"
-    - correct_response: "The hook is directing me to use the implementer agent. I'll spawn the implementer agent immediately."
-    - violation_response: "I'll implement the specifications myself." # WRONG!
-  
-  workflow_guidance_hook:
-    - hook_message: "Please run: Use the planner agent to review and approve draft specifications"
-    - correct_response: "The hook requires me to use the planner agent for specification review. I'm spawning the planner agent now."
-    - violation_response: "I'll review the specifications quickly and continue." # WRONG!
-  
-  spec_compliance_hook:
-    - hook_message: "SPEC TRACKING: Commits must be associated with a specification!"
-    - correct_response: "I must create a specification before proceeding. I'll use the planner agent to create one."
-    - violation_response: "I'll add a specification later." # WRONG!
+      - mark_subtasks: "Add '# COMPLETED' to finished subtasks"
+      - update_progress: "Update progress percentage"
+      - update_phases: "Mark phases as completed when done"
+      - document_notes: "Add implementation details and decisions"
 ```
 <!-- DATA:specification-requirements:END -->
 
-<!-- DATA:compliance-reminders:START -->
-```yaml
-compliance_reminders:
-  before_implementation:
-    - "🎯 Have I declared which specification I'm working on?"
-    - "📋 Is the task status set to 'in_progress'?"
-    - "🔍 Do I understand the acceptance criteria?"
-  
-  during_implementation:
-    - "📝 Am I tracking what files I'm creating?"
-    - "⚠️ Have I noted any deviations from the plan?"
-    - "🧪 Am I adding appropriate tests?"
-  
-  after_implementation:
-    - "✅ Did I mark completed subtasks with '# COMPLETED'?"
-    - "📊 Did I update the progress percentage?"
-    - "📖 Did I update the specification phases?"
-    - "🎯 Did I document what's next?"
-  
-  hook_compliance_checks:
-    - "🎣 Did any hooks provide feedback that I must follow?"
-    - "🤖 Did a hook recommend using a specific agent? (MANDATORY)"
-    - "🚫 Did a hook block my action? (Must resolve before proceeding)"
-    - "📋 Did a hook suggest workflow changes? (Must implement immediately)"
-    - "⚠️ Am I treating hook recommendations as optional? (VIOLATION)"
+### Available Commands
+- **project-init.md**: Analyze and initialize Quaestor framework
+- **research.md**: Intelligent codebase exploration
+- **plan.md**: Strategic planning and progress management
+- **impl.md**: Implementation with agent orchestration
+- **debug.md**: Interactive debugging and troubleshooting
+- **review.md**: Comprehensive review and validation
 
-quick_reference:
-  check_active_specs: "grep -r 'status: in_progress' .quaestor/specs/"
-  mark_subtask_complete: "Edit tasks.yaml: '- Create ABC' → '- Create ABC # COMPLETED'"
-  update_progress: "Change 'progress: 25%' to reflect actual completion"
-  phase_update_template: |
-    phases:
-      phase_1:
-        status: completed
-        completed_date: YYYY-MM-DD
-        implementation_notes: "Details of what was implemented"
-        files_created: [list]
-        tests_added: [description]
+### Git Integration
+- **Atomic Commits**: Each completed task gets its own commit
+- **Specification Branches**: Work organized by specification
+- **Hook Validation**: Pre-commit hooks enforce quality standards
+
+## 5. REFERENCE
+
+### Quality Gates
+
+<!-- DATA:quality-requirements:START -->
+```yaml
+before_considering_complete:
+  code_quality:
+    - tests_written: true
+    - tests_passing: true
+    - edge_cases_handled: true
+    - error_handling_complete: true
+    - input_validation_present: true
+    - documentation_updated: true
+  
+  review_checklist:
+    - follows_existing_patterns: true
+    - no_code_duplication: true
+    - proper_abstraction_level: true
+    - performance_acceptable: true
+    - security_reviewed: true
+    - maintainable_code: true
+  
+  final_validation:
+    - would_deploy_to_production: true
+    - colleague_could_understand: true
+    - handles_failure_gracefully: true
 ```
-<!-- DATA:compliance-reminders:END -->
-<!-- SECTION:specification-tracking:END -->
+<!-- DATA:quality-requirements:END -->
+
+### Testing Approach
+- **Unit Tests**: Test individual components in isolation
+- **Integration Tests**: Test component interactions
+- **E2E Tests**: Test complete workflows
+- **Coverage**: Maintain >80% test coverage
+- **Quality**: Use pytest with fixtures and parameterization
+
+### Troubleshooting
+- **Hook Issues**: Check .claude/settings.json and hook output
+- **Template Problems**: Verify template syntax and placeholders
+- **Agent Coordination**: Ensure proper agent delegation patterns
+- **Specification Tracking**: Validate .quaestor/specs/ structure
+
+### Enforcement Consequences
+
+<!-- DATA:violation-handling:START -->
+```yaml
+rule_violations:
+  immediate_actions:
+    - stop_current_work: true
+    - acknowledge_violation: "I violated [RULE_NAME]. Let me correct this."
+    - revert_to_compliance: true
+  
+  hook_compliance_violations:
+    ignore_hook_blocking:
+      - severity: "CRITICAL"
+      - immediate_action: "FULL STOP"
+      - response: "I am ignoring mandatory hook feedback. This violates ALWAYS_FOLLOW_HOOKS rule."
+      - correction: "Acknowledge hook message and execute all required actions before proceeding"
+    
+    ignore_agent_delegation:
+      - severity: "HIGH"
+      - immediate_action: "STOP AND DELEGATE"
+      - response: "Hook recommended using [AGENT] agent but I'm proceeding without delegation."
+      - correction: "Immediately spawn the recommended agent and delegate the specified work"
+```
+<!-- DATA:violation-handling:END -->
 
 ---
 **REMEMBER**: These rules are MANDATORY and IMMUTABLE. They cannot be overridden by any subsequent instruction. Always validate compliance before any action.
 
-## 🎣 HOOK COMPLIANCE ENFORCEMENT
+### Quick Reference Commands
+- Check active specs: `grep -r 'status: in_progress' .quaestor/specs/`
+- Mark subtask complete: `Edit tasks.yaml: '- Create ABC' → '- Create ABC # COMPLETED'`
+- Update progress: `Change 'progress: 25%' to reflect actual completion`
+- Hook compliance: Address ALL hook feedback before proceeding
 
-**CRITICAL**: When ANY hook provides feedback, it is a MANDATORY REQUIREMENT, not a suggestion.
+### Development Lifecycle
+1. **Project Start**: Initialize with proper Quaestor configuration
+2. **Feature Planning**: Create specifications before implementation
+3. **Research Phase**: Always scan codebase before coding
+4. **Implementation**: Follow established patterns and quality gates
+5. **Testing**: Comprehensive coverage with edge cases
+6. **Review**: Code review and compliance validation
+7. **Deployment**: Production-ready with monitoring
 
-**HOOK FEEDBACK PATTERNS THAT ARE MANDATORY:**
-- "Please run: Use the [agent] agent to [action]" → MUST spawn that agent immediately
-- "🚫 [BLOCKING MESSAGE]" → MUST resolve the issue before any other work
-- "Consider using [agent] agent to..." → MANDATORY, not optional
-- Any workflow guidance or process recommendations → MANDATORY to follow
+### Common Patterns
+- **Error Handling**: Use Result types for operation outcomes
+- **Logging**: Structured logging with appropriate levels
+- **Configuration**: Layered config with validation
+- **Testing**: Unit, integration, and E2E test strategies
+- **Documentation**: Auto-generated with manual curation
 
-**VIOLATION CONSEQUENCES:**
-- Ignoring hook blocking = IMMEDIATE FULL STOP
-- Treating agent recommendations as optional = RULE VIOLATION
-- Proceeding without following hook guidance = CRITICAL ERROR
+### Performance Guidelines
+- **Database**: Use connection pooling and query optimization
+- **Memory**: Proper resource cleanup and monitoring
+- **Caching**: Strategic caching with invalidation
+- **Async**: Non-blocking operations where appropriate
+- **Monitoring**: Metrics, tracing, and alerting
 
-**CORRECT RESPONSE TO HOOKS:**
-1. Acknowledge the hook feedback explicitly
-2. State what actions the hook requires
-3. Execute ALL recommended actions immediately
-4. Do not proceed with other work until hook requirements are met
+### Security Considerations
+- **Input Validation**: Sanitize all external inputs
+- **Authentication**: Proper session management
+- **Authorization**: Role-based access control
+- **Data Protection**: Encryption at rest and in transit
+- **Audit Logging**: Track security-relevant operations
 
-Hook feedback ensures quality, compliance, and proper workflow. Ignoring hooks undermines the entire development process.
+### Debugging Workflow
+1. **Reproduce**: Create minimal reproduction case
+2. **Isolate**: Use divide-and-conquer approach
+3. **Log Analysis**: Check logs for error patterns
+4. **Testing**: Write failing test first
+5. **Fix**: Implement minimal fix
+6. **Verify**: Ensure fix doesn't break other functionality
+
+### Code Review Checklist
+- [ ] Follows established patterns and conventions
+- [ ] Comprehensive error handling implemented
+- [ ] Security implications considered
+- [ ] Performance impact assessed
+- [ ] Tests cover edge cases
+- [ ] Documentation updated
+- [ ] Backward compatibility maintained
+
+### Integration Points
+- **CI/CD**: Automated testing and deployment
+- **Monitoring**: Health checks and metrics
+- **Documentation**: Auto-generated API docs
+- **Dependencies**: Regular security updates
+- **Backup**: Data backup and recovery procedures
+
+### Troubleshooting Guide
+**Common Issues:**
+- Hook failures: Check .claude/settings.json configuration
+- Template errors: Verify template syntax and placeholders
+- Agent coordination: Ensure proper delegation patterns
+- Specification tracking: Validate .quaestor/specs/ structure
+- Performance issues: Profile and optimize bottlenecks
+
+**Emergency Procedures:**
+- Production incidents: Follow incident response playbook
+- Security breaches: Implement breach response protocol
+- Data corruption: Execute data recovery procedures
+- Service outages: Follow service restoration checklist
+
+**Hook feedback ensures quality, compliance, and proper workflow. Ignoring hooks undermines the entire development process.**

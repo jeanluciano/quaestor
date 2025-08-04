@@ -1,6 +1,6 @@
 ---
 name: workflow-coordinator
-description: Orchestrates the research→plan→implement workflow, managing phase transitions and agent handoffs. Use when coordinating multi-phase work or managing workflow state.
+description: MANDATORY workflow enforcer for ALL implementation requests. Automatically invoked to ensure Research→Plan→Implement workflow compliance.
 tools: Read, Write, TodoWrite, Task, Grep, Glob
 priority: 8
 activation:

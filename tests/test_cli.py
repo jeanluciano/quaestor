@@ -27,8 +27,7 @@ class TestInitCommand:
                     ("quaestor.claude.templates", "CLAUDE_INCLUDE.md"): (
                         "<!-- QUAESTOR CONFIG START -->\nQuaestor config\n<!-- QUAESTOR CONFIG END -->"
                     ),
-                    ("quaestor", "QUAESTOR_CLAUDE.md"): "# QUAESTOR_CLAUDE.md test content",
-                    ("quaestor", "CRITICAL_RULES.md"): "# CRITICAL_RULES test content",
+                    ("quaestor.claude.templates", "context.md"): "# CONTEXT.md test content",
                     ("quaestor.claude.templates", "ARCHITECTURE.template.md"): "# ARCHITECTURE template",
                     ("quaestor.claude.templates", "MEMORY.template.md"): "# MEMORY template",
                     ("quaestor.claude.templates", "PATTERNS.template.md"): "# PATTERNS template",
@@ -50,7 +49,7 @@ class TestInitCommand:
             assert result.exit_code == 0
             assert (temp_dir / ".quaestor").exists()
             assert (temp_dir / "CLAUDE.md").exists()
-            assert (temp_dir / ".quaestor" / "QUAESTOR_CLAUDE.md").exists()
+            assert (temp_dir / ".quaestor" / "CONTEXT.md").exists()
             assert (temp_dir / ".quaestor" / "ARCHITECTURE.md").exists()
             # MEMORY.md was removed in favor of active specifications
             # Commands are installed to .claude/commands in team mode
@@ -186,8 +185,7 @@ class TestInitCommand:
                     ("quaestor.claude.templates", "CLAUDE_INCLUDE.md"): (
                         "<!-- QUAESTOR CONFIG START -->\nQuaestor config\n<!-- QUAESTOR CONFIG END -->"
                     ),
-                    ("quaestor", "QUAESTOR_CLAUDE.md"): "# QUAESTOR_CLAUDE.md",
-                    ("quaestor", "CRITICAL_RULES.md"): "# CRITICAL_RULES.md",
+                    ("quaestor.claude.templates", "context.md"): "# CONTEXT.md",
                     ("quaestor.claude.templates", "ARCHITECTURE.template.md"): "# ARCHITECTURE",
                     ("quaestor.claude.templates", "MEMORY.template.md"): "# MEMORY",
                     ("quaestor.claude.templates", "PATTERNS.template.md"): "# PATTERNS",
@@ -216,11 +214,9 @@ class TestInitCommand:
         with patch("quaestor.cli.init.pkg_resources.read_text") as mock_read:
 
             def side_effect(package, filename):
-                if package == "quaestor.claude.templates" and filename == "quaestor_claude.md":
-                    return "# QUAESTOR_CLAUDE.md test content"
-                elif package == "quaestor.claude.templates" and filename == "critical_rules.md":
-                    return "# CRITICAL_RULES.md test content"
-                elif package == "quaestor.claude.templates" and filename == "claude_include.md":
+                if package == "quaestor.claude.templates" and filename == "claude_context.md":
+                    return "# CONTEXT.md test content"
+                elif package == "quaestor.claude.templates" and filename == "include.md":
                     return (
                         "<!-- QUAESTOR CONFIG START -->\nQuaestor config\n"
                         "<!-- QUAESTOR CONFIG END -->\n\n<!-- Your custom content below -->"
@@ -259,12 +255,11 @@ class TestInitCommand:
 
             def mock_read_text(package, resource):
                 files = {
-                    ("quaestor.claude.templates", "claude_include.md"): (
+                    ("quaestor.claude.templates", "include.md"): (
                         "<!-- QUAESTOR CONFIG START -->\nQuaestor config\n"
                         "<!-- QUAESTOR CONFIG END -->\n\n<!-- Your custom content below -->"
                     ),
-                    ("quaestor.claude.templates", "quaestor_claude.md"): ("# QUAESTOR_CLAUDE.md test content"),
-                    ("quaestor.claude.templates", "critical_rules.md"): "# CRITICAL_RULES test content",
+                    ("quaestor.claude.templates", "context.md"): "# CONTEXT.md test content",
                     ("quaestor.claude.templates", "architecture.md"): "# AI ARCHITECTURE template",
                     ("quaestor.claude.templates", "memory.md"): "# AI MEMORY template",
                 }

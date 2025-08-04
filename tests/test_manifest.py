@@ -25,11 +25,11 @@ class TestCategorizeFile:
 
     def test_categorize_system_files(self):
         """Test categorization of system files."""
-        assert categorize_file(Path("CRITICAL_RULES.md"), "CRITICAL_RULES.md") == FileType.SYSTEM
+        assert categorize_file(Path("CONTEXT.md"), "CONTEXT.md") == FileType.SYSTEM
         assert categorize_file(Path("hooks.json"), "hooks.json") == FileType.SYSTEM
         assert categorize_file(Path("CLAUDE.md"), "CLAUDE.md") == FileType.USER_EDITABLE
-        assert categorize_file(Path("QUAESTOR_CLAUDE.md"), "QUAESTOR_CLAUDE.md") == FileType.SYSTEM
-        assert categorize_file(Path(".quaestor/CRITICAL_RULES.md"), ".quaestor/CRITICAL_RULES.md") == FileType.SYSTEM
+        assert categorize_file(Path("CONTEXT.md"), "CONTEXT.md") == FileType.SYSTEM
+        assert categorize_file(Path(".quaestor/CONTEXT.md"), ".quaestor/CONTEXT.md") == FileType.SYSTEM
 
     def test_categorize_user_editable_files(self):
         """Test categorization of user-editable files."""

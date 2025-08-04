@@ -207,13 +207,15 @@ class BaseHook:
 
     def is_drive_mode(self) -> bool:
         """Check if session is in drive mode."""
-        # Simple heuristic: if no active specs or work, likely drive mode
-        return not self.has_active_work()
+        from quaestor.claude.hooks.mode_detector import is_drive_mode
+
+        return is_drive_mode()
 
     def is_framework_mode(self) -> bool:
         """Check if session is in framework mode."""
-        # Framework mode when there's active work/specs
-        return self.has_active_work()
+        from quaestor.claude.hooks.mode_detector import is_framework_mode
+
+        return is_framework_mode()
 
     def run_with_timeout(self, func: Callable, timeout_seconds: int = 60) -> Any:
         """Run a function with timeout protection."""
@@ -254,23 +256,11 @@ class BaseHook:
         """Check if there's active work in progress.
 
         Returns:
-            True if there's an active specification or implementation phase
+            True if in framework mode (executing a command)
         """
-        try:
-            workflow_state = WorkflowState(get_project_root())
+        from quaestor.claude.hooks.mode_detector import has_active_work
 
-            # Check for active specification
-            if workflow_state.state.get("current_specification"):
-                return True
-
-            # Check for active implementation phase
-            if workflow_state.state.get("phase") in ["implementing", "planning", "researching"]:
-                return True
-
-            return False
-        except Exception as e:
-            self.logger.debug(f"Could not check active work: {e}")
-            return False
+        return has_active_work()
 
 
 # Utility functions for common operations
@@ -343,85 +333,4 @@ def detect_project_type(project_root: Path | str = ".") -> str:
     return "unknown"
 
 
-class WorkflowState:
-    """Track the current workflow state across hooks."""
-
-    def __init__(self, project_root: Path | str):
-        self.project_root = Path(project_root)
-        self.state_file = self.project_root / ".quaestor" / ".workflow_state"
-        self.state = self._load_state()
-
-        # Create the file if it doesn't exist
-        if not self.state_file.exists():
-            self._save_state()
-
-    def _load_state(self) -> dict[str, Any]:
-        """Load workflow state from file."""
-        if not self.state_file.exists():
-            return {
-                "phase": "idle",
-                "last_research": None,
-                "last_plan": None,
-                "files_examined": 0,
-                "research_files": [],
-                "implementation_files": [],
-            }
-
-        try:
-            with open(self.state_file) as f:
-                return json.load(f)
-        except Exception:
-            return {"phase": "idle", "files_examined": 0, "research_files": [], "implementation_files": []}
-
-    def _save_state(self):
-        """Save workflow state to file atomically."""
-        try:
-            self.state_file.parent.mkdir(exist_ok=True, parents=True)
-
-            # Write to temp file first
-            temp_file = self.state_file.with_suffix(".tmp")
-            with open(temp_file, "w") as f:
-                json.dump(self.state, f, indent=2)
-
-            # Atomic rename
-            temp_file.replace(self.state_file)
-        except Exception as e:
-            print(f"Warning: Could not save workflow state: {e}")
-            # Clean up temp file if it exists
-            temp_file = self.state_file.with_suffix(".tmp")
-            if temp_file.exists():
-                temp_file.unlink()
-
-    def set_phase(self, phase: str, message: str | None = None):
-        """Set workflow phase with optional message."""
-        self.state["phase"] = phase
-        if message:
-            print(message)
-        self._save_state()
-
-    def track_research(self, file_path: str | None = None):
-        """Track research activity."""
-        if self.state["phase"] == "idle":
-            self.set_phase("researching", "🔍 Started research phase")
-
-        self.state["last_research"] = datetime.now().isoformat()
-        if file_path:
-            research_files = self.state.get("research_files", [])
-            if file_path not in research_files:
-                research_files.append(file_path)
-                self.state["research_files"] = research_files
-
-        self._save_state()
-
-    def track_implementation(self, file_path: str | None = None):
-        """Track implementation activity."""
-        if self.state["phase"] == "researching":
-            self.set_phase("implementing", "🛠️  Moved to implementation phase")
-
-        if file_path:
-            impl_files = self.state.get("implementation_files", [])
-            if file_path not in impl_files:
-                impl_files.append(file_path)
-                self.state["implementation_files"] = impl_files
-
-        self._save_state()
+# WorkflowState class removed - no longer needed with new mode detection system

@@ -316,5 +316,5 @@ minimum_test_coverage: 80
 
         # Check tracked files
         tracked_files = manifest["files"]
-        assert ".quaestor/QUAESTOR_CLAUDE.md" in tracked_files
+        assert ".quaestor/CONTEXT.md" in tracked_files
         assert ".quaestor/ARCHITECTURE.md" in tracked_files

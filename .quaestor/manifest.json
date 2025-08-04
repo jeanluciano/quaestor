@@ -51,7 +51,7 @@
       "user_modified": true,
       "updated_by": "project-init"
     },
-    ".quaestor/CRITICAL_RULES.md": {
+    ".quaestor/RULES.md": {
       "type": "user-editable",
       "version": "1.0",
       "installed_at": "2025-08-03T10:55:51.718095",

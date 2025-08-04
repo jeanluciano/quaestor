@@ -89,7 +89,7 @@ concepts:
     related_to: ["Drive mode", "Framework mode", "Command processing"]
   - name: "Project Context"
     description: "Analyzed project information used for rule generation and AI guidance"
-    related_to: ["ProjectAnalyzer", "CRITICAL_RULES.md", "Team/Personal modes"]
+    related_to: ["ProjectAnalyzer", "RULES.md", "Team/Personal modes"]
 ```
 
 ```yaml

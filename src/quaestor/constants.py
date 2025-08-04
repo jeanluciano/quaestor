@@ -21,7 +21,7 @@ DEPRECATED_COMMANDS = [
 ]
 
 # File categorization for update logic
-SYSTEM_FILES = ["CRITICAL_RULES.md", "hooks.json", "QUAESTOR_CLAUDE.md"]
+SYSTEM_FILES = ["CLAUDE_CONTEXT.md", "hooks.json"]
 USER_EDITABLE_FILES = ["ARCHITECTURE.md", "MANIFEST.yaml", "CLAUDE.md"]
 
 # Version extraction patterns
@@ -38,8 +38,7 @@ QUAESTOR_DIR_NAME = ".quaestor"
 
 # File mappings for init command
 INIT_FILES = {
-    "QUAESTOR_CLAUDE.md": f"{QUAESTOR_DIR_NAME}/QUAESTOR_CLAUDE.md",  # Source -> Target
-    "CRITICAL_RULES.md": f"{QUAESTOR_DIR_NAME}/CRITICAL_RULES.md",
+    "CONTEXT.md": f"{QUAESTOR_DIR_NAME}/CONTEXT.md",  # Source -> Target
 }
 
 # Quaestor config markers for CLAUDE.md
@@ -49,8 +48,7 @@ QUAESTOR_CONFIG_END = "<!-- QUAESTOR CONFIG END -->"
 
 # Template file mappings (actual filename -> output filename)
 TEMPLATE_FILES = {
-    "quaestor_claude.md": "QUAESTOR_CLAUDE.md",
-    "critical_rules.md": "CRITICAL_RULES.md",
+    "context.md": "CONTEXT.md",
     "architecture.md": "ARCHITECTURE.md",
 }
 

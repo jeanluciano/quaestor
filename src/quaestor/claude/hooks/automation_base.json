@@ -5,6 +5,11 @@
         "hooks": [
           {
             "type": "command",
+            "command": "{python_path} {hooks_dir}/rule_injection.py",
+            "description": "Enforce rules based on request context"
+          },
+          {
+            "type": "command",
             "command": "{python_path} {hooks_dir}/user_prompt_submit.py",
             "description": "Detect mode and provide appropriate feedback"
           }
@@ -48,6 +53,11 @@
     "SessionStart": [
       {
         "hooks": [
+          {
+            "type": "command",
+            "command": "{python_path} {hooks_dir}/rule_injection.py",
+            "description": "Inject critical rules and context"
+          },
           {
             "type": "command",
             "command": "{python_path} {hooks_dir}/session_context_loader.py",

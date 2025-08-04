@@ -47,7 +47,9 @@ class TestHooksConfiguration:
             "compliance_pre_edit.py",
             "spec_lifecycle.py",
             "spec_tracker.py",
+            "workflow_tracker.py",
             "session_context_loader.py",
+            "rule_injection.py",
         }
 
         found_hooks = set()
@@ -205,6 +207,7 @@ class TestHooksConfiguration:
                 "spec_lifecycle.py",
                 "spec_tracker.py",
                 "user_prompt_submit.py",
+                "workflow_tracker.py",
             ]
         )
 
@@ -315,8 +318,7 @@ class TestTemplateCopying:
 
         # These are the critical files that must be included
         required_files = {
-            "QUAESTOR_CLAUDE.md",
-            "CRITICAL_RULES.md",
+            "CONTEXT.md",
             "ARCHITECTURE.md",
         }
 
@@ -335,8 +337,7 @@ class TestTemplateCopying:
 
         # Files that should be referenced in CLAUDE.md
         expected_references = [
-            ".quaestor/QUAESTOR_CLAUDE.md",
-            ".quaestor/CRITICAL_RULES.md",
+            ".quaestor/CONTEXT.md",
             ".quaestor/ARCHITECTURE.md",
         ]
 

@@ -4,7 +4,7 @@
 
 ## ⚠️ CRITICAL: MANDATORY RULES ENFORCEMENT
 
-**BEFORE READING FURTHER**: Load and validate [CRITICAL_RULES.md](./.quaestor/CRITICAL_RULES.md)
+**BEFORE READING FURTHER**: Load and validate [RULES.md](./.quaestor/RULES.md)
 
 ```yaml
 rule_enforcement:
@@ -16,7 +16,7 @@ rule_enforcement:
 ```
 
 ### Pre-Action Checklist (MANDATORY)
-- [ ] Have I loaded CRITICAL_RULES.md?
+- [ ] Have I loaded RULES.md?
 - [ ] Am I running quality checks (make lint, make test)?
 - [ ] Am I following the manager/service pattern?
 - [ ] Are file operations atomic and safe?
@@ -27,7 +27,7 @@ rule_enforcement:
 - **Mandatory Compliance**: ALL instructions within this document MUST BE FOLLOWED, these are not optional unless explicitly stated.
 - **Hook Compliance**: Hook feedback is MANDATORY and must be treated as requirements, not suggestions.
 - **Ask for Help**: ASK FOR CLARIFICATION when you seem stuck or overly complex, I'll redirect you.
-- **CRITICAL**: Rules in [CRITICAL_RULES.md](./.quaestor/CRITICAL_RULES.md) override everything else.
+- **CRITICAL**: Rules in [RULES.md](./.quaestor/RULES.md) override everything else.
 
 ## CRITICAL WORKFLOW
 
@@ -59,7 +59,7 @@ Run the project's test suite regularly: `make test` and `make lint`
 ### When context gets long:
 - Re-read this QUAESTOR_CLAUDE.md file
 - Check active specifications in .quaestor/specs/active/
-- Review CRITICAL_RULES.md for compliance
+- Review RULES.md for compliance
 
 ### Active Work Tracking:
 Track progress directly in your specification files:

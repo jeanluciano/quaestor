@@ -16,7 +16,8 @@ from typing import Any
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
-from quaestor.claude.hooks.base import BaseHook, WorkflowState, get_project_root
+from quaestor.claude.hooks.base import BaseHook, get_project_root
+from quaestor.claude.hooks.mode_detector import get_current_command
 
 
 class SessionContextLoaderHook(BaseHook):
@@ -39,14 +40,6 @@ class SessionContextLoaderHook(BaseHook):
 
         # Gather project state
         spec_status = self.check_current_specification()
-        # Use enhanced manager if available
-        try:
-            from .state_manager import WorkflowStateManager
-
-            workflow_state_obj = WorkflowStateManager(self.project_root)
-        except ImportError:
-            workflow_state_obj = WorkflowState(self.project_root)
-        workflow_state = workflow_state_obj.state
         recent_activity = self.analyze_recent_changes()
 
         # Track silently in drive mode
@@ -55,14 +48,14 @@ class SessionContextLoaderHook(BaseHook):
                 "session_start",
                 {
                     "spec_active": spec_status["active"],
-                    "workflow_phase": workflow_state.get("phase", "idle"),
+                    "mode": "drive",
                     "has_uncommitted_changes": recent_activity["has_uncommitted_changes"],
                     "source": source,
                 },
             )
 
         # Generate mode-appropriate context
-        context = self.generate_mode_aware_context(spec_status, workflow_state, recent_activity, source)
+        context = self.generate_mode_aware_context(spec_status, recent_activity, source)
 
         # Output as JSON for SessionStart hook
         output = {"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": context}}
@@ -181,22 +174,20 @@ class SessionContextLoaderHook(BaseHook):
         return result
 
     def generate_mode_aware_context(
-        self, spec_status: dict[str, Any], workflow_state: dict[str, Any], recent_activity: dict[str, Any], source: str
+        self, spec_status: dict[str, Any], recent_activity: dict[str, Any], source: str
     ) -> str:
-        """Generate context message based on active work."""
-        if self.has_active_work():
-            return self._generate_active_work_context(spec_status, workflow_state, recent_activity, source)
+        """Generate context message based on mode."""
+        if self.is_framework_mode():
+            return self._generate_framework_context(spec_status, recent_activity, source)
         else:
-            return self._generate_minimal_context(spec_status, workflow_state, recent_activity, source)
+            return self._generate_drive_context(spec_status, recent_activity, source)
 
-    def _generate_minimal_context(
-        self, spec_status: dict[str, Any], workflow_state: dict[str, Any], recent_activity: dict[str, Any], source: str
-    ) -> str:
-        """Generate minimal context when no active work."""
+    def _generate_drive_context(self, spec_status: dict[str, Any], recent_activity: dict[str, Any], source: str) -> str:
+        """Generate minimal context for drive mode."""
         context_parts = []
 
         # Simple header
-        context_parts.append("=== SESSION CONTEXT ===")
+        context_parts.append("=== DRIVE MODE ===")
 
         # Show if there are uncommitted changes
         if recent_activity["has_uncommitted_changes"]:
@@ -204,27 +195,33 @@ class SessionContextLoaderHook(BaseHook):
             context_parts.append(f"Uncommitted changes: {change_count} files")
 
         # Simple hint
-        context_parts.append("Ready to help! Use '/plan' to start a new specification.")
+        context_parts.append("Ready to help! Use Quaestor commands (/research, /plan, /impl) for guided workflow.")
 
         context_parts.append("=" * 30)
 
         return "\n".join(context_parts)
 
-    def _generate_active_work_context(
-        self, spec_status: dict[str, Any], workflow_state: dict[str, Any], recent_activity: dict[str, Any], source: str
+    def _generate_framework_context(
+        self, spec_status: dict[str, Any], recent_activity: dict[str, Any], source: str
     ) -> str:
-        """Generate comprehensive context when there's active work."""
+        """Generate comprehensive context for framework mode."""
         context_parts = []
 
-        # Header based on source
+        # Get current command
+        current_command = get_current_command()
+
+        # Header based on mode and source
         if source == "resume":
-            context_parts.append("=== RESUMED SESSION CONTEXT ===")
+            context_parts.append("=== RESUMED SESSION - FRAMEWORK MODE ===")
         else:
-            context_parts.append("=== SESSION CONTEXT ===")
+            context_parts.append("=== FRAMEWORK MODE ===")
+
+        if current_command:
+            context_parts.append(f"Current command: {current_command}")
 
         # Active specification information
         if spec_status["active"]:
-            spec_info = [f"ACTIVE SPECIFICATION: {spec_status['id']} ({spec_status['progress']}% complete)"]
+            spec_info = [f"\nACTIVE SPECIFICATION: {spec_status['id']} ({spec_status['progress']}% complete)"]
 
             if spec_status["remaining_tasks"] > 0:
                 spec_info.append(f"- Remaining tasks: {spec_status['remaining_tasks']}")
@@ -235,34 +232,13 @@ class SessionContextLoaderHook(BaseHook):
             if spec_status["progress"] >= 80:
                 spec_info.append("- 🎯 Nearing completion! Consider using 'reviewer' agent to prepare for PR")
             else:
-                spec_info.append("- Suggested: Use 'planner' agent to review progress")
+                spec_info.append("- Suggested: Use appropriate agents for the current phase")
 
             context_parts.append("\n".join(spec_info))
         else:
             context_parts.append(
-                "NO ACTIVE SPECIFICATION\n" + "- Suggested: Use 'planner' agent to create a specification for your work"
+                "\nNO ACTIVE SPECIFICATION\n" + "- Required: Use 'planner' agent to create a specification"
             )
-
-        # Workflow state information
-        if workflow_state.get("phase", "idle") != "idle":
-            workflow_info = [f"\nWORKFLOW STATE: Currently in {workflow_state['phase']} phase"]
-
-            files_examined = len(workflow_state.get("research_files", []))
-            if files_examined > 0:
-                workflow_info.append(f"- Files examined: {files_examined}")
-
-            next_step = self._get_next_workflow_step(workflow_state)
-            workflow_info.append(f"- Next step: {next_step}")
-
-            # Phase-specific recommendations
-            if workflow_state["phase"] == "researching":
-                workflow_info.append("- Use 'researcher' agent to continue exploration")
-            elif workflow_state["phase"] == "planning":
-                workflow_info.append("- Use 'planner' agent to structure implementation")
-            elif workflow_state["phase"] == "implementing":
-                workflow_info.append("- Use 'implementer' agent for complex features")
-
-            context_parts.append("\n".join(workflow_info))
 
         # Recent activity information
         if recent_activity["has_uncommitted_changes"]:
@@ -291,25 +267,39 @@ class SessionContextLoaderHook(BaseHook):
                     + "- Use 'reviewer' agent for pre-commit review"
                 )
 
-        # Workflow recommendations
-        recommendations = ["\nQUAESTOR WORKFLOW RECOMMENDATIONS:"]
+        # Command-specific recommendations
+        recommendations = ["\nFRAMEWORK MODE RECOMMENDATIONS:"]
 
-        if not spec_status["active"] and workflow_state.get("phase", "idle") == "idle":
+        if current_command == "/research":
             recommendations.extend(
                 [
-                    "1. Start with 'researcher' agent to understand the codebase",
-                    "2. Use 'planner' agent to create implementation strategy",
-                    "3. Track work with specifications and TODOs",
-                    "4. Use active specifications to track progress",
+                    "1. Use 'researcher' agent to explore the codebase",
+                    "2. Document findings for planning phase",
+                    "3. Focus on understanding existing patterns",
                 ]
             )
-        elif workflow_state.get("phase") == "implementing" and recent_activity["has_uncommitted_changes"]:
+        elif current_command == "/plan":
             recommendations.extend(
                 [
-                    "1. Use 'qa' agent to test your changes",
-                    "2. Use 'reviewer' agent before committing",
-                    "3. Update TODOs to track progress",
-                    "4. Keep specification status current",
+                    "1. Use 'planner' agent to create specifications",
+                    "2. Break down work into clear tasks",
+                    "3. Define success criteria",
+                ]
+            )
+        elif current_command == "/impl":
+            recommendations.extend(
+                [
+                    "1. Use 'implementer' agent for complex features",
+                    "2. Follow the approved plan",
+                    "3. Update TODO status as you progress",
+                ]
+            )
+        elif current_command == "/review":
+            recommendations.extend(
+                [
+                    "1. Use 'reviewer' agent for comprehensive checks",
+                    "2. Verify all tests pass",
+                    "3. Prepare for PR creation",
                 ]
             )
         else:
@@ -317,8 +307,7 @@ class SessionContextLoaderHook(BaseHook):
                 [
                     "1. Follow research → plan → implement workflow",
                     "2. Use specialized agents for each phase",
-                    "3. Maintain specification and TODO tracking",
-                    "4. Commit regularly with clear messages",
+                    "3. Maintain specification tracking",
                 ]
             )
 
@@ -329,24 +318,11 @@ class SessionContextLoaderHook(BaseHook):
 
         return "\n".join(context_parts)
 
-    def _get_next_workflow_step(self, workflow_state: dict[str, Any]) -> str:
-        """Determine next workflow step based on current state."""
-        phase = workflow_state.get("phase", "idle")
-        files_examined = len(workflow_state.get("research_files", []))
-
-        if phase == "idle":
-            return "Start research phase with researcher agent"
-        elif phase == "researching":
-            if files_examined < 3:
-                return f"Continue research ({files_examined}/3 files examined)"
-            else:
-                return "Move to planning phase with planner agent"
-        elif phase == "planning":
-            return "Create implementation plan and specifications"
-        elif phase == "implementing":
-            return "Continue implementation, update TODOs"
-        else:
-            return "Review current state and plan next steps"
+    def silent_track(self, event: str, data: dict[str, Any]):
+        """Silently track events without output."""
+        # This is a placeholder for silent tracking
+        # Could write to a log file or metrics system
+        pass
 
 
 def main():

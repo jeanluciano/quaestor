@@ -12,7 +12,7 @@ from typing import Any
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
-from quaestor.claude.hooks.base import BaseHook, WorkflowState, get_project_root
+from quaestor.claude.hooks.base import BaseHook, get_project_root
 from quaestor.core.rule_enforcer import RuleEnforcer, RulePriority
 
 
@@ -60,6 +60,16 @@ class RuleInjectionHook(BaseHook):
                 lines.append(f"  • {rule.description}")
                 lines.append(f"    → RESPONSE: {rule.violation_response}")
             lines.append("")
+
+        # Workflow enforcement
+        lines.extend(
+            [
+                "🚦 WORKFLOW ENFORCEMENT:",
+                "  • Never jump straight to implementation",
+                "    → RESPONSE: Use the workflow-coordinator agent to manage Research → Plan → Implement",
+                "",
+            ]
+        )
 
         # Critical rules
         critical_rules = self.rule_enforcer.get_rules_by_priority(RulePriority.CRITICAL)
@@ -163,11 +173,9 @@ class RuleInjectionHook(BaseHook):
 
     def _get_workflow_phase(self) -> str:
         """Get current workflow phase from state."""
-        try:
-            state = WorkflowState(self.project_root)
-            return state.state.get("phase", "idle")
-        except Exception:
-            return "idle"
+        # With new mode detection, we don't track phases anymore
+        # Just return based on mode
+        return "active" if self.is_framework_mode() else "idle"
 
 
 def main():

@@ -5,6 +5,11 @@
         "hooks": [
           {
             "type": "command",
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/rule_injection.py",
+            "description": "Enforce rules based on request context"
+          },
+          {
+            "type": "command",
             "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/user_prompt_submit.py",
             "description": "Detect mode and provide appropriate feedback"
           }
@@ -12,6 +17,16 @@
       }
     ],
     "PreToolUse": [
+      {
+        "matcher": "Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/compliance_pre_edit.py",
+            "description": "Enforce Quaestor compliance rules before edits"
+          }
+        ]
+      },
       {
         "matcher": "Task",
         "hooks": [
@@ -38,6 +53,11 @@
     "SessionStart": [
       {
         "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/rule_injection.py",
+            "description": "Inject critical rules and context"
+          },
           {
             "type": "command",
             "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/session_context_loader.py",

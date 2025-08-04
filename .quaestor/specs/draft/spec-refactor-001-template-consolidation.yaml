@@ -1,0 +1,183 @@
+---
+id: refactor-templates-001
+title: Consolidate Claude Templates for Context Optimization
+type: refactoring
+priority: high
+status: draft
+created: 2025-08-04
+estimated_effort: 4-6 hours
+complexity: medium
+breaking_change: true
+
+# Specification: Claude Template Consolidation
+
+## Summary
+Consolidate two redundant template files (quaestor_claude.md and rules.md) into a single optimized file to improve Claude Code's context efficiency by ~40%.
+
+## Problem Statement
+- Two template files contain ~35% redundant information
+- Wastes valuable Claude context tokens
+- Maintenance burden with duplicate content
+- Unclear which file takes precedence
+
+## Solution
+Create single `claude_context.md` file with hierarchical structure, eliminating all redundancy while preserving critical information.
+
+## Contract
+```yaml
+inputs:
+  - file: src/quaestor/claude/templates/rules.md
+    purpose: Base structure (better organized)
+    lines: 552
+  - file: src/quaestor/claude/templates/quaestor_claude.md  
+    purpose: Project context and guidance
+    lines: 320
+
+outputs:
+  - file: src/quaestor/claude/templates/claude_context.md
+    purpose: Single consolidated template
+    target_lines: ~550-600 (40% reduction)
+  - deleted_files:
+    - src/quaestor/claude/templates/rules.md
+    - src/quaestor/claude/templates/quaestor_claude.md
+
+behavior:
+  - Use rules.md as structural base
+  - Integrate unique project context from quaestor_claude.md
+  - Aggressive deduplication without compatibility concerns
+  - Front-load critical enforcement rules
+  - Organize in 5-level hierarchy
+```
+
+## Technical Design
+
+### File Structure
+```yaml
+claude_context.md:
+  1_CRITICAL_ENFORCEMENT: # ~100 lines
+    - version_header
+    - circuit_breakers
+    - workflow_enforcement
+    - immutable_rules
+    
+  2_MANDATORY_WORKFLOW: # ~150 lines  
+    - research_plan_implement
+    - agent_orchestration
+    - phase_transitions
+    - quality_gates
+    
+  3_PROJECT_CONTEXT: # ~150 lines
+    - project_overview
+    - architecture_guidelines
+    - code_style
+    - development_patterns
+    
+  4_SYSTEM_INTEGRATION: # ~100 lines
+    - hook_compliance
+    - specification_tracking
+    - available_commands
+    - git_integration
+    
+  5_REFERENCE: # ~50 lines
+    - testing_approach
+    - troubleshooting
+    - quick_reference
+```
+
+### Code Changes
+
+#### 1. Constants Update
+```python
+# src/quaestor/constants.py
+# REMOVE:
+CLAUDE_TEMPLATE_PATH = Path("src/quaestor/claude/templates/quaestor_claude.md")
+RULES_TEMPLATE_PATH = Path("src/quaestor/claude/templates/rules.md")
+
+# ADD:
+CLAUDE_CONTEXT_TEMPLATE = Path("src/quaestor/claude/templates/claude_context.md")
+```
+
+#### 2. Updater Simplification
+```python
+# src/quaestor/core/updater.py
+# Remove all dual-template sync logic
+# Update sync_templates() to handle single file
+```
+
+#### 3. Init Simplification  
+```python
+# src/quaestor/cli/init.py
+# Update _ensure_claude_files() to copy single template
+# Remove template selection logic
+```
+
+#### 4. Validation Engine
+```python
+# src/quaestor/core/validation_engine.py
+# Update template path references
+```
+
+## Acceptance Criteria
+- [ ] Single template file created (≤600 lines)
+- [ ] 40% reduction in total content size
+- [ ] All critical rules preserved at top of file
+- [ ] Zero duplicate information
+- [ ] Clear 5-level hierarchical structure
+- [ ] All existing tests pass
+- [ ] Fresh project init works correctly
+- [ ] Hook rule injection still functions
+- [ ] Commands load project context properly
+
+## Implementation Tasks
+1. **Content Consolidation** (2 hours)
+   - Map all unique content from both files
+   - Create hierarchical structure
+   - Write consolidated template with YAML frontmatter
+   - Ensure all placeholders preserved
+
+2. **Code Updates** (2 hours)
+   - Update constants.py paths
+   - Simplify updater.py logic
+   - Modify init.py template copying
+   - Update validation_engine.py references
+   - Remove old template handling code
+
+3. **Testing & Cleanup** (1-2 hours)
+   - Delete old template files
+   - Update test fixtures
+   - Fix failing tests
+   - Manual testing of init/update
+   - Verify hook integration
+
+## Test Scenarios
+```yaml
+test_cases:
+  - fresh_init: Project init creates single template
+  - template_loading: Claude context loads without errors
+  - hook_injection: Rules properly injected by hooks
+  - project_update: Updater syncs single template
+  - validation: Template validation passes
+  - commands: Commands find project context
+```
+
+## Risk Analysis
+- **Low Risk**: No backward compatibility needed
+- **Medium Risk**: Missing critical content during merge
+- **Mitigation**: Line-by-line diff analysis before deletion
+
+## Success Metrics
+- Context token usage: -40%
+- Template maintenance time: -50%  
+- Code complexity: Reduced
+- Claude response quality: Maintained/Improved
+
+## Dependencies
+- No external dependencies
+- No migration required
+- Breaking change acceptable
+
+## Notes
+- Prioritize critical enforcement rules at top
+- Use consistent YAML metadata blocks
+- Preserve all hook injection points
+- Maintain clear section separators

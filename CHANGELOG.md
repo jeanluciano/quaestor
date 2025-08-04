@@ -206,7 +206,7 @@ Note: The updater in this version does not automatically update hooks and agents
 - Added 7 new hooks for complete workflow compliance
 - Enhanced update-memory.py with intelligent milestone detection
 - Added mandatory milestone awareness to task command
-- Created CRITICAL_RULES.md with enforcement guidelines
+- Created RULES.md with enforcement guidelines
 
 #### 🧪 Workflow Validation System
 - New comprehensive-compliance-check.py for full system validation
@@ -308,7 +308,7 @@ Note: The updater in this version does not automatically update hooks and agents
 ### Added
 - Initial release of Quaestor
 - Core CLI with `init` command
-- CLAUDE.md and CRITICAL_RULES.md templates
+- CLAUDE.md and RULES.md templates
 - Command templates for project management
 - Basic project structure initialization
 - Integration with Claude AI assistant configuration

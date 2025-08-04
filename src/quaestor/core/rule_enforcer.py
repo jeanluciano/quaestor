@@ -124,15 +124,11 @@ class RuleEnforcer:
 
     def _load_rules(self):
         """Load rules from template files."""
-        # Load from critical_rules.md
-        critical_rules_path = self.quaestor_dir / "CRITICAL_RULES.md"
-        if critical_rules_path.exists():
-            self._parse_critical_rules(critical_rules_path)
-
-        # Load from QUAESTOR_CLAUDE.md
-        quaestor_claude_path = self.quaestor_dir / "QUAESTOR_CLAUDE.md"
-        if quaestor_claude_path.exists():
-            self._parse_quaestor_rules(quaestor_claude_path)
+        # Load from consolidated CONTEXT.md
+        context_path = self.quaestor_dir / "CONTEXT.md"
+        if context_path.exists():
+            self._parse_rules(context_path)
+            self._parse_quaestor_rules(context_path)
 
         # Sort rules by priority
         self.rules.sort(
@@ -141,8 +137,8 @@ class RuleEnforcer:
             )
         )
 
-    def _parse_critical_rules(self, path: Path):
-        """Parse rules from CRITICAL_RULES.md."""
+    def _parse_rules(self, path: Path):
+        """Parse rules from CONTEXT.md."""
         content = path.read_text()
 
         # Extract YAML blocks
@@ -190,7 +186,7 @@ class RuleEnforcer:
         return Rule(
             id=rule_id,
             type=rule_type,
-            priority=RulePriority.CRITICAL,  # All rules in CRITICAL_RULES are critical
+            priority=RulePriority.CRITICAL,  # All rules in RULES are critical
             description=check_data.get("check", ""),
             check_condition=check_data.get("check", ""),
             violation_response=check_data.get("on_violation", ""),
@@ -235,7 +231,7 @@ class RuleEnforcer:
         )
 
     def _parse_quaestor_rules(self, path: Path):
-        """Parse additional rules from QUAESTOR_CLAUDE.md."""
+        """Parse additional rules from CONTEXT.md."""
         content = path.read_text()
 
         # Look for specific enforcement patterns

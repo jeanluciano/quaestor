@@ -64,7 +64,7 @@ class TestRuleEnforcer:
             quaestor_dir = project_root / ".quaestor"
             quaestor_dir.mkdir()
 
-            # Create minimal CRITICAL_RULES.md
+            # Create minimal CONTEXT.md
             rules_content = """# CRITICAL RULES
 ```yaml
 before_any_action:
@@ -76,7 +76,7 @@ before_any_action:
       check: "Need clarity"
       on_violation: "ASK"
 ```"""
-            (quaestor_dir / "CRITICAL_RULES.md").write_text(rules_content)
+            (quaestor_dir / "CONTEXT.md").write_text(rules_content)
 
             enforcer = RuleEnforcer(project_root)
 

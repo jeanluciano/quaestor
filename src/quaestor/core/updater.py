@@ -61,8 +61,7 @@ class QuaestorUpdater:
 
         # Define files to manage in one place to ensure consistency
         self.QUAESTOR_FILES = [
-            ("templates/quaestor_claude.md", self.quaestor_dir / "QUAESTOR_CLAUDE.md"),
-            ("templates/critical_rules.md", self.quaestor_dir / "CRITICAL_RULES.md"),
+            ("templates/context.md", self.quaestor_dir / "CONTEXT.md"),
             ("templates/architecture.md", self.quaestor_dir / "ARCHITECTURE.md"),
         ]
 
@@ -144,22 +143,11 @@ class QuaestorUpdater:
         Returns:
             Version string or None if not detectable
         """
-        # Try to read version from QUAESTOR_CLAUDE.md which should have version info
-        version_file = self.quaestor_dir / "QUAESTOR_CLAUDE.md"
+        # Try to read version from CLAUDE_CONTEXT.md which should have version info
+        version_file = self.quaestor_dir / "CLAUDE_CONTEXT.md"
         if version_file.exists():
             try:
                 content = version_file.read_text()
-                version = extract_version_from_content(content)
-                if version:
-                    return version
-            except Exception:
-                pass
-
-        # Try CRITICAL_RULES.md as fallback
-        critical_rules = self.quaestor_dir / "CRITICAL_RULES.md"
-        if critical_rules.exists():
-            try:
-                content = critical_rules.read_text()
                 version = extract_version_from_content(content)
                 if version:
                     return version
@@ -375,7 +363,7 @@ class QuaestorUpdater:
             # Get latest include template
             import importlib.resources as pkg_resources
 
-            include_content = pkg_resources.read_text("quaestor.claude.templates", "claude_include.md")
+            include_content = pkg_resources.read_text("quaestor.claude.templates", "include.md")
 
             # Extract config section from template
             config_start_idx = include_content.find(QUAESTOR_CONFIG_START)

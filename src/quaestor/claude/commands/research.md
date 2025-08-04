@@ -48,6 +48,15 @@ Agent Selection:
 - **Context building**: Related files, dependencies, usage patterns
 - **Pattern detection**: Common implementations, conventions, anti-patterns
 
+## Execution
+
+**Use the researcher agent to perform codebase exploration and pattern analysis.**
+
+For complex queries, spawn multiple agents:
+- **Use the architect agent** when analyzing system design or dependencies
+- **Use the security agent** when searching for security patterns or vulnerabilities
+- **Use the researcher agent** for general pattern finding and code exploration
+
 ## Workflow: Analyze → Explore → Synthesize → Report
 
 ### Phase 1: Query Understanding 🎯

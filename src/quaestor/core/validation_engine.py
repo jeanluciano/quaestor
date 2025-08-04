@@ -30,10 +30,9 @@ class RuleEngine:
 > [!IMPORTANT]
 > **Claude:** This project uses Quaestor for AI context management.
 > Please read the following files in order:
-> 1. `.quaestor/QUAESTOR_CLAUDE.md` - How to work with this project effectively
-> 2. `.quaestor/CRITICAL_RULES.md` - Critical rules you must follow
-> 3. `.quaestor/ARCHITECTURE.md` - System design and structure (if available)
-> 4. `.quaestor/MEMORY.md` - Implementation patterns and decisions (if available)
+> 1. `.quaestor/CLAUDE_CONTEXT.md` - Complete AI development context and rules
+> 2. `.quaestor/ARCHITECTURE.md` - System design and structure (if available)
+> 3. `.quaestor/MEMORY.md` - Implementation patterns and decisions (if available)
 <!-- QUAESTOR CONFIG END -->
 
 <!-- Your custom content below -->
@@ -65,7 +64,7 @@ Before responding, I'll consider:
    - Keep README current
 
 ## Project Context
-Check `.quaestor/ARCHITECTURE.md` and `.quaestor/MEMORY.md` for project details.
+Check `.quaestor/CLAUDE_CONTEXT.md`, `.quaestor/ARCHITECTURE.md` and `.quaestor/MEMORY.md` for project details.
 
 ## Getting Started
 This is a simple project. Focus on clean code and clear documentation.
@@ -128,6 +127,7 @@ Before EVERY response, I'll consider:
 ## Project Context
 - **Type**: {project_type} project
 - **Testing**: {"Enabled" if has_tests else "Add tests for new features"}
+- **Context**: See `.quaestor/CONTEXT.md`
 - **Architecture**: See `.quaestor/ARCHITECTURE.md`
 - **Progress**: See `.quaestor/MEMORY.md`
 
@@ -217,7 +217,7 @@ Before EVERY response, I MUST consider:
 
 ## Project Context
 - **Type**: {project_type} team project
-- **Critical Files**: See `.quaestor/CRITICAL_RULES.md`
+- **Context**: See `.quaestor/CONTEXT.md`
 - **Architecture**: See `.quaestor/ARCHITECTURE.md`
 - **Progress**: See `.quaestor/MEMORY.md`
 

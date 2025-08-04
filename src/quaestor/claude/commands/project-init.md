@@ -96,7 +96,7 @@ Consolidated Analysis:
 ```yaml
 Generated Documents:
   - ARCHITECTURE.md: From architect agent analysis
-  - CRITICAL_RULES.md: Framework-specific from analysis
+  - RULES.md: Framework-specific from analysis
   - QUAESTOR_CLAUDE.md: AI collaboration guidelines
 ```
 
@@ -239,7 +239,7 @@ Performance Monitoring:
 ### Next Steps
 1. Review generated documentation:
    - `.quaestor/ARCHITECTURE.md` - Project structure analysis
-   - `.quaestor/CRITICAL_RULES.md` - Framework-specific guidelines
+   - `.quaestor/RULES.md` - Framework-specific guidelines
    - `.quaestor/specs/` - Folder structure for specs
 
 2. Create project specifications:

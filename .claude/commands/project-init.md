@@ -96,7 +96,7 @@ Consolidated Analysis:
 ```yaml
 Generated Documents:
   - ARCHITECTURE.md: From architect agent analysis
-  - CRITICAL_RULES.md: Framework-specific from analysis
+  - RULES.md: Framework-specific from analysis
   - QUAESTOR_CLAUDE.md: AI collaboration guidelines
 ```
 
@@ -166,7 +166,7 @@ Auto-Population:
 ```yaml
 mandatory_actions:
   - populate_architecture_md: "Real project analysis"
-  - update_critical_rules: "Framework-specific guidelines"
+  - update_rules: "Framework-specific guidelines"
   - configure_quality_standards: "Testing and linting setup"
   - create_initial_specifications: "Draft/ folder for new specs"
 ```
@@ -239,7 +239,7 @@ Performance Monitoring:
 ### Next Steps
 1. Review generated documentation:
    - `.quaestor/ARCHITECTURE.md` - Project structure analysis
-   - `.quaestor/CRITICAL_RULES.md` - Framework-specific guidelines
+   - `.quaestor/RULES.md` - Framework-specific guidelines
    - `.quaestor/specs/` - Folder structure for specs
 
 2. Create project specifications:

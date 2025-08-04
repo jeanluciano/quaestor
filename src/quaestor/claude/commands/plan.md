@@ -21,16 +21,15 @@ Design specifications, plan work through spec-driven development, manage project
 
 ## Usage
 ```
-/plan                           # Show progress dashboard with specs
-/plan --spec "User Auth"        # Create new specification
-/plan --create "MVP Complete"   # Create new project phase
-/plan --complete               # Complete current project phase
+/plan                           # Create new specification (default)
+/plan "User Auth"               # Create new specification with title
+/plan --complete               # Complete current specification
 /plan --analyze                # Deep strategic analysis
 /plan --architecture          # Architectural planning mode
 /plan --link                   # Link current branch to spec
 /plan --activate <spec-id>     # Move spec from draft to active
 /plan --archive <spec-id>      # Move spec from active to completed
-/plan --migrate                # Migrate flat specs to folders
+/plan --status                 # Show specification status dashboard
 ```
 
 ## Auto-Intelligence
@@ -38,16 +37,15 @@ Design specifications, plan work through spec-driven development, manage project
 ### Multi-Mode Planning
 ```yaml
 Mode Detection:
-  - No args → Progress dashboard with folder stats
-  - --spec → Specification creation wizard (creates in draft/)
-  - --create → Project phase creation wizard
+  - No args → Specification creation wizard (creates in draft/)
+  - With title → Create spec with given title
   - --complete → Completion validation
   - --analyze → Strategic analysis
   - --architecture → System design planning
   - --link → Branch-to-spec linkage
   - --activate → Move spec to active/ folder
   - --archive → Move spec to completed/ folder
-  - --migrate → Migrate flat specs to folders
+  - --status → Show specification status dashboard
 ```
 
 ### Agent Orchestration
@@ -74,14 +72,27 @@ Strategic Analysis:
 
 ## Execution: Analyze → Plan → Track → Archive
 
+### Agent-Driven Execution
+This command orchestrates multiple specialized agents based on the mode:
+- **Default mode**: Use the planner agent to create specifications
+- **--analyze mode**: Use architect, researcher, and security agents for analysis
+- **--architecture mode**: Use the architect agent with security and implementer support
+- **--status mode**: Use the researcher agent to analyze project status
+
 ### Folder Management Integration
 **Automatic folder-based specification lifecycle:**
 ```yaml
 On First Run:
-  - Initialize FolderManager with .quaestor/specifications/
+  - Initialize FolderManager with .quaestor/spec/
   - Create folder structure: draft/, active/, completed/
+  - Create manifest.yaml if missing:
+    ```yaml
+    version: "1.0"
+    created: YYYY-MM-DD
+    specifications: []
+    ```
   - Migrate existing flat specifications to appropriate folders
-  - Update manifest with folder locations
+  - Update manifest with specification entries
 
 Folder Operations:
   - New spec → Create in draft/
@@ -91,13 +102,14 @@ Folder Operations:
 
 Specification Context:
   - Use active/ folder specs as source of truth
-  - No separate MEMORY.md file needed
   - Context loaded directly from active specifications
   - Completed specs archived in completed/ folder
 ```
 
-### Phase 0: Progress Dashboard 📊
-**Default Mode - Comprehensive Status Overview:**
+### Specification Creation (Default Mode) 🎯
+**Create new specifications with contracts and acceptance criteria:**
+
+**Use the planner agent to create the specification with proper contracts and acceptance criteria.**
 ```yaml
 Data Collection (Parallel):
   - Folder statistics: draft/active/completed counts via FolderManager
@@ -115,9 +127,9 @@ Visual Presentation:
   Overall: [████████░░] 80% • Velocity: ↑15% this week
   
   📁 Specification Folders:
-  • draft/: 5 specs ready to start
-  • active/: 2/3 slots used (can add 1 more)
-  • completed/: 12 specs archived
+  • .quaestor/spec/draft/: 5 specs ready to start
+  • .quaestor/spec/active/: 2/3 slots used (can add 1 more)
+  • .quaestor/spec/completed/: 12 specs archived
   
   📋 Active Specifications (active/):
   • [feat-auth-001] User Authentication
@@ -154,14 +166,16 @@ Visual Presentation:
   → Run: /plan --complete when ready
 ```
 
-### Phase 1: Status Assessment 🔍
-**Current Phase Analysis:**
+### Status Dashboard (--status) 📊
+**Comprehensive Specification Overview:**
+
+**Use the researcher agent to gather comprehensive project status and metrics.**
 ```yaml
 Discovery:
-  - Read: .quaestor/MEMORY.md → current phase section
-  - Parse: planned|active|completed items
-  - Check: .quaestor/specifications/*.yaml files
+  - Check: .quaestor/spec/active/*.yaml files
+  - Parse: spec status and progress
   - Assess: overall completion percentage
+  - Gather: velocity metrics and trends
 ```
 
 ### Phase 2: Completion Validation ✅
@@ -218,17 +232,10 @@ Archive Generation:
 [Identified next logical phase based on current progress]
 ```
 
-### Phase 4: Next Phase Planning 🚀
-**Intelligent Next Phase Suggestion:**
-```yaml
-Planning Intelligence:
-  - Analyze: current architecture + remaining TODOs
-  - Identify: logical next development phase
-  - Suggest: phase scope + success criteria
-  - Estimate: duration based on current velocity
-```
 
 ## Specification Creation Workflow (--spec)
+
+**Use the planner agent to create the specification with proper contracts and acceptance criteria.**
 
 ### Initial Setup
 ```yaml
@@ -264,6 +271,11 @@ Branch Creation:
   - Generate: spec-compliant branch name
   - Link: specification to branch
   - Update: spec status to ACTIVE
+
+Manifest Update:
+  - Add spec entry to .quaestor/spec/manifest.yaml
+  - Track: ID, title, type, status, location
+  - Maintain: chronological order of specifications
 ```
 
 ### Specification Output Template
@@ -297,44 +309,13 @@ Specification Created:
   4. Run /plan --complete spec-auth-001 to archive
 ```
 
-## Project Phase Creation Workflow
-
-### Guided Creation Process
-```yaml
-Context Gathering:
-  1. Goal: "What's the main objective?"
-  2. Scope: "What are the key deliverables?"
-  3. Criteria: "How will we measure success?"
-  4. Duration: "Estimated timeframe?"
-
-Specification Planning:
-  - Identify: specifications needed for phase
-  - Prioritize: critical vs nice-to-have specs
-  - Estimate: complexity and dependencies
-  
-Template Generation:
-  - Create: structured phase section in MEMORY.md
-  - Initialize: specification tracking
-  - Set: measurable success criteria
-  - Link: to specification manifest
-```
-
-### Creation Output Template
-```yaml
-New Phase Structure:
-  - Header: "🚀 Phase: [Name]"
-  - Goals: [Numbered objectives]
-  - Planned_Tasks: [Checkbox list]
-  - Success_Criteria: [Measurable outcomes]
-  - In_Progress: []
-  - Completed: []
-  - Estimated_Duration: [Based on scope analysis]
-```
 
 ## Advanced Planning Modes
 
 ### Strategic Analysis Mode (--analyze)
 **Deep Technical and Architectural Analysis:**
+
+**Use the architect agent for system design evaluation, the researcher agent for pattern analysis, and the security agent for risk assessment.**
 ```yaml
 Multi-Agent Analysis:
   - architect: System design evaluation
@@ -370,6 +351,8 @@ Output Structure:
 
 ### Architecture Planning Mode (--architecture)
 **System Design and Evolution Planning:**
+
+**Use the architect agent to lead design decisions with support from the security agent for security architecture and the implementer agent for feasibility assessment.**
 ```yaml
 Agent Collaboration:
   - architect: Lead design decisions
@@ -419,31 +402,22 @@ Planning Output:
 - ✅ Branch created and linked to spec
 - ✅ Specification tracked in manifest
 
-**Phase Completion:**
-- ✅ All planned specifications completed
+**Specification Completion:**
+- ✅ All planned tasks completed
 - ✅ Spec contracts validated and complete
 - ✅ Quality gates passed (tests, linting, types)
 - ✅ Documentation updated and current
 - ✅ Success criteria measurably achieved
-- ✅ Archive generated with evidence + insights
-
-**Phase Creation:**
-- ✅ Clear, measurable objectives defined
-- ✅ Specifications identified and prioritized
-- ✅ Success criteria established
-- ✅ Progress tracking initialized
-- ✅ Integration with specification system
+- ✅ Specification moved to completed/ folder
 
 ## Integration Points
 
 **Quaestor Ecosystem:**
-- **specifications/** → Specification manifest and tracking
-- **MEMORY.md** → Primary phase and spec progress
+- **.quaestor/spec/** → Specification manifest and tracking
 - **ARCHITECTURE.md** → Update with architectural decisions
-- **specifications/** → Specification-level tracking
 - **Git branches** → Automatic spec-to-branch linkage
 - **Quality system** → Integrated validation per specification
-- **Hooks** → specification tracking and validation
+- **Hooks** → Specification tracking and validation
 
 ## Implementation Guide
 
@@ -452,7 +426,7 @@ Planning Output:
 from quaestor.core.folder_manager import FolderManager
 
 # Initialize manager
-folder_mgr = FolderManager(Path(".quaestor/specifications"))
+folder_mgr = FolderManager(Path(".quaestor/spec"))
 
 # First run - setup folders
 result = folder_mgr.create_folder_structure()

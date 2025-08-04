@@ -65,7 +65,7 @@ class TestBasicWorkflow:
         assert (temp_git_repo / ".quaestor").exists()
         # Note: hooks are now in src/quaestor/claude/hooks, not .quaestor/hooks
         # MEMORY.md was removed in favor of active specifications
-        assert (temp_git_repo / ".quaestor" / "CRITICAL_RULES.md").exists()
+        assert (temp_git_repo / ".quaestor" / "CONTEXT.md").exists()
         assert (temp_git_repo / "CLAUDE.md").exists()
 
         # 4. Test update command
@@ -268,7 +268,7 @@ class TestHookIntegration:
 
         # Check for critical files
         # MEMORY.md was removed in favor of active specifications
-        assert (quaestor_dir / "CRITICAL_RULES.md").exists()
+        assert (quaestor_dir / "CONTEXT.md").exists()
 
         # Check claude directory structure
         claude_dir = temp_git_repo / ".claude"

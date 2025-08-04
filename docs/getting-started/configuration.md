@@ -16,7 +16,7 @@ Tracks installed files and versions:
   "install_date": "2024-01-15T10:30:00Z",
   "mode": "team",
   "files": {
-    "CRITICAL_RULES.md": "abc123...",
+    "RULES.md": "abc123...",
     "QUAESTOR_CLAUDE.md": "def456..."
   }
 }

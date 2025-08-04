@@ -280,16 +280,16 @@ def _merge_claude_md(target_dir: Path, use_rule_engine: bool = False) -> bool:
 
         # Get the include template
         try:
-            include_content = pkg_resources.read_text("quaestor.claude.templates", "claude_include.md")
+            include_content = pkg_resources.read_text("quaestor.claude.templates", "include.md")
         except Exception:
             # Fallback if template is missing
             include_content = """<!-- QUAESTOR CONFIG START -->
 > [!IMPORTANT]
 > **Claude:** This project uses Quaestor for AI context management.
 > Please read the following files in order:
-> 1. `.quaestor/QUAESTOR_CLAUDE.md` - How to work with this project effectively
-> 2. `.quaestor/CRITICAL_RULES.md` - Critical rules you must follow
-> 3. `.quaestor/ARCHITECTURE.md` - System design and structure (if available)
+> 1. `.quaestor/CLAUDE_CONTEXT.md` - Complete AI development context and rules
+> 2. `.quaestor/ARCHITECTURE.md` - System design and structure (if available)
+> 3. `.quaestor/MEMORY.md` - Implementation patterns and decisions (if available)
 <!-- QUAESTOR CONFIG END -->
 
 <!-- Your custom content below -->
@@ -346,31 +346,18 @@ def _merge_claude_md(target_dir: Path, use_rule_engine: bool = False) -> bool:
 
 def _copy_system_files(quaestor_dir: Path, manifest: FileManifest, target_dir: Path):
     """Copy system files to .quaestor directory."""
-    # Copy QUAESTOR_CLAUDE.md
+    # Copy CLAUDE_CONTEXT.md (consolidated template)
     try:
-        quaestor_claude_content = pkg_resources.read_text("quaestor.claude.templates", "quaestor_claude.md")
-        quaestor_claude_path = quaestor_dir / "QUAESTOR_CLAUDE.md"
-        quaestor_claude_path.write_text(quaestor_claude_content)
+        context_content = pkg_resources.read_text("quaestor.claude.templates", "context.md")
+        context_path = quaestor_dir / "CONTEXT.md"
+        context_path.write_text(context_content)
 
         # Track in manifest
-        version = extract_version_from_content(quaestor_claude_content) or "1.0"
-        manifest.track_file(quaestor_claude_path, FileType.SYSTEM, version, target_dir)
-        console.print("  [blue]✓[/blue] Copied QUAESTOR_CLAUDE.md")
+        version = extract_version_from_content(context_content) or "1.0"
+        manifest.track_file(context_path, FileType.SYSTEM, version, target_dir)
+        console.print("  [blue]✓[/blue] Copied CLAUDE_CONTEXT.md")
     except Exception as e:
-        console.print(f"  [yellow]⚠[/yellow] Could not copy QUAESTOR_CLAUDE.md: {e}")
-
-    # Copy CRITICAL_RULES.md
-    try:
-        critical_rules_content = pkg_resources.read_text("quaestor.claude.templates", "critical_rules.md")
-        critical_rules_path = quaestor_dir / "CRITICAL_RULES.md"
-        critical_rules_path.write_text(critical_rules_content)
-
-        # Track in manifest
-        version = extract_version_from_content(critical_rules_content) or "1.0"
-        manifest.track_file(critical_rules_path, FileType.SYSTEM, version, target_dir)
-        console.print("  [blue]✓[/blue] Copied CRITICAL_RULES.md")
-    except Exception as e:
-        console.print(f"  [yellow]⚠[/yellow] Could not copy CRITICAL_RULES.md: {e}")
+        console.print(f"  [yellow]⚠[/yellow] Could not copy CLAUDE_CONTEXT.md: {e}")
 
 
 def _init_common(target_dir: Path, force: bool, mode: str):
@@ -492,7 +479,6 @@ def _init_common(target_dir: Path, force: bool, mode: str):
         # List of available agents
         available_agents = [
             "architect.md",
-            "compliance-enforcer.md",
             "debugger.md",
             "explorer.md",
             "implementer.md",

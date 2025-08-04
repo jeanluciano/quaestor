@@ -17,7 +17,7 @@ from quaestor.constants import SYSTEM_FILES, USER_EDITABLE_FILES, VERSION_PATTER
 class FileType(Enum):
     """Categories of files for update logic."""
 
-    SYSTEM = "system"  # Always update (e.g., CRITICAL_RULES.md)
+    SYSTEM = "system"  # Always update (e.g., RULES.md)
     USER_EDITABLE = "user-editable"  # Never overwrite if exists (e.g., ARCHITECTURE.md)
     COMMAND = "command"  # Only add new ones
     TEMPLATE = "template"  # Can update tagged sections
