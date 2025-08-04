@@ -21,7 +21,7 @@ DEPRECATED_COMMANDS = [
 ]
 
 # File categorization for update logic
-SYSTEM_FILES = ["CLAUDE_CONTEXT.md", "hooks.json"]
+SYSTEM_FILES = ["CONTEXT.md", "hooks.json"]
 USER_EDITABLE_FILES = ["ARCHITECTURE.md", "MANIFEST.yaml", "CLAUDE.md"]
 
 # Version extraction patterns
