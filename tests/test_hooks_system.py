@@ -45,7 +45,7 @@ class TestHooksConfiguration:
         # Updated for new hook structure
         expected_hooks = {
             "compliance_pre_edit.py",
-            "research_workflow_tracker.py",
+            "spec_lifecycle.py",
             "spec_tracker.py",
             "session_context_loader.py",
         }
@@ -80,10 +80,12 @@ class TestHooksConfiguration:
         # Updated for new hook structure - hooks are now in the root hooks directory
         expected_hooks = [
             "compliance_pre_edit.py",
-            "research_workflow_tracker.py",
+            "spec_lifecycle.py",
             "spec_tracker.py",
             "session_context_loader.py",
             "base.py",  # Base hook class
+            "rule_injection.py",
+            "user_prompt_submit.py",
         ]
 
         for hook_file in expected_hooks:
@@ -100,7 +102,7 @@ class TestHooksConfiguration:
         # Updated for new hook structure
         hook_files = [
             "compliance_pre_edit.py",
-            "research_workflow_tracker.py",
+            "spec_lifecycle.py",
             "spec_tracker.py",
         ]
 
@@ -198,11 +200,11 @@ class TestHooksConfiguration:
             [
                 "base.py",
                 "compliance_pre_edit.py",
-                "compliance_validator.py",
-                "file_change_tracker.py",
-                "research_workflow_tracker.py",
+                "rule_injection.py",
                 "session_context_loader.py",
+                "spec_lifecycle.py",
                 "spec_tracker.py",
+                "user_prompt_submit.py",
             ]
         )
 
@@ -257,11 +259,13 @@ class TestHooksCopyingInInit:
 
             # These are the hooks that should be copied
             expected_hooks = [
-                "shared_utils.py",
+                "base.py",
                 "compliance_pre_edit.py",
-                "research_workflow_tracker.py",
-                "spec_tracker.py",
+                "rule_injection.py",
                 "session_context_loader.py",
+                "spec_lifecycle.py",
+                "spec_tracker.py",
+                "user_prompt_submit.py",
             ]
 
             for hook in expected_hooks:

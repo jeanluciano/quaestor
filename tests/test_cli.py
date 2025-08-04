@@ -52,7 +52,7 @@ class TestInitCommand:
             assert (temp_dir / "CLAUDE.md").exists()
             assert (temp_dir / ".quaestor" / "QUAESTOR_CLAUDE.md").exists()
             assert (temp_dir / ".quaestor" / "ARCHITECTURE.md").exists()
-            assert (temp_dir / ".quaestor" / "MEMORY.md").exists()
+            # MEMORY.md was removed in favor of active specifications
             # Commands are installed to .claude/commands in team mode
             assert "Installing to .claude/commands (project commands)" in result.output
 
@@ -242,16 +242,12 @@ class TestInitCommand:
             assert result.exit_code == 0
             assert "Setting up documentation files" in result.output
             assert "Created ARCHITECTURE.md" in result.output
-            assert "Created MEMORY.md" in result.output
+            # MEMORY.md was removed
 
             # Check that template files were processed and files created
             arch_content = (temp_dir / ".quaestor" / "ARCHITECTURE.md").read_text()
             assert "Domain Layer" in arch_content  # Original content preserved
             assert "Infrastructure Layer" in arch_content
-
-            # Check MEMORY.md was processed
-            mem_content = (temp_dir / ".quaestor" / "MEMORY.md").read_text()
-            assert "Payment integration" in mem_content  # Original content preserved
 
     def test_init_merges_with_existing_claude_md(self, runner, temp_dir):
         """Test that init merges with existing CLAUDE.md instead of overwriting."""

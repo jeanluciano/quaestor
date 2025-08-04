@@ -64,14 +64,9 @@ class TestBasicWorkflow:
         assert (temp_git_repo / ".claude" / "settings.json").exists()
         assert (temp_git_repo / ".quaestor").exists()
         # Note: hooks are now in src/quaestor/claude/hooks, not .quaestor/hooks
-        assert (temp_git_repo / ".quaestor" / "MEMORY.md").exists()
+        # MEMORY.md was removed in favor of active specifications
         assert (temp_git_repo / ".quaestor" / "CRITICAL_RULES.md").exists()
         assert (temp_git_repo / "CLAUDE.md").exists()
-
-        # 3. Check that critical files were created
-        memory_file = temp_git_repo / ".quaestor" / "MEMORY.md"
-        assert memory_file.exists()
-        assert "# Project Memory" in memory_file.read_text()
 
         # 4. Test update command
         result = subprocess.run(
@@ -201,7 +196,7 @@ if __name__ == "__main__":
 
         # Just verify initialization completed successfully
         assert (temp_git_repo / ".quaestor").exists()
-        assert (temp_git_repo / ".quaestor" / "MEMORY.md").exists()
+        # MEMORY.md was removed in favor of active specifications
 
 
 class TestErrorHandling:
@@ -272,7 +267,7 @@ class TestHookIntegration:
         assert quaestor_dir.exists()
 
         # Check for critical files
-        assert (quaestor_dir / "MEMORY.md").exists()
+        # MEMORY.md was removed in favor of active specifications
         assert (quaestor_dir / "CRITICAL_RULES.md").exists()
 
         # Check claude directory structure
