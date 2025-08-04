@@ -4,10 +4,10 @@ The `/research` command uses specialized research agents to deeply explore and u
 
 ## Overview
 
-The research command employs multiple specialized agents:
-- **Researcher**: Pattern analysis and usage discovery
-- **Explorer**: Deep architectural exploration
-- **Analyzer**: Dependency mapping and impact assessment
+The research command employs the specialized **Researcher** agent which provides:
+- **Pattern analysis**: Discovery of recurring code patterns and their usage
+- **Architectural exploration**: Deep system architecture understanding
+- **Dependency mapping**: Impact assessment and relationship analysis
 
 Research helps with:
 - Understanding existing code patterns

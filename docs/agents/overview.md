@@ -60,19 +60,12 @@ Code review specialist
 
 ### 🔍 Research & Analysis Agents
 
-#### Researcher
-Codebase exploration specialist
-- Pattern analysis
-- Dependency mapping
-- Usage discovery
-- Impact assessment
-
-#### Explorer
-Deep codebase exploration specialist
-- System mapping
-- Hidden dependencies
-- Architecture visualization
-- Documentation generation
+#### [Researcher](researcher.md)
+Enhanced codebase analysis specialist (consolidated with former Explorer capabilities)
+- Pattern analysis and system mapping
+- Dependency mapping and hidden relationships
+- Usage discovery and impact assessment
+- Architecture visualization and documentation generation
 
 ### 🛡️ Security & Compliance
 

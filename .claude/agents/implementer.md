@@ -96,10 +96,10 @@ testing:
 - **Update manifest.json**: Track spec status and branch mapping
 
 ### Spec Completion Criteria
-- All acceptance criteria validated ✅
-- Test scenarios implemented and passing ✅
-- Implementation notes documented ✅
-- No breaking changes or documented if necessary ✅
+- All acceptance criteria validated ✓
+- Test scenarios implemented and passing ✓
+- Implementation notes documented ✓
+- No breaking changes or documented if necessary ✓
 
 ## Code Standards
 

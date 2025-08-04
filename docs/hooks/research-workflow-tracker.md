@@ -90,8 +90,8 @@ Provides contextual suggestions:
 ### With Agent System
 - Suggests researcher agent
 - Triggers planner agent
-- Coordinates explorer agent
 - Activates architect agent
+- Coordinates with other agents
 
 ## Configuration
 

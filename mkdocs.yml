@@ -59,6 +59,17 @@ nav:
     - Installation: getting-started/installation.md
     - Quick Start: getting-started/quickstart.md
     - Configuration: getting-started/configuration.md
+  - Specification-Driven Development:
+    - Overview: specs/overview.md
+    - Creating Specifications: specs/creating.md
+    - Implementation Workflow: specs/workflow.md
+  - Commands:
+    - /plan: commands/plan.md
+    - /impl: commands/impl.md
+    - /research: commands/research.md
+    - /review: commands/review.md
+    - /debug: commands/debug.md
+    - /project-init: commands/project-init.md
   - Agents:
     - Overview: agents/overview.md
     - Planner Agent: agents/planner.md
@@ -84,17 +95,7 @@ nav:
     - Compliance Hooks: hooks/compliance.md
     - File Change Tracker: hooks/file-change-tracker.md
     - Custom Hooks: hooks/custom.md
-  - Specification-Driven Development:
-    - Overview: specs/overview.md
-    - Creating Specifications: specs/creating.md
-    - Implementation Workflow: specs/workflow.md
-  - Commands:
-    - /plan: commands/plan.md
-    - /impl: commands/impl.md
-    - /research: commands/research.md
-    - /review: commands/review.md
-    - /debug: commands/debug.md
-    - /project-init: commands/project-init.md
+
   - Advanced:
     - Architecture: advanced/architecture.md
     - Memory Management: advanced/memory.md

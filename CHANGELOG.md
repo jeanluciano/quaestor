@@ -5,60 +5,103 @@ All notable changes to Quaestor will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.6.0] - 2025-08-01
+## [0.6.0] - 2025-08-04 (Unreleased)
 
 ### Added
-- **Complete Agent System** - 13 specialized AI agents for Claude Code (MAJOR FEATURE!)
+- **Template Consolidation** - 40% reduction in Claude context usage
+  - Consolidated `quaestor_claude.md` + `rules.md` → `context.md`
+  - Streamlined AI context management for better performance
+  - Unified configuration format across all modes
+
+- **Specification-Driven Development** - Complete implementation of spec-first workflow
+  - Spec-manager agent for lifecycle management (`draft/` → `active/` → `completed/`)
+  - Automated folder transitions based on implementation progress
+  - Progress tracking through specifications instead of ad-hoc TODOs
+  - Enhanced planner agent with specification creation capabilities
+
+- **Agent System Modernization** - 12 specialized AI agents for Claude Code
   - `architect.md` - System design and architecture planning
   - `compliance-enforcer.md` - Ensures code standards and patterns
   - `debugger.md` - Systematic debugging and error resolution
-  - `explorer.md` - Codebase navigation and understanding
   - `implementer.md` - Feature development and code writing
   - `planner.md` - Strategic planning and task breakdown
   - `qa.md` - Testing and quality assurance
   - `refactorer.md` - Code improvement and optimization
-  - `researcher.md` - Codebase analysis and pattern discovery
+  - `researcher.md` - Enhanced codebase analysis (consolidated explorer capabilities)
   - `reviewer.md` - Code review and validation
   - `security.md` - Security analysis and vulnerability detection
   - `spec-manager.md` - Specification lifecycle management
   - `workflow-coordinator.md` - Orchestrates development phases
-- **Agent Installation** - Agents automatically installed during `quaestor init`
-- **Comprehensive Documentation** for all agents and hooks
-- **`impl.md` command** replaces `task.md` for implementation
+
+- **Command System Updates**
+  - `/plan` now defaults to spec mode for specification-driven development
+  - `/impl` fully integrated with specification system for guided implementation
+  - `/research` enhanced with consolidated researcher capabilities
+  - `/review` and `/debug` with improved agent coordination
+
+- **Hook System Improvements**
+  - Enhanced hook orchestration and agent integration
+  - Better agent coordination through hooks
+  - Improved session context loading
+  - Streamlined workflow enforcement
 
 ### Changed (Breaking)
-- **BREAKING**: Complete transition from milestone-based to specification-driven development
-  - All "milestone" references replaced with "specification" throughout codebase
-  - Renamed `milestone_tracker.py` to `spec_tracker.py`
-  - Commands now use specification terminology instead of milestone
-  - This affects all hooks, agents, and command interfaces
+- **BREAKING**: Template consolidation requires migration
+  - Old: `quaestor_claude.md` + `rules.md` files
+  - New: Single `context.md` file with unified format
+  - Existing projects need re-initialization or manual migration
+
+- **BREAKING**: Agent system modernization
+  - Removed `explorer.md` agent (capabilities merged into `researcher.md`)
+  - All MEMORY.md references removed from agent system
+  - Agent count reduced from 13 to 12 specialized agents
+  - Updated agent orchestration system for better collaboration
+
+- **BREAKING**: Specification workflow changes
+  - Commands now default to specification-driven approach
+  - Milestone-based workflow fully deprecated
+  - Folder structure: `draft/` → `active/` → `completed/` lifecycle
 
 ### Fixed
-- All unit tests now passing after refactoring
-- GitHub Actions updated to latest versions (fixes deprecation warnings)
-- Added `.workflow_state` to gitignore
-- CLI module path issues in tests
-- Hook template consistency tests
-- Hook and agent installation during init
+- All unit tests passing after major refactoring
+- GitHub Actions updated to latest versions
+- CLI module path issues resolved
+- Hook template consistency improved
+- Agent installation process enhanced
 
 ### Improved
-- Complete mkdocs.yml navigation structure
-- Test suite reliability and coverage
-- Installation process includes all new agents and hooks
-- Project structure reorganized for better modularity
+- 40% reduction in Claude context usage through template consolidation
+- Enhanced agent capabilities with explorer consolidation into researcher
+- Streamlined specification lifecycle management
+- Better agent coordination and workflow enforcement
+- Comprehensive documentation updates reflecting current system
 
 ### Migration Instructions
-Due to breaking changes in this release, existing users should:
+**Important**: This release contains breaking changes requiring migration.
 
-1. **Recommended**: Run `quaestor init --force` to get the new agent system and updated hooks
-2. **Manual Migration**: If you have customizations:
-   - Back up your `.quaestor/` and `.claude/` directories
-   - Run `quaestor init --force`
-   - Restore any customizations from your backup
-   - Update any references from "milestone" to "specification" in your custom files
-   - Update hook references from `milestone_tracker.py` to `spec_tracker.py`
+#### Automatic Migration (Recommended)
+```bash
+# Back up existing configuration
+cp -r .quaestor .quaestor.backup
+cp -r .claude .claude.backup
 
-Note: The updater in this version does not automatically update hooks and agents. This will be addressed in a future release.
+# Re-initialize with new system
+quaestor init --force
+
+# Review and restore any custom configurations
+```
+
+#### Manual Migration
+1. **Template Consolidation**: Merge `quaestor_claude.md` + `rules.md` into single `context.md`
+2. **Agent Updates**: Remove references to `explorer.md` and `MEMORY.md` in custom configurations
+3. **Specification Workflow**: Move existing specs to appropriate `draft/`, `active/`, or `completed/` folders
+4. **Hook Updates**: Update custom hooks to use new orchestration system
+
+#### Verification
+- Ensure `/plan` command creates specifications in `draft/` folder
+- Verify `/impl` command moves specs from `draft/` to `active/`
+- Check that completed implementations move to `completed/` folder
+- Test agent coordination with new 12-agent system
 
 ## [0.5.1] - 2025-01-19
 

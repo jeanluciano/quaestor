@@ -1,0 +1,406 @@
+---
+id: docs-update-001
+title: Comprehensive Documentation Update for Project Changes
+type: documentation
+priority: high
+status: completed
+created: 2025-08-04
+estimated_effort: 6-8 hours
+complexity: medium
+breaking_change: false
+
+# Specification: Comprehensive Documentation Update
+
+## Summary
+Update all project documentation to accurately reflect recent major changes including template consolidation, agent modernization, spec-driven workflow implementation, command updates, and hook system improvements.
+
+## Problem Statement
+Project documentation is significantly outdated after major refactoring:
+- Commands documentation references deprecated features
+- Agent documentation includes removed agents (explorer) and references to MEMORY.md
+- Spec workflow documentation doesn't reflect draft/ → active/ → completed/ lifecycle
+- CHANGELOG.md is incomplete for v0.6.0 unreleased changes
+- README.md doesn't emphasize spec-driven development approach
+- Hook documentation needs updates for new orchestration system
+
+## Solution
+Systematically update all documentation files to reflect current project state, ensuring consistency across all docs and accurate representation of current functionality.
+
+## Contract
+```yaml
+inputs:
+  documentation_areas:
+    - /docs/commands/*.md (5 files need updates)
+    - /docs/agents/*.md (remove explorer references, update workflow)
+    - /docs/hooks/*.md (update for new system)
+    - /docs/specs/*.md (update workflow documentation)
+    - CHANGELOG.md (complete v0.6.0 section)
+    - README.md (emphasize spec-driven development)
+  
+  current_state_references:
+    - .quaestor/QUAESTOR_CLAUDE.md (current context file)
+    - .quaestor/RULES.md (current rules)
+    - .quaestor/specs/active/ (active specifications)
+    - .quaestor/specs/completed/ (completed specifications)
+
+outputs:
+  updated_files:
+    - All documentation files reflecting current functionality
+    - Complete CHANGELOG.md v0.6.0 section
+    - Updated README.md with spec-driven focus
+    - Accurate command documentation
+    - Current agent system documentation
+    - Correct hook system documentation
+
+behavior:
+  - Preserve existing documentation structure
+  - Update content to match current implementation
+  - Remove references to deprecated features
+  - Add new feature documentation
+  - Ensure consistency across all docs
+  - Maintain professional documentation tone
+```
+
+## Technical Requirements
+
+### 1. Documentation Updates Required
+
+#### Command Documentation Updates
+```yaml
+/docs/commands/plan.md:
+  updates:
+    - Update to reflect spec mode as default
+    - Remove milestone references
+    - Document new specification creation workflow
+    - Update examples to use current syntax
+
+/docs/commands/impl.md:
+  updates:
+    - Document spec integration
+    - Update agent orchestration workflow
+    - Remove explorer agent references
+    - Document new implementation patterns
+
+/docs/commands/research.md:
+  updates:
+    - Update to reflect researcher agent (not explorer)
+    - Document current research capabilities
+    - Update examples and use cases
+
+/docs/commands/review.md:
+  updates:
+    - Document current review workflow
+    - Update agent integration
+    - Remove outdated references
+
+/docs/commands/project-init.md:
+  updates:
+    - Document current initialization process
+    - Update template consolidation (context.md)
+    - Document hook installation
+```
+
+#### Agent Documentation Updates
+```yaml
+/docs/agents/overview.md:
+  updates:
+    - Remove explorer agent from list
+    - Update agent count (12 agents, not 13)
+    - Document current agent capabilities
+    - Update orchestration description
+
+/docs/agents/explorer.md:
+  action: DELETE
+  reason: "Explorer agent was consolidated into researcher"
+
+/docs/agents/researcher.md:
+  updates:
+    - Document enhanced capabilities from explorer consolidation
+    - Update examples and use cases
+    - Remove MEMORY.md references
+
+/docs/agents/workflow-coordinator.md:
+  updates:
+    - Remove MEMORY.md references
+    - Update workflow to use specifications
+    - Document current orchestration approach
+```
+
+#### Hook Documentation Updates
+```yaml
+/docs/hooks/overview.md:
+  updates:
+    - Document current hook system
+    - Update agent orchestration integration
+    - Remove deprecated hook references
+
+/docs/hooks/memory-tracking.md:
+  action: DELETE or RENAME
+  reason: "MEMORY.md system removed"
+
+/docs/hooks/research-workflow-tracker.md:
+  updates:
+    - Remove MEMORY.md references
+    - Update to work with specification system
+    - Document current tracking approach
+```
+
+#### Specification Documentation Updates
+```yaml
+/docs/specs/workflow.md:
+  updates:
+    - Document draft/ → active/ → completed/ lifecycle
+    - Update folder structure documentation
+    - Document spec-manager agent role
+    - Update examples to use current format
+
+/docs/specs/overview.md:
+  updates:
+    - Emphasize spec-driven development approach
+    - Document specification contracts
+    - Update integration with agents
+    - Remove milestone references
+
+/docs/specs/creating.md:
+  updates:
+    - Document current specification format
+    - Update creation workflow
+    - Document planner agent integration
+    - Update examples
+```
+
+### 2. CHANGELOG.md Updates
+
+#### Complete v0.6.0 Section
+```yaml
+version: "0.6.0 (Unreleased)"
+major_changes:
+  template_consolidation:
+    - title: "Template Consolidation"
+    - description: "Consolidated quaestor_claude.md + rules.md → context.md"
+    - impact: "40% reduction in Claude context usage"
+    - breaking: true
+
+  agent_modernization:
+    - title: "Agent System Modernization"  
+    - description: "Removed explorer agent, consolidated into researcher"
+    - changes:
+      - "Removed all MEMORY.md references from agents"
+      - "Enhanced researcher with explorer capabilities"
+      - "Updated agent orchestration system"
+    - breaking: true
+
+  command_updates:
+    - title: "Command System Updates"
+    - description: "Updated /plan and /impl with spec integration"
+    - changes:
+      - "/plan now defaults to spec mode"
+      - "/impl fully integrated with specification system"
+      - "Removed deprecated command options"
+    - breaking: false
+
+  spec_workflow:
+    - title: "Specification-Driven Workflow Implementation"
+    - description: "Complete implementation of draft/ → active/ → completed/ lifecycle"
+    - changes:
+      - "Spec-manager agent for lifecycle management"
+      - "Automated folder transitions"
+      - "Progress tracking through specifications"
+    - breaking: false
+
+  hook_improvements:
+    - title: "Hook System Improvements"
+    - description: "Enhanced hook orchestration and agent integration"
+    - changes:
+      - "Better agent coordination through hooks"
+      - "Improved session context loading"
+      - "Streamlined workflow enforcement"
+    - breaking: false
+```
+
+### 3. README.md Updates
+
+#### Key Updates Required
+```yaml
+overview_section:
+  updates:
+    - Emphasize "Specification-Driven Development" as primary approach
+    - Update feature list to reflect current capabilities
+    - Remove outdated feature references
+
+quick_start:
+  updates:
+    - Update example commands to use current syntax
+    - Document spec creation workflow
+    - Update implementation examples
+
+core_commands:
+  updates:
+    - "/plan" - specification management and planning
+    - "/impl" - spec-driven implementation
+    - "/research" - codebase analysis (not /explore)
+    - "/review" - quality validation
+    - Remove deprecated commands
+
+how_it_works:
+  updates:
+    - Document specification-first approach
+    - Update workflow description
+    - Remove milestone references
+    - Add spec lifecycle explanation
+```
+
+## Acceptance Criteria
+
+### Documentation Accuracy
+- [ ] All commands documented reflect current functionality
+- [ ] No references to removed features (explorer agent, MEMORY.md)
+- [ ] All agent documentation matches current agent capabilities
+- [ ] Spec workflow documentation matches implementation
+- [ ] Hook documentation reflects current system
+
+### CHANGELOG.md Completeness
+- [ ] v0.6.0 section includes all major changes
+- [ ] Breaking changes clearly marked and explained
+- [ ] Migration guidance provided where needed
+- [ ] Dates and version numbers accurate
+
+### README.md Updates
+- [ ] Overview emphasizes spec-driven development
+- [ ] Quick start guide uses current commands
+- [ ] Feature list matches current capabilities
+- [ ] Examples work with current implementation
+- [ ] Links to documentation are valid
+
+### Consistency
+- [ ] Terminology consistent across all docs
+- [ ] Examples use same format and style
+- [ ] Navigation links work correctly
+- [ ] No broken internal references
+
+### Completeness
+- [ ] All deprecated features removed from docs
+- [ ] All new features documented
+- [ ] Migration paths explained
+- [ ] Troubleshooting sections updated
+
+## Implementation Tasks
+
+### Phase 1: Analysis and Planning (1 hour)
+1. **Content Audit**
+   - Identify all outdated references across documentation
+   - Map current features to documentation gaps
+   - Create update priority list
+
+2. **Reference Collection**
+   - Gather current command implementations
+   - Document current agent capabilities
+   - Review recent specification examples
+
+### Phase 2: Command Documentation Updates (2 hours) 
+3. **Update Command Files**
+   - /docs/commands/plan.md - spec mode as default
+   - /docs/commands/impl.md - spec integration
+   - /docs/commands/research.md - researcher agent focus
+   - /docs/commands/review.md - current workflow
+   - /docs/commands/project-init.md - template consolidation
+
+### Phase 3: Agent Documentation Updates (1.5 hours)
+4. **Update Agent Files**
+   - Delete /docs/agents/explorer.md
+   - Update /docs/agents/researcher.md with enhanced capabilities
+   - Remove MEMORY.md references from all agent docs
+   - Update /docs/agents/overview.md agent count and descriptions
+
+### Phase 4: System Documentation Updates (2 hours)
+5. **Update System Files**
+   - /docs/specs/workflow.md - draft/active/completed lifecycle
+   - /docs/specs/overview.md - spec-driven approach
+   - /docs/hooks/overview.md - current hook system
+   - Remove/update deprecated hook documentation
+
+### Phase 5: Project Documentation Updates (1.5 hours)
+6. **Update Project Files**
+   - Complete CHANGELOG.md v0.6.0 section
+   - Update README.md with spec-driven focus
+   - Verify all internal links work
+   - Update getting started documentation
+
+### Phase 6: Review and Validation (1 hour)
+7. **Quality Assurance**
+   - Review all changes for consistency
+   - Test all documented examples
+   - Verify links and references
+   - Ensure migration guidance is clear
+
+## Test Scenarios
+
+### Documentation Accuracy Tests
+```yaml
+command_documentation:
+  scenario: "User follows command documentation"
+  given: "User reads command documentation"
+  when: "User executes documented commands"
+  then: "Commands work as documented"
+
+agent_documentation:
+  scenario: "User understands agent capabilities"
+  given: "User reads agent documentation"
+  when: "User invokes agents through commands"
+  then: "Agent behavior matches documentation"
+```
+
+### Link Validation Tests
+```yaml
+internal_links:
+  scenario: "All internal links work"
+  given: "Documentation with internal references"
+  when: "User clicks on internal links"
+  then: "Links navigate to correct sections"
+
+external_references:
+  scenario: "External references are valid"
+  given: "Documentation with external links"
+  when: "User accesses external references"
+  then: "References are accessible and relevant"
+```
+
+### Example Validation Tests
+```yaml
+code_examples:
+  scenario: "Code examples execute correctly"
+  given: "Documentation with code examples"
+  when: "User runs provided examples"
+  then: "Examples work without errors"
+
+workflow_examples:
+  scenario: "Workflow examples are accurate"
+  given: "Documentation with workflow examples"
+  when: "User follows workflow steps"
+  then: "Workflow completes successfully"
+```
+
+## Dependencies
+- Current project state analysis
+- Recent commit history review
+- Active and completed specifications review
+- No external dependencies
+
+## Risk Analysis
+- **Low Risk**: Documentation updates don't affect code functionality
+- **Medium Risk**: Missing important changes could confuse users
+- **Mitigation**: Systematic review of all recent changes and thorough testing
+
+## Success Metrics
+- All documentation reflects current project state
+- No references to deprecated features
+- Complete v0.6.0 changelog
+- User-friendly migration guidance
+- Consistent terminology throughout
+
+## Notes
+- Focus on spec-driven development as the primary workflow
+- Emphasize the modern agent system capabilities
+- Ensure migration paths are clear for existing users
+- Maintain professional documentation tone throughout
+- Consider user experience when updating examples

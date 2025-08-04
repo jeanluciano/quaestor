@@ -166,7 +166,7 @@ Auto-Population:
 ```yaml
 mandatory_actions:
   - populate_architecture_md: "Real project analysis"
-  - update_rules: "Framework-specific guidelines"
+  - update_critical_rules: "Framework-specific guidelines"
   - configure_quality_standards: "Testing and linting setup"
   - create_initial_specifications: "Draft/ folder for new specs"
 ```

@@ -20,7 +20,7 @@ The Workflow Coordinator:
 - Dependency mapping
 - Risk assessment
 
-**Agents Involved**: Researcher, Explorer, Architect
+**Agents Involved**: Researcher, Architect
 
 ### 2. Planning Phase
 **Purpose**: Creating implementation strategy
@@ -67,7 +67,7 @@ The Workflow Coordinator:
 
 - **Hooks**: `research_workflow_tracker.py`, `todo_agent_coordinator.py`
 - **Commands**: Works with all slash commands
-- **Memory**: Updates MEMORY.md with phase transitions
+- **Specifications**: Tracks progress through specification system
 - **Specifications**: Coordinates with spec lifecycle
 
 ## Best Practices

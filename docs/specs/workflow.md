@@ -71,16 +71,22 @@ Shows:
 - Test coverage
 - Release readiness
 
-### 5. Status Updates
+### 5. Status Updates and Lifecycle
 
-Specifications progress through these statuses:
+Specifications progress through a folder-based lifecycle:
 
-- **Draft**: Initial creation
-- **Approved**: Ready for implementation
+#### Folder Structure
+- **`.quaestor/specs/draft/`**: Initial creation and review
+- **`.quaestor/specs/active/`**: Approved and being implemented
+- **`.quaestor/specs/completed/`**: Implementation finished and deployed
+
+#### Status Progression
+- **Draft**: Initial creation in `draft/` folder
+- **Active**: Moved to `active/` folder when implementation begins
 - **In Progress**: Implementation started
 - **Implemented**: Code complete
 - **Tested**: All tests passing
-- **Deployed**: Live in production
+- **Completed**: Moved to `completed/` folder when fully deployed
 
 ## Example: Complete Workflow
 

@@ -119,10 +119,10 @@ After initialization, your project will have:
 ```
 your-project/
 ├── .quaestor/
-│   ├── MEMORY.md              # Project memory and progress
-│   ├── specifications/        # Specification files
-│   │   └── manifest.yaml     # Specification tracking
-│   ├── specs/               # Specification definitions
+│   ├── specs/                # Specification lifecycle folders
+│   │   ├── draft/           # New specifications under review
+│   │   ├── active/          # Currently being implemented
+│   │   └── completed/       # Finished implementations
 │   └── .workflow_state       # Current workflow state
 ├── .claude/
 │   ├── commands/             # Slash command definitions
