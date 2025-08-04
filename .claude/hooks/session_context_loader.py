@@ -30,7 +30,6 @@ class SessionContextLoaderHook(BaseHook):
         """Execute session context loading with mode-aware behavior."""
         # Get event details
         event_name = self.input_data.get("hook_event_name", "")
-        source = self.input_data.get("source", "startup")
 
         # Only process SessionStart events
         if event_name != "SessionStart":
@@ -49,20 +48,8 @@ class SessionContextLoaderHook(BaseHook):
         workflow_state = workflow_state_obj.state
         recent_activity = self.analyze_recent_changes()
 
-        # Track silently in drive mode
-        if self.is_drive_mode():
-            self.silent_track(
-                "session_start",
-                {
-                    "spec_active": spec_status["active"],
-                    "workflow_phase": workflow_state.get("phase", "idle"),
-                    "has_uncommitted_changes": recent_activity["has_uncommitted_changes"],
-                    "source": source,
-                },
-            )
-
-        # Generate mode-appropriate context
-        context = self.generate_mode_aware_context(spec_status, workflow_state, recent_activity, source)
+        # Generate context based on current state
+        context = self.generate_context(spec_status, workflow_state, recent_activity)
 
         # Output as JSON for SessionStart hook
         output = {"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": context}}
@@ -72,7 +59,7 @@ class SessionContextLoaderHook(BaseHook):
 
     def check_current_specification(self) -> dict[str, Any]:
         """Check current specification status from active specification files."""
-        specs_dir = self.project_root / ".quaestor" / "specifications"
+        specs_dir = self.project_root / ".quaestor" / "specs"
         active_dir = specs_dir / "active"
 
         result = {"active": False, "id": "", "progress": 0, "remaining_tasks": 0, "in_progress_task": None}
@@ -180,14 +167,14 @@ class SessionContextLoaderHook(BaseHook):
 
         return result
 
-    def generate_mode_aware_context(
-        self, spec_status: dict[str, Any], workflow_state: dict[str, Any], recent_activity: dict[str, Any], source: str
+    def generate_context(
+        self, spec_status: dict[str, Any], workflow_state: dict[str, Any], recent_activity: dict[str, Any]
     ) -> str:
         """Generate context message based on active work."""
         if self.has_active_work():
-            return self._generate_active_work_context(spec_status, workflow_state, recent_activity, source)
+            return self._generate_active_work_context(spec_status, workflow_state, recent_activity)
         else:
-            return self._generate_minimal_context(spec_status, workflow_state, recent_activity, source)
+            return self._generate_minimal_context(spec_status, workflow_state, recent_activity)
 
     def _generate_minimal_context(
         self, spec_status: dict[str, Any], workflow_state: dict[str, Any], recent_activity: dict[str, Any], source: str
@@ -211,16 +198,13 @@ class SessionContextLoaderHook(BaseHook):
         return "\n".join(context_parts)
 
     def _generate_active_work_context(
-        self, spec_status: dict[str, Any], workflow_state: dict[str, Any], recent_activity: dict[str, Any], source: str
+        self, spec_status: dict[str, Any], workflow_state: dict[str, Any], recent_activity: dict[str, Any]
     ) -> str:
         """Generate comprehensive context when there's active work."""
         context_parts = []
 
-        # Header based on source
-        if source == "resume":
-            context_parts.append("=== RESUMED SESSION CONTEXT ===")
-        else:
-            context_parts.append("=== SESSION CONTEXT ===")
+        # Simple header for active work
+        context_parts.append("=== SESSION CONTEXT ===")
 
         # Active specification information
         if spec_status["active"]:
