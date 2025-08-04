@@ -212,7 +212,7 @@ Follow-up Queries:
 ```
 
 ### Context Preservation
-- Research findings saved to MEMORY.md
+- Research findings documented in specification drafts
 - Relevant files tracked for future commands
 - Patterns documented for team reference
 

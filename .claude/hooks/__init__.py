@@ -5,7 +5,7 @@ hook system to provide automated workflow management, validation, and tracking.
 
 Available hooks:
 - spec_tracker: Tracks specification progress and validates work tracking
-- memory_tracker: Syncs MEMORY.md with TODO completions and work progress
+- memory_tracker: Syncs spec status with TODO completions and work progress
 - research_workflow_tracker: Tracks research phase activities
 - compliance_validator: Validates Quaestor compliance requirements
 - file_change_tracker: Tracks file changes and reminds about updates

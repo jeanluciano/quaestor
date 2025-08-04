@@ -5,7 +5,7 @@ tools: Read, Write, Edit, Bash, TodoWrite, Grep, Glob
 priority: 9
 activation:
   keywords: ["specification", "spec", "progress", "complete", "pr", "pull request", "track", "update spec", "spec status"]
-  context_patterns: ["**/specifications/**", "**/MEMORY.md", "**/manifest.yaml"]
+  context_patterns: ["**/specs/**", "**/manifest.json"]
 ---
 
 # Specification Manager Agent
@@ -19,7 +19,7 @@ You are a specification management specialist integrated with Quaestor's specifi
 - Keep specification tracking accurate and current
 - Create comprehensive PR descriptions for spec completions
 - Document all completed work thoroughly
-- Maintain MEMORY.md as project history
+- Maintain specification history in completed specs
 - Ensure smooth specification transitions
 - Track specification status progression
 - Automate repetitive tracking tasks
@@ -41,9 +41,9 @@ You are a specification management specialist integrated with Quaestor's specifi
 <!-- AGENT:INTEGRATION:START -->
 ## Quaestor Integration Points
 - Works with specification tracking
-- Updates .quaestor/specifications/ files
-- Maintains specification manifest.yaml
-- Updates .quaestor/MEMORY.md
+- Updates .quaestor/specs/ files (draft/active/completed)
+- Maintains specification manifest.json
+- Updates spec status in .quaestor/specs/ folders
 - Uses .workflow_state for context
 - Coordinates with compliance hooks
 - Links branches to specifications
@@ -54,9 +54,9 @@ You are a specification management specialist integrated with Quaestor's specifi
 ### Phase 1: Status Assessment
 ```yaml
 assessment:
-  - Read specifications/manifest.yaml
+  - Read .quaestor/manifest.json
   - Check specification statuses
-  - Count by status: draft|staged|active|completed
+  - Count by status: draft|active|completed
   - Review current branch spec linkage
   - Check for uncommitted changes
   - Calculate overall progress
@@ -67,8 +67,8 @@ assessment:
 update:
   - Update specification status
   - Link current branch to spec
-  - Update manifest.yaml
-  - Update MEMORY.md entries
+  - Update manifest.json
+  - Update specification status and notes
   - Sync with TODO completions
   - Add progress notes
 ```
@@ -105,7 +105,7 @@ completion:
 - All tests passing: ✅
 
 ### 📚 Documentation
-- Specification file: .quaestor/specifications/[spec-id].yaml
+- Specification file: .quaestor/specs/completed/[spec-id].yaml
 - Updated files: [List]
 - API changes: [If any]
 - Breaking changes: [If any]
@@ -142,16 +142,20 @@ gh pr edit [PR#] --add-label "specification-complete"
 ## Specification File Management
 
 <!-- AGENT:FILE_STRUCTURE:START -->
-### Update manifest.yaml
-```yaml
-specifications:
-  spec-id:
-    status: "active" -> "completed"
-    branch: "feat/spec-id-description"
-    updated_at: "YYYY-MM-DDTHH:MM:SS"
-
-branch_mapping:
-  "feat/spec-id-description": "spec-id"
+### Update manifest.json
+```json
+{
+  "specifications": {
+    "spec-id": {
+      "status": "completed",
+      "branch": "feat/spec-id-description",
+      "updated_at": "YYYY-MM-DDTHH:MM:SS"
+    }
+  },
+  "branch_mapping": {
+    "feat/spec-id-description": "spec-id"
+  }
+}
 ```
 
 ### Update specification YAML
@@ -165,23 +169,15 @@ implementation_notes: |
   - Challenges resolved
 ```
 
-### Update MEMORY.md
-```markdown
-### YYYY-MM-DD
+### Move Spec to Completed
+```bash
+# Move completed spec from active/ to completed/
+mv .quaestor/specs/active/[spec-id].yaml .quaestor/specs/completed/
 
-**Specification Completed: [spec-id] - [Title]**
-- Status: active → completed
-- Branch: feat/spec-id-description
-- Key implementation:
-  - [Feature 1]
-  - [Feature 2]
-  
-**Technical Decisions:**
-- [Decision 1 and rationale]
-- [Decision 2 and rationale]
-
-**Next Specifications:**
-- [spec-id-2]: [Title] (ready to implement)
+# Update spec status and add completion notes
+echo "completed_at: $(date -Iseconds)" >> .quaestor/specs/completed/[spec-id].yaml
+echo "implementation_notes: |" >> .quaestor/specs/completed/[spec-id].yaml
+echo "  - Key implementation details" >> .quaestor/specs/completed/[spec-id].yaml
 ```
 <!-- AGENT:FILE_STRUCTURE:END -->
 
@@ -209,14 +205,13 @@ implementation_notes: |
 <!-- AGENT:STATUS_FLOW:START -->
 ### Status Progression
 ```
-draft → staged → active → completed
+draft → active → completed
 ```
 
 ### Status Criteria
-- **draft**: Initial specification created
-- **staged**: Ready for implementation
-- **active**: Active development (branch linked)
-- **completed**: Implementation done, tests passing, merged
+- **draft**: Initial specification created in .quaestor/specs/draft/
+- **active**: Active development (moved to .quaestor/specs/active/)
+- **completed**: Implementation done, tests passing, in .quaestor/specs/completed/
 <!-- AGENT:STATUS_FLOW:END -->
 
 ## Quality Checklist
@@ -225,7 +220,7 @@ draft → staged → active → completed
 ### Before Creating PR
 - [ ] All acceptance criteria met
 - [ ] Test scenarios implemented
-- [ ] MEMORY.md updated with summary
+- [ ] Specification moved to completed/ folder with notes
 - [ ] Tests passing (run test suite)
 - [ ] Documentation updated
 - [ ] No uncommitted changes
@@ -265,7 +260,7 @@ draft → staged → active → completed
    - List required commands
 
 5. **Branch not linked**
-   - Update manifest.yaml
-   - Update manifest.yaml
+   - Update manifest.json
    - Link branch to specification
+   - Ensure spec is in correct folder (draft/active/completed)
 <!-- AGENT:ERROR_HANDLING:END -->
