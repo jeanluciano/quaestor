@@ -1,12 +1,11 @@
+# Working with Quaestor - AI Collaboration Guide
 
 <!-- QUAESTOR:version:1.0 -->
 
-<!-- CRITICAL:rules:enforcement:START -->
 ## ⚠️ CRITICAL: MANDATORY RULES ENFORCEMENT
 
 **BEFORE READING FURTHER**: Load and validate [CRITICAL_RULES.md](./.quaestor/CRITICAL_RULES.md)
 
-<!-- DATA:rule-validation:START -->
 ```yaml
 rule_enforcement:
   status: "ACTIVE"
@@ -15,46 +14,35 @@ rule_enforcement:
   violations_allowed: 0
   consequences: "IMMEDIATE_STOP"
 ```
-<!-- DATA:rule-validation:END -->
 
 ### Pre-Action Checklist (MANDATORY)
-
-<!-- CHECKLIST:pre-action:START -->
 - [ ] Have I loaded CRITICAL_RULES.md?
-- [ ] Am I following Research → Plan → Implement?
-- [ ] Have I checked complexity triggers?
-- [ ] Am I using multiple agents when appropriate?
-- [ ] Is my approach production-quality?
-- [ ] Have I checked hook feedback?
-<!-- CHECKLIST:pre-action:END -->
-
-<!-- CRITICAL:rules:enforcement:END -->
+- [ ] Am I running quality checks (make lint, make test)?
+- [ ] Am I following the manager/service pattern?
+- [ ] Are file operations atomic and safe?
+- [ ] Is hook feedback being treated as mandatory?
 
 ## Important
 - **Production Quality**: We're building production-quality code TOGETHER. Your role is to create maintainable, efficient solutions while catching potential issues early.
 - **Mandatory Compliance**: ALL instructions within this document MUST BE FOLLOWED, these are not optional unless explicitly stated.
-- **Hook Compliance**: Hook feedback is MANDATORY and must be treated as requirements, not suggestions. All hook outputs must be addressed before proceeding.
-- **Ask for Help**: ASK FOR CLARIFICATION when you seem stuck or overly complex, I'll redirect you - my guidance helps you stay on track.
-- **Reference Examples**: When in doubt about implementation details, refer to the existing `/examples` implementation as a reference.
+- **Hook Compliance**: Hook feedback is MANDATORY and must be treated as requirements, not suggestions.
+- **Ask for Help**: ASK FOR CLARIFICATION when you seem stuck or overly complex, I'll redirect you.
 - **CRITICAL**: Rules in [CRITICAL_RULES.md](./.quaestor/CRITICAL_RULES.md) override everything else.
 
 ## CRITICAL WORKFLOW
 
-### Research → Plan → Implement [ENFORCED BY CRITICAL_RULES.md]
+### Research → Plan → Implement
 
-**NEVER JUMP STRAIGHT TO CODING!** See CRITICAL_RULES.md for the mandatory Research → Plan → Implement workflow.
+**NEVER JUMP STRAIGHT TO CODING!** Always research the codebase first to understand existing patterns.
 
 **Required Response**: When asked to implement any feature, you MUST say: "Let me research the codebase and create a plan before implementing."
 
-**Ultrathink Trigger**: For complex architectural decisions or challenging problems, use **"ultrathink"** to engage maximum reasoning capacity.
+### USE MULTIPLE AGENTS!
 
-**Required Response**: "Let me ultrathink about this architecture before proposing a solution."
-
-### USE MULTIPLE AGENTS! [ENFORCED BY CRITICAL_RULES.md]
-
-See CRITICAL_RULES.md for mandatory agent usage triggers and requirements.
-
-**Required Response**: You MUST say: "I'll spawn agents to tackle different aspects of this problem" whenever a task has multiple independent parts.
+**Required Response**: You MUST say: "I'll spawn agents to tackle different aspects of this problem" whenever a task has multiple independent parts like:
+- Analyzing different layers (CLI, core, utils)
+- Creating tests and implementation
+- Security review and performance optimization
 
 ### Reality Checkpoints
 **Stop and validate** at these moments:
@@ -64,20 +52,30 @@ See CRITICAL_RULES.md for mandatory agent usage triggers and requirements.
 - Before declaring "done"
 - **After receiving hook feedback** - MANDATORY compliance required
 
-Run your project's test suite regularly (see Testing section below).
+Run the project's test suite regularly: `make test` and `make lint`
 
+## Working Memory Management
+
+### When context gets long:
+- Re-read this QUAESTOR_CLAUDE.md file
+- Check active specifications in .quaestor/specs/active/
+- Review CRITICAL_RULES.md for compliance
+
+### Active Work Tracking:
+Track progress directly in your specification files:
+- **Active Specs**: Located in .quaestor/specs/active/
+- **Current Work**: Update task status and progress
+- **Progress**: Track completed tasks in specifications
+- **Next Actions**: Listed in specification tasks
 
 ### Problem-Solving Together
 
-<!-- WORKFLOW:problem-solving:START -->
 When you're stuck or confused:
 1. **Stop** - Don't spiral into complex solutions
 2. **Delegate** - Consider spawning agents for parallel investigation
-3. **Ultrathink** - For complex problems, say "I need to ultrathink through this challenge" to engage deeper reasoning
-4. **Step back** - Re-read the requirements
-5. **Simplify** - The simple solution is usually correct
-6. **Ask** - "I see two approaches: [A] vs [B]. Which do you prefer?"
-<!-- WORKFLOW:problem-solving:END -->
+3. **Step back** - Re-read the requirements
+4. **Simplify** - The simple solution is usually correct
+5. **Ask** - "I see two approaches: [A] vs [B]. Which do you prefer?"
 
 **Remember**: My insights on better approaches are valued - please ask for them!
 
@@ -85,28 +83,14 @@ When you're stuck or confused:
 
 ### MANDATORY Hook Compliance
 
-<!-- SECTION:hook-compliance:START -->
 **CRITICAL**: Hooks provide MANDATORY feedback, not suggestions. All hook outputs must be treated as requirements and addressed before proceeding with any action.
 
 ### Hook Types and Required Actions
 
-**Compliance Hooks**:
-- `compliance_validator.py` - Validates project compliance requirements
-- `compliance_pre_edit.py` - Pre-edit validation checks
-- **Required Action**: Fix ALL compliance issues before proceeding
-
-**Workflow Hooks**:
-- `research_workflow_tracker.py` - Enforces Research → Plan → Implement workflow
-- `specification_tracker.py` - Tracks specification progress and completion
-- **Required Action**: Follow the exact workflow steps specified
-
-**Context Hooks**:
-- `session_context_loader.py` - Loads active specifications and context
-- **Required Action**: Load active specifications and required context
-
-**Specification Tracking Hooks**:
-- `spec_tracker.py` - Tracks specification progress and validation
-- **Required Action**: Follow specification progress requirements
+**Current Hooks**:
+- `session_context_loader.py` - Loads project context and active specifications
+- `base.py` - Base hook functionality
+- **Required Action**: Follow ALL hook recommendations
 
 ### Hook Feedback Processing
 
@@ -115,193 +99,126 @@ When you're stuck or confused:
 3. **Do not proceed until ALL hook feedback is resolved**
 4. **Treat hook failures as blocking errors**
 
-### Common Hook Requirements
-
-**Before any edit**:
-- Load CRITICAL_RULES.md
-- Check workflow phase compliance
-- Validate specification task status
-- Ensure proper agent coordination
-
-**After completing work**:
-- Update specification phase status
-- Mark tasks as completed in spec files
-- Commit changes with proper messages
-- Move completed specs to completed/ folder
-
-**Example Hook Compliance**:
-```yaml
-# Hook says: "REQUIRED: Load CRITICAL_RULES.md first"
-# Your response: Load the file immediately, don't proceed without it
-
-# Hook says: "ERROR: No active specification found"
-# Your response: Create or activate a specification before continuing
-
-# Hook says: "REQUIRED: Update specification progress"
-# Your response: Update the active specification file with phase completion
-```
-<!-- SECTION:hook-compliance:END -->
-
 # PROJECT OVERVIEW
 
 ### Project Context
-[Describe your project here - what it does, key features, main components]
+Quaestor is a Python CLI tool for AI-assisted development context management. It helps developers manage specifications, track work progress, and maintain project documentation in a way that's optimized for AI collaboration.
 
 ### Current Status
-[Describe current state, any ongoing migrations or major work]
+- Version: 0.5.2 (PyPI) / 0.6.0 (development)
+- Architecture: Service-oriented with manager pattern
+- Framework: Typer CLI with Rich UI
+- Storage: File-based YAML persistence
 
 ### Project Documentation
 For detailed information about the project:
-- **[Active Specifications](./.quaestor/specifications/active/)**: Current work in progress
+- **[Active Specifications](./.quaestor/specs/active/)**: Current work in progress
 - **[ARCHITECTURE.md](./.quaestor/ARCHITECTURE.md)**: Technical architecture and design principles
 
 # ARCHITECTURE & CODE GUIDELINES
 
 See **[ARCHITECTURE.md](./.quaestor/ARCHITECTURE.md)** for:
-- Architecture patterns and principles
+- Service/Manager architecture pattern
 - Layer responsibilities and boundaries
-- External integrations overview
+- Component interactions
 
 ### Code Style Guidelines
-- **Language**: [Specify your language and version]
+- **Language**: Python 3.12+
 - **Focused changes**: Only implement explicitly requested or fully understood changes
-- **Type Safety**: [Your type safety approach, e.g., TypeScript, Python type hints]
-- **Documentation**: [Your documentation style, e.g., JSDoc, Google-style docstrings]
-- **Formatting**: [Your formatting tool, e.g., Prettier, Black, Ruff]
+- **Type Safety**: Full type hints on all functions and methods
+- **Documentation**: Docstrings for all public functions
+- **Formatting**: Ruff for linting and formatting
 - **Imports**: 
   - Order: standard library, third-party, local imports
   - Use absolute imports from project root
 - **Naming Conventions**:
-  - Functions/variables: `snake_case` or `camelCase` (choose one)
+  - Functions/variables: `snake_case`
   - Classes: `PascalCase`
   - Constants: `UPPER_SNAKE_CASE`
-  - Files: [Your file naming convention]
+  - Files: `snake_case.py`
 - **Best Practices**:
-  - [Add your project-specific best practices]
-  - [e.g., "Prefer composition over inheritance"]
-  - [e.g., "Keep functions small and focused"]
+  - Managers handle business logic, dataclasses hold data
+  - All file operations must be atomic
+  - Use Path objects from pathlib, not strings
+  - Comprehensive error handling with user-friendly messages
 
 # AVAILABLE COMMANDS
 
-The following command templates are available in [.quaestor/commands/](./.quaestor/commands/):
-- **[project-init.md](./.quaestor/commands/project-init.md)**: Analyze project and initialize Quaestor framework
-- **[task.md](./.quaestor/commands/task.md)**: Structured approach for implementing tasks
-- **[check.md](./.quaestor/commands/check.md)**: Validation and quality checks
-- **[dispatch.md](./.quaestor/commands/dispatch.md)**: Dispatch complex tasks to multiple agents
+The project provides these main commands:
+- `quaestor init` - Initialize a new Quaestor project
+- `quaestor configure` - Configure project settings
+- `quaestor update` - Update project configuration
 
-Use these commands to maintain consistency and follow best practices.
-
-# WORKFLOW HOOKS
-
-### Automated Specification Commits
-
-<!-- SECTION:workflow-hooks:START -->
-## Workflow Automation Hooks
-
-<!-- DATA:hook-configuration:START -->
-```yaml
-workflow_hooks:
-  after_spec_update:
-    trigger: "Specification file modified"
-    conditions:
-      - "Phase marked completed"
-      - "All acceptance criteria met"
-    actions:
-      - scan_for_completed_phases: "Check phase status"
-      - run_specification_commit: "Auto-commit completed work"
-    command: "/quaestor:specification-commit"
-  
-  after_task_completion:
-    trigger: "Task marked as completed"
-    conditions:
-      - "All related changes saved"
-      - "Quality checks passing"
-    actions:
-      - update_memory_progress: "Sync to MEMORY.md"
-      - trigger_specification_commit: "Create atomic commit"
-    automatic: true
-  
-  after_task_success:
-    trigger: "Task command completes successfully"
-    conditions:
-      - "All checks green"
-      - "Task marked complete"
-    actions:
-      - commit_changes: "Create commit for task"
-      - update_tracking: "Update progress"
-    prompt_user: false
-  
-  specification_completion:
-    trigger: "All tasks in specification done"
-    conditions:
-      - "All items completed"
-      - "Quality gates passed"
-    actions:
-      - create_pr: "Generate pull request"
-      - notify_completion: "Update status"
-    require_confirmation: true
-```
-<!-- DATA:hook-configuration:END -->
-
-### Hook Usage
-
-**Automatic Triggers**:
-- Completing a task automatically triggers commit workflow
-- Updating specification files with progress runs validation checks
-- Finishing all items in a specification creates a PR
-
-**Manual Override**:
-```bash
-# Disable hooks temporarily
-/quaestor:specification-commit --no-hooks
-
-# Run hooks manually
-/quaestor:specification-commit --trigger
-```
-
-**Benefits**:
-- 🎯 Atomic commits for each completed task
-- 📊 Automatic progress tracking
-- 🔍 Quality enforcement before commits
-- 🚀 PRs created at specification boundaries
-<!-- SECTION:workflow-hooks:END -->
+Slash commands for Claude:
+- `/plan` - Create specifications and plan work
+- `/impl` - Implement approved specifications
+- `/project-init` - Initialize Quaestor in a project
 
 # DEVELOPMENT WORKFLOW
 
-### Hook-Compliant Development Process
+### Testing and Quality
 
-<!-- CHECKLIST:hook-compliant-dev:START -->
-1. **Pre-Work Hook Validation**: Check all hook feedback before starting
-2. **Research Phase**: Load required context files as specified by hooks
-3. **Planning Phase**: Follow workflow tracker requirements  
-4. **Implementation Phase**: Address compliance feedback throughout
-5. **Post-Work Hook Updates**: Update tracking files as required
-6. **Completion Validation**: Ensure all hook requirements are met
-<!-- CHECKLIST:hook-compliant-dev:END -->
+**MANDATORY before any commit**:
+```bash
+# Run all tests
+make test
 
-### Testing and Linting
-- Run tests: `[your test command, e.g., npm test, pytest tests/]`
-- Run specific test: `[your specific test command]`
-- Run tests with coverage: `[your coverage command]`
-- Run linter: `[your lint command, e.g., eslint src/, ruff check src/]`
-- Format code: `[your format command, e.g., prettier --write ., ruff format src/]`
+# Run linting
+make lint
+
+# Run specific test file
+pytest tests/unit/test_specifications.py
+
+# Run with coverage
+make test-cov
+```
 
 ### Working with the Codebase
 
-<!-- CHECKLIST:codebase-work:START -->
 1. Follow established patterns in the codebase
-2. Ensure backward compatibility when making changes
-3. Use feature flags for gradual rollout of new features
+2. Use managers for business logic, not dataclasses
+3. All file operations through utils for atomicity
 4. **MANDATORY**: Address all hook compliance issues before proceeding
-<!-- CHECKLIST:codebase-work:END -->
 
 ### Development Process
 
-<!-- CHECKLIST:dev-process:START -->
-1. Always create a new branch for features
+1. Create specifications for new features
 2. Write tests before implementing features (TDD)
 3. Keep commits small and focused
 4. Write clear commit messages
 5. Update documentation as you go
 6. **CRITICAL**: Follow hook feedback as mandatory requirements
-<!-- CHECKLIST:dev-process:END -->
+
+### Common Tasks
+
+**Creating a new manager**:
+```python
+# In src/quaestor/core/
+class NewManager:
+    def __init__(self, project_dir: Path):
+        self.project_dir = project_dir
+        # Initialize as needed
+    
+    def perform_action(self) -> bool:
+        """Business logic here."""
+        # Use utils for file operations
+        # Return success/failure
+```
+
+**Adding a CLI command**:
+```python
+# In src/quaestor/cli/
+@app.command()
+def new_command(
+    arg: str = typer.Argument(..., help="Description"),
+    option: bool = typer.Option(False, "--flag", help="Description"),
+) -> None:
+    """Command description."""
+    console.print("[bold]Running command...[/bold]")
+    # Delegate to manager
+    # Show progress with rich
+    # Handle errors gracefully
+```
+
+---
+*This document helps Claude work effectively with the Quaestor project. Generated by project-init based on codebase analysis.*

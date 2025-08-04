@@ -191,6 +191,30 @@ class BaseHook:
             response.update(data)
         self.output_json(response, 0)
 
+    def output_json_blocking(self, reason: str):
+        """Block action with feedback to Claude."""
+        output = {"decision": "block", "reason": reason}
+        print(json.dumps(output))
+        sys.exit(0)
+
+    def output_suggestion(self, message: str, suggest_agent: str = None):
+        """Provide suggestion with optional agent recommendation."""
+        if suggest_agent:
+            message += f"\n\nPlease run: Use the {suggest_agent} agent to handle this task"
+        output = {"decision": "block", "reason": message}
+        print(json.dumps(output))
+        sys.exit(0)
+
+    def is_drive_mode(self) -> bool:
+        """Check if session is in drive mode."""
+        # Simple heuristic: if no active specs or work, likely drive mode
+        return not self.has_active_work()
+
+    def is_framework_mode(self) -> bool:
+        """Check if session is in framework mode."""
+        # Framework mode when there's active work/specs
+        return self.has_active_work()
+
     def run_with_timeout(self, func: Callable, timeout_seconds: int = 60) -> Any:
         """Run a function with timeout protection."""
         try:
@@ -326,7 +350,7 @@ class WorkflowState:
         self.project_root = Path(project_root)
         self.state_file = self.project_root / ".quaestor" / ".workflow_state"
         self.state = self._load_state()
-        
+
         # Create the file if it doesn't exist
         if not self.state_file.exists():
             self._save_state()

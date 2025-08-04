@@ -290,7 +290,6 @@ def _merge_claude_md(target_dir: Path, use_rule_engine: bool = False) -> bool:
 > 1. `.quaestor/QUAESTOR_CLAUDE.md` - How to work with this project effectively
 > 2. `.quaestor/CRITICAL_RULES.md` - Critical rules you must follow
 > 3. `.quaestor/ARCHITECTURE.md` - System design and structure (if available)
-> 4. `.quaestor/MEMORY.md` - Implementation patterns and decisions (if available)
 <!-- QUAESTOR CONFIG END -->
 
 <!-- Your custom content below -->
@@ -465,11 +464,10 @@ def _init_common(target_dir: Path, force: bool, mode: str):
     available_hooks = [
         "base.py",
         "compliance_pre_edit.py",
-        "compliance_validator.py",
-        "file_change_tracker.py",
-        "research_workflow_tracker.py",
+        "rule_injection.py",
         "session_context_loader.py",
         "spec_tracker.py",
+        "spec_lifecycle.py",
         "user_prompt_submit.py",
     ]
 

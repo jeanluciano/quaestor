@@ -199,13 +199,9 @@ def main():
     violation_message = generate_workflow_violation_message(workflow_state, file_path, specification_status)
 
     if violation_message:
-        # Block the edit and provide guidance using JSON format
-        output = {
-            "decision": "block",
-            "reason": violation_message.strip()
-        }
-        print(json.dumps(output))
-        sys.exit(0)
+        # Block the edit and provide guidance
+        print(violation_message.strip(), file=sys.stderr)
+        sys.exit(2)
 
     # If we get here, the edit is allowed
     # Provide helpful context based on current state

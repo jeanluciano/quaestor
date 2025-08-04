@@ -26,6 +26,7 @@ Final quality validation, intelligent commit generation, and PR creation. Combin
 /review --pr-only         # Create PR from existing commits
 /review --analysis        # Deep code quality analysis
 /review --quick           # Fast review for small changes
+/review --archive-spec <spec-id>  # Archive completed specification
 ```
 
 ## Auto-Intelligence
@@ -38,6 +39,7 @@ Mode Detection:
   - --validate-only → Quality fixing focus
   - --pr-only → PR creation from commits
   - --analysis → Deep quality insights
+  - --archive-spec → Archive completed specification
 ```
 
 ### Agent Orchestration
@@ -273,6 +275,42 @@ Smart Commits:
   - Follow conventions
   - Update tracking
   No PR creation
+```
+
+### Specification Archiving (--archive-spec)
+```yaml
+Archive Completed Specifications:
+  Process:
+    1. Verify specification completion:
+       - All tasks marked as completed
+       - Acceptance criteria met
+       - Quality checks passed
+       - PR merged (if applicable)
+    
+    2. Move specification to completed/:
+       - From: .quaestor/specs/active/<spec-id>.yaml
+       - To: .quaestor/specs/completed/<spec-id>.yaml
+       - Update status to "completed"
+       - Add completion_date timestamp
+    
+    3. Update tracking:
+       - Remove from active work context
+       - Add completion notes
+       - Update project progress metrics
+    
+    4. Generate archive summary:
+       - What was delivered
+       - Key decisions made
+       - Lessons learned
+       - Performance metrics
+  
+  Usage:
+    /review --archive-spec feat-auth-001
+    
+  Validation:
+    - Spec must exist in active/
+    - All tasks must be completed
+    - Cannot archive with pending work
 ```
 
 ## Integration with Workflow

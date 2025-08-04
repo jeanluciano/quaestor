@@ -37,21 +37,6 @@ class SpecTrackerHook(BaseHook):
         # Validate tracking
         issues = self.validate_tracking(work_done, spec_updates) if work_done else []
 
-        # Check for completed specs in active folder
-        completed_active_specs = self._check_for_completed_active_specs()
-        if completed_active_specs:
-            spec_names = ", ".join([s.stem for s in completed_active_specs])
-            message = f"""✅ Completed specifications detected in active folder!
-
-Specs ready for archiving: {spec_names}
-
-These specifications appear to be complete. To archive them:
-Run: /review --archive-spec {completed_active_specs[0].stem}
-
-This will move them to the completed/ folder and free up active slots."""
-            self.output_suggestion(message)
-            return
-
         # Generate suggestions based on issues
         if issues:
             high_severity = [i for i in issues if i["severity"] == "high"]
@@ -109,54 +94,6 @@ This will move them to the completed/ folder and free up active slots."""
             return {"status": "no_spec_system", "message": "Specification system not available"}
         except Exception as e:
             return {"status": "error", "message": f"Error checking specs: {e}"}
-
-    def _check_for_completed_active_specs(self) -> list[Path]:
-        """Check for completed specifications in the active folder."""
-        active_dir = self.project_root / ".quaestor" / "specs" / "active"
-        completed_specs = []
-        
-        if not active_dir.exists():
-            return completed_specs
-            
-        for spec_file in active_dir.glob("*.yaml"):
-            try:
-                with open(spec_file) as f:
-                    content = f.read()
-                    
-                # Check for explicit completion status
-                has_completed_status = "status: completed" in content or "status: 'completed'" in content
-                
-                # Only consider it complete if explicitly marked as completed
-                if has_completed_status:
-                    completed_specs.append(spec_file)
-                    continue
-                    
-                # Additional check: if status is 'implemented' and has high completion
-                has_implemented_status = "status: implemented" in content or "status: 'implemented'" in content
-                
-                if has_implemented_status:
-                    # Check for task completion markers
-                    has_all_done = "- [x]" in content and "- [ ]" not in content
-                    
-                    # Check acceptance criteria completion
-                    import yaml
-                    try:
-                        spec_data = yaml.safe_load(content)
-                        acceptance_criteria = spec_data.get("acceptance_criteria", [])
-                        test_scenarios = spec_data.get("test_scenarios", [])
-                        
-                        # If we have acceptance criteria or test scenarios, check if they're marked complete
-                        if acceptance_criteria or test_scenarios:
-                            # Look for completion indicators in the content
-                            if "✓" in content or "✅" in content or has_all_done:
-                                completed_specs.append(spec_file)
-                    except:
-                        pass
-                        
-            except Exception:
-                continue
-                
-        return completed_specs
 
     def get_recent_work(self, hours: int = 6) -> dict[str, Any] | None:
         """Detect recent implementation work."""
@@ -245,7 +182,6 @@ This will move them to the completed/ folder and free up active slots."""
 
         # Determine work type
         has_implementation = bool(work_done["src_files"])
-        has_tests = bool(work_done["test_files"])
 
         # Check spec updates for implementation work
         if has_implementation and not spec_updates["spec_files"]:

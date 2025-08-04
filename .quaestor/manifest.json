@@ -1,32 +1,73 @@
 {
   "version": "1.0",
   "quaestor_version": "0.6.0",
-  "created_at": "2025-08-02T21:30:55.855873",
-  "last_updated": "2025-08-02T21:30:56.214166",
+  "created_at": "2025-08-03T10:55:51.363667",
+  "last_updated": "2025-08-04T09:25:00.000000",
+  "project": {
+    "name": "quaestor",
+    "type": "python-cli",
+    "framework": "typer",
+    "architecture": "service-manager",
+    "initialized_by": "project-init",
+    "mode": "team"
+  },
+  "analysis": {
+    "framework_detected": "Python CLI with Typer",
+    "architecture_pattern": "Service-Oriented with Manager Pattern",
+    "complexity_score": 0.7,
+    "project_phase": "growth",
+    "confidence": 0.9
+  },
+  "quality": {
+    "linter": "ruff",
+    "test_framework": "pytest",
+    "type_checking": "python-type-hints",
+    "coverage_target": 80,
+    "commands": {
+      "lint": "make lint",
+      "test": "make test",
+      "test_coverage": "make test-cov"
+    }
+  },
+  "security": {
+    "issues_found": 8,
+    "high_severity": 2,
+    "addressed": false,
+    "notes": "Command injection and path traversal vulnerabilities identified"
+  },
+  "paths": {
+    "source": "src/quaestor",
+    "tests": "tests/",
+    "specs": ".quaestor/specs/",
+    "docs": ".quaestor/"
+  },
   "files": {
     ".quaestor/QUAESTOR_CLAUDE.md": {
       "type": "user-editable",
       "version": "1.0",
-      "installed_at": "2025-08-02T21:30:56.213906",
+      "installed_at": "2025-08-03T10:55:51.717995",
       "original_checksum": "96cd73749a70c1c80782124d0dd32c6b6d269793da011b1e0f1837b484ac7f1b",
-      "current_checksum": "96cd73749a70c1c80782124d0dd32c6b6d269793da011b1e0f1837b484ac7f1b",
-      "user_modified": false
+      "current_checksum": "updated-by-project-init",
+      "user_modified": true,
+      "updated_by": "project-init"
     },
     ".quaestor/CRITICAL_RULES.md": {
       "type": "user-editable",
       "version": "1.0",
-      "installed_at": "2025-08-02T21:30:56.214016",
+      "installed_at": "2025-08-03T10:55:51.718095",
       "original_checksum": "5b5ca2cc8bcb8b275397cb0106bf1f85629fca2e52bfddfcf67f07286140d85d",
-      "current_checksum": "5b5ca2cc8bcb8b275397cb0106bf1f85629fca2e52bfddfcf67f07286140d85d",
-      "user_modified": false
+      "current_checksum": "updated-by-project-init",
+      "user_modified": true,
+      "updated_by": "project-init"
     },
     ".quaestor/ARCHITECTURE.md": {
       "type": "user-editable",
       "version": "1.0",
-      "installed_at": "2025-08-02T21:30:56.214155",
+      "installed_at": "2025-08-03T10:55:51.718222",
       "original_checksum": "2f303a49e472da1fc0e76c026e3188a0b9e671df188a5b1982cd1f7517bba98d",
-      "current_checksum": "2f303a49e472da1fc0e76c026e3188a0b9e671df188a5b1982cd1f7517bba98d",
-      "user_modified": false
+      "current_checksum": "updated-by-project-init",
+      "user_modified": true,
+      "updated_by": "project-init"
     }
   }
 }

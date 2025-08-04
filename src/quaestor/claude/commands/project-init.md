@@ -240,7 +240,7 @@ Performance Monitoring:
 1. Review generated documentation:
    - `.quaestor/ARCHITECTURE.md` - Project structure analysis
    - `.quaestor/CRITICAL_RULES.md` - Framework-specific guidelines
-   - `.quaestor/specifications/` - Folder structure for specs
+   - `.quaestor/specs/` - Folder structure for specs
 
 2. Create project specifications:
    - Use `/plan --spec` to create new specifications

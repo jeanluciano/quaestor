@@ -193,10 +193,7 @@ class BaseHook:
 
     def output_json_blocking(self, reason: str):
         """Block action with feedback to Claude."""
-        output = {
-            "decision": "block",
-            "reason": reason
-        }
+        output = {"decision": "block", "reason": reason}
         print(json.dumps(output))
         sys.exit(0)
 
@@ -204,10 +201,7 @@ class BaseHook:
         """Provide suggestion with optional agent recommendation."""
         if suggest_agent:
             message += f"\n\nPlease run: Use the {suggest_agent} agent to handle this task"
-        output = {
-            "decision": "block",
-            "reason": message
-        }
+        output = {"decision": "block", "reason": message}
         print(json.dumps(output))
         sys.exit(0)
 

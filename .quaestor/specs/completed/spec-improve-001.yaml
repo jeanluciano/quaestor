@@ -1,0 +1,155 @@
+id: spec-improve-001
+title: Improve Hook Reliability and Workflow Automation
+type: refactor
+status: completed
+priority: high
+description: |
+  Enhance hook firing reliability, ensure consistent subagent selection in commands,
+  strengthen framework mode workflow enforcement, and automate specification 
+  completion when /review command is executed. Focus on improving existing 
+  systems rather than creating new ones.
+  
+rationale: |
+  Current issues:
+  1. Hooks may not fire consistently due to timing or configuration issues
+  2. Commands define agent strategies but don't reliably invoke subagents
+  3. Framework mode workflow enforcement could be stronger
+  4. Spec completion workflow requires manual steps
+  5. Some workflow elements add complexity without clear value
+  
+  This specification aims to make the development workflow more reliable and
+  automated while simplifying where possible.
+
+use_cases:
+  - Developer runs /impl command and appropriate subagents are automatically selected
+  - Framework mode strictly enforces Research → Plan → Implement workflow
+  - Running /review automatically archives completed specifications
+  - Hooks fire reliably for all matched tool operations
+  - Simplified workflow with low-value elements removed
+
+contract:
+  inputs:
+    existing_hooks:
+      - UserPromptSubmit: Mode detection
+      - PostToolUse: Research workflow and spec tracking
+      - SessionStart: Context loading
+    existing_commands:
+      - /research: Research phase
+      - /plan: Planning and spec creation
+      - /impl: Implementation with agent strategies
+      - /review: Review and completion with --archive-spec
+      - /debug: Debugging assistance
+    configuration:
+      - .claude/settings.json: Hook configuration
+      - Command frontmatter: Agent strategies
+      
+  outputs:
+    improved_hooks:
+      - Enhanced reliability through better error handling
+      - Consistent JSON output for Claude feedback
+      - Removed research_workflow_tracker hook (moved to CRITICAL_RULES.md)
+    improved_commands:
+      - Reliable subagent invocation based on strategies
+      - Automatic spec archiving in /review
+      - Simplified command logic
+    documentation:
+      - Updated hook implementation guide
+      - Command improvement recommendations
+      - Research → Plan → Implement pattern in CRITICAL_RULES.md
+      
+  behavior:
+    - Hooks use proper JSON output format for better Claude integration
+    - Commands actively invoke subagents based on defined strategies
+    - Workflow pattern enforced through CRITICAL_RULES.md (not hooks)
+    - /impl command automatically moves draft specs to active when starting work
+    - /review command automatically handles spec completion
+    - Low-value complexity removed from workflow
+    
+  constraints:
+    - No new commands created
+    - No new hooks created if possible
+    - Maintain backward compatibility
+    - Use existing Claude Code hook features
+    - Simplify rather than add complexity
+
+acceptance_criteria:
+  - All hooks fire reliably when conditions are met
+  - Commands consistently use defined subagent strategies
+  - Framework mode workflow is strictly enforced
+  - /review command automatically archives completed specs
+  - Workflow is simpler and more automated
+  - All changes are tested and documented
+
+test_scenarios:
+  - name: Hook Reliability Test
+    description: Verify hooks fire consistently
+    given: A file edit operation occurs
+    when: PostToolUse hook is configured for Edit
+    then: spec_tracker hook executes and provides feedback
+    
+  - name: Subagent Selection Test
+    description: Verify commands use appropriate subagents
+    given: /impl command with high complexity task
+    when: Command executes with complexity > 0.7
+    then: architect and implementer agents are invoked
+    
+  - name: Spec Activation Automation
+    description: Verify /impl activates draft specs
+    given: Matching spec exists in draft/ folder
+    when: /impl command starts implementation
+    then: Spec automatically moves to active/ folder
+    
+  - name: Spec Completion Automation
+    description: Verify /review archives specs
+    given: Active spec with all tasks completed
+    when: /review completes successfully
+    then: Spec automatically moves to completed/ folder
+
+dependencies:
+  - Claude Code hooks API
+  - Existing hook implementations
+  - Existing command structures
+  - Specification system
+
+branch: feat/spec-improve-001-hook-reliability
+created_at: 2025-08-04T10:00:00Z
+updated_at: 2025-08-04T10:00:00Z
+completed_at: 2025-08-04T11:45:00Z
+metadata:
+  estimated_effort: "2-3 days"
+  risk_level: "medium"
+  breaking_changes: false
+  
+phases:
+  phase_1:
+    name: "Analyze and Simplify"
+    tasks:
+      - Analyze current hook reliability issues
+      - Identify low-value workflow elements
+      - Document simplification opportunities
+      - Review command agent strategies
+      
+  phase_2:
+    name: "Enhance Hook Reliability"
+    tasks:
+      - Improve error handling in base hook
+      - Implement proper JSON output format
+      - Add retry logic for transient failures
+      - Strengthen framework mode enforcement
+      - Test hook execution reliability
+      
+  phase_3:
+    name: "Improve Command Integration"
+    tasks:
+      - Update commands to use Task tool for subagents
+      - Enhance /review spec archiving automation
+      - Simplify command logic where possible
+      - Test subagent invocation
+      
+  phase_4:
+    name: "Testing and Documentation"
+    tasks:
+      - Create comprehensive tests
+      - Update documentation
+      - Validate workflow improvements
+      - Ensure backward compatibility
