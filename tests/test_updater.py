@@ -252,12 +252,10 @@ class TestQuaestorUpdater:
 
         # Check that core files were created
         assert (quaestor_dir / "ARCHITECTURE.md").exists()
-        assert (quaestor_dir / "MEMORY.md").exists()
 
         # Verify they're in the added list
         added_files = [f for f in result.added if f.startswith(".quaestor/")]
         assert ".quaestor/ARCHITECTURE.md" in added_files
-        assert ".quaestor/MEMORY.md" in added_files
 
 
 class TestUpdateIntegration:

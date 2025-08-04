@@ -120,7 +120,7 @@ class TestSpecificationManager:
 
         assert manager.project_dir == temp_project
         assert manager.specs_dir.exists()
-        assert manager.specs_dir == temp_project / ".quaestor" / "specifications"
+        assert manager.specs_dir == temp_project / ".quaestor" / "specs"
         assert manager.manifest_path == manager.specs_dir / "manifest.yaml"
 
     def test_load_manifest_empty_project(self, spec_manager):
@@ -486,8 +486,8 @@ class TestSpecificationSerialization:
             rationale="Validate file I/O",
         )
 
-        # Verify spec file exists
-        spec_file = spec_manager.specs_dir / f"{spec.id}.yaml"
+        # Verify spec file exists in the draft folder (default status)
+        spec_file = spec_manager.specs_dir / "draft" / f"{spec.id}.yaml"
         assert spec_file.exists()
 
         # Verify manifest file exists

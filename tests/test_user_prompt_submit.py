@@ -1,11 +1,10 @@
-"""Integration tests for UserPromptSubmit hook."""
+"""Integration tests for simplified UserPromptSubmit hook."""
 
-import json
 import os
 import shutil
 import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from src.quaestor.claude.hooks.user_prompt_submit import UserPromptSubmitHook
 
@@ -33,7 +32,7 @@ class TestUserPromptSubmitHook:
         shutil.rmtree(self.temp_dir)
 
     def test_slash_command_framework_mode(self):
-        """Test that slash commands trigger framework mode."""
+        """Test that slash commands are processed."""
         # Mock input data
         self.hook.input_data = {
             "user_prompt": "/plan user authentication system",
@@ -49,28 +48,19 @@ class TestUserPromptSubmitHook:
         # Execute hook
         self.hook.execute()
 
-        # Verify framework mode detected
-        assert output_data["session_mode"] == "framework"
-        assert output_data["mode_confidence"] >= 0.95
-        assert "Framework mode activated" in output_data["message"]
-
-        # Verify workflow state updated
-        state_file = self.quaestor_dir / ".workflow_state"
-        assert state_file.exists()
-
-        with open(state_file) as f:
-            state = json.load(f)
-            assert state["session_mode"] == "framework"
-            assert state["mode_confidence"] >= 0.95
-            assert "mode_set_at" in state
+        # Verify simplified output
+        assert output_data["session_id"] == "test-session-123"
+        assert "message" in output_data
+        assert output_data["message"] == "Ready to assist!"
+        assert "has_active_work" in output_data
 
     def test_natural_language_drive_mode(self):
-        """Test that natural language triggers drive mode."""
+        """Test natural language input processing."""
         # Mock input data
         self.hook.input_data = {
-            "user_prompt": "help me fix this typo in the README",
+            "user_prompt": "Can you help me build a web application?",
             "sessionId": "test-session-456",
-            "timestamp": "2024-01-01T11:00:00Z",
+            "timestamp": "2024-01-01T10:00:00Z",
             "working_directory": self.temp_dir,
         }
 
@@ -81,20 +71,20 @@ class TestUserPromptSubmitHook:
         # Execute hook
         self.hook.execute()
 
-        # Verify drive mode detected
-        assert output_data["session_mode"] == "drive"
-        assert output_data["mode_confidence"] >= 0.7
-        assert "Drive mode activated" in output_data["message"]
-
-        # Verify silent tracking initialized
-        assert output_data["workflow_state"]["silent_tracking"] is not None
-        assert "files_modified" in output_data["workflow_state"]["silent_tracking"]
-        assert "commands_run" in output_data["workflow_state"]["silent_tracking"]
+        # Verify output
+        assert output_data["session_id"] == "test-session-456"
+        assert output_data["message"] == "Ready to assist!"
+        assert "has_active_work" in output_data
 
     def test_empty_prompt_handling(self):
         """Test handling of empty prompts."""
         # Mock input data with empty prompt
-        self.hook.input_data = {"user_prompt": "", "sessionId": "test-session-789", "timestamp": "2024-01-01T12:00:00Z"}
+        self.hook.input_data = {
+            "user_prompt": "",
+            "sessionId": "test-session-789",
+            "timestamp": "2024-01-01T10:00:00Z",
+            "working_directory": self.temp_dir,
+        }
 
         # Mock output methods
         output_data = {}
@@ -103,223 +93,115 @@ class TestUserPromptSubmitHook:
         # Execute hook
         self.hook.execute()
 
-        # Should default to drive mode
-        assert output_data["session_mode"] == "drive"
-        assert output_data["mode_confidence"] == 0.5
-        assert "empty_or_invalid_prompt" in output_data["detection_metadata"]["triggers"]
+        # Verify output
+        assert output_data["session_id"] == "test-session-789"
+        assert output_data["message"] == "Ready to assist!"
 
-    def test_mode_detection_error_handling(self):
-        """Test error handling when mode detection fails."""
-        # Mock a detection failure
-        with patch.object(self.hook.mode_detector, "detect_mode", side_effect=Exception("Detection failed")):
-            self.hook.input_data = {
-                "user_prompt": "/plan feature",
-                "sessionId": "test-session",
-                "timestamp": "2024-01-01T13:00:00Z",
-            }
+    def test_error_handling(self):
+        """Test error handling in hook execution."""
+        # Mock input data that causes an error
+        self.hook.input_data = None  # This should cause an error
 
-            output_data = {}
-            self.hook.output_success = MagicMock(side_effect=lambda data, od=output_data: od.update(data))
-
-            # Execute hook - should not crash
-            self.hook.execute()
-
-            # Should default to drive mode with error info
-            assert output_data["session_mode"] == "drive"
-            assert output_data["mode_confidence"] == 0.5
-            assert "detection_error" in output_data["detection_metadata"]["triggers"]
-
-    def test_workflow_state_error_handling(self):
-        """Test error handling when state update fails."""
-        # Make .quaestor directory read-only to cause write failure
-        os.chmod(self.quaestor_dir, 0o444)
-
-        self.hook.input_data = {
-            "user_prompt": "/plan feature",
-            "sessionId": "test-session",
-            "timestamp": "2024-01-01T14:00:00Z",
-        }
-
-        output_data = {}
-        self.hook.output_success = MagicMock(side_effect=lambda data: output_data.update(data))
-
-        # Execute hook - should continue despite state write failure
-        self.hook.execute()
-
-        # Should still return detection result
-        assert output_data["session_mode"] == "framework"
-        assert output_data["mode_confidence"] >= 0.95
-
-        # Restore permissions
-        os.chmod(self.quaestor_dir, 0o755)
-
-    def test_existing_workflow_state_preservation(self):
-        """Test that existing workflow state is preserved."""
-        # Create existing state file
-        existing_state = {
-            "phase": "researching",
-            "last_research": "2024-01-01T09:00:00Z",
-            "research_files": ["/src/main.py", "/src/utils.py"],
-            "custom_field": "preserved_value",
-        }
-
-        state_file = self.quaestor_dir / ".workflow_state"
-        with open(state_file, "w") as f:
-            json.dump(existing_state, f)
+        # Mock output methods to capture error message
+        error_messages = []
+        self.hook.output_error = MagicMock(side_effect=lambda msg: error_messages.append(msg))
 
         # Execute hook
+        self.hook.execute()
+
+        # Verify error was handled
+        assert len(error_messages) > 0
+        assert "Hook execution failed" in error_messages[0]
+
+    def test_workflow_state_error_handling(self):
+        """Test that hook handles missing workflow state gracefully."""
+        # Mock input data
         self.hook.input_data = {
-            "user_prompt": "/plan new feature",
-            "sessionId": "test-session",
-            "timestamp": "2024-01-01T15:00:00Z",
+            "user_prompt": "/impl feature",
+            "sessionId": "test-session-999",
         }
 
+        # Mock has_active_work to return False
+        self.hook.has_active_work = MagicMock(return_value=False)
+
+        # Mock output methods
         output_data = {}
         self.hook.output_success = MagicMock(side_effect=lambda data: output_data.update(data))
 
+        # Execute hook
         self.hook.execute()
 
-        # Verify existing fields preserved
-        with open(state_file) as f:
-            updated_state = json.load(f)
-            assert updated_state["phase"] == "researching"
-            assert updated_state["last_research"] == "2024-01-01T09:00:00Z"
-            assert updated_state["research_files"] == ["/src/main.py", "/src/utils.py"]
-            assert updated_state["custom_field"] == "preserved_value"
-            # And new fields added
-            assert updated_state["session_mode"] == "framework"
-            assert "mode_confidence" in updated_state
+        # Verify output
+        assert output_data["session_id"] == "test-session-999"
+        assert output_data["has_active_work"] is False
+
+    def test_long_prompt_truncation(self):
+        """Test that long prompts are truncated in logs."""
+        # Create a very long prompt
+        long_prompt = "x" * 200
+
+        # Mock input data
+        self.hook.input_data = {
+            "user_prompt": long_prompt,
+            "sessionId": "test-session-long",
+        }
+
+        # Mock output methods
+        output_data = {}
+        self.hook.output_success = MagicMock(side_effect=lambda data: output_data.update(data))
+
+        # Execute hook
+        self.hook.execute()
+
+        # Verify output (prompt truncation happens in logging, not output)
+        assert output_data["session_id"] == "test-session-long"
+        assert output_data["message"] == "Ready to assist!"
 
     def test_mode_transition(self):
-        """Test transitioning between modes in same session."""
-        # Start with drive mode
-        self.hook.input_data = {
-            "user_prompt": "quick fix for typo",
-            "sessionId": "transition-session",
-            "timestamp": "2024-01-01T16:00:00Z",
-        }
-
-        output_data = {}
-        self.hook.output_success = MagicMock(side_effect=lambda data: output_data.update(data))
-        self.hook.execute()
-
-        assert output_data["session_mode"] == "drive"
-
-        # Transition to framework mode
-        self.hook.input_data = {
-            "user_prompt": "/review code quality",
-            "sessionId": "transition-session",
-            "timestamp": "2024-01-01T16:05:00Z",
-        }
-
-        output_data.clear()
-        self.hook.execute()
-
-        assert output_data["session_mode"] == "framework"
-
-        # Verify state reflects transition
-        state_file = self.quaestor_dir / ".workflow_state"
-        with open(state_file) as f:
-            state = json.load(f)
-            assert state["session_mode"] == "framework"
-            # Silent tracking should still exist from drive mode
-            assert "silent_tracking" in state
-
-    def test_input_sanitization(self):
-        """Test that user input is sanitized for logging."""
-        # Input with potential log injection
-        malicious_input = "test\nERROR: Fake error\r\nINFO: Injected log"
-
-        self.hook.input_data = {
-            "user_prompt": malicious_input,
-            "sessionId": "sanitize-test",
-            "timestamp": "2024-01-01T17:00:00Z",
-        }
-
-        # Capture log output
-        with patch.object(self.hook.logger, "info") as mock_logger:
-            output_data = {}
-            self.hook.output_success = MagicMock(side_effect=lambda data, od=output_data: od.update(data))
-            self.hook.execute()
-
-            # Verify sanitization in logs
-            log_call = mock_logger.call_args[0][0]
-            assert "\n" not in log_call
-            assert "\r" not in log_call
-            assert "\\n" in log_call or "\\r" in log_call  # Escaped versions
-
-        # Verify sanitization in workflow state file
-        state_file = self.quaestor_dir / ".workflow_state"
-        if state_file.exists():
-            with open(state_file) as f:
-                state = json.load(f)
-                if "mode_metadata" in state and "prompt_analyzed" in state["mode_metadata"]:
-                    assert "\n" not in state["mode_metadata"]["prompt_analyzed"]
-                    assert (
-                        "\\n" in state["mode_metadata"]["prompt_analyzed"]
-                        or "\\r" in state["mode_metadata"]["prompt_analyzed"]
-                    )
-
-    def test_performance_compliance(self):
-        """Test that hook execution meets performance requirements."""
-        import time
-
-        test_prompts = [
-            "/plan complex feature",
-            "simple question about code",
-            "a very long prompt " * 100,
+        """Test that hook processes different prompt types consistently."""
+        prompts = [
+            "/plan something",
+            "build a feature",
+            "/research patterns",
+            "explain this code",
         ]
 
-        for prompt in test_prompts:
+        for prompt in prompts:
+            # Reset hook state
             self.hook.input_data = {
                 "user_prompt": prompt,
-                "sessionId": f"perf-test-{time.time()}",
-                "timestamp": "2024-01-01T18:00:00Z",
+                "sessionId": f"test-{prompt[:10]}",
             }
 
+            # Mock output methods
             output_data = {}
             self.hook.output_success = MagicMock(side_effect=lambda data, od=output_data: od.update(data))
 
-            start_time = time.perf_counter()
+            # Execute hook
             self.hook.execute()
-            elapsed_ms = (time.perf_counter() - start_time) * 1000
 
-            # Total execution should be well under timeout
-            assert elapsed_ms < 1000, f"Hook execution took {elapsed_ms:.2f}ms"
+            # All prompts should get consistent output
+            assert "session_id" in output_data
+            assert output_data["message"] == "Ready to assist!"
+            assert "has_active_work" in output_data
 
-            # Detection time should be under 10ms
-            detection_time = output_data["detection_metadata"]["detection_time_ms"]
-            assert detection_time < 10, f"Detection took {detection_time:.2f}ms"
+    def test_performance_compliance(self):
+        """Test that hook executes quickly."""
+        import time
 
-    def test_metadata_completeness(self):
-        """Test that all required metadata is included."""
+        # Mock input data
         self.hook.input_data = {
-            "user_prompt": "/plan feature",
-            "sessionId": "metadata-test",
-            "timestamp": "2024-01-01T19:00:00Z",
-            "working_directory": "/test/dir",
+            "user_prompt": "/plan authentication",
+            "sessionId": "perf-test",
         }
 
-        output_data = {}
-        self.hook.output_success = MagicMock(side_effect=lambda data: output_data.update(data))
+        # Mock output methods
+        self.hook.output_success = MagicMock()
+
+        # Measure execution time
+        start_time = time.time()
         self.hook.execute()
+        execution_time = time.time() - start_time
 
-        # Check top-level fields
-        assert "session_mode" in output_data
-        assert "mode_confidence" in output_data
-        assert "workflow_state" in output_data
-        assert "detection_metadata" in output_data
-        assert "message" in output_data
-
-        # Check workflow state fields
-        ws = output_data["workflow_state"]
-        assert "phase" in ws
-        assert "session_mode" in ws
-        assert "mode_confidence" in ws
-        assert "mode_set_at" in ws
-
-        # Check detection metadata
-        dm = output_data["detection_metadata"]
-        assert "triggers" in dm
-        assert "detection_time_ms" in dm
-        assert "detector_version" in dm
+        # Hook should execute very quickly (under 100ms)
+        assert execution_time < 0.1

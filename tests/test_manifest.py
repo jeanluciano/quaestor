@@ -34,7 +34,6 @@ class TestCategorizeFile:
     def test_categorize_user_editable_files(self):
         """Test categorization of user-editable files."""
         assert categorize_file(Path("ARCHITECTURE.md"), "ARCHITECTURE.md") == FileType.USER_EDITABLE
-        assert categorize_file(Path("MEMORY.md"), "MEMORY.md") == FileType.USER_EDITABLE
         assert categorize_file(Path("MANIFEST.yaml"), "MANIFEST.yaml") == FileType.USER_EDITABLE
         assert categorize_file(Path(".quaestor/ARCHITECTURE.md"), ".quaestor/ARCHITECTURE.md") == FileType.USER_EDITABLE
 

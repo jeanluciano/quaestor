@@ -20,9 +20,9 @@ def test_folder_structure_creation(temp_project):
     SpecificationManager(temp_project)
 
     # Check folders exist
-    assert (temp_project / ".quaestor" / "specifications" / "draft").exists()
-    assert (temp_project / ".quaestor" / "specifications" / "active").exists()
-    assert (temp_project / ".quaestor" / "specifications" / "completed").exists()
+    assert (temp_project / ".quaestor" / "specs" / "draft").exists()
+    assert (temp_project / ".quaestor" / "specs" / "active").exists()
+    assert (temp_project / ".quaestor" / "specs" / "completed").exists()
 
 
 def test_spec_lifecycle_with_folders(temp_project):
@@ -39,7 +39,7 @@ def test_spec_lifecycle_with_folders(temp_project):
     )
 
     # Check it's in draft folder
-    draft_file = temp_project / ".quaestor" / "specifications" / "draft" / f"{spec.id}.yaml"
+    draft_file = temp_project / ".quaestor" / "specs" / "draft" / f"{spec.id}.yaml"
     assert draft_file.exists()
 
     # Activate the specification
@@ -47,7 +47,7 @@ def test_spec_lifecycle_with_folders(temp_project):
     assert success
 
     # Check it moved to active folder
-    active_file = temp_project / ".quaestor" / "specifications" / "active" / f"{spec.id}.yaml"
+    active_file = temp_project / ".quaestor" / "specs" / "active" / f"{spec.id}.yaml"
     assert active_file.exists()
     assert not draft_file.exists()
 
@@ -56,7 +56,7 @@ def test_spec_lifecycle_with_folders(temp_project):
     assert success
 
     # Check it moved to completed folder
-    completed_file = temp_project / ".quaestor" / "specifications" / "completed" / f"{spec.id}.yaml"
+    completed_file = temp_project / ".quaestor" / "specs" / "completed" / f"{spec.id}.yaml"
     assert completed_file.exists()
     assert not active_file.exists()
 
@@ -95,7 +95,7 @@ def test_active_limit_enforcement(temp_project):
 def test_migrate_flat_specifications(temp_project):
     """Test migration of flat specifications to folder structure."""
     # Create some specs in flat structure first
-    specs_dir = temp_project / ".quaestor" / "specifications"
+    specs_dir = temp_project / ".quaestor" / "specs"
     specs_dir.mkdir(parents=True, exist_ok=True)
 
     # Create a flat spec file
@@ -118,7 +118,7 @@ updated_at: "2024-01-01T00:00:00"
     assert success
 
     # Check spec moved to correct folder
-    active_file = specs_dir / "active" / "test-spec.yaml"
+    active_file = temp_project / ".quaestor" / "specs" / "active" / "test-spec.yaml"
     assert active_file.exists()
     assert not flat_spec_file.exists()
 

@@ -64,7 +64,6 @@ class QuaestorUpdater:
             ("templates/quaestor_claude.md", self.quaestor_dir / "QUAESTOR_CLAUDE.md"),
             ("templates/critical_rules.md", self.quaestor_dir / "CRITICAL_RULES.md"),
             ("templates/architecture.md", self.quaestor_dir / "ARCHITECTURE.md"),
-            ("templates/memory.md", self.quaestor_dir / "MEMORY.md"),
         ]
 
     def check_for_updates(self, show_diff: bool = True) -> dict[str, Any]:

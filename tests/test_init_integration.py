@@ -171,9 +171,9 @@ class TestInitIntegration:
         assert result1.exit_code == 0
 
         # Modify a file to simulate user changes
-        memory_file = temp_git_project / ".quaestor" / "MEMORY.md"
-        original_content = memory_file.read_text()
-        memory_file.write_text(original_content + "\n## User Notes\nCustom content")
+        arch_file = temp_git_project / ".quaestor" / "ARCHITECTURE.md"
+        original_content = arch_file.read_text()
+        arch_file.write_text(original_content + "\n## User Notes\nCustom content")
 
         # Second init should trigger update check
         with (
@@ -235,10 +235,10 @@ class TestInitIntegration:
 
         # Check for new hook structure
         assert "compliance_pre_edit.py" in settings_content
-        assert "research_workflow_tracker.py" in settings_content
-        assert "memory_tracker.py" in settings_content
-        # assert "todo_milestone_connector.py" in settings_content  # Removed milestone connector
         assert "spec_tracker.py" in settings_content
+        assert "spec_lifecycle.py" in settings_content
+        assert "session_context_loader.py" in settings_content
+        assert "user_prompt_submit.py" in settings_content
 
         # Should not have old paths
         assert "hooks/implementation_declaration.py" not in settings_content
@@ -317,4 +317,4 @@ minimum_test_coverage: 80
         # Check tracked files
         tracked_files = manifest["files"]
         assert ".quaestor/QUAESTOR_CLAUDE.md" in tracked_files
-        assert ".quaestor/MEMORY.md" in tracked_files
+        assert ".quaestor/ARCHITECTURE.md" in tracked_files
