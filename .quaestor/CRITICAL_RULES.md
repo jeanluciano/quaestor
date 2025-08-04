@@ -1,552 +1,291 @@
-<!-- META:document:critical-rules -->
-<!-- META:priority:MAXIMUM -->
-<!-- META:enforcement:MANDATORY -->
-<!-- QUAESTOR:version:1.0 -->
+# CRITICAL RULES - Python CLI Project
 
-# CRITICAL RULES - MUST BE FOLLOWED AT ALL COSTS
-
-<!-- SECTION:enforcement:validations:START -->
 ## ⚠️ AUTOMATIC ENFORCEMENT CHECKS
 
-<!-- DATA:pre-action-validations:START -->
 ```yaml
 before_any_action:
   mandatory_checks:
-    - id: "workflow_compliance"
-      check: "Is Research → Plan → Implement sequence being followed?"
-      on_violation: "STOP and say: 'I need to research first before implementing'"
-    
-    - id: "clarification_needed"
-      check: "Am I making assumptions instead of asking for clarification?"
-      on_violation: "STOP and ask for clarification"
-    
-    - id: "complexity_check"
-      check: "Is this becoming overly complex?"
-      triggers:
-        - more_than_100_lines_in_single_function
-        - nested_depth_exceeds_3
-        - circular_dependencies_detected
-      on_violation: "STOP and say: 'This seems complex. Let me step back and ask for guidance'"
-    
-    - id: "production_quality"
-      check: "Does this meet production standards?"
+    - id: "quality_standards"
+      check: "Are Python quality tools being used?"
       requires:
-        - error_handling
-        - input_validation
-        - test_coverage
-        - documentation
-      on_violation: "ADD missing requirements before proceeding"
+        - ruff_linting: "Run 'make lint' before commits"
+        - pytest_passing: "Run 'make test' for all changes"
+        - type_hints: "All functions must have type annotations"
+      on_violation: "STOP and run quality checks first"
     
-    - id: "specification_tracking_compliance"
-      check: "Am I tracking my work in the specification system?"
-      required_actions:
-        - check_active_specifications: ".quaestor/specs/*.yaml"
-        - declare_work_context: "Which specification am I working on?"
-        - update_progress: "Mark completed tasks and update progress"
-        - document_completion: "Update specification phase status"
-      on_violation: "STOP and say: 'Let me check the current specification and declare which task I'm working on'"
+    - id: "manager_pattern_compliance"
+      check: "Am I following the service/manager pattern?"
+      triggers:
+        - adding_business_logic_to_dataclasses
+        - creating_god_objects
+        - mixing_concerns_in_single_class
+      on_violation: "STOP and refactor to use appropriate managers"
     
-    - id: "hook_compliance"
-      check: "Have I received hook feedback that requires action?"
-      required_actions:
-        - check_hook_output: "Review all hook messages for mandatory directives"
-        - identify_agent_requirements: "Look for 'Use the [agent] agent to [action]' commands"
-        - execute_mandatory_actions: "Follow all hook recommendations immediately"
-        - acknowledge_compliance: "Confirm hook directives are being followed"
-      on_violation: "STOP and say: 'I must follow the hook recommendations before proceeding'"
+    - id: "file_operation_safety"
+      check: "Are file operations atomic and safe?"
+      requires:
+        - atomic_writes: "Use safe_write_text from utils"
+        - path_validation: "Validate all user-provided paths"
+        - backup_on_modify: "Create backups when modifying files"
+      on_violation: "Use proper file utilities from utils module"
+    
+    - id: "specification_system_usage"
+      check: "Am I properly using the specification system?"
+      required_for:
+        - new_features: "Create specification first"
+        - major_changes: "Document in specification"
+        - work_tracking: "Update spec status and progress"
+      on_violation: "STOP and create/update specification"
 ```
-<!-- DATA:pre-action-validations:END -->
-<!-- SECTION:enforcement:validations:END -->
 
-<!-- SECTION:rules:immutable:START -->
-## 🔴 IMMUTABLE RULES
+## 🔄 WORKFLOW PATTERN
 
-<!-- DATA:rule-definitions:START -->
+### Research → Plan → Implement
+
+**ALWAYS follow this pattern for non-trivial tasks:**
+
+1. **RESEARCH FIRST**
+   - Required Response: "Let me research the codebase first..."
+   - Use grep/read to understand existing patterns
+   - Check similar implementations
+   - Understand dependencies
+
+2. **PLAN BEFORE IMPLEMENTING**  
+   - Required Response: "Based on my research, here's my plan..."
+   - Present approach for approval
+   - Identify files to modify
+   - Consider edge cases
+
+3. **IMPLEMENT WITH QUALITY**
+   - Follow the approved plan
+   - Use appropriate subagents
+   - Test as you go
+   - Validate changes
+
+**EXCEPTIONS:**
+- Trivial changes (typos, simple fixes)
+- Explicit user override
+- Emergency debugging
+
+## 🔴 FRAMEWORK-SPECIFIC RULES
+
 ```yaml
-immutable_rules:
-  - rule_id: "NEVER_SKIP_RESEARCH"
+python_cli_rules:
+  - rule_id: "USE_TYPER_PATTERNS"
     priority: "CRITICAL"
-    description: "ALWAYS research before implementing"
+    description: "Follow established Typer CLI patterns"
     enforcement:
-      trigger: "Any implementation request"
-      required_response: "Let me research the codebase and create a plan before implementing."
-      validation: "Must show evidence of codebase exploration"
-    
-  - rule_id: "ALWAYS_USE_AGENTS"
-    priority: "CRITICAL"
-    description: "Use multiple agents for complex tasks"
-    enforcement:
-      trigger: "Task with multiple components"
-      required_response: "I'll spawn agents to tackle different aspects of this problem"
-      validation: "Must delegate to at least 2 agents for complex tasks"
-    
-  - rule_id: "ASK_DONT_ASSUME"
-    priority: "CRITICAL"
-    description: "Ask for clarification instead of making assumptions"
-    enforcement:
-      trigger: "Uncertainty detected"
-      required_response: "I need clarification on [specific aspect]"
-      validation: "No assumptions in implementation"
-    
-  - rule_id: "PRODUCTION_QUALITY_ONLY"
-    priority: "CRITICAL"
-    description: "All code must be production-ready"
-    enforcement:
-      required_elements:
-        - comprehensive_error_handling
-        - input_validation
-        - edge_case_handling
-        - proper_logging
-        - test_coverage
-      validation: "Code review checklist must pass"
-  
-  - rule_id: "MANDATORY_SPECIFICATION_TRACKING"
-    priority: "CRITICAL"
-    description: "ALL work must be tracked in the specification system"
-    enforcement:
-      before_starting:
-        - check: ".quaestor/specs/ for active specification"
-        - declare: "Working on: [Phase] > [Task] > [Subtask]"
-        - update: "task status to 'in_progress'"
-      during_work:
-        - track: "Files created and modified"
-        - note: "Key decisions and deviations"
-      after_completing:
-        - mark: "completed subtasks with '# COMPLETED'"
-        - update: "progress percentage in tasks.yaml"
-        - document: "progress in specification files"
-      validation: "Specification files must be updated with progress"
-  
-  - rule_id: "ALWAYS_FOLLOW_HOOKS"
-    priority: "CRITICAL"
-    description: "Hook feedback is MANDATORY and must be followed immediately"
-    enforcement:
-      trigger: "Any hook provides feedback or recommendations"
-      mandatory_actions:
-        - immediate_compliance: "Hook recommendations are REQUIREMENTS, not suggestions"
-        - agent_delegation: "When hook says 'Use the [agent] agent', this is MANDATORY"
-        - workflow_changes: "When hook suggests workflow changes, implement immediately"
-        - blocking_respect: "When hook blocks with exit code 2, STOP all work until resolved"
-      hook_types:
-        - specification_tracker: "Tracks specification progress and completion"
-        - compliance_pre_edit: "Validates compliance before file modifications"
-        - research_workflow_tracker: "Ensures Research → Plan → Implement workflow"
-        - memory_tracker: "Maintains project memory and documentation"
-      validation: "All hook directives must be acknowledged and acted upon"
-      consequences:
-        ignore_hook_blocking: "IMMEDIATE STOP - Hook blocking must be resolved"
-        ignore_agent_suggestion: "VIOLATION - Agent suggestions are mandatory"
-        ignore_workflow_guidance: "VIOLATION - Workflow guidance must be followed"
-```
-<!-- DATA:rule-definitions:END -->
-<!-- SECTION:rules:immutable:END -->
-
-<!-- SECTION:workflow:mandatory:START -->
-## 📋 MANDATORY WORKFLOW
-
-<!-- WORKFLOW:research-plan-implement:START -->
-```yaml
-mandatory_workflow:
-  name: "Research → Plan → Implement"
-  steps:
-    - step: 1
-      name: "RESEARCH"
-      required_actions:
-        - scan_codebase:
-            targets: ["existing patterns", "similar implementations", "dependencies"]
-            minimum_files_examined: 5
-        - analyze_patterns:
-            identify: ["naming conventions", "architectural patterns", "testing approach"]
-        - document_findings:
-            format: "structured_summary"
-      validation:
-        must_output: "Research findings summary"
-        must_identify: "At least 3 existing patterns"
-    
-    - step: 2
-      name: "PLAN"
-      required_actions:
-        - create_implementation_plan:
-            include: ["step-by-step approach", "files to modify", "test strategy"]
-        - identify_risks:
-            consider: ["breaking changes", "performance impact", "edge cases"]
-        - get_user_approval:
-            present: "Detailed plan for review"
-      validation:
-        must_output: "Structured implementation plan"
-        must_receive: "User approval before proceeding"
-    
-    - step: 3
-      name: "IMPLEMENT"
-      required_actions:
-        - follow_plan:
-            deviation_allowed: "Only with user approval"
-        - validate_continuously:
-            after_each: ["function implementation", "file modification"]
-        - maintain_quality:
-            ensure: ["tests pass", "no linting errors", "documentation updated"]
-      validation:
-        must_complete: "All planned items"
-        must_pass: "All quality checks"
-```
-<!-- WORKFLOW:research-plan-implement:END -->
-<!-- SECTION:workflow:mandatory:END -->
-
-<!-- SECTION:agent-delegation:mandatory:START -->
-## 🤖 MANDATORY AGENT USAGE
-
-<!-- DATA:agent-triggers:START -->
-```yaml
-must_use_agents_when:
-  - trigger: "Multiple files need analysis"
-    delegation:
-      - agent_1: "Analyze models and database schema"
-      - agent_2: "Analyze API endpoints and routes"
-      - agent_3: "Analyze tests and coverage"
-    
-  - trigger: "Complex refactoring required"
-    delegation:
-      - agent_1: "Identify all affected code"
-      - agent_2: "Create refactoring plan"
-      - agent_3: "Implement changes"
-      - agent_4: "Update tests"
-    
-  - trigger: "New feature implementation"
-    delegation:
-      - agent_1: "Research similar features"
-      - agent_2: "Design implementation"
-      - agent_3: "Write tests"
-      - agent_4: "Implement feature"
-    
-  - trigger: "Performance optimization"
-    delegation:
-      - agent_1: "Profile current performance"
-      - agent_2: "Identify bottlenecks"
-      - agent_3: "Research optimization strategies"
-      - agent_4: "Implement improvements"
-```
-<!-- DATA:agent-triggers:END -->
-<!-- SECTION:agent-delegation:mandatory:END -->
-
-<!-- SECTION:complexity-triggers:START -->
-## 🚨 COMPLEXITY TRIGGERS
-
-<!-- DATA:complexity-detection:START -->
-```yaml
-stop_and_ask_when:
-  code_complexity:
-    - function_lines: "> 50"
-      action: "STOP: Break into smaller functions"
-    - cyclomatic_complexity: "> 10"
-      action: "STOP: Simplify logic"
-    - nested_depth: "> 3"
-      action: "STOP: Refactor to reduce nesting"
-  
-  architectural_complexity:
-    - circular_dependencies: "detected"
-      action: "STOP: Ask for architectural guidance"
-    - god_objects: "detected"
-      action: "STOP: Discuss splitting responsibilities"
-    - unclear_patterns: "detected"
-      action: "STOP: Request pattern clarification"
-  
-  implementation_uncertainty:
-    - multiple_valid_approaches: true
-      action: "STOP: Present options and ask preference"
-    - performance_implications: "unclear"
-      action: "STOP: Discuss tradeoffs"
-    - security_concerns: "possible"
-      action: "STOP: Highlight concerns and get guidance"
-```
-<!-- DATA:complexity-detection:END -->
-<!-- SECTION:complexity-triggers:END -->
-
-<!-- SECTION:ultrathink:triggers:START -->
-## 🧠 ULTRATHINK TRIGGERS
-
-<!-- DATA:ultrathink-requirements:START -->
-```yaml
-must_ultrathink_for:
-  - architectural_decisions:
       examples:
-        - "Choosing between microservices vs monolith"
-        - "Designing API structure"
-        - "Database schema design"
-      required_output: "Comprehensive analysis with tradeoffs"
+        - use_app_command: "Use @app.command() decorator"
+        - rich_output: "Use console from rich for output"
+        - progress_bars: "Use rich.progress for long operations"
+      validation: "CLI commands must follow existing patterns"
   
-  - complex_algorithms:
-      examples:
-        - "Optimization problems"
-        - "Distributed system coordination"
-        - "Complex data transformations"
-      required_output: "Multiple approaches with complexity analysis"
+  - rule_id: "MANAGER_PATTERN_ONLY"
+    priority: "CRITICAL"
+    description: "Business logic in managers, not in dataclasses"
+    enforcement:
+      correct:
+        - "SpecificationManager handles all spec logic"
+        - "FolderManager handles all folder operations"
+        - "Dataclasses are pure data containers"
+      incorrect:
+        - "Methods on Specification dataclass doing business logic"
+        - "Complex operations in __post_init__"
+      validation: "Managers orchestrate, dataclasses hold data"
   
-  - security_implementations:
-      examples:
-        - "Authentication systems"
-        - "Data encryption strategies"
-        - "Access control design"
-      required_output: "Security analysis and threat modeling"
+  - rule_id: "YAML_FOR_PERSISTENCE"
+    priority: "HIGH"
+    description: "All data persistence uses YAML format"
+    enforcement:
+      always_use:
+        - "yaml_utils.load_yaml() for reading"
+        - "yaml_utils.save_yaml() for writing"
+        - "yaml.safe_load() never yaml.load()"
+      validation: "Consistent YAML serialization"
   
-  - performance_critical:
-      examples:
-        - "High-throughput systems"
-        - "Real-time processing"
-        - "Large-scale data handling"
-      required_output: "Performance analysis and benchmarks"
+  - rule_id: "ATOMIC_FILE_OPERATIONS"
+    priority: "CRITICAL"
+    description: "All file operations must be atomic"
+    enforcement:
+      required_pattern: |
+        # Always use utils for file operations
+        from quaestor.utils.file_utils import safe_write_text
+        success = safe_write_text(path, content, backup=True)
+      never_use:
+        - "Direct Path.write_text() without backup"
+        - "Open file without proper error handling"
+      validation: "File operations use utility functions"
 ```
-<!-- DATA:ultrathink-requirements:END -->
-<!-- SECTION:ultrathink:triggers:END -->
 
-<!-- SECTION:quality-gates:START -->
-## ✅ QUALITY GATES
+## 📋 QUALITY STANDARDS
 
-<!-- DATA:quality-requirements:START -->
 ```yaml
-before_considering_complete:
-  code_quality:
-    - tests_written: true
-    - tests_passing: true
-    - edge_cases_handled: true
-    - error_handling_complete: true
-    - input_validation_present: true
-    - documentation_updated: true
+python_quality_gates:
+  before_commit:
+    linting:
+      - command: "make lint"
+      - tool: "ruff"
+      - must_pass: true
+    
+    type_checking:
+      - all_functions_typed: true
+      - use_type_hints: "str, Path, dict[str, Any], etc."
+      - avoid_any: "Minimize use of Any type"
+    
+    testing:
+      - command: "make test"
+      - framework: "pytest"
+      - coverage_target: "80%"
+      - test_new_code: "All new features need tests"
   
-  review_checklist:
-    - follows_existing_patterns: true
-    - no_code_duplication: true
-    - proper_abstraction_level: true
-    - performance_acceptable: true
-    - security_reviewed: true
-    - maintainable_code: true
-  
-  final_validation:
-    - would_deploy_to_production: true
-    - colleague_could_understand: true
-    - handles_failure_gracefully: true
+  code_patterns:
+    imports:
+      - order: "standard library, third-party, local"
+      - style: "from x import y preferred"
+      - no_wildcards: "Never use from x import *"
+    
+    error_handling:
+      - pattern: "try-except with specific exceptions"
+      - user_feedback: "Use console.print with [red] for errors"
+      - logging: "Log errors for debugging"
+    
+    path_handling:
+      - always_use_pathlib: "Path objects, not strings"
+      - resolve_paths: "path.resolve() for absolute paths"
+      - validate_inputs: "Check paths exist and are accessible"
 ```
-<!-- DATA:quality-requirements:END -->
-<!-- SECTION:quality-gates:END -->
 
-<!-- SECTION:enforcement:consequences:START -->
-## ⛔ ENFORCEMENT CONSEQUENCES
+## 🚨 SECURITY REQUIREMENTS
 
-<!-- DATA:violation-handling:START -->
 ```yaml
-rule_violations:
-  immediate_actions:
-    - stop_current_work: true
-    - acknowledge_violation: "I violated [RULE_NAME]. Let me correct this."
-    - revert_to_compliance: true
+security_critical:
+  - rule_id: "VALIDATE_SUBPROCESS_INPUTS"
+    priority: "CRITICAL"
+    description: "Prevent command injection"
+    enforcement:
+      required: |
+        # Validate and sanitize all subprocess inputs
+        import shlex
+        
+        def validate_git_path(path: Path) -> Path:
+            safe_path = path.resolve()
+            if any(char in str(safe_path) for char in [';', '&', '|', '`', '$']):
+                raise ValueError("Invalid characters in path")
+            return safe_path
+      applies_to: ["git operations", "any subprocess calls"]
   
-  repeated_violations:
-    - escalation: "I'm repeatedly violating rules. I need to reset my approach."
-    - request_guidance: true
-    - document_lessons_learned: true
-  
-  critical_violations:
-    - full_stop: true
-    - detailed_explanation: "What rule was violated and why"
-    - wait_for_user_intervention: true
-  
-  hook_compliance_violations:
-    ignore_hook_blocking:
-      - severity: "CRITICAL"
-      - immediate_action: "FULL STOP"
-      - response: "I am ignoring mandatory hook feedback. This violates ALWAYS_FOLLOW_HOOKS rule."
-      - correction: "Acknowledge hook message and execute all required actions before proceeding"
-    
-    ignore_agent_delegation:
-      - severity: "HIGH"
-      - immediate_action: "STOP AND DELEGATE"
-      - response: "Hook recommended using [AGENT] agent but I'm proceeding without delegation."
-      - correction: "Immediately spawn the recommended agent and delegate the specified work"
-    
-    treat_hooks_as_optional:
-      - severity: "HIGH"
-      - immediate_action: "ACKNOWLEDGE MANDATORY NATURE"
-      - response: "I treated hook feedback as optional when it is MANDATORY."
-      - correction: "Re-read hook message and implement ALL recommendations as requirements"
+  - rule_id: "PREVENT_PATH_TRAVERSAL"
+    priority: "CRITICAL"
+    description: "Validate all file paths"
+    enforcement:
+      required: |
+        # Check for path traversal attempts
+        def validate_path(path: str) -> Path:
+            p = Path(path).resolve(strict=True)
+            
+            # Ensure within project boundaries
+            if not (p.is_relative_to(Path.cwd()) or p.is_relative_to(Path.home())):
+                raise ValueError("Path outside allowed directories")
+            
+            return p
+      validation: "All user-provided paths must be validated"
 ```
-<!-- DATA:violation-handling:END -->
-<!-- SECTION:enforcement:consequences:END -->
 
-<!-- SECTION:specification-tracking:START -->
-## 📋 SPECIFICATION TRACKING SYSTEM
+## 🤖 HOOK SYSTEM COMPLIANCE
 
-<!-- DATA:specification-requirements:START -->
 ```yaml
-specification_tracking_mandatory:
-  before_any_work:
-    step_1_check_specifications:
-      - action: "Read all .quaestor/specs/*.yaml files"
-      - action: "Find tasks.yaml files with status: 'in_progress'"
-      - action: "Identify which phase/task/subtask relates to this work"
-    
-    step_2_declare_context:
-      - format: "Working on: [Phase] > [Task] > [Subtask]"
-      - example: "Working on: Phase 1 > vector_store > Create VectorStore abstraction"
-      - required: "Must announce context before starting"
-    
-    step_3_update_status:
-      - if_new_task: "Update status to 'in_progress' in tasks.yaml"
-      - if_continuing: "Confirm current status and progress"
-      - required: "Task must be marked as active"
-
-  during_work:
-    track_progress:
-      - what: "Files created or modified"
-      - what: "Tests added or updated"
-      - what: "Key implementation decisions"
-      - what: "Any deviations from original plan"
-    
-    update_notes:
-      - when: "Completing each subtask"
-      - format: "Add timestamped notes to tasks.yaml"
-      - include: "Brief description of what was completed"
-
-  after_completing_work:
-    mandatory_updates:
-      update_specification_file:
-        - file: ".quaestor/specs/[spec-id].yaml"
-        - action: "Mark completed subtasks with '# COMPLETED'"
-        - action: "Update progress percentage"
-        - action: "Add timestamped notes"
-        - action: "Update status if all subtasks done"
-      
-      update_specification:
-        - file: ".quaestor/specifications/active/[spec-id].yaml"
-        - section: "phases:"
-        - action: "Update phase status to 'completed'"
-        - action: "Add completion notes"
-        - action: "Document implementation details"
-      
-      verification_checklist:
-        - check: "Specification task status updated"
-        - check: "Subtasks marked complete with '# COMPLETED'"
-        - check: "Progress percentage reflects reality"
-        - check: "Specification phase status updated"
-        - check: "Notes document key decisions"
-        - check: "Next steps are clear"
-
-enforcement_violations:
-  no_specification_declared:
-    - severity: "CRITICAL"
-    - response: "I must check .quaestor/specs/ and declare which specification I'm working on"
-    - correction: "Stop work, find relevant task, update status, announce context"
+hook_integration:
+  - rule_id: "RESPECT_HOOK_DECISIONS"
+    priority: "CRITICAL"
+    description: "Hooks provide mandatory guidance"
+    enforcement:
+      when_hook_suggests_agent: "MUST use that agent"
+      when_hook_blocks: "MUST resolve before continuing"
+      validation: "All hook feedback is mandatory"
   
-  work_without_tracking:
-    - severity: "HIGH"
-    - response: "I created files but didn't update specification tracking"
-    - correction: "Immediately update specification files with what was completed"
-  
-  incomplete_updates:
-    - severity: "HIGH"
-    - response: "I updated some but not all tracking files"
-    - correction: "Complete all required updates before continuing"
-
-specification_context_examples:
-  vector_store_work:
-    - context: "Working on: Phase 1 > vector_store > Create VectorStore abstraction"
-    - file: ".quaestor/specs/spec-auth-001.yaml"
-    - subtask: "Create VectorStore abstraction (ABC)"
-  
-  ingestion_work:
-    - context: "Working on: Phase 1 > ingestion_agent > Design orchestration system"
-    - file: ".quaestor/specs/spec-auth-001.yaml"
-    - subtask: "Design orchestration system for multiple data sources"
-  
-  new_work:
-    - context: "Working on: New task not in existing specifications"
-    - action: "Ask user if this should be added to current phase or create new task"
-
-hook_compliance_examples:
-  blocking_hook_response:
-    - hook_message: "Please run: Use the qa agent to test"
-    - correct_response: "I need to use the qa agent to test before proceeding. Let me spawn the qa agent now."
-    - violation_response: "Thanks for the feedback, I'll continue with implementation." # WRONG!
-  
-  agent_coordination_hook:
-    - hook_message: "Please run: Use the implementer agent to start working on approved specifications"
-    - correct_response: "The hook is directing me to use the implementer agent. I'll spawn the implementer agent immediately."
-    - violation_response: "I'll implement the specifications myself." # WRONG!
-  
-  workflow_guidance_hook:
-    - hook_message: "Please run: Use the planner agent to review and approve draft specifications"
-    - correct_response: "The hook requires me to use the planner agent for specification review. I'm spawning the planner agent now."
-    - violation_response: "I'll review the specifications quickly and continue." # WRONG!
-  
-  spec_compliance_hook:
-    - hook_message: "SPEC TRACKING: Commits must be associated with a specification!"
-    - correct_response: "I must create a specification before proceeding. I'll use the planner agent to create one."
-    - violation_response: "I'll add a specification later." # WRONG!
+  - rule_id: "MODE_AWARE_BEHAVIOR"
+    priority: "HIGH"
+    description: "Respect Framework vs Drive mode"
+    enforcement:
+      framework_mode: "Hooks actively guide development"
+      drive_mode: "User has full control"
+      validation: "Check mode before applying rules"
 ```
-<!-- DATA:specification-requirements:END -->
 
-<!-- DATA:compliance-reminders:START -->
+## ✅ TESTING REQUIREMENTS
+
 ```yaml
-compliance_reminders:
-  before_implementation:
-    - "🎯 Have I declared which specification I'm working on?"
-    - "📋 Is the task status set to 'in_progress'?"
-    - "🔍 Do I understand the acceptance criteria?"
+pytest_standards:
+  test_organization:
+    - unit_tests: "tests/unit/ - Test individual functions"
+    - integration_tests: "tests/integration/ - Test component interactions"
+    - e2e_tests: "tests/e2e/ - Test full workflows"
+    - performance_tests: "tests/performance/ - Benchmark critical paths"
   
-  during_implementation:
-    - "📝 Am I tracking what files I'm creating?"
-    - "⚠️ Have I noted any deviations from the plan?"
-    - "🧪 Am I adding appropriate tests?"
-  
-  after_implementation:
-    - "✅ Did I mark completed subtasks with '# COMPLETED'?"
-    - "📊 Did I update the progress percentage?"
-    - "📖 Did I update the specification phases?"
-    - "🎯 Did I document what's next?"
-  
-  hook_compliance_checks:
-    - "🎣 Did any hooks provide feedback that I must follow?"
-    - "🤖 Did a hook recommend using a specific agent? (MANDATORY)"
-    - "🚫 Did a hook block my action? (Must resolve before proceeding)"
-    - "📋 Did a hook suggest workflow changes? (Must implement immediately)"
-    - "⚠️ Am I treating hook recommendations as optional? (VIOLATION)"
-
-quick_reference:
-  check_active_specs: "grep -r 'status: in_progress' .quaestor/specs/"
-  mark_subtask_complete: "Edit tasks.yaml: '- Create ABC' → '- Create ABC # COMPLETED'"
-  update_progress: "Change 'progress: 25%' to reflect actual completion"
-  phase_update_template: |
-    phases:
-      phase_1:
-        status: completed
-        completed_date: YYYY-MM-DD
-        implementation_notes: "Details of what was implemented"
-        files_created: [list]
-        tests_added: [description]
+  test_patterns:
+    naming: "test_*.py files, test_* functions"
+    structure: |
+      def test_specification_creation():
+          # Arrange
+          manager = SpecificationManager(tmp_path)
+          
+          # Act
+          spec = manager.create_specification(...)
+          
+          # Assert
+          assert spec.status == SpecStatus.DRAFT
+    
+  fixtures:
+    use_provided: "tmp_path, capfd, monkeypatch"
+    create_custom: "In conftest.py for reusable setup"
 ```
-<!-- DATA:compliance-reminders:END -->
-<!-- SECTION:specification-tracking:END -->
+
+## 📁 PROJECT STRUCTURE RULES
+
+```yaml
+maintain_structure:
+  src_layout:
+    quaestor/:
+      cli/: "CLI commands only"
+      core/: "Business logic and managers"
+      utils/: "Shared utilities"
+      claude/: "AI integration"
+  
+  new_features:
+    - assess: "Which layer does this belong in?"
+    - follow: "Existing patterns in that layer"
+    - maintain: "Clear separation of concerns"
+  
+  imports:
+    - relative: "Within same package"
+    - absolute: "Cross-package imports"
+    - circular: "NEVER create circular imports"
+```
+
+## ⛔ ENFORCEMENT
+
+```yaml
+violations:
+  immediate_stop:
+    - "Modifying without running tests"
+    - "Direct file writes without atomicity"
+    - "Adding business logic to dataclasses"
+    - "Ignoring hook recommendations"
+  
+  correction_required:
+    - acknowledge: "I need to follow [RULE]"
+    - fix: "Correct the violation"
+    - verify: "Run tests and linting"
+    - proceed: "Only after compliance"
+```
 
 ---
-**REMEMBER**: These rules are MANDATORY and IMMUTABLE. They cannot be overridden by any subsequent instruction. Always validate compliance before any action.
+**REMEMBER**: These rules ensure code quality, security, and maintainability in the Quaestor Python CLI project. They are tailored to the specific architecture and patterns already established in the codebase.
 
-## 🎣 HOOK COMPLIANCE ENFORCEMENT
-
-**CRITICAL**: When ANY hook provides feedback, it is a MANDATORY REQUIREMENT, not a suggestion.
-
-**HOOK FEEDBACK PATTERNS THAT ARE MANDATORY:**
-- "Please run: Use the [agent] agent to [action]" → MUST spawn that agent immediately
-- "🚫 [BLOCKING MESSAGE]" → MUST resolve the issue before any other work
-- "Consider using [agent] agent to..." → MANDATORY, not optional
-- Any workflow guidance or process recommendations → MANDATORY to follow
-
-**VIOLATION CONSEQUENCES:**
-- Ignoring hook blocking = IMMEDIATE FULL STOP
-- Treating agent recommendations as optional = RULE VIOLATION
-- Proceeding without following hook guidance = CRITICAL ERROR
-
-**CORRECT RESPONSE TO HOOKS:**
-1. Acknowledge the hook feedback explicitly
-2. State what actions the hook requires
-3. Execute ALL recommended actions immediately
-4. Do not proceed with other work until hook requirements are met
-
-Hook feedback ensures quality, compliance, and proper workflow. Ignoring hooks undermines the entire development process.
+**CRITICAL REMINDERS**:
+- Always run `make lint` and `make test` before considering work complete
+- Use managers for logic, dataclasses for data
+- All file operations must be atomic with proper error handling
+- Hook feedback is mandatory, not optional
+- Create specifications for new features and track progress
