@@ -2,7 +2,7 @@
 """Specification progress tracking and validation hook.
 
 This hook monitors specification progress and ensures work is properly
-tracked in specifications and MEMORY.md.
+tracked in specifications.
 """
 
 import sys
@@ -32,10 +32,25 @@ class SpecTrackerHook(BaseHook):
         work_done = self.get_recent_work()
 
         # Check for specification updates
-        spec_updates = self.check_spec_updates() if work_done else {"spec_files": [], "memory_updated": False}
+        spec_updates = self.check_spec_updates() if work_done else {"spec_files": []}
 
         # Validate tracking
         issues = self.validate_tracking(work_done, spec_updates) if work_done else []
+
+        # Check for completed specs in active folder
+        completed_active_specs = self._check_for_completed_active_specs()
+        if completed_active_specs:
+            spec_names = ", ".join([s.stem for s in completed_active_specs])
+            message = f"""✅ Completed specifications detected in active folder!
+
+Specs ready for archiving: {spec_names}
+
+These specifications appear to be complete. To archive them:
+Run: /review --archive-spec {completed_active_specs[0].stem}
+
+This will move them to the completed/ folder and free up active slots."""
+            self.output_suggestion(message)
+            return
 
         # Generate suggestions based on issues
         if issues:
@@ -95,6 +110,54 @@ class SpecTrackerHook(BaseHook):
         except Exception as e:
             return {"status": "error", "message": f"Error checking specs: {e}"}
 
+    def _check_for_completed_active_specs(self) -> list[Path]:
+        """Check for completed specifications in the active folder."""
+        active_dir = self.project_root / ".quaestor" / "specs" / "active"
+        completed_specs = []
+        
+        if not active_dir.exists():
+            return completed_specs
+            
+        for spec_file in active_dir.glob("*.yaml"):
+            try:
+                with open(spec_file) as f:
+                    content = f.read()
+                    
+                # Check for explicit completion status
+                has_completed_status = "status: completed" in content or "status: 'completed'" in content
+                
+                # Only consider it complete if explicitly marked as completed
+                if has_completed_status:
+                    completed_specs.append(spec_file)
+                    continue
+                    
+                # Additional check: if status is 'implemented' and has high completion
+                has_implemented_status = "status: implemented" in content or "status: 'implemented'" in content
+                
+                if has_implemented_status:
+                    # Check for task completion markers
+                    has_all_done = "- [x]" in content and "- [ ]" not in content
+                    
+                    # Check acceptance criteria completion
+                    import yaml
+                    try:
+                        spec_data = yaml.safe_load(content)
+                        acceptance_criteria = spec_data.get("acceptance_criteria", [])
+                        test_scenarios = spec_data.get("test_scenarios", [])
+                        
+                        # If we have acceptance criteria or test scenarios, check if they're marked complete
+                        if acceptance_criteria or test_scenarios:
+                            # Look for completion indicators in the content
+                            if "✓" in content or "✅" in content or has_all_done:
+                                completed_specs.append(spec_file)
+                    except:
+                        pass
+                        
+            except Exception:
+                continue
+                
+        return completed_specs
+
     def get_recent_work(self, hours: int = 6) -> dict[str, Any] | None:
         """Detect recent implementation work."""
         now = datetime.now()
@@ -153,33 +216,26 @@ class SpecTrackerHook(BaseHook):
         return work_detected if has_work else None
 
     def check_spec_updates(self, hours: int = 6) -> dict[str, Any]:
-        """Check for recent specification and memory updates."""
+        """Check for recent specification updates."""
         now = datetime.now()
         recent_cutoff = now - timedelta(hours=hours)
 
-        specs_dir = self.project_root / ".quaestor" / "specifications"
-        memory_file = self.project_root / ".quaestor" / "MEMORY.md"
+        specs_dir = self.project_root / ".quaestor" / "specs"
 
-        updates = {"spec_files": [], "memory_updated": False, "timestamp": now.isoformat()}
+        updates = {"spec_files": [], "timestamp": now.isoformat()}
 
-        # Check specification files
+        # Check specification files in all folders (draft, active, completed)
         if specs_dir.exists():
-            for f in specs_dir.glob("*.yaml"):
-                try:
-                    mtime = datetime.fromtimestamp(f.stat().st_mtime)
-                    if mtime > recent_cutoff:
-                        updates["spec_files"].append(str(f.relative_to(self.project_root)))
-                except OSError:
-                    continue
-
-        # Check memory file
-        try:
-            if memory_file.exists():
-                mtime = datetime.fromtimestamp(memory_file.stat().st_mtime)
-                if mtime > recent_cutoff:
-                    updates["memory_updated"] = True
-        except OSError:
-            pass
+            for folder in ["draft", "active", "completed"]:
+                folder_path = specs_dir / folder
+                if folder_path.exists():
+                    for f in folder_path.glob("*.yaml"):
+                        try:
+                            mtime = datetime.fromtimestamp(f.stat().st_mtime)
+                            if mtime > recent_cutoff:
+                                updates["spec_files"].append(str(f.relative_to(self.project_root)))
+                        except OSError:
+                            continue
 
         return updates
 
@@ -202,16 +258,18 @@ class SpecTrackerHook(BaseHook):
                 }
             )
 
-        # Check memory updates for any significant work
-        if (has_implementation or has_tests) and not spec_updates["memory_updated"]:
-            issues.append(
-                {
-                    "type": "missing_memory_update",
-                    "severity": "medium",
-                    "message": "Work completed but MEMORY.md not updated",
-                    "fix": "Update MEMORY.md with progress notes",
-                }
-            )
+        # Check for active specifications
+        if has_implementation:
+            active_specs = list((self.project_root / ".quaestor" / "specs" / "active").glob("*.yaml"))
+            if not active_specs:
+                issues.append(
+                    {
+                        "type": "no_active_spec",
+                        "severity": "high",
+                        "message": "Implementation work detected but no active specifications",
+                        "fix": "Move a specification to active/ folder or create a new spec",
+                    }
+                )
 
         return issues
 

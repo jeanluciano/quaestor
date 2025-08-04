@@ -2,7 +2,7 @@
 """Specification progress tracking and validation hook.
 
 This hook monitors specification progress and ensures work is properly
-tracked in specifications and MEMORY.md.
+tracked in specifications.
 """
 
 import sys
@@ -32,7 +32,7 @@ class SpecTrackerHook(BaseHook):
         work_done = self.get_recent_work()
 
         # Check for specification updates
-        spec_updates = self.check_spec_updates() if work_done else {"spec_files": [], "memory_updated": False}
+        spec_updates = self.check_spec_updates() if work_done else {"spec_files": []}
 
         # Validate tracking
         issues = self.validate_tracking(work_done, spec_updates) if work_done else []
@@ -153,33 +153,26 @@ class SpecTrackerHook(BaseHook):
         return work_detected if has_work else None
 
     def check_spec_updates(self, hours: int = 6) -> dict[str, Any]:
-        """Check for recent specification and memory updates."""
+        """Check for recent specification updates."""
         now = datetime.now()
         recent_cutoff = now - timedelta(hours=hours)
 
-        specs_dir = self.project_root / ".quaestor" / "specifications"
-        memory_file = self.project_root / ".quaestor" / "MEMORY.md"
+        specs_dir = self.project_root / ".quaestor" / "specs"
 
-        updates = {"spec_files": [], "memory_updated": False, "timestamp": now.isoformat()}
+        updates = {"spec_files": [], "timestamp": now.isoformat()}
 
-        # Check specification files
+        # Check specification files in all folders (draft, active, completed)
         if specs_dir.exists():
-            for f in specs_dir.glob("*.yaml"):
-                try:
-                    mtime = datetime.fromtimestamp(f.stat().st_mtime)
-                    if mtime > recent_cutoff:
-                        updates["spec_files"].append(str(f.relative_to(self.project_root)))
-                except OSError:
-                    continue
-
-        # Check memory file
-        try:
-            if memory_file.exists():
-                mtime = datetime.fromtimestamp(memory_file.stat().st_mtime)
-                if mtime > recent_cutoff:
-                    updates["memory_updated"] = True
-        except OSError:
-            pass
+            for folder in ["draft", "active", "completed"]:
+                folder_path = specs_dir / folder
+                if folder_path.exists():
+                    for f in folder_path.glob("*.yaml"):
+                        try:
+                            mtime = datetime.fromtimestamp(f.stat().st_mtime)
+                            if mtime > recent_cutoff:
+                                updates["spec_files"].append(str(f.relative_to(self.project_root)))
+                        except OSError:
+                            continue
 
         return updates
 
@@ -189,7 +182,6 @@ class SpecTrackerHook(BaseHook):
 
         # Determine work type
         has_implementation = bool(work_done["src_files"])
-        has_tests = bool(work_done["test_files"])
 
         # Check spec updates for implementation work
         if has_implementation and not spec_updates["spec_files"]:
@@ -202,16 +194,18 @@ class SpecTrackerHook(BaseHook):
                 }
             )
 
-        # Check memory updates for any significant work
-        if (has_implementation or has_tests) and not spec_updates["memory_updated"]:
-            issues.append(
-                {
-                    "type": "missing_memory_update",
-                    "severity": "medium",
-                    "message": "Work completed but MEMORY.md not updated",
-                    "fix": "Update MEMORY.md with progress notes",
-                }
-            )
+        # Check for active specifications
+        if has_implementation:
+            active_specs = list((self.project_root / ".quaestor" / "specs" / "active").glob("*.yaml"))
+            if not active_specs:
+                issues.append(
+                    {
+                        "type": "no_active_spec",
+                        "severity": "high",
+                        "message": "Implementation work detected but no active specifications",
+                        "fix": "Move a specification to active/ folder or create a new spec",
+                    }
+                )
 
         return issues
 
