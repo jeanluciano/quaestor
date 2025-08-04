@@ -1,0 +1,237 @@
+id: spec-agents-001
+title: Modernize Quaestor Agent System for Specification-Driven Development
+type: refactor
+status: active
+priority: high
+description: |
+  Comprehensively update and improve the Quaestor agent system to align with 
+  specification-driven development, remove deprecated MEMORY.md references, 
+  enhance agent synergy, eliminate low-value agents, and strengthen high-value 
+  agents with better integration. Focus on creating a cohesive agent ecosystem 
+  that works seamlessly with the draft/ → active/ → completed/ spec workflow.
+  
+rationale: |
+  Current issues with the agent system:
+  1. MEMORY.md references throughout agents (6 references in spec-manager alone)
+  2. Agents lack integration with the new specification system
+  3. Some agents provide overlapping or minimal value
+  4. No clear agent orchestration for spec-driven workflow
+  5. Missing synergy between research → plan → implement phases
+  6. Agent coordination is ad-hoc rather than systematic
+  
+  The new specification-driven development system replaces MEMORY.md with 
+  structured specs in draft/, active/, and completed/ folders. Agents should 
+  work together to support this workflow rather than operating in isolation.
+
+use_cases:
+  - Research agent discovers patterns and creates research artifacts for draft specs
+  - Planner agent converts research into actionable specifications with contracts
+  - Implementer agent executes active specifications with clear acceptance criteria
+  - Spec-manager coordinates the entire spec lifecycle
+  - QA agent validates specifications against acceptance criteria
+  - Agents automatically coordinate handoffs between workflow phases
+  - Specification status is automatically tracked through agent interactions
+
+contract:
+  inputs:
+    current_agents:
+      - researcher: Codebase exploration and pattern analysis
+      - planner: Specification design and strategic planning
+      - architect: System design and architecture
+      - implementer: Feature development and code writing
+      - spec-manager: Specification lifecycle management (has MEMORY.md refs)
+      - workflow-coordinator: Workflow orchestration
+      - qa: Testing and quality assurance
+      - reviewer: Code review specialist
+      - debugger: Expert debugging
+      - refactorer: Code improvement
+      - explorer: Deep codebase exploration
+      - security: Security analysis
+      - compliance-enforcer: Rule enforcement
+    specification_system:
+      - draft/: New specifications being planned
+      - active/: Specifications being implemented (max 3)
+      - completed/: Finished and archived specifications
+    workflow_pattern:
+      - research → plan → implement phases
+      - Automatic spec transitions
+      - Agent handoff coordination
+      
+  outputs:
+    modernized_agents:
+      - Updated agent prompts with spec-system integration
+      - Removed all MEMORY.md references
+      - Enhanced agent coordination protocols
+      - Streamlined agent selection based on value assessment
+    enhanced_integration:
+      - Agents automatically work with spec folders
+      - Clear handoff protocols between agents
+      - Automatic spec status updates based on agent work
+      - Improved agent selection for workflow phases
+    consolidated_agents:
+      - Merged or removed low-value overlapping agents
+      - Enhanced high-value agents with better capabilities
+      - Clear agent responsibilities and boundaries
+      
+  behavior:
+    - All agents understand and work with the spec system structure
+    - Agents automatically update spec status when appropriate
+    - Research agent creates artifacts that feed into planning
+    - Planner agent creates specs in draft/ folder with proper structure
+    - Implementer agent moves specs from draft/ to active/ when starting work
+    - Spec-manager coordinates lifecycle and handles completed/ archiving
+    - Agent handoffs preserve context and maintain workflow continuity
+    - Workflow-coordinator ensures proper phase transitions
+    
+  constraints:
+    - Maintain backward compatibility with existing agent invocation
+    - No breaking changes to agent activation patterns
+    - Preserve existing agent expertise and capabilities
+    - Use existing spec system structure without modifications
+    - Remove complexity rather than adding it where possible
+
+acceptance_criteria:
+  - All MEMORY.md references removed from agent definitions
+  - All agents updated to work with spec system (draft/active/completed folders)
+  - Agent coordination protocols defined and implemented
+  - Low-value agents identified and consolidated/removed
+  - High-value agents enhanced with spec-system integration
+  - Clear handoff protocols between research → plan → implement phases
+  - Automatic spec status tracking through agent interactions
+  - Documentation updated to reflect new agent capabilities
+  - All agent updates tested with actual workflow scenarios
+
+test_scenarios:
+  - name: Full Workflow Integration Test
+    description: Verify complete research → plan → implement workflow
+    given: A new feature request requiring full workflow
+    when: Agents are invoked in sequence (researcher → planner → implementer)
+    then: |
+      - Research agent creates research artifacts
+      - Planner creates spec in draft/ folder
+      - Implementer moves spec to active/ and implements
+      - Spec-manager archives to completed/ when done
+      - Each handoff preserves context and maintains continuity
+    
+  - name: MEMORY.md References Removal Test
+    description: Verify no MEMORY.md references remain
+    given: All agent definition files
+    when: Searching for "MEMORY.md" references
+    then: No matches found in any agent file
+    
+  - name: Agent Value Assessment Test
+    description: Verify low-value agents are consolidated/removed
+    given: Current agent list with overlapping responsibilities
+    when: Agent responsibilities are analyzed
+    then: |
+      - Clear distinct responsibilities for each remaining agent
+      - No significant capability gaps
+      - Reduced complexity in agent selection
+    
+  - name: Spec System Integration Test
+    description: Verify agents work seamlessly with spec folders
+    given: Agents working on specifications
+    when: Agent operations modify or reference specs
+    then: |
+      - Agents read from correct spec folders (draft/active/completed)
+      - Agents update spec status appropriately
+      - No references to deprecated MEMORY.md system
+
+dependencies:
+  - Existing specification system (.quaestor/specs/)
+  - Current agent definitions in src/quaestor/claude/agents/
+  - Workflow coordination system
+  - Agent invocation mechanisms
+
+phases:
+  phase_1:
+    name: "Analysis and Planning"
+    tasks:
+      - Audit all current agents for value assessment
+      - Map agent responsibilities and identify overlaps
+      - Document MEMORY.md references throughout agents
+      - Plan agent consolidation strategy
+      - Design spec-system integration patterns
+      
+  phase_2:
+    name: "Remove MEMORY.md References"
+    tasks:
+      - Remove all MEMORY.md references from spec-manager
+      - Update agent context patterns to use spec system
+      - Replace MEMORY.md workflows with spec-based workflows
+      - Update agent handoff protocols
+      
+  phase_3:
+    name: "Agent Value Optimization"
+    tasks:
+      - Consolidate or remove low-value agents (explorer/compliance-enforcer)
+      - Enhance high-value agents with better spec integration
+      - Strengthen core workflow agents (researcher/planner/implementer)
+      - Clarify agent boundaries and responsibilities
+      
+  phase_4:
+    name: "Spec System Integration"
+    tasks:
+      - Update all agents to work with draft/active/completed folders
+      - Implement automatic spec status tracking
+      - Enhance agent coordination for spec lifecycle
+      - Create agent handoff protocols for workflow phases
+      
+  phase_5:
+    name: "Testing and Validation"
+    tasks:
+      - Test full workflow integration
+      - Validate agent coordination
+      - Verify spec system integration
+      - Update documentation
+      - Conduct acceptance testing
+
+branch: feat/spec-agents-001-modernize-system
+created_at: 2025-08-04T12:00:00Z
+updated_at: 2025-08-04T12:00:00Z
+metadata:
+  estimated_effort: "3-4 days"
+  risk_level: "medium"
+  breaking_changes: false
+  
+implementation_strategy:
+  approach: "Incremental modernization with backward compatibility"
+  rollback_plan: "Git-based rollback of agent changes"
+  testing_approach: "Phase-by-phase validation with real workflow scenarios"
+  deployment_plan: "Update agents in dependency order (foundation → coordination → specialized)"
+
+success_metrics:
+  - Zero MEMORY.md references in agent system
+  - 100% spec system integration across core workflow agents
+  - Reduced agent count through consolidation (target: 8-10 core agents)
+  - Improved workflow completion time through better coordination
+  - Higher specification completion rate through automated transitions
+
+risk_assessment:
+  high_risks:
+    - Agent behavior changes affecting existing workflows
+    - Context loss during agent consolidation
+  medium_risks:
+    - Backward compatibility issues with agent invocation
+    - Integration complexity with spec system
+  low_risks:
+    - Documentation update delays
+    - Testing coverage gaps
+    
+mitigation_strategies:
+  - Maintain comprehensive test suite throughout changes
+  - Implement changes incrementally with validation points
+  - Preserve agent expertise during consolidation
+  - Use feature flags for gradual rollout if needed
+  
+agent_consolidation_plan:
+  remove_candidates:
+    - compliance-enforcer: Functionality merged into spec-manager
+    - explorer: Capabilities merged into researcher
+  merge_candidates:
+    - debugger + reviewer: Create comprehensive code-quality agent
+  enhance_targets:
+    - researcher: Better spec artifact creation
+    - planner: Enhanced spec contract design
+    - implementer: Automatic spec status management
+    - spec-manager: Complete lifecycle orchestration
