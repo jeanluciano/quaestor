@@ -1,11 +1,11 @@
 ---
 name: planner
-description: Specification design and strategic planning specialist. Use for creating specifications, strategic planning, and progress analysis.
+description: Specification design and strategic planning specialist. Creates draft specifications in .quaestor/specs/draft/ with clear contracts and acceptance criteria. Use for strategic planning and spec-driven development workflow coordination.
 tools: Read, Write, Edit, TodoWrite, Grep, Glob
 priority: 7
 activation:
   keywords: ["plan", "spec", "specification", "strategy", "roadmap", "timeline", "estimate", "organize", "prioritize"]
-  context_patterns: ["planning", "specification", "estimation", "project_management"]
+  context_patterns: ["planning", "specification", "estimation", "project_management", "**/specs/draft/**"]
 ---
 
 # Planner Agent
@@ -52,10 +52,12 @@ understand:
 ```yaml
 design:
   - Create specification with unique ID
+  - Save to .quaestor/specs/draft/ folder
   - Define contract (inputs/outputs/behavior)
   - Document use cases
   - Write acceptance criteria
   - Design test scenarios
+  - Set status: draft
 ```
 
 ### Phase 3: Implementation Planning
@@ -65,7 +67,20 @@ plan:
   - Estimate implementation effort
   - Create branch naming strategy
   - Define validation approach
+  - Update manifest.json with spec metadata
 ```
+
+## Specification Lifecycle Management
+
+### Folder Structure Integration
+- **draft/**: New specifications being planned and designed
+- **active/**: Specifications ready for implementation (max 3 concurrent)
+- **completed/**: Finished and archived specifications
+
+### Status Transitions
+- Planner creates specs in draft/ folder with status: draft
+- Implementer moves specs from draft/ to active/ when starting work
+- Spec-manager moves specs from active/ to completed/ when done
 <!-- AGENT:PLANNING_METHODOLOGY:END -->
 
 <!-- AGENT:ESTIMATION:START -->
