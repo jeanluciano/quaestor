@@ -12,18 +12,18 @@
       }
     ],
     "PreToolUse": [
-    ],
-    "PostToolUse": [
       {
-        "matcher": "Read|Grep",
+        "matcher": "Task",
         "hooks": [
           {
             "type": "command",
-            "command": "{python_path} {hooks_dir}/research_workflow_tracker.py",
-            "description": "Track research phase and guide workflow transitions"
+            "command": "{python_path} {hooks_dir}/spec_lifecycle.py",
+            "description": "Auto-activate specs when implementation starts"
           }
         ]
-      },
+      }
+    ],
+    "PostToolUse": [
       {
         "matcher": "Write|Edit|MultiEdit",
         "hooks": [

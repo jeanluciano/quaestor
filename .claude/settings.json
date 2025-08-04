@@ -12,18 +12,18 @@
       }
     ],
     "PreToolUse": [
-    ],
-    "PostToolUse": [
       {
-        "matcher": "Read|Grep",
+        "matcher": "Task",
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/research_workflow_tracker.py",
-            "description": "Track research phase and guide workflow transitions"
+            "command": "/Users/jeanluciano/Dev/jeanluciano/quaestor/.venv/bin/python3 /Users/jeanluciano/Dev/jeanluciano/quaestor/.claude/hooks/spec_lifecycle.py",
+            "description": "Auto-activate specs when implementation starts"
           }
         ]
-      },
+      }
+    ],
+    "PostToolUse": [
       {
         "matcher": "Write|Edit|MultiEdit",
         "hooks": [
