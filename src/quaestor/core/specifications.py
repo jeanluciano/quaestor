@@ -111,7 +111,7 @@ class SpecificationManager:
             project_dir: Root directory of the project
         """
         self.project_dir = project_dir
-        self.specs_dir = project_dir / ".quaestor" / "specifications"
+        self.specs_dir = project_dir / ".quaestor" / "specs"
         self.manifest_path = self.specs_dir / "manifest.yaml"
         self._manifest: SpecManifest | None = None
 

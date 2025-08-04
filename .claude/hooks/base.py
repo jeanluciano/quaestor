@@ -326,6 +326,10 @@ class WorkflowState:
         self.project_root = Path(project_root)
         self.state_file = self.project_root / ".quaestor" / ".workflow_state"
         self.state = self._load_state()
+        
+        # Create the file if it doesn't exist
+        if not self.state_file.exists():
+            self._save_state()
 
     def _load_state(self) -> dict[str, Any]:
         """Load workflow state from file."""

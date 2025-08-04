@@ -49,16 +49,9 @@ class ResearchWorkflowTrackerHook(BaseHook):
         files_examined = len(state.get("research_files", []))
 
         # Track silently in drive mode
-        if self.is_drive_mode():
-            self.silent_track(
-                "research_activity",
-                {
-                    "phase": state["phase"],
-                    "files_examined": files_examined,
-                    "file_path": file_path,
-                    "research_files": state.get("research_files", []),
-                },
-            )
+        if not self.has_active_work():
+            # In drive mode, just track without intrusive messaging
+            pass
 
         # Generate mode-appropriate phase transition suggestion
         should_block, message = self.generate_mode_aware_suggestion(state, files_examined)
@@ -82,7 +75,7 @@ class ResearchWorkflowTrackerHook(BaseHook):
     def track_research_activity(self, workflow_state: WorkflowState, file_path: str | None):
         """Track research activity in workflow state."""
         # In framework mode, track phases
-        if self.is_framework_mode():
+        if self.has_active_work():
             if workflow_state.state["phase"] == "idle":
                 workflow_state.set_phase("researching", "🔍 Started research phase")
 
@@ -97,7 +90,7 @@ class ResearchWorkflowTrackerHook(BaseHook):
 
     def generate_mode_aware_suggestion(self, state: dict[str, Any], files_examined: int) -> tuple[bool, str]:
         """Generate mode-appropriate phase transition suggestions."""
-        if self.is_drive_mode():
+        if not self.has_active_work():
             return self._generate_drive_mode_suggestion(state, files_examined)
         else:
             return self._generate_framework_mode_suggestion(state, files_examined)
@@ -111,7 +104,7 @@ class ResearchWorkflowTrackerHook(BaseHook):
             # Gentle hint for extensive research
             return (
                 False,
-                self.format_drive_hint(f"Extensive research detected ({files_examined} files)", show_command=True),
+                f"📊 Extensive research detected ({files_examined} files examined)",
             )
 
         # No message needed in drive mode
@@ -225,7 +218,7 @@ Remember to maintain the patterns you discovered during research.
         if phase == "researching":
             remaining = max(0, 3 - files_examined)
             message = f"Research in progress. Examined {files_examined} files."
-            if remaining > 0 and self.is_framework_mode():
+            if remaining > 0 and self.has_active_work():
                 message += f" Need to examine {remaining} more files."
         elif phase == "planning":
             message = "Planning phase active. Create your implementation plan."
