@@ -37,9 +37,16 @@ Execute production-quality features with auto-detected language standards, intel
 
 ## Execution
 
-**Use the implementer agent to build features according to the specification.**
+**FIRST, use the workflow-coordinator agent to validate workflow state and coordinate the implementation phase.**
 
-For complex implementations:
+The workflow-coordinator will:
+- Verify planning phase has been completed (specification exists)
+- Check for active specifications in .quaestor/specs/active/
+- Ensure prerequisites are met (research done, plan approved)
+- Coordinate the transition from planning to implementation
+
+Then follow the coordinator's guidance to:
+- **Use the implementer agent** to build features according to the specification
 - **Use the architect agent** for system design decisions (complexity > 0.7)
 - **Use the security agent** when implementing auth, encryption, or access control
 - **Use the qa agent** to create tests alongside implementation

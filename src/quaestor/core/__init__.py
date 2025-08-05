@@ -15,7 +15,6 @@ from quaestor.core.project_metadata import (
     extract_version_from_content,
 )
 from quaestor.core.template_engine import get_project_data, process_template
-from quaestor.core.validation_engine import RuleEngine
 
 __all__ = [
     "QuaestorConfig",
@@ -27,5 +26,4 @@ __all__ = [
     "extract_version_from_content",
     "get_project_data",
     "process_template",
-    "RuleEngine",
 ]

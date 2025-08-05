@@ -6,27 +6,12 @@
           {
             "type": "command",
             "command": "{python_path} {hooks_dir}/rule_injection.py",
-            "description": "Enforce rules based on request context"
-          },
-          {
-            "type": "command",
-            "command": "{python_path} {hooks_dir}/user_prompt_submit.py",
-            "description": "Detect mode and provide appropriate feedback"
+            "description": "Inject general rules and context"
           }
         ]
       }
     ],
     "PreToolUse": [
-      {
-        "matcher": "Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "{python_path} {hooks_dir}/compliance_pre_edit.py",
-            "description": "Enforce Quaestor compliance rules before edits"
-          }
-        ]
-      },
       {
         "matcher": "Task",
         "hooks": [
@@ -61,7 +46,7 @@
           {
             "type": "command",
             "command": "{python_path} {hooks_dir}/session_context_loader.py",
-            "description": "Load project context and suggest agents at session start"
+            "description": "Load active specifications into session context"
           }
         ]
       }

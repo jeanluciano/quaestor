@@ -60,6 +60,14 @@ Sequential Workflow:
 
 ## Workflow: Validate → Fix → Commit → Review → Ship
 
+**FIRST, use the workflow-coordinator agent to validate workflow state before review.**
+
+The workflow-coordinator will:
+- Verify implementation phase has been completed
+- Check that all tasks in the specification are done
+- Ensure tests are passing before review
+- Coordinate the transition to review/completion phase
+
 ### Phase 1: Comprehensive Validation 🔍
 **Multi-Domain Quality Checks:**
 ```yaml

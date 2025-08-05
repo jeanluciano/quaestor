@@ -86,7 +86,7 @@ class TestInitIntegration:
         assert hooks_dir.exists()
         # Check for individual hook files instead of subdirectories
         assert (hooks_dir / "base.py").exists()
-        assert (hooks_dir / "compliance_pre_edit.py").exists()
+        assert (hooks_dir / "rule_injection.py").exists()
 
     def test_team_mode_init_basic(self, runner, temp_git_project):
         """Test basic team mode initialization."""
@@ -234,11 +234,11 @@ class TestInitIntegration:
         settings_content = settings_file.read_text()
 
         # Check for new hook structure
-        assert "compliance_pre_edit.py" in settings_content
+        assert "rule_injection.py" in settings_content
         assert "spec_tracker.py" in settings_content
         assert "spec_lifecycle.py" in settings_content
         assert "session_context_loader.py" in settings_content
-        assert "user_prompt_submit.py" in settings_content
+        assert "session_context_loader.py" in settings_content
 
         # Should not have old paths
         assert "hooks/implementation_declaration.py" not in settings_content

@@ -175,7 +175,7 @@ class TestQuaestorUpdater:
 
         # Create some files
         (temp_dir / "CLAUDE.md").write_text("Original CLAUDE content")
-        (quaestor_dir / "MEMORY.md").write_text("Original MEMORY content")
+        (quaestor_dir / "CONTEXT.md").write_text("Original CONTEXT content")
 
         updater = QuaestorUpdater(temp_dir, manifest)
 
@@ -240,7 +240,7 @@ class TestQuaestorUpdater:
                 content_map = {
                     "claude_context.md": "<!-- QUAESTOR:version:1.0 -->\nCLAUDE_CONTEXT content",
                     "architecture.md": "<!-- QUAESTOR:version:1.0 -->\nARCHITECTURE content",
-                    "memory.md": "<!-- QUAESTOR:version:1.0 -->\nMEMORY content",
+                    "context.md": "<!-- QUAESTOR:version:1.0 -->\nCONTEXT content",
                 }
                 return content_map.get(resource, "default content")
 
@@ -297,8 +297,8 @@ class TestUpdateIntegration:
                     return "<!-- QUAESTOR:version:1.1 -->\nUpdated CONTEXT content"
                 elif resource == "architecture.md":
                     return "<!-- QUAESTOR:version:1.1 -->\nUpdated architecture"
-                elif resource == "memory.md":
-                    return "<!-- QUAESTOR:version:1.1 -->\nUpdated memory"
+                elif resource == "rules.md":
+                    return "<!-- QUAESTOR:version:1.1 -->\nUpdated rules"
                 elif resource == "include.md":
                     return "<!-- QUAESTOR CONFIG START -->\nUpdated include\n<!-- QUAESTOR CONFIG END -->"
                 else:

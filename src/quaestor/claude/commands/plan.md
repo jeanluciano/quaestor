@@ -73,7 +73,16 @@ Strategic Analysis:
 ## Execution: Analyze → Plan → Track → Archive
 
 ### Agent-Driven Execution
-This command orchestrates multiple specialized agents based on the mode:
+
+**FIRST, use the workflow-coordinator agent to validate workflow state and coordinate the planning phase.**
+
+The workflow-coordinator will:
+- Verify research phase has been completed (minimum files examined)
+- Check for existing specifications and their status
+- Ensure we're ready to move to planning phase
+- Coordinate the transition from research to planning
+
+Then based on the mode:
 - **Default mode**: Use the planner agent to create specifications
 - **--analyze mode**: Use architect, researcher, and security agents for analysis
 - **--architecture mode**: Use the architect agent with security and implementer support

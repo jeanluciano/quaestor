@@ -38,7 +38,7 @@ The system is built around these key components:
 
 @pytest.fixture(scope="session")
 def sample_memory_manifest() -> str:
-    """Sample MEMORY.md content in manifest format."""
+    """Sample CONTEXT.md content in manifest format."""
     return """# Project Memory & Progress Tracking
 
 ## Current Status

@@ -143,8 +143,8 @@ class QuaestorUpdater:
         Returns:
             Version string or None if not detectable
         """
-        # Try to read version from CLAUDE_CONTEXT.md which should have version info
-        version_file = self.quaestor_dir / "CLAUDE_CONTEXT.md"
+        # Try to read version from CONTEXT.md which should have version info
+        version_file = self.quaestor_dir / "CONTEXT.md"
         if version_file.exists():
             try:
                 content = version_file.read_text()

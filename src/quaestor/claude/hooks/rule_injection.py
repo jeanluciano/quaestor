@@ -81,27 +81,16 @@ class RuleInjectionHook(BaseHook):
                     lines.append(f"    Triggers: {', '.join(rule.triggers)}")
             lines.append("")
 
-        # Mode-specific reminder
-        if self.has_active_work():
-            lines.extend(
-                [
-                    "📋 ACTIVE WORK MODE:",
-                    "  • Follow Research → Plan → Implement workflow",
-                    "  • Update specification progress",
-                    "  • Ask for clarification on any ambiguity",
-                    "",
-                ]
-            )
-        else:
-            lines.extend(
-                [
-                    "🚗 MINIMAL INTERVENTION MODE:",
-                    "  • Safety boundaries still apply",
-                    "  • Ask for clarification on vague requests",
-                    "  • No destructive operations without confirmation",
-                    "",
-                ]
-            )
+        # General reminders (mode detection removed)
+        lines.extend(
+            [
+                "📋 WORKFLOW REMINDER:",
+                "  • Use Quaestor commands (/research, /plan, /impl) for structured workflow",
+                "  • Commands automatically enforce Research → Plan → Implement sequence",
+                "  • Direct edits allowed outside of commands",
+                "",
+            ]
+        )
 
         # Quick reference
         lines.extend(
@@ -167,15 +156,14 @@ class RuleInjectionHook(BaseHook):
             "user_request": user_prompt,
             "request_type": request_type,
             "complexity_score": complexity_score,
-            "workflow_phase": self._get_workflow_phase(),
-            "mode": "framework" if self.has_active_work() else "drive",
+            "workflow_phase": "idle",  # Mode detection removed
+            "mode": "drive",  # Always in drive mode now
         }
 
     def _get_workflow_phase(self) -> str:
         """Get current workflow phase from state."""
-        # With new mode detection, we don't track phases anymore
-        # Just return based on mode
-        return "active" if self.is_framework_mode() else "idle"
+        # Mode detection removed - workflow managed by agents
+        return "idle"
 
 
 def main():

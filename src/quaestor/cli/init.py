@@ -19,7 +19,6 @@ from quaestor.constants import (
 from quaestor.core.project_metadata import FileManifest, FileType, extract_version_from_content
 from quaestor.core.template_engine import get_project_data, process_template
 from quaestor.core.updater import QuaestorUpdater, print_update_result
-from quaestor.core.validation_engine import RuleEngine
 from quaestor.utils import update_gitignore
 
 console = Console()
@@ -269,15 +268,6 @@ def _merge_claude_md(target_dir: Path, use_rule_engine: bool = False) -> bool:
     claude_path = target_dir / "CLAUDE.md"
 
     try:
-        if use_rule_engine:
-            # Generate using RuleEngine for team mode
-            console.print("  [blue]→[/blue] Analyzing project for team mode rules...")
-            rule_engine = RuleEngine(target_dir)
-            claude_content = rule_engine.generate_claude_md(mode="team")
-            claude_path.write_text(claude_content)
-            console.print("  [blue]✓[/blue] Created context-aware CLAUDE.md for team mode")
-            return True
-
         # Get the include template
         try:
             include_content = pkg_resources.read_text("quaestor.claude.templates", "include.md")
@@ -287,9 +277,9 @@ def _merge_claude_md(target_dir: Path, use_rule_engine: bool = False) -> bool:
 > [!IMPORTANT]
 > **Claude:** This project uses Quaestor for AI context management.
 > Please read the following files in order:
-> 1. `.quaestor/CLAUDE_CONTEXT.md` - Complete AI development context and rules
+> 1. `.quaestor/CONTEXT.md` - Complete AI development context and rules
 > 2. `.quaestor/ARCHITECTURE.md` - System design and structure (if available)
-> 3. `.quaestor/MEMORY.md` - Implementation patterns and decisions (if available)
+> 3. `.quaestor/specs/active/` - Active specifications and implementation details
 <!-- QUAESTOR CONFIG END -->
 
 <!-- Your custom content below -->
@@ -450,12 +440,10 @@ def _init_common(target_dir: Path, force: bool, mode: str):
     hooks_copied = 0
     available_hooks = [
         "base.py",
-        "compliance_pre_edit.py",
         "rule_injection.py",
         "session_context_loader.py",
         "spec_tracker.py",
         "spec_lifecycle.py",
-        "user_prompt_submit.py",
     ]
 
     for hook_file in available_hooks:

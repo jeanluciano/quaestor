@@ -205,18 +205,6 @@ class BaseHook:
         print(json.dumps(output))
         sys.exit(0)
 
-    def is_drive_mode(self) -> bool:
-        """Check if session is in drive mode."""
-        from quaestor.claude.hooks.mode_detector import is_drive_mode
-
-        return is_drive_mode()
-
-    def is_framework_mode(self) -> bool:
-        """Check if session is in framework mode."""
-        from quaestor.claude.hooks.mode_detector import is_framework_mode
-
-        return is_framework_mode()
-
     def run_with_timeout(self, func: Callable, timeout_seconds: int = 60) -> Any:
         """Run a function with timeout protection."""
         try:
@@ -249,18 +237,6 @@ class BaseHook:
         except Exception as e:
             self.logger.error(f"Unexpected error in {self.hook_name}: {e}", exc_info=True)
             self.output_error(f"Unexpected error: {e}", blocking=False)
-
-    # Context-aware utility for checking active work
-
-    def has_active_work(self) -> bool:
-        """Check if there's active work in progress.
-
-        Returns:
-            True if in framework mode (executing a command)
-        """
-        from quaestor.claude.hooks.mode_detector import has_active_work
-
-        return has_active_work()
 
 
 # Utility functions for common operations

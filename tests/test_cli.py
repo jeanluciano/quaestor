@@ -51,7 +51,7 @@ class TestInitCommand:
             assert (temp_dir / "CLAUDE.md").exists()
             assert (temp_dir / ".quaestor" / "CONTEXT.md").exists()
             assert (temp_dir / ".quaestor" / "ARCHITECTURE.md").exists()
-            # MEMORY.md was removed in favor of active specifications
+            # Check that CONTEXT.md was created in favor of active specifications
             # Commands are installed to .claude/commands in team mode
             assert "Installing to .claude/commands (project commands)" in result.output
 
@@ -238,7 +238,7 @@ class TestInitCommand:
             assert result.exit_code == 0
             assert "Setting up documentation files" in result.output
             assert "Created ARCHITECTURE.md" in result.output
-            # MEMORY.md was removed
+            # Check that CONTEXT.md was created
 
             # Check that template files were processed and files created
             arch_content = (temp_dir / ".quaestor" / "ARCHITECTURE.md").read_text()

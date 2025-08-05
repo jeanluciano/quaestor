@@ -50,12 +50,18 @@ Agent Selection:
 
 ## Execution
 
-**Use the researcher agent to perform codebase exploration and pattern analysis.**
+**FIRST, use the workflow-coordinator agent to validate workflow state and coordinate the research phase.**
 
-For complex queries, spawn multiple agents:
+The workflow-coordinator will:
+- Check if we're already in a research phase
+- Initialize workflow state if needed
+- Ensure proper phase progression
+- Delegate to the appropriate research agents
+
+Then follow the coordinator's guidance to:
+- **Use the researcher agent** for codebase exploration and pattern analysis
 - **Use the architect agent** when analyzing system design or dependencies
 - **Use the security agent** when searching for security patterns or vulnerabilities
-- **Use the researcher agent** for general pattern finding and code exploration
 
 ## Workflow: Analyze → Explore → Synthesize → Report
 

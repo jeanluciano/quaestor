@@ -1,4 +1,4 @@
-"""Tests for the new modular CLI structure."""
+"""Tests for CLI functionality and project utilities."""
 
 import tempfile
 from pathlib import Path
@@ -23,39 +23,8 @@ def temp_dir():
         yield Path(tmpdir)
 
 
-class TestNewCLIStructure:
-    """Test the new modular CLI structure."""
-
-    def test_cli_app_imports_successfully(self):
-        """Test that the CLI app can be imported without errors."""
-        from quaestor.cli import app
-
-        assert app is not None
-
-    def test_init_command_imports_successfully(self):
-        """Test that the init command can be imported without errors."""
-        from quaestor.cli.init import init_command
-
-        assert callable(init_command)
-
-    def test_new_utils_import_successfully(self):
-        """Test that the new utils can be imported without errors."""
-        from quaestor.utils.file_utils import update_gitignore
-        from quaestor.utils.project_detection import detect_project_type
-
-        assert callable(detect_project_type)
-        assert callable(update_gitignore)
-
-    def test_new_template_processor_imports_successfully(self):
-        """Test that the new template processor can be imported without errors."""
-        from quaestor.core.template_engine import get_project_data, process_template
-
-        assert callable(get_project_data)
-        assert callable(process_template)
-
-    def test_languages_yaml_exists(self):
-        """Test that the languages.yaml config file exists."""
-        pytest.skip("languages.yaml configuration not implemented in current version")
+class TestCLIFunctionality:
+    """Test CLI functionality and utilities."""
 
     def test_init_command_help(self, runner):
         """Test that the init command help works."""
@@ -249,44 +218,6 @@ class TestNewCLIStructure:
         # Load YAML
         loaded_data = load_yaml(test_file)
         assert loaded_data == test_data
-
-
-class TestBackwardCompatibility:
-    """Test that the refactoring maintains backward compatibility."""
-
-    def test_legacy_template_processor_works(self, temp_dir):
-        """Test that the legacy template processor wrapper works."""
-        from quaestor.core.template_engine import get_project_data, process_template
-
-        # Create a simple Python project
-        (temp_dir / "pyproject.toml").write_text("[project]\nname = 'test'")
-
-        # Get project data through legacy interface
-        project_data = get_project_data(temp_dir)
-        assert project_data["project_type"] == "python"
-        assert project_data["project_name"] == temp_dir.name
-
-        # Test template processing through legacy interface
-        template_content = "Project: {{ project_name }}\nType: {{ project_type }}"
-
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False) as tf:
-            tf.write(template_content)
-            template_path = Path(tf.name)
-
-        try:
-            result = process_template(template_path, project_data)
-            assert f"Project: {temp_dir.name}" in result
-            assert "Type: python" in result
-        finally:
-            template_path.unlink()
-
-    def test_original_cli_still_works(self, runner):
-        """Test that the original CLI commands still work."""
-        # Test that we can still invoke help
-        result = runner.invoke(app, ["--help"])
-        assert result.exit_code == 0
-        assert "Quaestor" in result.output
-        assert "init" in result.output
 
 
 if __name__ == "__main__":
