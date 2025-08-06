@@ -39,7 +39,7 @@ def normalize_datetime(value: Any) -> str:
             datetime.fromisoformat(test_value)
             return value  # Return original string if valid
         except ValueError as e:
-            raise ValueError(f"Invalid datetime string format '{value}': {e}")
+            raise ValueError(f"Invalid datetime string format '{value}': {e}") from e
 
     # Handle other datetime-like objects
     if hasattr(value, "isoformat"):

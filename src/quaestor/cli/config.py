@@ -120,10 +120,10 @@ def show_config(
 
     except ConfigurationError as e:
         console.print(f"[red]Configuration error: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
     except Exception as e:
         console.print(f"[red]Error: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
 
 def _display_config_table(config: dict, show_layers: bool = False):
@@ -219,10 +219,10 @@ def get_config_value(
 
     except ConfigurationError as e:
         console.print(f"[red]Configuration error: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
     except Exception as e:
         console.print(f"[red]Error: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
 
 @config_app.command("set")
@@ -265,10 +265,10 @@ def set_config_value(
 
     except ConfigurationError as e:
         console.print(f"[red]Configuration error: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
     except Exception as e:
         console.print(f"[red]Error: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
 
 @config_app.command("reset")
@@ -334,10 +334,10 @@ def reset_config(
 
     except ConfigurationError as e:
         console.print(f"[red]Configuration error: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
     except Exception as e:
         console.print(f"[red]Error: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
 
 @config_app.command("validate")
@@ -375,10 +375,10 @@ def validate_config(
 
     except ConfigurationError as e:
         console.print(f"[red]Configuration error: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
     except Exception as e:
         console.print(f"[red]Error: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
 
 @config_app.command("init")
@@ -424,10 +424,10 @@ def init_config(
 
     except ConfigurationError as e:
         console.print(f"[red]Configuration error: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
     except Exception as e:
         console.print(f"[red]Error: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
 
 if __name__ == "__main__":

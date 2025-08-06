@@ -125,19 +125,18 @@ class TestConfigManager:
 
         config_manager = ConfigManager(self.project_root)
 
-        with patch.object(Path, "exists", return_value=True):
-            with patch("quaestor.utils.yaml_utils.load_yaml") as mock_load:
-                # Return different data based on file path
-                def load_yaml_side_effect(path, default=None):
-                    if "languages.yaml" in str(path) and ".quaestor" in str(path):
-                        return project_override_data
-                    elif "languages.yaml" in str(path):
-                        return core_languages_data
-                    return default or {}
+        with patch.object(Path, "exists", return_value=True), patch("quaestor.utils.yaml_utils.load_yaml") as mock_load:
+            # Return different data based on file path
+            def load_yaml_side_effect(path, default=None):
+                if "languages.yaml" in str(path) and ".quaestor" in str(path):
+                    return project_override_data
+                elif "languages.yaml" in str(path):
+                    return core_languages_data
+                return default or {}
 
-                mock_load.side_effect = load_yaml_side_effect
+            mock_load.side_effect = load_yaml_side_effect
 
-                python_config = config_manager.get_language_config("python")
+            python_config = config_manager.get_language_config("python")
 
         assert python_config is not None
         assert python_config.primary_language == "python"  # From base

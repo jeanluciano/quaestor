@@ -168,7 +168,7 @@ class ConfigManager:
             try:
                 self._main_config = QuaestorMainConfig(**merged_config)
             except ValidationError as e:
-                raise ConfigurationError(f"Invalid main configuration: {e}")
+                raise ConfigurationError(f"Invalid main configuration: {e}") from e
 
         return self._main_config
 
@@ -402,7 +402,7 @@ class ConfigManager:
             }
 
         except ConfigurationError as e:
-            raise ConfigurationError(f"Failed to get effective configuration: {e}")
+            raise ConfigurationError(f"Failed to get effective configuration: {e}") from e
 
     def save_project_config(self, config_updates: dict[str, Any], config_type: str = "main") -> bool:
         """Save configuration updates to project files.

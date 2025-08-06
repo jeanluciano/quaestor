@@ -531,7 +531,7 @@ class SpecificationManager:
                 _ = value.isoformat()  # Test serialization
                 return value
             except (AttributeError, ValueError) as e:
-                raise ValueError(f"Corrupt datetime object: {e}")
+                raise ValueError(f"Corrupt datetime object: {e}") from e
 
         if isinstance(value, str):
             if not value.strip():
@@ -567,8 +567,8 @@ class SpecificationManager:
                 if "Invalid isoformat string" in str(e):
                     raise ValueError(
                         f"Invalid ISO datetime format '{value}'. Expected format: YYYY-MM-DDTHH:MM:SS[.ffffff][+HH:MM]"
-                    )
-                raise ValueError(f"Invalid datetime format '{value}': {e}")
+                    ) from e
+                raise ValueError(f"Invalid datetime format '{value}': {e}") from e
 
         # Handle other datetime-like objects with validation
         if hasattr(value, "isoformat") and callable(value.isoformat):
@@ -576,17 +576,17 @@ class SpecificationManager:
                 iso_str = value.isoformat()
                 return self._parse_datetime(iso_str)  # Recursive validation
             except Exception as e:
-                raise ValueError(f"Failed to parse datetime-like object: {e}")
+                raise ValueError(f"Failed to parse datetime-like object: {e}") from e
 
         # Handle numeric timestamps (seconds since epoch)
-        if isinstance(value, (int, float)):
+        if isinstance(value, int | float):
             try:
                 # Validate timestamp is reasonable (between 1970 and ~2100)
                 if value < 0 or value > 4133980800:  # Year ~2100
                     raise ValueError(f"Timestamp {value} outside reasonable range")
                 return datetime.fromtimestamp(value)
             except (ValueError, OSError) as e:
-                raise ValueError(f"Invalid timestamp {value}: {e}")
+                raise ValueError(f"Invalid timestamp {value}: {e}") from e
 
         raise TypeError(f"Cannot parse datetime from unsupported type {type(value).__name__}: {value}")
 
@@ -616,7 +616,7 @@ class SpecificationManager:
             _ = normalize_datetime(spec.created_at)
             _ = normalize_datetime(spec.updated_at)
         except Exception as e:
-            raise ValueError(f"DateTime normalization failed: {e}")
+            raise ValueError(f"DateTime normalization failed: {e}") from e
 
     def _validate_manifest_datetime_consistency(self, manifest: SpecManifest) -> None:
         """Validate manifest datetime fields for consistency.
@@ -646,7 +646,7 @@ class SpecificationManager:
             _ = normalize_datetime(manifest.created_at)
             _ = normalize_datetime(manifest.updated_at)
         except Exception as e:
-            raise ValueError(f"Manifest datetime normalization failed: {e}")
+            raise ValueError(f"Manifest datetime normalization failed: {e}") from e
 
     def _save_spec_file(self, spec: Specification) -> bool:
         """Save a specification to its file in the appropriate folder.
@@ -763,18 +763,18 @@ class SpecificationManager:
         # Validate enum values are actually valid for our enums
         try:
             SpecType(data["type"])
-        except (ValueError, KeyError):
-            raise ValueError(f"Invalid spec type: {data.get('type')}")
+        except (ValueError, KeyError) as e:
+            raise ValueError(f"Invalid spec type: {data.get('type')}") from e
 
         try:
             SpecStatus(data["status"])
-        except (ValueError, KeyError):
-            raise ValueError(f"Invalid spec status: {data.get('status')}")
+        except (ValueError, KeyError) as e:
+            raise ValueError(f"Invalid spec status: {data.get('status')}") from e
 
         try:
             SpecPriority(data["priority"])
-        except (ValueError, KeyError):
-            raise ValueError(f"Invalid spec priority: {data.get('priority')}")
+        except (ValueError, KeyError) as e:
+            raise ValueError(f"Invalid spec priority: {data.get('priority')}") from e
 
     @validate_spec_operation
     def _deserialize_spec(self, data: dict[str, Any]) -> Specification:
@@ -793,10 +793,10 @@ class SpecificationManager:
         # Validate spec data first
         self._validate_spec_data(data)
 
-        # Extract validated enum values
-        spec_type = SpecType(data["type"])
-        spec_status = SpecStatus(data["status"])
-        spec_priority = SpecPriority(data["priority"])
+        # Validate enum values
+        SpecType(data["type"])
+        SpecStatus(data["status"])
+        SpecPriority(data["priority"])
         contract_data = data.get("contract", {})
         contract = Contract(
             inputs=contract_data.get("inputs", {}),
