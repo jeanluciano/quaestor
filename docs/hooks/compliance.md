@@ -94,9 +94,9 @@ No compliance issues found!
 4. **PR Creation**: Before pull request
 
 ### With Other Hooks
-- Works with spec tracker for requirement validation
-- Integrates with memory tracker for decision recording
-- Coordinates with workflow tracker for phase-appropriate checks
+- Works with specification tracking for requirement validation
+- Integrates with session context loader for active spec awareness
+- Coordinates with research workflow tracker for phase-appropriate checks
 
 ## Configuration
 

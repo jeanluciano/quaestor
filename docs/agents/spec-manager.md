@@ -43,11 +43,11 @@ Use the Spec Manager when:
 ## Integration Points
 
 The Spec Manager integrates with:
-- `/spec` command for creation
-- `spec_tracker.py` hook for progress tracking
+- `/plan` command for creation
+- `todo_spec_progress.py` hook for automatic progress tracking
 - TODO system for task management
 - Git for PR creation
-- Memory system for documentation
+- Session context for specification visibility
 
 ## Commands and Usage
 

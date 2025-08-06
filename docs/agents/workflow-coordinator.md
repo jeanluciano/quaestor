@@ -29,7 +29,7 @@ The Workflow Coordinator:
 - Risk mitigation planning
 - Success criteria definition
 
-**Agents Involved**: Planner, Architect, Spec Manager
+**Agents Involved**: Planner, Architect
 
 ### 3. Implementation Phase
 **Purpose**: Executing the plan
@@ -65,10 +65,10 @@ The Workflow Coordinator:
 
 ## Integration Points
 
-- **Hooks**: `research_workflow_tracker.py`, `todo_agent_coordinator.py`
+- **Hooks**: `research_workflow_tracker.py`, `session_context_loader.py`
 - **Commands**: Works with all slash commands
-- **Specifications**: Tracks progress through specification system
-- **Specifications**: Coordinates with spec lifecycle
+- **Specifications**: Tracks progress through TODO-based specification system
+- **TODO Integration**: Monitors TODO completion for phase transitions
 
 ## Best Practices
 

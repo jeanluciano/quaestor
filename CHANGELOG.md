@@ -5,7 +5,75 @@ All notable changes to Quaestor will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.6.0] - 2025-08-04 (Unreleased)
+## [0.6.1] - 2025-08-06
+
+### Removed
+- **Command Processor and Configuration System** - Simplified architecture
+  - Removed `CommandProcessor`, `CommandConfig`, and `CommandLoader` classes
+  - Removed `configure` CLI command entirely
+  - Commands are now copied directly without modification
+  - No more command-config.yaml or command overrides
+  - Aligns with "ergonomic zen library" philosophy
+
+- **Redundant Hooks** - Streamlined hook system
+  - Removed `rule_injection.py` hook (redundant with CONTEXT.md loading via CLAUDE.md)
+  - Removed `RuleEnforcer` module (only used by removed hook)
+  - Removed `spec_lifecycle.py` and `spec_tracker.py` hooks
+  - Replaced with simpler `todo_spec_progress.py` for automatic progress tracking
+
+### Added
+- **TODO-Based Specification Progress** - Automatic progress tracking
+  - New `todo_spec_progress.py` hook monitors TODO completions
+  - Automatically updates specification YAML when criteria are satisfied
+  - No manual intervention required for progress updates
+  - Natural integration with existing TODO workflow
+
+- **Enhanced Session Context** - Better context injection
+  - Session context loader now supports PostCompact events
+  - Visual progress bars and tree structure display
+  - Git context improvements with branch alignment checking
+  - Performance tracking with <50ms target
+
+- **SPECFLOW.md Template** - New specification workflow documentation
+  - Added to TEMPLATE_FILES for initialization
+  - Provides comprehensive specification lifecycle guidance
+
+### Changed
+- **Simplified Command System**
+  - `/plan` command: Removed --link, --activate, --archive flags
+  - `/research` command: Removed all flags (--type, --depth, --format, --scope, --impact)
+  - Research now automatically determines appropriate depth and scope
+
+- **Hook System Philosophy**
+  - Hooks presented as helpful automation tools, not mandatory enforcers
+  - Removed hook compliance enforcement from CONTEXT.md
+  - Updated all references to emphasize optional assistance
+
+- **Documentation Updates**
+  - Completely rewrote spec-tracking.md for TODO-based system
+  - Updated all agent and hook references
+  - Removed references to non-existent features
+  - Cleaned up mkdocs.yml navigation
+
+### Improved
+- **Cleaner Architecture** - Significant complexity reduction
+  - Removed 3,655 lines of code while adding 2,663 lines
+  - 70 files changed with net reduction of ~1,000 lines
+  - Simpler, more maintainable codebase
+
+- **Better Test Coverage** - All tests passing
+  - Updated tests to remove configuration expectations
+  - Fixed e2e tests for new architecture
+  - 113 tests passing, 5 skipped
+
+### Migration Notes
+This is a minor version bump with breaking changes to internal APIs only. User-facing functionality remains compatible.
+
+- If you have custom command configurations, they will be ignored
+- Command overrides in `.quaestor/commands/` are no longer supported
+- Specification progress now tracks automatically via TODO completion
+
+## [0.6.0] - 2025-08-04
 
 ### Added
 - **Template Consolidation** - 40% reduction in Claude context usage

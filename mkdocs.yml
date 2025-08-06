@@ -80,7 +80,6 @@ nav:
     - Security Agent: agents/security.md
     - Reviewer Agent: agents/reviewer.md
     - Debugger Agent: agents/debugger.md
-    - Explorer Agent: agents/explorer.md
     - Refactorer Agent: agents/refactorer.md
     - Compliance Enforcer: agents/compliance-enforcer.md
     - Spec Manager: agents/spec-manager.md
@@ -88,19 +87,10 @@ nav:
   - Hooks & Automation:
     - Overview: hooks/overview.md
     - Specification Tracking: hooks/spec-tracking.md
-    - Memory Tracking: hooks/memory-tracking.md
-    - TODO Agent Coordinator: hooks/todo-agent-coordinator.md
     - Session Context Loader: hooks/session-context-loader.md
     - Research Workflow Tracker: hooks/research-workflow-tracker.md
     - Compliance Hooks: hooks/compliance.md
     - File Change Tracker: hooks/file-change-tracker.md
-    - Custom Hooks: hooks/custom.md
-
-  - Advanced:
-    - Architecture: advanced/architecture.md
-    - Memory Management: advanced/memory.md
-    - Claude Code Integration: advanced/claude-code.md
-  - Contributing: contributing.md
 
 extra:
   social:

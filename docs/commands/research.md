@@ -53,13 +53,22 @@ Maps:
 - Event/message dependencies
 - Configuration dependencies
 
-## Research Types
+## Smart Research Approach
 
-### 1. Pattern Analysis
-Identifies recurring code patterns and their usage:
+The research command automatically determines the appropriate depth and scope based on your query. Simply provide what you're looking for:
 
 ```bash
-/research --type=patterns "error handling"
+/research "error handling patterns"
+/research "authentication system architecture"
+/research "how is EmailService used"
+/research "impact of changing User model"
+```
+
+### Pattern Analysis
+The command identifies recurring code patterns and their usage:
+
+```bash
+/research "error handling"
 ```
 
 **Output Example:**
@@ -82,11 +91,11 @@ Identifies recurring code patterns and their usage:
 - **Usage**: `logger.error("Operation failed", extra={"user_id": user_id})`
 ```
 
-### 2. Architecture Exploration
+### Architecture Exploration
 Maps system architecture and component relationships:
 
 ```bash
-/research --type=architecture "authentication system"
+/research "authentication system"
 ```
 
 **Output Example:**
@@ -113,11 +122,11 @@ Maps system architecture and component relationships:
 - **External Auth**: OAuth2 providers (Google, GitHub)
 ```
 
-### 3. Usage Discovery
+### Usage Discovery
 Finds how specific components or functions are used:
 
 ```bash
-/research --type=usage "EmailService.send_notification"
+/research "EmailService.send_notification usage"
 ```
 
 **Output Example:**
@@ -142,11 +151,11 @@ Finds how specific components or functions are used:
 - Queue: Uses Celery for async processing
 ```
 
-### 4. Impact Assessment
+### Impact Assessment
 Analyzes the impact of potential changes:
 
 ```bash
-/research --impact "changing User model schema"
+/research "impact of changing User model schema"
 ```
 
 **Output Example:**
@@ -172,31 +181,6 @@ Analyzes the impact of potential changes:
 - Database migration rollback plan needed
 - Cache invalidation strategy required
 - API versioning considerations
-```
-
-## Advanced Research Options
-
-### `--depth`
-Control research thoroughness:
-```bash
-/research --depth=shallow "basic authentication flow"  # Quick overview
-/research --depth=deep "authentication system"         # Comprehensive analysis
-```
-
-### `--format`
-Specify output format:
-```bash
-/research --format=json "API endpoints"        # Machine-readable output
-/research --format=diagram "system architecture"  # Visual diagrams
-/research --format=report "security analysis"     # Detailed report
-```
-
-### `--scope`
-Limit research scope:
-```bash
-/research --scope=backend "user management"    # Backend code only
-/research --scope=frontend "authentication"    # Frontend code only
-/research --scope=database "data relationships" # Database schema only
 ```
 
 ## Research Workflows

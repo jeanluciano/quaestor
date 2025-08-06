@@ -14,16 +14,16 @@ Hooks are scripts or commands that execute automatically when specific events oc
 
 ## Built-in Hooks
 
-### 🎯 Specification Tracking
-Automatically tracks specification progress and lifecycle:
+### 🎯 TODO-Based Specification Tracking
+Automatically tracks specification progress through TODO completion:
 
 ```python
-# .quaestor/hooks/spec_tracker.py
-def on_specification_complete(spec_id: str):
-    """Triggered when a specification is marked complete."""
+# .quaestor/hooks/todo_spec_progress.py
+def on_todo_completed(todo_id: str, spec_id: str):
+    """Triggered when TODOs are marked complete."""
+    check_specification_criteria(spec_id)
     update_specification_progress(spec_id)
-    notify_stakeholders(spec_id)
-    create_pull_request_if_ready(spec_id)
+    add_progress_note_to_yaml(spec_id)
 ```
 
 ### 📊 Progress Monitoring
@@ -132,16 +132,29 @@ def on_high_complexity_implementation(context):
 ```json
 {
   "hooks": {
-    "spec_tracker": {
-      "enabled": true,
-      "auto_pr_creation": true,
-      "notification_channels": ["slack", "email"]
-    },
-    "quality_gate": {
-      "coverage_threshold": 80,
-      "complexity_threshold": 10,
-      "security_scan": true
-    }
+    "PostToolUse": [
+      {
+        "matcher": "TodoWrite",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python hooks/todo_spec_progress.py",
+            "description": "Update specification progress when TODOs are completed"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python hooks/session_context_loader.py",
+            "description": "Load active specifications into session context"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -392,7 +405,7 @@ quaestor config set hooks.debug true
 quaestor hooks logs --tail -f
 
 # Test specific hooks
-quaestor hooks test spec_tracker --spec feat-auth-001
+quaestor hooks test todo_spec_progress --spec feat-auth-001
 ```
 
 ### Hook Monitoring
