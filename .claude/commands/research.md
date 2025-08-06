@@ -1,10 +1,7 @@
 ---
 allowed-tools: [Read, Grep, Glob, Task, TodoWrite]
 description: "Intelligent codebase exploration and discovery with multi-agent orchestration"
-performance-profile: "complex"
-complexity-threshold: 0.6
-auto-activation: ["pattern-recognition", "dependency-mapping", "context-building"]
-intelligence-features: ["multi-agent-search", "relevance-ranking", "impact-analysis"]
+
 agent-strategy:
   codebase_exploration: researcher
   architecture_review: architect
@@ -22,8 +19,8 @@ Explore, search, and analyze codebases to understand context, patterns, and depe
 ```
 /research "authentication patterns"
 /research "how does the payment system work"
-/research --scope "src/api" --depth deep
-/research --architecture "user service dependencies"
+/research "user service dependencies"
+/research "find all API endpoints"
 ```
 
 ## Auto-Intelligence
@@ -32,8 +29,7 @@ Explore, search, and analyze codebases to understand context, patterns, and depe
 ```yaml
 Query Analysis:
   - Intent: explore|search|understand|find
-  - Scope: files|modules|system|patterns
-  - Depth: quick|standard|deep|comprehensive
+  - Context: files|modules|system|patterns
   - Agents: auto-select based on query
 
 Agent Selection:
@@ -50,12 +46,18 @@ Agent Selection:
 
 ## Execution
 
-**Use the researcher agent to perform codebase exploration and pattern analysis.**
+**FIRST, use the workflow-coordinator agent to validate workflow state and coordinate the research phase.**
 
-For complex queries, spawn multiple agents:
+The workflow-coordinator will:
+- Check if we're already in a research phase
+- Initialize workflow state if needed
+- Ensure proper phase progression
+- Delegate to the appropriate research agents
+
+Then follow the coordinator's guidance to:
+- **Use the researcher agent** for codebase exploration and pattern analysis
 - **Use the architect agent** when analyzing system design or dependencies
 - **Use the security agent** when searching for security patterns or vulnerabilities
-- **Use the researcher agent** for general pattern finding and code exploration
 
 ## Workflow: Analyze → Explore → Synthesize → Report
 
@@ -144,32 +146,21 @@ Pattern Recognition:
 - Recommended commands (/plan, /task)
 ```
 
-## Search Depth Modes
+## Search Intelligence
 
-### Quick Search (~2 min)
-- Direct file/pattern matching
-- Single agent (researcher)
-- Top 5-10 results
-- Basic context
+The research command automatically determines the appropriate search depth based on your query:
 
-### Standard Search (~5 min)
-- Pattern analysis + dependencies
-- 1-2 agents based on query
-- Full file ranking
-- Detailed context
+### Automatic Depth Selection
+- **Simple queries** → Quick focused search (~2 min)
+- **System questions** → Standard exploration (~5 min)
+- **Architecture queries** → Deep analysis (~10 min)
+- **Security/audit requests** → Comprehensive review (~15 min)
 
-### Deep Search (~10 min)
-- Comprehensive exploration
-- Multi-agent orchestration
-- Cross-reference analysis
-- Full dependency mapping
-
-### Comprehensive Search (~15 min)
-- System-wide analysis
-- All relevant agents
-- Architecture diagrams
-- Performance implications
-- Security assessment
+The system intelligently:
+- Selects appropriate agents
+- Determines search breadth
+- Allocates time based on complexity
+- Provides relevant depth of analysis
 
 ## Agent Specializations
 

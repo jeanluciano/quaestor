@@ -1,10 +1,7 @@
 ---
 allowed-tools: [Read, Edit, MultiEdit, Write, Bash, Grep, Glob, LS, Task, TodoWrite]
 description: "Specification-driven planning, project management, and progress tracking with multi-agent orchestration"
-performance-profile: "complex"
-complexity-threshold: 0.5
-auto-activation: ["specification-planning", "project-planning", "progress-visualization", "strategic-analysis"]
-intelligence-features: ["spec-tracking", "velocity-tracking", "architecture-planning", "contract-validation"]
+
 agent-strategy:
   specification_design: planner
   system_design: architect
@@ -26,9 +23,6 @@ Design specifications, plan work through spec-driven development, manage project
 /plan --complete               # Complete current specification
 /plan --analyze                # Deep strategic analysis
 /plan --architecture          # Architectural planning mode
-/plan --link                   # Link current branch to spec
-/plan --activate <spec-id>     # Move spec from draft to active
-/plan --archive <spec-id>      # Move spec from active to completed
 /plan --status                 # Show specification status dashboard
 ```
 
@@ -42,9 +36,6 @@ Mode Detection:
   - --complete → Completion validation
   - --analyze → Strategic analysis
   - --architecture → System design planning
-  - --link → Branch-to-spec linkage
-  - --activate → Move spec to active/ folder
-  - --archive → Move spec to completed/ folder
   - --status → Show specification status dashboard
 ```
 
@@ -73,7 +64,16 @@ Strategic Analysis:
 ## Execution: Analyze → Plan → Track → Archive
 
 ### Agent-Driven Execution
-This command orchestrates multiple specialized agents based on the mode:
+
+**FIRST, use the workflow-coordinator agent to validate workflow state and coordinate the planning phase.**
+
+The workflow-coordinator will:
+- Verify research phase has been completed (minimum files examined)
+- Check for existing specifications and their status
+- Ensure we're ready to move to planning phase
+- Coordinate the transition from research to planning
+
+Then based on the mode:
 - **Default mode**: Use the planner agent to create specifications
 - **--analyze mode**: Use architect, researcher, and security agents for analysis
 - **--architecture mode**: Use the architect agent with security and implementer support
@@ -304,9 +304,8 @@ Specification Created:
   
   Next Steps:
   1. Review specification contract
-  2. Run /plan --activate spec-auth-001 to move to active/
-  3. Implement according to acceptance criteria
-  4. Run /plan --complete spec-auth-001 to archive
+  2. Start implementation according to acceptance criteria
+  3. Run /plan --complete spec-auth-001 when finished
 ```
 
 
@@ -434,11 +433,8 @@ if result.success:
     # Migrate existing specs
     folder_mgr.migrate_flat_specifications()
 
-# Move spec to active
-result = folder_mgr.move_specification(
-    Path("draft/spec-auth-001.yaml"), 
-    "active"
-)
+# Specifications are automatically moved between folders
+# based on lifecycle status and TODO completion
 ```
 
 **Folder Operations:**

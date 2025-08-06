@@ -3,7 +3,6 @@
 import typer
 from rich.console import Console
 
-from quaestor.cli.configure import configure_command
 from quaestor.cli.init import init_command
 from quaestor.cli.update import update_command
 
@@ -24,8 +23,6 @@ def callback():
 
 # Add commands to app
 app.command(name="init")(init_command)
-
-app.command(name="configure")(configure_command)
 app.command(name="update")(update_command)
 
 # Add automation subcommand if available

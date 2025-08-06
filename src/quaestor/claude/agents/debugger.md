@@ -2,7 +2,7 @@
 name: debugger
 description: Expert debugging specialist for fixing errors, test failures, and performance issues. Use immediately when encountering any bugs or unexpected behavior.
 tools: Read, Edit, MultiEdit, Bash, Grep, Glob
-priority: 9
+
 activation:
   keywords: ["debug", "error", "fix", "failing", "broken", "issue", "bug", "crash", "exception"]
   context_patterns: ["test_failure", "error_trace", "performance_issue"]

@@ -38,10 +38,7 @@ Branch: feat/spec-checkout-001-shopping-cart
 
 Branch naming follows the pattern: `{type}/spec-{id}-{brief-title}`
 
-If you need to link an existing branch:
-```
-/plan --link
-```
+Branches are automatically linked when they follow the naming pattern.
 
 ### 3. Implementation
 
@@ -232,10 +229,7 @@ Implement dependencies first for smooth workflow.
 ### Specification Not Linked to Branch
 
 ```
-# Link current branch to specification
-/plan --link
-
-# Or rename branch to follow pattern
+# Rename branch to follow pattern for automatic linking
 git branch -m feat/spec-{id}-{title}
 ```
 

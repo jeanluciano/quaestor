@@ -1,10 +1,6 @@
 ---
 allowed-tools: [Read, Edit, MultiEdit, Bash, Grep, Glob, TodoWrite, Task]
 description: "Comprehensive review, validation, commit generation, and PR creation with multi-agent orchestration"
-performance-profile: "complex"
-complexity-threshold: 0.6
-auto-activation: ["quality-validation", "commit-generation", "pr-creation", "final-review"]
-intelligence-features: ["multi-agent-review", "auto-fixing", "smart-commits", "quality-analysis"]
 agent-strategy:
   code_quality: refactorer
   security_review: security

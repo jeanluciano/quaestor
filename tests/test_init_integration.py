@@ -3,7 +3,6 @@
 from unittest.mock import patch
 
 import pytest
-import yaml
 from typer.testing import CliRunner
 
 from quaestor.cli.app import app
@@ -32,31 +31,13 @@ def temp_git_project(tmp_path):
 
 @pytest.fixture
 def project_with_config(temp_git_project):
-    """Create a project with command configuration."""
+    """Create a project with existing .quaestor directory."""
     # Create .quaestor directory
     quaestor_dir = temp_git_project / ".quaestor"
     quaestor_dir.mkdir()
 
-    # Create command config
-    config_data = {
-        "commands": {
-            "task": {
-                "enforcement": "strict",
-                "parameters": {"minimum_test_coverage": 95},
-                "custom_rules": ["All code must be reviewed", "No direct database access"],
-            },
-            "check": {"enforcement": "relaxed", "auto_fix": True},
-        }
-    }
-
-    config_path = quaestor_dir / "command-config.yaml"
-    with open(config_path, "w") as f:
-        yaml.dump(config_data, f)
-
-    # Create command override for an existing command
-    commands_dir = quaestor_dir / "commands"
-    commands_dir.mkdir()
-    (commands_dir / "debug.md").write_text("# Custom Debug Command\n\nThis is overridden.")
+    # Create a dummy file to make the directory non-empty
+    (quaestor_dir / "README.md").write_text("# Test Project\n\nThis is a test.")
 
     return temp_git_project
 
@@ -86,7 +67,8 @@ class TestInitIntegration:
         assert hooks_dir.exists()
         # Check for individual hook files instead of subdirectories
         assert (hooks_dir / "base.py").exists()
-        assert (hooks_dir / "rule_injection.py").exists()
+        assert (hooks_dir / "session_context_loader.py").exists()
+        assert (hooks_dir / "todo_spec_progress.py").exists()
 
     def test_team_mode_init_basic(self, runner, temp_git_project):
         """Test basic team mode initialization."""
@@ -109,6 +91,11 @@ class TestInitIntegration:
         manifest_file = temp_git_project / ".quaestor" / "manifest.json"
         assert manifest_file.exists()
 
+        # Check template files created
+        assert (temp_git_project / ".quaestor" / "CONTEXT.md").exists()
+        assert (temp_git_project / ".quaestor" / "ARCHITECTURE.md").exists()
+        assert (temp_git_project / ".quaestor" / "SPECFLOW.md").exists()
+
     def test_init_with_existing_config(self, runner, project_with_config):
         """Test initialization with existing command configuration."""
         with patch("quaestor.cli.init.Path.cwd", return_value=project_with_config):
@@ -116,29 +103,19 @@ class TestInitIntegration:
 
         assert result.exit_code == 0
 
-        # Should show configured commands
-        assert "(configured)" in result.output
-        # Check that commands were installed with configuration
-        assert "Installed impl.md" in result.output or "Regenerated impl.md" in result.output
+        # Check that commands were installed
+        assert "Installed impl.md" in result.output
 
-        # Check task command has configuration applied
+        # Check command exists and has content
         impl_file = project_with_config / ".claude" / "commands" / "impl.md"
         assert impl_file.exists()
         impl_content = impl_file.read_text()
 
-        # Verify the file has content (configuration may not add PROJECT-SPECIFIC to impl.md)
+        # Verify the file has content
         assert len(impl_content) > 0
-        # impl.md doesn't get PROJECT-SPECIFIC headers, only configured commands like task would
-        # Check that configuration was applied (content may vary based on processing)
-        # Parameters are not included in the output currently
+        # Commands are now copied directly without modification
 
-        # Check that debug.md override was applied
-        debug_file = project_with_config / ".claude" / "commands" / "debug.md"
-        if debug_file.exists():
-            debug_content = debug_file.read_text()
-            # Override content is used directly
-            assert "Custom Debug Command" in debug_content
-            assert "This is overridden" in debug_content
+        # Commands are copied directly without any overrides or modifications
 
     def test_personal_mode_commands_location(self, runner, temp_git_project):
         """Test personal mode installs commands to ~/.claude/commands."""
@@ -234,11 +211,8 @@ class TestInitIntegration:
         settings_content = settings_file.read_text()
 
         # Check for new hook structure
-        assert "rule_injection.py" in settings_content
-        assert "spec_tracker.py" in settings_content
-        assert "spec_lifecycle.py" in settings_content
         assert "session_context_loader.py" in settings_content
-        assert "session_context_loader.py" in settings_content
+        assert "todo_spec_progress.py" in settings_content
 
         # Should not have old paths
         assert "hooks/implementation_declaration.py" not in settings_content
@@ -267,11 +241,11 @@ class TestInitIntegration:
             assert result.exit_code != 0 or "permission" in result.output.lower()
 
 
-class TestCommandProcessingIntegration:
-    """Test command processing during initialization."""
+class TestCommandInstallation:
+    """Test command installation during initialization."""
 
-    def test_command_processor_integration(self, runner, project_with_config):
-        """Test CommandProcessor is properly integrated."""
+    def test_command_files_copied(self, runner, project_with_config):
+        """Test that command files are copied correctly."""
         with patch("importlib.resources.read_text") as mock_read:
             # Mock command content
             mock_read.return_value = """---
@@ -287,14 +261,14 @@ minimum_test_coverage: 80
 
         assert result.exit_code == 0
 
-        # Verify processor was used
+        # Verify command was copied
         impl_file = project_with_config / ".claude" / "commands" / "impl.md"
         content = impl_file.read_text()
 
         # The impl.md command exists and has content
         assert impl_file.exists()
         assert len(content) > 0
-        # Note: impl.md may not have PROJECT-SPECIFIC headers as it's not configured in this test
+        # Commands are now copied directly without modification
 
     def test_manifest_tracking(self, runner, temp_git_project):
         """Test manifest properly tracks files in both modes."""

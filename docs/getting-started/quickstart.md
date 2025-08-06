@@ -107,7 +107,6 @@ Scenario: Valid user profile request
 |---------|---------|
 | `/plan` | Show dashboard or create specifications |
 | `/plan --spec "Title"` | Create new specification |
-| `/plan --link` | Link current branch to specification |
 | `/impl "description"` | Implement features |
 | `/research "topic"` | Research and analyze |
 | `/review` | Code review and quality checks |
@@ -154,6 +153,6 @@ your-project/
 - Verify `.quaestor/` directory exists
 
 **Specifications not linking to branches?**
-- Use `/plan --link` to manually link
-- Check branch naming follows the spec pattern
+- Specifications automatically link when branch names follow the spec pattern
+- Check branch naming follows the pattern: `feat/spec-{id}-{title}`
 - Ensure hooks are properly configured

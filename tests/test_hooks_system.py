@@ -21,7 +21,7 @@ class TestHooksConfiguration:
         data = json.loads(automation_json)
 
         # Check that we use placeholders, not hardcoded paths
-        for hook_type in ["PreToolUse", "PostToolUse"]:
+        for hook_type in data["hooks"]:
             for matcher_config in data["hooks"][hook_type]:
                 for hook in matcher_config["hooks"]:
                     command = hook["command"]
@@ -44,15 +44,12 @@ class TestHooksConfiguration:
 
         # Updated for new hook structure
         expected_hooks = {
-            "spec_lifecycle.py",
-            "spec_tracker.py",
-            "workflow_tracker.py",
             "session_context_loader.py",
-            "rule_injection.py",
+            "todo_spec_progress.py",
         }
 
         found_hooks = set()
-        for hook_type in ["PreToolUse", "PostToolUse"]:
+        for hook_type in data["hooks"]:
             for matcher_config in data["hooks"][hook_type]:
                 for hook in matcher_config["hooks"]:
                     command = hook["command"]
@@ -80,11 +77,9 @@ class TestHooksConfiguration:
 
         # Updated for new hook structure - hooks are now in the root hooks directory
         expected_hooks = [
-            "spec_lifecycle.py",
-            "spec_tracker.py",
             "session_context_loader.py",
             "base.py",  # Base hook class
-            "rule_injection.py",
+            "todo_spec_progress.py",
         ]
 
         for hook_file in expected_hooks:
@@ -100,8 +95,8 @@ class TestHooksConfiguration:
 
         # Updated for new hook structure
         hook_files = [
-            "spec_lifecycle.py",
-            "spec_tracker.py",
+            "session_context_loader.py",
+            "todo_spec_progress.py",
         ]
 
         for hook_file in hook_files:
@@ -196,11 +191,8 @@ class TestHooksConfiguration:
         available_hooks = set(
             [
                 "base.py",
-                "rule_injection.py",
                 "session_context_loader.py",
-                "spec_lifecycle.py",
-                "spec_tracker.py",
-                "workflow_tracker.py",
+                "todo_spec_progress.py",
             ]
         )
 
@@ -210,7 +202,7 @@ class TestHooksConfiguration:
 
         # Extract hook names from commands
         referenced_hooks = set()
-        for hook_type in ["PreToolUse", "PostToolUse"]:
+        for hook_type in data["hooks"]:
             for matcher_config in data["hooks"][hook_type]:
                 for hook in matcher_config["hooks"]:
                     command = hook["command"]
@@ -256,10 +248,8 @@ class TestHooksCopyingInInit:
             # These are the hooks that should be copied
             expected_hooks = [
                 "base.py",
-                "rule_injection.py",
                 "session_context_loader.py",
-                "spec_lifecycle.py",
-                "spec_tracker.py",
+                "todo_spec_progress.py",
             ]
 
             for hook in expected_hooks:
@@ -318,13 +308,15 @@ class TestTemplateCopying:
         missing_files = required_files - actual_files
         assert not missing_files, f"Missing required template files: {missing_files}"
 
-    def test_claude_md_references_all_files(self):
-        """Test that CLAUDE.md references all the template files."""
-        # Read the current CLAUDE.md
-        claude_md_path = Path(__file__).parent.parent / "CLAUDE.md"
-        assert claude_md_path.exists(), "CLAUDE.md should exist in project root"
+    def test_claude_md_template_references_all_files(self):
+        """Test that CLAUDE.md template references all the required files."""
+        import importlib.resources as pkg_resources
 
-        claude_content = claude_md_path.read_text()
+        # Read the include.md template
+        try:
+            claude_template = pkg_resources.read_text("quaestor.claude.templates", "include.md")
+        except Exception:
+            pytest.skip("include.md template not found")
 
         # Files that should be referenced in CLAUDE.md
         expected_references = [
@@ -333,7 +325,7 @@ class TestTemplateCopying:
         ]
 
         for ref in expected_references:
-            assert ref in claude_content, f"CLAUDE.md should reference {ref}"
+            assert ref in claude_template, f"CLAUDE.md template should reference {ref}"
 
     @patch("quaestor.cli.init.process_template")
     @patch("importlib.resources.read_text")

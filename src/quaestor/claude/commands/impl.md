@@ -1,10 +1,7 @@
 ---
 allowed-tools: [Read, Write, Edit, MultiEdit, Bash, Glob, Grep, TodoWrite, Task]
 description: "Execute production-quality implementation with specification-driven orchestration"
-performance-profile: "complex"
-complexity-threshold: 0.7
-auto-activation: ["auto-persona", "specification-integration", "quality-gates"]
-intelligence-features: ["project-detection", "parallel-execution", "context-awareness"]
+
 agent-strategy:
   complexity > 0.7: [architect, implementer]
   security_keywords: [security, qa]

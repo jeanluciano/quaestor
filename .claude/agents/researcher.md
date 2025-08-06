@@ -2,10 +2,12 @@
 name: researcher
 description: Deep codebase exploration and pattern analysis specialist with advanced search strategies. Use for research tasks, understanding systems, mapping dependencies, and discovering hidden patterns.
 tools: Read, Grep, Glob, Task
-priority: 7
+model: opus
+color: blue
 activation:
   keywords: ["research", "explore", "find", "search", "analyze", "understand", "investigate", "discover", "map", "trace", "locate"]
   context_patterns: ["**/*", "src/**/*", "lib/**/*", "research", "exploration", "discovery"]
+
 ---
 
 # Researcher Agent

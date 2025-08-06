@@ -50,6 +50,7 @@ QUAESTOR_CONFIG_END = "<!-- QUAESTOR CONFIG END -->"
 TEMPLATE_FILES = {
     "context.md": "CONTEXT.md",
     "architecture.md": "ARCHITECTURE.md",
+    "specflow.md": "SPECFLOW.md",
 }
 
 # Template base path within assets

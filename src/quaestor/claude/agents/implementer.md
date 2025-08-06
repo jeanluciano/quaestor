@@ -2,7 +2,7 @@
 name: implementer
 description: Specification-driven feature development and code writing specialist. Executes active specifications with clear acceptance criteria and automatic spec status management.
 tools: Read, Write, Edit, MultiEdit, Bash, Grep, TodoWrite, Task
-priority: 8
+model: sonnet
 activation:
   keywords: ["implement", "build", "create", "develop", "feature", "add", "write", "code", "execute", "spec"]
   context_patterns: ["**/src/**", "**/lib/**", "**/components/**", "**/features/**", "**/specs/active/**"]

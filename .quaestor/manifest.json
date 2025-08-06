@@ -1,23 +1,31 @@
 {
   "version": "1.0",
   "quaestor_version": "0.6.0",
-  "created_at": "2025-08-04T18:26:01.086001",
-  "last_updated": "2025-08-04T18:26:01.454282",
+  "created_at": "2025-08-05T19:56:10.440848",
+  "last_updated": "2025-08-05T19:56:10.814345",
   "files": {
     ".quaestor/CONTEXT.md": {
       "type": "user-editable",
       "version": "1.0",
-      "installed_at": "2025-08-04T18:26:01.454145",
-      "original_checksum": "b8a8a65841223cbdbd87c095d9e9a6c4e08c3b3749ba2199db68b76245b8effe",
-      "current_checksum": "b8a8a65841223cbdbd87c095d9e9a6c4e08c3b3749ba2199db68b76245b8effe",
+      "installed_at": "2025-08-05T19:56:10.814063",
+      "original_checksum": "54b8ab2eb1873cb7e864a2bab6eb750eb3bf80ccdf1f3aaf1c88bf4fc0a842d2",
+      "current_checksum": "54b8ab2eb1873cb7e864a2bab6eb750eb3bf80ccdf1f3aaf1c88bf4fc0a842d2",
       "user_modified": false
     },
     ".quaestor/ARCHITECTURE.md": {
       "type": "user-editable",
       "version": "1.0",
-      "installed_at": "2025-08-04T18:26:01.454279",
+      "installed_at": "2025-08-05T19:56:10.814214",
       "original_checksum": "2f303a49e472da1fc0e76c026e3188a0b9e671df188a5b1982cd1f7517bba98d",
       "current_checksum": "2f303a49e472da1fc0e76c026e3188a0b9e671df188a5b1982cd1f7517bba98d",
+      "user_modified": false
+    },
+    ".quaestor/SPECFLOW.md": {
+      "type": "user-editable",
+      "version": "1.0",
+      "installed_at": "2025-08-05T19:56:10.814343",
+      "original_checksum": "b33731de79f0114b9feb770bcac706772b325768100c33197ffb414dc3900f1d",
+      "current_checksum": "b33731de79f0114b9feb770bcac706772b325768100c33197ffb414dc3900f1d",
       "user_modified": false
     }
   }

@@ -1,10 +1,6 @@
 ---
 allowed-tools: [Read, Bash, Glob, Grep, Edit, MultiEdit, Write, TodoWrite, Task]
 description: "Intelligent project analysis with auto-framework detection and adaptive setup"
-performance-profile: "complex"
-complexity-threshold: 0.6
-auto-activation: ["framework-detection", "pattern-analysis", "adaptive-setup"]
-intelligence-features: ["architecture-detection", "stack-analysis", "documentation-generation"]
 agent-strategy:
   project_analysis: [researcher, architect]
   security_audit: security

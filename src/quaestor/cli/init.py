@@ -274,12 +274,13 @@ def _merge_claude_md(target_dir: Path, use_rule_engine: bool = False) -> bool:
         except Exception:
             # Fallback if template is missing
             include_content = """<!-- QUAESTOR CONFIG START -->
-> [!IMPORTANT]
-> **Claude:** This project uses Quaestor for AI context management.
-> Please read the following files in order:
-> 1. `.quaestor/CONTEXT.md` - Complete AI development context and rules
-> 2. `.quaestor/ARCHITECTURE.md` - System design and structure (if available)
-> 3. `.quaestor/specs/active/` - Active specifications and implementation details
+[!IMPORTANT]
+**Claude:** This project uses Quaestor for AI context management.
+Please read the following files in order:
+@.quaestor/CONTEXT.md - Complete AI development context and rules
+@.quaestor/ARCHITECTURE.md - System design and structure (if available)
+@.quaestor/SPECFLOW.md
+@.quaestor/specs/active/ - Active specifications and implementation details
 <!-- QUAESTOR CONFIG END -->
 
 <!-- Your custom content below -->
@@ -400,27 +401,15 @@ def _init_common(target_dir: Path, force: bool, mode: str):
         commands_dir.mkdir(parents=True, exist_ok=True)
         console.print("Installing to .claude/commands (project commands)")
 
-    # Use command processor to apply configurations
-    from quaestor.core.command_processor import CommandProcessor
-
-    processor = CommandProcessor(target_dir)
-
+    # Copy command files directly without configuration processing
     commands_copied = 0
-    configured_count = 0
 
     for cmd_file in COMMAND_FILES:
         try:
-            cmd_name = cmd_file[:-3]  # Remove .md extension
+            # Read command content directly from package
+            cmd_content = pkg_resources.read_text("quaestor.claude.commands", cmd_file)
 
-            # Process command with any configurations
-            cmd_content = processor.process_command(cmd_name)
-
-            # Check if command was configured
-            if processor.has_configuration(cmd_name):
-                configured_count += 1
-                console.print(f"  [blue]✓[/blue] Installed {cmd_file} [yellow](configured)[/yellow]")
-            else:
-                console.print(f"  [blue]✓[/blue] Installed {cmd_file}")
+            console.print(f"  [blue]✓[/blue] Installed {cmd_file}")
 
             (commands_dir / cmd_file).write_text(cmd_content)
             commands_copied += 1
@@ -440,10 +429,8 @@ def _init_common(target_dir: Path, force: bool, mode: str):
     hooks_copied = 0
     available_hooks = [
         "base.py",
-        "rule_injection.py",
         "session_context_loader.py",
-        "spec_tracker.py",
-        "spec_lifecycle.py",
+        "todo_spec_progress.py",
     ]
 
     for hook_file in available_hooks:
@@ -468,7 +455,6 @@ def _init_common(target_dir: Path, force: bool, mode: str):
         available_agents = [
             "architect.md",
             "debugger.md",
-            "explorer.md",
             "implementer.md",
             "planner.md",
             "qa.md",
@@ -476,7 +462,6 @@ def _init_common(target_dir: Path, force: bool, mode: str):
             "researcher.md",
             "reviewer.md",
             "security.md",
-            "spec-manager.md",
             "workflow-coordinator.md",
         ]
 
@@ -491,11 +476,6 @@ def _init_common(target_dir: Path, force: bool, mode: str):
                 console.print(f"  [yellow]⚠[/yellow] Could not install {agent_file}: {e}")
 
         console.print(f"\n  [green]Installed {agents_copied} agent files[/green]")
-
-    # Show configuration summary if any commands were configured
-    if configured_count > 0:
-        console.print(f"\n[yellow]📝 {configured_count} command(s) were configured with project settings[/yellow]")
-        console.print("[dim]Run 'quaestor configure' to view or modify configurations[/dim]")
 
     # Update gitignore
     if mode == "personal":

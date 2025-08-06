@@ -1,10 +1,6 @@
 ---
 allowed-tools: [Read, Edit, MultiEdit, Bash, Grep, Glob, TodoWrite, Task]
 description: "Interactive debugging and troubleshooting with specialized agent assistance"
-performance-profile: "optimization"
-complexity-threshold: 0.5
-auto-activation: ["error-analysis", "test-fixing", "performance-profiling"]
-intelligence-features: ["root-cause-analysis", "fix-suggestion", "test-driven-debugging"]
 agent-strategy:
   test_failures: qa
   security_issues: security

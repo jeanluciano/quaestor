@@ -1,52 +1,24 @@
 {
   "hooks": {
-    "UserPromptSubmit": [
+    "SessionStart": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "{python_path} {hooks_dir}/rule_injection.py",
-            "description": "Inject general rules and context"
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Task",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "{python_path} {hooks_dir}/spec_lifecycle.py",
-            "description": "Auto-activate specs when implementation starts"
+            "command": "{python_path} {hooks_dir}/session_context_loader.py",
+            "description": "Load active specifications into session context"
           }
         ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "Write|Edit|MultiEdit",
+        "matcher": "TodoWrite",
         "hooks": [
           {
             "type": "command",
-            "command": "{python_path} {hooks_dir}/spec_tracker.py",
-            "description": "Track specification progress and suggest agents"
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "{python_path} {hooks_dir}/rule_injection.py",
-            "description": "Inject critical rules and context"
-          },
-          {
-            "type": "command",
-            "command": "{python_path} {hooks_dir}/session_context_loader.py",
-            "description": "Load active specifications into session context"
+            "command": "{python_path} {hooks_dir}/todo_spec_progress.py",
+            "description": "Update specification progress when TODOs are completed"
           }
         ]
       }

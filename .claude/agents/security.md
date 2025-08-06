@@ -2,7 +2,7 @@
 name: security
 description: Security analysis and vulnerability detection specialist
 tools: Read, Grep, Glob, Task, WebSearch
-priority: 9
+
 activation:
   keywords: ["security", "vulnerability", "auth", "authentication", "authorization", "encryption", "crypto", "token", "password", "injection", "xss", "csrf", "owasp"]
   context_patterns: ["**/auth/**", "**/security/**", "**/crypto/**", "**/*auth*", "**/*login*", "**/*password*"]

@@ -118,26 +118,6 @@ immutable_rules:
         - document: "progress in specification files"
       validation: "Specification files must be updated with progress"
   
-  - rule_id: "ALWAYS_FOLLOW_HOOKS"
-    priority: "CRITICAL"
-    description: "Hook feedback is MANDATORY and must be followed immediately"
-    enforcement:
-      trigger: "Any hook provides feedback or recommendations"
-      mandatory_actions:
-        - immediate_compliance: "Hook recommendations are REQUIREMENTS, not suggestions"
-        - agent_delegation: "When hook says 'Use the [agent] agent', this is MANDATORY"
-        - workflow_changes: "When hook suggests workflow changes, implement immediately"
-        - blocking_respect: "When hook blocks with exit code 2, STOP all work until resolved"
-      hook_types:
-        - specification_tracker: "Tracks specification progress and completion"
-        - compliance_pre_edit: "Validates compliance before file modifications"
-        - research_workflow_tracker: "Ensures Research → Plan → Implement workflow"
-        - memory_tracker: "Maintains project memory and documentation"
-      validation: "All hook directives must be acknowledged and acted upon"
-      consequences:
-        ignore_hook_blocking: "IMMEDIATE STOP - Hook blocking must be resolved"
-        ignore_agent_suggestion: "VIOLATION - Agent suggestions are mandatory"
-        ignore_workflow_guidance: "VIOLATION - Workflow guidance must be followed"
 ```
 <!-- DATA:rule-definitions:END -->
 

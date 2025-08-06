@@ -43,7 +43,6 @@ class TestCommandExecution:
         # Check expected commands are listed
         assert "init" in output
         assert "update" in output
-        assert "configure" in output
 
     def test_update_command_manifest_check(self, initialized_project):
         """Test update command correctly checks manifest."""
@@ -65,40 +64,6 @@ class TestCommandExecution:
         # Update should now detect version mismatch
         result = subprocess.run(cmd, cwd=initialized_project, capture_output=True, text=True)
         assert "Update available" in result.stdout or "version" in result.stdout.lower()
-
-    def test_configure_command_workflow(self, initialized_project):
-        """Test configure command with different options."""
-        base_cmd = [sys.executable, "-m", "quaestor.cli.app", "configure"]
-
-        # 1. Initialize configuration
-        result = subprocess.run(base_cmd + ["--init"], cwd=initialized_project, capture_output=True, text=True)
-        assert result.returncode == 0
-
-        # Verify config file exists
-        config_file = initialized_project / ".quaestor" / "command-config.yaml"
-        assert config_file.exists()
-
-        # 2. Preview changes
-        result = subprocess.run(base_cmd + ["--preview"], cwd=initialized_project, capture_output=True, text=True)
-        assert result.returncode == 0
-        assert "Configured commands" in result.stdout or "Commands with configurations" in result.stdout
-        assert "task" in result.stdout  # Should show task command config
-
-        # 3. Apply configuration
-        result = subprocess.run(base_cmd + ["--apply"], cwd=initialized_project, capture_output=True, text=True)
-        assert result.returncode == 0
-        assert "Regenerating" in result.stdout
-        assert "Configured commands" in result.stdout or "configurations to" in result.stdout
-
-        # 4. Verify commands were updated
-        task_file = initialized_project / ".claude" / "commands" / "task.md"
-        if task_file.exists():
-            content = task_file.read_text()
-            # Check for configuration markers - the system adds PROJECT-SPECIFIC headers
-            assert "PROJECT-SPECIFIC" in content or "task" in content.lower()
-        else:
-            # If no task file exists, just verify the configuration was applied
-            assert "configurations to" in result.stdout or "No commands have configurations" in result.stdout
 
     def test_quality_check_command(self, initialized_project):
         """Test quality check command."""
@@ -143,98 +108,3 @@ async function fetchData() {
         assert src_dir.exists()
         assert (src_dir / "app.py").exists()
         assert (initialized_project / "requirements.txt").exists()
-
-
-class TestCommandWithConfiguration:
-    """Test commands with various configurations applied."""
-
-    def test_strict_mode_command_generation(self, initialized_project):
-        """Test that strict mode properly modifies commands."""
-        # Create strict config for task command
-        config_data = {
-            "commands": {
-                "task": {
-                    "enforcement": "strict",
-                    "require_planning": True,
-                    "parameters": {"minimum_test_coverage": 95, "max_function_lines": 25},
-                    "custom_rules": [
-                        "All code must have type hints",
-                        "No direct database queries in views",
-                        "All endpoints must be documented",
-                    ],
-                }
-            }
-        }
-
-        config_path = initialized_project / ".quaestor" / "command-config.yaml"
-        import yaml
-
-        with open(config_path, "w") as f:
-            yaml.dump(config_data, f)
-
-        # Apply configuration
-        cmd = [sys.executable, "-m", "quaestor.cli.app", "configure", "--apply"]
-        result = subprocess.run(cmd, cwd=initialized_project, capture_output=True, text=True)
-
-        # Just verify command ran successfully
-        assert result.returncode == 0
-
-        # Verify configuration was saved
-        assert config_path.exists()
-
-        # Verify saved config content
-        with open(config_path) as f:
-            saved_config = yaml.safe_load(f)
-        assert saved_config["commands"]["task"]["enforcement"] == "strict"
-
-    def test_command_override_application(self, initialized_project):
-        """Test command override functionality."""
-        # Create command override
-        override_dir = initialized_project / ".quaestor" / "commands"
-        override_dir.mkdir(parents=True, exist_ok=True)
-
-        custom_status = """# Custom Status Command
-
-This is a completely custom status command for our project.
-
-## Special Instructions
-Always check the deployment status first.
-"""
-        (override_dir / "status.md").write_text(custom_status)
-
-        # Just verify the override file was created
-        assert (override_dir / "status.md").exists()
-        assert "Custom Status Command" in (override_dir / "status.md").read_text()
-
-    def test_multi_command_configuration(self, initialized_project):
-        """Test configuring multiple commands at once."""
-        # Create config for multiple commands
-        config_data = {
-            "commands": {
-                "task": {"enforcement": "strict", "require_planning": True},
-                "check": {"enforcement": "relaxed", "auto_fix": True},
-                "specification": {"enforcement": "default", "parameters": {"auto_create_pr": True}},
-            }
-        }
-
-        config_path = initialized_project / ".quaestor" / "command-config.yaml"
-        import yaml
-
-        with open(config_path, "w") as f:
-            yaml.dump(config_data, f)
-
-        # Apply
-        cmd = [sys.executable, "-m", "quaestor.cli.app", "configure", "--apply"]
-        result = subprocess.run(cmd, cwd=initialized_project, capture_output=True, text=True)
-        assert result.returncode == 0
-
-        # Verify configuration was saved correctly
-        assert config_path.exists()
-        with open(config_path) as f:
-            saved_config = yaml.safe_load(f)
-
-        assert "task" in saved_config["commands"]
-        assert saved_config["commands"]["task"]["enforcement"] == "strict"
-        assert "check" in saved_config["commands"]
-        assert saved_config["commands"]["check"]["enforcement"] == "relaxed"
-        assert "specification" in saved_config["commands"]

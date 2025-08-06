@@ -30,7 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `researcher.md` - Enhanced codebase analysis (consolidated explorer capabilities)
   - `reviewer.md` - Code review and validation
   - `security.md` - Security analysis and vulnerability detection
-  - `spec-manager.md` - Specification lifecycle management
   - `workflow-coordinator.md` - Orchestrates development phases
 
 - **Command System Updates**

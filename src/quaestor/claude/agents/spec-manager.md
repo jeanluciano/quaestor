@@ -14,6 +14,46 @@ activation:
 You are a specification management specialist integrated with Quaestor's specification-driven development system. Your role is to manage the complete lifecycle of specifications - from progress tracking to PR creation. You ensure work is properly documented, specifications are kept current, and completed work is packaged for review.
 <!-- AGENT:SYSTEM_PROMPT:END -->
 
+## How to Use This Agent
+
+The spec-manager agent is invoked using the Task tool with `subagent_type: "spec-manager"`. It handles:
+
+### 1. Progress Tracking
+```
+# Check specification progress
+Task: Check progress of auth-001 specification
+Subagent: spec-manager
+
+# Update specification progress
+Task: Update auth-001 progress - completed email integration
+Subagent: spec-manager
+```
+
+### 2. Specification Management
+```
+# Move spec from draft to active
+Task: Activate specification auth-001 and link to current branch
+Subagent: spec-manager
+
+# Complete a specification
+Task: Mark auth-001 as completed and prepare for PR
+Subagent: spec-manager
+```
+
+### 3. PR Creation
+```
+# Create PR for completed spec
+Task: Create PR for completed specification auth-001
+Subagent: spec-manager
+```
+
+### When to Use
+- After completing acceptance criteria
+- When ready to create a PR
+- To check specification progress
+- To update specification status
+- To manage spec lifecycle transitions
+
 <!-- AGENT:PRINCIPLES:START -->
 ## Core Principles
 - Keep specification tracking accurate and current
@@ -234,6 +274,80 @@ draft → active → completed
 - [ ] Technical implementation notes
 - [ ] Related specifications
 <!-- AGENT:CHECKLIST:END -->
+
+## Automated Progress Tracking
+
+<!-- AGENT:PROGRESS_TRACKING:START -->
+### Progress Detection Patterns
+```yaml
+detection_patterns:
+  code_markers:
+    - "# SPEC:{spec_id}:CRITERIA:{n}:COMPLETED"
+    - "// SPEC:{spec_id}:PROGRESS:{percentage}"
+    - "/* SPEC:{spec_id}:IMPLEMENTED */"
+  
+  commit_patterns:
+    - "SPEC:{spec_id}:PROGRESS:{percentage}"
+    - "Completes criterion #{n}"
+    - "Implements {spec_id}"
+  
+  todo_patterns:
+    - "[x] {criterion_text}"
+    - "DONE: {task_description}"
+    - "✓ {acceptance_criterion}"
+```
+
+### Progress Update Logic
+```python
+def update_spec_progress(spec_id):
+    spec = load_spec(spec_id)
+    
+    # Calculate criterion completion
+    completed = count_completed_criteria(spec)
+    total = len(spec.acceptance_criteria)
+    criteria_progress = completed / total
+    
+    # Calculate test completion
+    passed = count_passing_tests(spec)
+    total_tests = len(spec.test_scenarios)
+    test_progress = passed / total_tests if total_tests > 0 else 0
+    
+    # Check implementation status
+    has_implementation = check_implementation_files(spec)
+    impl_progress = 1.0 if has_implementation else 0.0
+    
+    # Weighted calculation
+    total_progress = (
+        criteria_progress * 0.6 +
+        test_progress * 0.3 +
+        impl_progress * 0.1
+    )
+    
+    # Update spec file
+    spec.progress = total_progress
+    spec.updated_at = datetime.now()
+    save_spec(spec)
+```
+
+### Real-Time Progress Updates
+```yaml
+triggers:
+  on_file_save:
+    - Scan for SPEC markers
+    - Update related criteria
+    - Recalculate progress
+  
+  on_todo_complete:
+    - Match TODO to criteria
+    - Mark as completed
+    - Update spec YAML
+  
+  on_test_run:
+    - Parse test results
+    - Update test scenarios
+    - Alert on regressions
+```
+<!-- AGENT:PROGRESS_TRACKING:END -->
 
 ## Error Handling
 

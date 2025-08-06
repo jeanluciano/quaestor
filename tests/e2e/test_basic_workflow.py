@@ -90,7 +90,7 @@ class TestBasicWorkflow:
         )
         assert result.returncode == 0
         assert "init" in result.stdout
-        assert "configure" in result.stdout
+        assert "update" in result.stdout
 
     def test_personal_mode_workflow(self, temp_git_repo, quaestor_command):
         """Test personal mode workflow."""
@@ -121,48 +121,10 @@ class TestBasicWorkflow:
         assert ".quaestor/" in gitignore_content
         assert ".claude/settings.local.json" in gitignore_content
 
-    def test_command_configuration_workflow(self, temp_git_repo, quaestor_command):
-        """Test command configuration workflow."""
-        # 1. Initialize
-        subprocess.run(
-            [quaestor_command, "init", "--mode", "team"]
-            if isinstance(quaestor_command, str)
-            else quaestor_command + ["init", "--mode", "team"],
-            cwd=temp_git_repo,
-            capture_output=True,
-            check=True,
-        )
-
-        # 2. Initialize configuration
-        result = subprocess.run(
-            [quaestor_command, "configure", "--init"]
-            if isinstance(quaestor_command, str)
-            else quaestor_command + ["configure", "--init"],
-            cwd=temp_git_repo,
-            capture_output=True,
-            text=True,
-        )
-        assert result.returncode == 0
-
-        # 3. Apply configuration
-        result = subprocess.run(
-            (
-                [quaestor_command, "configure", "--apply"]
-                if isinstance(quaestor_command, str)
-                else quaestor_command + ["configure", "--apply"]
-            ),
-            cwd=temp_git_repo,
-            capture_output=True,
-            text=True,
-        )
-        assert result.returncode == 0
-        assert "Regenerating" in result.stdout
-        assert "Configured commands" in result.stdout or "configurations to" in result.stdout
-
-        # 4. Verify configuration was applied
-        # Check that command-config.yaml exists
-        config_file = temp_git_repo / ".quaestor" / "command-config.yaml"
-        assert config_file.exists() or "No commands have configurations" in result.stdout
+    # Configure command has been removed
+    # def test_command_configuration_workflow(self, temp_git_repo, quaestor_command):
+    #     """Test command configuration workflow."""
+    #     pass
 
     def test_automation_workflow(self, temp_git_repo, quaestor_command):
         """Test basic workflow without automation command."""

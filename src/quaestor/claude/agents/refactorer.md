@@ -2,7 +2,7 @@
 name: refactorer
 description: Code improvement and refactoring specialist
 tools: Read, Edit, MultiEdit, Grep, Glob, Task
-priority: 7
+
 activation:
   keywords: ["refactor", "improve", "cleanup", "optimize", "restructure", "simplify", "reduce", "extract", "consolidate"]
   context_patterns: ["**/*.legacy.*", "**/deprecated/**", "**/old/**", "**/*_old.*"]

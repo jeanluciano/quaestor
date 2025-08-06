@@ -205,6 +205,16 @@ class BaseHook:
         print(json.dumps(output))
         sys.exit(0)
 
+    def is_drive_mode(self) -> bool:
+        """Check if session is in drive mode (deprecated - always returns True)."""
+        # Mode detection removed - workflow enforcement now handled by agents
+        return True
+
+    def is_framework_mode(self) -> bool:
+        """Check if session is in framework mode (deprecated - always returns False)."""
+        # Mode detection removed - workflow enforcement now handled by agents
+        return False
+
     def run_with_timeout(self, func: Callable, timeout_seconds: int = 60) -> Any:
         """Run a function with timeout protection."""
         try:
@@ -237,6 +247,16 @@ class BaseHook:
         except Exception as e:
             self.logger.error(f"Unexpected error in {self.hook_name}: {e}", exc_info=True)
             self.output_error(f"Unexpected error: {e}", blocking=False)
+
+    # Context-aware utility for checking active work
+
+    def has_active_work(self) -> bool:
+        """Check if there's active work in progress (deprecated - always returns False).
+
+        Workflow state is now managed by the workflow-coordinator agent.
+        """
+        # Mode detection removed - workflow enforcement now handled by agents
+        return False
 
 
 # Utility functions for common operations

@@ -1,10 +1,6 @@
 ---
 allowed-tools: [Read, Edit, MultiEdit, Bash, Grep, Glob, TodoWrite, Task]
 description: "Comprehensive review, validation, commit generation, and PR creation with multi-agent orchestration"
-performance-profile: "complex"
-complexity-threshold: 0.6
-auto-activation: ["quality-validation", "commit-generation", "pr-creation", "final-review"]
-intelligence-features: ["multi-agent-review", "auto-fixing", "smart-commits", "quality-analysis"]
 agent-strategy:
   code_quality: refactorer
   security_review: security
@@ -59,6 +55,14 @@ Sequential Workflow:
 ```
 
 ## Workflow: Validate → Fix → Commit → Review → Ship
+
+**FIRST, use the workflow-coordinator agent to validate workflow state before review.**
+
+The workflow-coordinator will:
+- Verify implementation phase has been completed
+- Check that all tasks in the specification are done
+- Ensure tests are passing before review
+- Coordinate the transition to review/completion phase
 
 ### Phase 1: Comprehensive Validation 🔍
 **Multi-Domain Quality Checks:**

@@ -2,7 +2,9 @@
 name: architect
 description: System design and architecture specialist
 tools: Read, Write, Grep, Glob, TodoWrite, Task
-priority: 9
+model: sonnet
+color: yellow
+
 activation:
   keywords: ["design", "architecture", "structure", "pattern", "framework", "system", "component", "module", "interface", "abstraction"]
   context_patterns: ["**/architecture/**", "**/design/**", "**/*.arch.*", "**/interfaces/**"]

@@ -47,15 +47,6 @@ before_any_action:
         - update_progress: "Mark completed tasks and update progress"
         - document_completion: "Update specification phase status"
       on_violation: "STOP and say: 'Let me check the current specification and declare which task I'm working on'"
-    
-    - id: "hook_compliance"
-      check: "Have I received hook feedback that requires action?"
-      required_actions:
-        - check_hook_output: "Review all hook messages for mandatory directives"
-        - identify_agent_requirements: "Look for 'Use the [agent] agent to [action]' commands"
-        - execute_mandatory_actions: "Follow all hook recommendations immediately"
-        - acknowledge_compliance: "Confirm hook directives are being followed"
-      on_violation: "STOP and say: 'I must follow the hook recommendations before proceeding'"
 ```
 <!-- DATA:pre-action-validations:END -->
 <!-- SECTION:enforcement:validations:END -->
@@ -117,27 +108,6 @@ immutable_rules:
         - update: "progress percentage in tasks.yaml"
         - document: "progress in specification files"
       validation: "Specification files must be updated with progress"
-  
-  - rule_id: "ALWAYS_FOLLOW_HOOKS"
-    priority: "CRITICAL"
-    description: "Hook feedback is MANDATORY and must be followed immediately"
-    enforcement:
-      trigger: "Any hook provides feedback or recommendations"
-      mandatory_actions:
-        - immediate_compliance: "Hook recommendations are REQUIREMENTS, not suggestions"
-        - agent_delegation: "When hook says 'Use the [agent] agent', this is MANDATORY"
-        - workflow_changes: "When hook suggests workflow changes, implement immediately"
-        - blocking_respect: "When hook blocks with exit code 2, STOP all work until resolved"
-      hook_types:
-        - specification_tracker: "Tracks specification progress and completion"
-        - compliance_pre_edit: "Validates compliance before file modifications"
-        - research_workflow_tracker: "Ensures Research → Plan → Implement workflow"
-        - memory_tracker: "Maintains project memory and documentation"
-      validation: "All hook directives must be acknowledged and acted upon"
-      consequences:
-        ignore_hook_blocking: "IMMEDIATE STOP - Hook blocking must be resolved"
-        ignore_agent_suggestion: "VIOLATION - Agent suggestions are mandatory"
-        ignore_workflow_guidance: "VIOLATION - Workflow guidance must be followed"
 ```
 <!-- DATA:rule-definitions:END -->
 
@@ -301,13 +271,13 @@ must_ultrathink_for:
 
 ### Development Approach
 - **Production Quality**: All code must be production-ready with comprehensive error handling
-- **Hook Compliance**: Hook feedback is MANDATORY and must be treated as requirements
+- **Automated Assistance**: Hooks provide helpful automation for common tasks
 - **Contextual Rules**: Generate appropriate rules based on project complexity analysis
 - **Agent Orchestration**: Use multiple agents for complex tasks to improve outcomes
 
 ### Key Components
 - **Template System**: Manages project documentation and context templates
-- **Hook System**: Enforces development workflow and quality standards
+- **Hook System**: Provides automated assistance and workflow enhancements
 - **Agent System**: Coordinates specialized AI agents for different tasks
 - **Specification Tracking**: Tracks work progress against project specifications
 
@@ -327,29 +297,25 @@ must_ultrathink_for:
 
 ## 4. SYSTEM INTEGRATION
 
-### Hook System Compliance
+### Hook System Features
 
-<!-- SECTION:hook-compliance:START -->
-**CRITICAL**: Hook feedback is MANDATORY and must be treated as requirements, not suggestions.
+<!-- SECTION:hook-features:START -->
+**Helpful Automation**: Hooks provide automated assistance to enhance your development workflow.
 
-#### Hook Types and Actions
-- **Compliance Hooks**: `compliance_pre_edit.py` - Fix ALL issues before proceeding
-- **Workflow Hooks**: `workflow_tracker.py` - Follow exact workflow steps
-- **Specification Hooks**: `spec_tracker.py` - Update tracking as required
-- **Context Hooks**: `session_context_loader.py` - Load required context
+#### Available Hooks
+- **Context Hook**: `session_context_loader.py` - Automatically loads active specifications into your session
+- **Progress Hook**: `todo_spec_progress.py` - Automatically updates specification progress when TODOs are completed
 
-#### Required Hook Processing
-1. **Read ALL hook output completely**
-2. **Address EVERY requirement listed**
-3. **Do not proceed until ALL feedback is resolved**
-4. **Treat hook failures as blocking errors**
+#### How Hooks Help You
+1. **Automatic Context Loading**: Active specs are loaded at session start
+2. **Progress Tracking**: Spec progress updates automatically as you complete TODOs
+3. **No Manual Updates Needed**: Hooks handle routine updates in the background
 
-#### Hook Feedback Patterns (MANDATORY)
-- "Please run: Use the [agent] agent to [action]" → MUST spawn that agent immediately
-- "🚫 [BLOCKING MESSAGE]" → MUST resolve before any other work  
-- "Consider using [agent] agent to..." → MANDATORY, not optional
-- Any workflow guidance → MANDATORY to follow
-<!-- SECTION:hook-compliance:END -->
+#### Hook Output
+- Hooks may provide helpful suggestions or status updates
+- Their output is informational to help guide your work
+- You can use hook suggestions to improve your workflow
+<!-- SECTION:hook-features:END -->
 
 ### Specification Tracking System
 
@@ -399,7 +365,7 @@ specification_tracking_mandatory:
 ### Git Integration
 - **Atomic Commits**: Each completed task gets its own commit
 - **Specification Branches**: Work organized by specification
-- **Hook Validation**: Pre-commit hooks enforce quality standards
+- **Quality Standards**: Pre-commit validation for code quality
 
 ## 5. REFERENCE
 
@@ -439,7 +405,7 @@ before_considering_complete:
 - **Quality**: Use pytest with fixtures and parameterization
 
 ### Troubleshooting
-- **Hook Issues**: Check .claude/settings.json and hook output
+- **Hook Configuration**: Check .claude/settings.json for hook setup
 - **Template Problems**: Verify template syntax and placeholders
 - **Agent Coordination**: Ensure proper agent delegation patterns
 - **Specification Tracking**: Validate .quaestor/specs/ structure
@@ -453,19 +419,6 @@ rule_violations:
     - stop_current_work: true
     - acknowledge_violation: "I violated [RULE_NAME]. Let me correct this."
     - revert_to_compliance: true
-  
-  hook_compliance_violations:
-    ignore_hook_blocking:
-      - severity: "CRITICAL"
-      - immediate_action: "FULL STOP"
-      - response: "I am ignoring mandatory hook feedback. This violates ALWAYS_FOLLOW_HOOKS rule."
-      - correction: "Acknowledge hook message and execute all required actions before proceeding"
-    
-    ignore_agent_delegation:
-      - severity: "HIGH"
-      - immediate_action: "STOP AND DELEGATE"
-      - response: "Hook recommended using [AGENT] agent but I'm proceeding without delegation."
-      - correction: "Immediately spawn the recommended agent and delegate the specified work"
 ```
 <!-- DATA:violation-handling:END -->
 
@@ -476,7 +429,6 @@ rule_violations:
 - Check active specs: `grep -r 'status: in_progress' .quaestor/specs/`
 - Mark subtask complete: `Edit tasks.yaml: '- Create ABC' → '- Create ABC # COMPLETED'`
 - Update progress: `Change 'progress: 25%' to reflect actual completion`
-- Hook compliance: Address ALL hook feedback before proceeding
 
 ### Development Lifecycle
 1. **Project Start**: Initialize with proper Quaestor configuration
@@ -534,16 +486,8 @@ rule_violations:
 
 ### Troubleshooting Guide
 **Common Issues:**
-- Hook failures: Check .claude/settings.json configuration
+- Hook configuration: Check .claude/settings.json setup
 - Template errors: Verify template syntax and placeholders
 - Agent coordination: Ensure proper delegation patterns
 - Specification tracking: Validate .quaestor/specs/ structure
 - Performance issues: Profile and optimize bottlenecks
-
-**Emergency Procedures:**
-- Production incidents: Follow incident response playbook
-- Security breaches: Implement breach response protocol
-- Data corruption: Execute data recovery procedures
-- Service outages: Follow service restoration checklist
-
-**Hook feedback ensures quality, compliance, and proper workflow. Ignoring hooks undermines the entire development process.**

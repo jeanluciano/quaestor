@@ -2,10 +2,10 @@
 name: workflow-coordinator
 description: MANDATORY workflow enforcer for ALL implementation requests. Automatically invoked to ensure Research→Plan→Implement workflow compliance.
 tools: Read, Write, TodoWrite, Task, Grep, Glob
-priority: 8
+
 activation:
   keywords: ["workflow", "coordinate", "phase", "transition", "orchestrate", "handoff"]
-  context_patterns: ["**/.workflow_state", "**/research/**", "**/planning/**", "**/specs/**"]
+  context_patterns: ["**/research/**", "**/planning/**", "**/specs/**", "**/.quaestor/specs/**"]
 ---
 
 # Workflow Coordinator Agent
@@ -167,34 +167,41 @@ sequential_agents:
 ## Workflow State Management
 
 <!-- AGENT:STATE_MANAGEMENT:START -->
-### State File Structure (.workflow_state)
-```json
-{
-  "phase": "researching|planning|implementing",
-  "started_at": "ISO 8601 timestamp",
-  "last_activity": "ISO 8601 timestamp",
-  "last_research": "ISO 8601 timestamp",
-  "last_plan": "ISO 8601 timestamp",
-  "files_examined": 5,
-  "research_files": ["path1", "path2"],
-  "implementation_files": ["path3", "path4"],
-  "agents_used": ["researcher", "planner"],
-  "phase_transitions": [
-    {
-      "from": "idle",
-      "to": "researching", 
-      "timestamp": "ISO 8601",
-      "trigger": "user request"
-    }
-  ]
-}
+### TODO-Based State Tracking
+Instead of a state file, workflow state is tracked through TODOs and specifications:
+
+```yaml
+workflow_tracking:
+  phase_identification:
+    - Check active TODOs for current phase
+    - Research TODOs indicate research phase
+    - Planning TODOs indicate planning phase
+    - Implementation TODOs indicate implementation phase
+  
+  progress_tracking:
+    - Count completed vs total TODOs per phase
+    - Use todo_spec_progress.py hook for auto-updates
+    - Monitor specification status in .quaestor/specs/
+  
+  phase_evidence:
+    research_phase:
+      - TODOs: ["Analyze existing patterns", "Review similar implementations", "Document findings"]
+      - Artifacts: Research notes in specifications
+    
+    planning_phase:
+      - TODOs: ["Create specification", "Define acceptance criteria", "Break down tasks"]
+      - Artifacts: Specification in draft/ folder
+    
+    implementation_phase:
+      - TODOs: ["Implement feature X", "Add tests for Y", "Update documentation"]
+      - Artifacts: Code changes, test files, updated specs
 ```
 
 ### State Validation Rules
-- No phase skipping (must go through all phases)
-- Minimum time in each phase
+- No phase skipping (must complete phase TODOs)
 - Required artifacts before transition
-- Agent compatibility checks
+- Specification lifecycle alignment
+- TODO completion tracking
 <!-- AGENT:STATE_MANAGEMENT:END -->
 
 ## Violation Detection and Recovery
@@ -202,51 +209,55 @@ sequential_agents:
 <!-- AGENT:VIOLATIONS:START -->
 ### Common Violations
 1. **Skipping Research Phase**
-   - Detection: Edit attempts with files_examined = 0
-   - Recovery: Block edit, deploy researcher
+   - Detection: No research TODOs created or completed
+   - Recovery: Create research TODOs, deploy researcher
    - Message: "Research required before implementation"
 
 2. **Premature Implementation**
-   - Detection: No active specification
+   - Detection: No specification in draft/ or active/ folders
    - Recovery: Deploy planner for specification creation
    - Message: "Plan and specification required"
 
 3. **Stalled Workflow**
-   - Detection: No activity > 2 hours
-   - Recovery: Assess state, suggest next action
+   - Detection: No TODO updates in current session
+   - Recovery: Review current TODOs, suggest next action
    - Message: "Workflow stalled, suggesting next step"
 
 4. **Incomplete Handoff**
-   - Detection: Phase transition without context
-   - Recovery: Gather context, create handoff
+   - Detection: Phase TODOs complete but no handoff created
+   - Recovery: Gather context, create handoff documentation
    - Message: "Creating handoff documentation"
 <!-- AGENT:VIOLATIONS:END -->
 
-## Integration with Hooks
+## Integration with Hooks and Tools
 
 <!-- AGENT:HOOK_INTEGRATION:START -->
-### Hook Coordination
-- **research_workflow_tracker.py**: Monitors research progress
-- **compliance_pre_edit.py**: Enforces workflow before edits
-- **session_context_loader.py**: Loads workflow state at start
-- **spec_tracker.py**: Ensures specification alignment
+### Available Hooks
+- **session_context_loader.py**: Loads active specifications at session start
+- **todo_spec_progress.py**: Automatically updates spec progress when TODOs are completed
 
-### Event Responses
+### Workflow Tracking via TODOs
 ```yaml
-on_research_complete:
-  - Update workflow state
-  - Generate planner handoff
-  - Suggest: "Use planner agent"
+workflow_tracking:
+  - Use TodoWrite to track phase activities
+  - Monitor TODO completion for phase transitions
+  - Update specifications through TODO progress
 
-on_plan_complete:
-  - Verify specification created
-  - Generate implementer handoff
-  - Suggest: "Use implementer agent"
+phase_transition_triggers:
+  research_complete:
+    - All research TODOs marked completed
+    - Generate planner handoff
+    - Suggest: "Use planner agent"
 
-on_implementation_start:
-  - Check prerequisites
-  - Load plan context
-  - Track progress
+  plan_complete:
+    - All planning TODOs marked completed
+    - Verify specification created in draft/
+    - Suggest: "Use implementer agent"
+
+  implementation_progress:
+    - Monitor TODO completion
+    - Auto-update spec progress via hook
+    - Track completed vs remaining tasks
 ```
 <!-- AGENT:HOOK_INTEGRATION:END -->
 

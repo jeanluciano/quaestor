@@ -2,7 +2,7 @@
 name: reviewer
 description: Comprehensive code review specialist focusing on quality, security, and best practices. Use after implementation or before shipping code.
 tools: Read, Grep, Glob, Bash, Task
-priority: 8
+
 activation:
   keywords: ["review", "quality", "audit", "inspect", "validate", "assess", "evaluate", "critique"]
   context_patterns: ["code_review", "quality_check", "pre_merge"]
