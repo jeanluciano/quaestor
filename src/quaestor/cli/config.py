@@ -209,7 +209,7 @@ def get_config_value(
         elif format == "yaml":
             console.print(yaml.dump(value, default_flow_style=False))
         elif format == "value":
-            if isinstance(value, (dict, list)):
+            if isinstance(value, dict | list):
                 console.print(json.dumps(value, indent=2))
             else:
                 console.print(str(value))

@@ -327,7 +327,7 @@ class ConfigManager:
 
         # Validate main configuration
         try:
-            main_config = self.get_main_config()
+            self.get_main_config()
             # Main config validation passed if we get here
 
         except ConfigurationError as e:

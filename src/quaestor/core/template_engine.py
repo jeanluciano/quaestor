@@ -399,7 +399,7 @@ def _evaluate_condition(condition_expr: str, data: dict[str, Any]) -> bool:
             return value
         if isinstance(value, str):
             return value.lower() in ("true", "1", "yes", "on")
-        if isinstance(value, (int, float)):
+        if isinstance(value, int | float):
             return value != 0
         return value is not None
 

@@ -5,6 +5,51 @@ All notable changes to Quaestor will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.2] - 2025-08-06
+
+### Added
+- **Language Configuration Integration System** - Dynamic template generation
+  - Modern `ConfigManager` with 5-layer configuration precedence
+  - Pydantic-based type-safe configuration schemas
+  - 50+ language-specific template placeholders
+  - Dynamic `rules.md` template for language-specific guidance
+  - Templates now actively use `languages.yaml` for customization
+
+- **CLI Configuration Management** - New `quaestor config` commands
+  - `config show` - Display effective configuration with layer details
+  - `config get <key>` - Get specific values using dot notation
+  - `config set <key> <value>` - Set configuration overrides
+  - `config validate` - Validate configuration and show issues
+  - `config reset` - Reset configurations to defaults
+  - `config init` - Initialize default configuration files
+
+- **Configuration Examples** - Comprehensive example files
+  - `.quaestor/languages.yaml.example` - Language override examples
+  - `.quaestor/config.yaml.example` - Main configuration examples
+  - Detailed documentation for all configuration options
+
+### Changed
+- **Simplified Configuration Schema** - Removed unused fields
+  - Removed `QualityConfig`, `WorkflowConfig`, `ConfigModeEnum`, `CommandConfig`
+  - Simplified `HooksConfig` to just `enabled` and `strict_mode`
+  - Focused on essential language configurations only
+
+- **Template System Enhancement** - Dynamic content generation
+  - Templates now populated from layered configuration system
+  - Support for conditional sections based on language features
+  - Automatic adaptation to detected project type
+
+### Removed
+- **Backward Compatibility Layer** - Cleaner codebase
+  - Removed `QuaestorConfig` class (use `ConfigManager` directly)
+  - Removed legacy configuration methods
+  - Direct use of modern configuration system throughout
+
+### Fixed
+- **Template Processing** - Added `rules.md` to TEMPLATE_FILES
+  - Rules template now properly generated during initialization
+  - Templates correctly populated with language-specific settings
+
 ## [0.6.1] - 2025-08-06
 
 ### Removed
