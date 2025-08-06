@@ -1,0 +1,99 @@
+# Project-specific Language Configuration Overrides
+# This file allows you to customize language settings for this specific project.
+# It follows the same structure as src/quaestor/core/languages.yaml but only
+# contains overrides that are specific to your project needs.
+#
+# Configuration Precedence (highest to lowest):
+# 1. Runtime API parameters (programmatic)
+# 2. .quaestor/languages.yaml (this file) - project-specific language overrides
+# 3. .quaestor/config.yaml - general project configuration  
+# 4. src/quaestor/core/languages.yaml - base language configurations
+# 5. Built-in defaults - fallback for missing values
+#
+# Usage:
+# 1. Copy this file to .quaestor/languages.yaml
+# 2. Uncomment and modify the sections you want to override
+# 3. Only include the specific settings you want to change
+# 4. Other settings will inherit from the base language configuration
+
+# Example: Python project with stricter linting and higher coverage
+# python:
+#   lint_command: "ruff check . --extend-select=E,W,F,C,N"  # Stricter linting rules
+#   coverage_threshold: 95                                   # Higher coverage requirement
+#   type_check_command: "mypy . --strict"                   # Strict type checking
+#   custom_field: "project-specific-value"                  # Add custom fields
+
+# Example: JavaScript project with project-specific tooling
+# javascript:
+#   lint_command: "npx eslint . --config .eslintrc.custom.js"  # Custom ESLint config
+#   format_command: "npx prettier --write . --config .prettierrc.custom"  # Custom Prettier
+#   test_command: "npm run test:ci"                          # Custom test script
+#   coverage_threshold: 85                                   # Different coverage target
+
+# Example: TypeScript configuration (inherits from javascript base)
+# typescript:
+#   primary_language: typescript
+#   lint_command: "npx eslint . --ext .ts,.tsx"
+#   format_command: "npx prettier --write . --parser typescript"
+#   type_check_command: "npx tsc --noEmit --strict"
+#   test_command: "npm run test -- --preset ts-jest"
+#   coverage_threshold: 90
+#   type_checking: true
+
+# Example: Go project overrides
+# go:
+#   lint_command: "golangci-lint run --enable-all"          # Enable all linters
+#   format_command: "gofmt -w . && goimports -w ."         # Format + imports
+#   coverage_threshold: 85                                   # Higher coverage
+#   performance_target_ms: 50                               # Stricter performance
+
+# Example: Rust project with cargo-specific commands
+# rust:
+#   lint_command: "cargo clippy -- -D warnings"            # Treat warnings as errors
+#   format_command: "cargo fmt --check"                     # Check formatting
+#   test_command: "cargo test --release"                    # Test in release mode
+#   coverage_command: "cargo tarpaulin --out Xml"          # Coverage with tarpaulin
+#   coverage_threshold: 90                                   # High coverage target
+
+# Example: Custom language configuration
+# custom_language:
+#   primary_language: custom_language
+#   lint_command: "custom-linter check ."
+#   format_command: "custom-formatter --fix ."
+#   test_command: "custom-test-runner"
+#   coverage_command: "custom-coverage --report"
+#   type_check_command: null                                # No type checking available
+#   security_scan_command: "custom-security-scanner"
+#   coverage_threshold: 80
+#   type_checking: false
+#   performance_target_ms: 300
+#   commit_prefix: "feat"
+#   quick_check_command: "custom-linter check . && custom-test-runner --fast"
+#   full_check_command: "custom-linter check . && custom-formatter --check && custom-test-runner"
+#   precommit_install_command: "custom-hooks install"
+
+# Available configuration fields for each language:
+# - primary_language: string          # Language identifier
+# - lint_command: string             # Command to run linter
+# - format_command: string           # Command to format code  
+# - test_command: string             # Command to run tests
+# - coverage_command: string         # Command to run coverage analysis
+# - type_check_command: string|null  # Command for type checking (null if not available)
+# - security_scan_command: string|null  # Command for security scanning
+# - profile_command: string|null     # Command for performance profiling
+# - coverage_threshold: number|null  # Minimum coverage percentage
+# - type_checking: boolean           # Whether language supports type checking
+# - performance_target_ms: number    # Target response time in milliseconds
+# - commit_prefix: string           # Preferred git commit prefix
+# - quick_check_command: string     # Fast validation command
+# - full_check_command: string      # Comprehensive validation command  
+# - precommit_install_command: string # Command to install pre-commit hooks
+# - doc_style_example: string|null  # Example of documentation style
+
+# Tips:
+# - Use 'quaestor config show' to see the effective configuration
+# - Use 'quaestor config get languages.python.lint_command' to get specific values
+# - Use 'quaestor config set languages.python.coverage_threshold 95' via CLI
+# - Use 'quaestor config validate' to check for configuration errors
+# - Set values to null to explicitly disable inherited settings
+# - Add custom fields for project-specific needs

@@ -282,12 +282,14 @@ must_ultrathink_for:
 - **Specification Tracking**: Tracks work progress against project specifications
 
 ### Code Style Guidelines
-- **Language**: Python 3.12+ with type hints
-- **Formatting**: Ruff for linting and formatting
-- **Testing**: Pytest with comprehensive coverage
-- **Documentation**: Google-style docstrings
+- **Language**: {{ language_display_name }}{% if primary_language != "unknown" %} ({{ primary_language }}){% endif %}
+- **Formatting**: {{ code_formatter }}
+- **Linting**: {{ lint_command }}
+- **Testing**: {{ testing_framework }}
+- **Documentation**: {{ documentation_style }}
 - **Error Handling**: Comprehensive exception handling with proper logging
-- **Imports**: Standard library, third-party, local imports (in order)
+- **File Organization**: {{ file_organization }}
+- **Naming Convention**: {{ naming_convention }}
 
 ### Architecture Patterns
 - **Dependency Injection**: Use for testability and modularity
@@ -491,3 +493,79 @@ rule_violations:
 - Agent coordination: Ensure proper delegation patterns
 - Specification tracking: Validate .quaestor/specs/ structure
 - Performance issues: Profile and optimize bottlenecks
+
+## {{ project_name }} Project Configuration
+
+### Language Environment
+- **Project Type**: {{ project_type }}
+- **Primary Language**: {{ primary_language }}
+- **Configuration Version**: {{ config_system_version }}
+{% if strict_mode %}- **Mode**: Strict (enforced due to project complexity)
+{% else %}- **Mode**: Standard
+{% endif %}
+
+### Development Commands
+```bash
+# Quick validation
+{{ quick_check_command }}
+
+# Full validation suite
+{{ full_check_command }}
+
+# Testing and coverage
+{{ test_command }}
+{{ coverage_command }}
+
+{% if type_checking_enabled %}# Type checking
+{{ type_check_command }}
+{% endif %}
+{% if has_security_scanner == "true" %}# Security scanning
+{{ security_scan_command }}
+{% endif %}
+```
+
+### Quality Standards for {{ language_display_name }}
+- **Coverage Target**: {{ coverage_threshold_percent }}
+- **Performance Budget**: {{ performance_budget }}
+{% if type_checking_enabled %}- **Type Safety**: Required ({{ type_check_command }})
+{% endif %}{% if has_security_scanner == "true" %}- **Security Scanning**: Enabled ({{ security_scanner }})
+{% endif %}- **Code Style**: {{ naming_convention }}
+
+### Project Tools and Dependencies
+- **Dependency Management**: {{ dependency_management }}
+- **Build Tool**: {{ build_tool }}
+- **Package Manager**: {{ package_manager }}
+{% if language_server %}- **IDE Support**: {{ language_server }}
+{% endif %}{% if virtual_env %}- **Environment Management**: {{ virtual_env }}
+{% endif %}
+
+### Documentation Style
+{{ documentation_style }}
+
+**Example Format:**
+```{{ primary_language }}
+{{ doc_style_example }}
+```
+
+### Error Handling Pattern for {{ language_display_name }}
+```{{ primary_language }}
+{{ error_handling_pattern }}
+```
+
+### Development Workflow
+1. **Setup**: {{ precommit_install_command }}
+2. **Development**: Follow {{ file_organization }}
+3. **Quality Check**: {{ quick_check_command }}
+4. **Testing**: {{ test_command }}
+5. **Commit**: Use "{{ commit_prefix }}: description" format
+
+### Project Metrics
+{% if main_config_available %}- **Configuration**: Advanced (layered configuration system)
+{% else %}- **Configuration**: Basic (static configuration)
+{% endif %}- **Current Coverage**: {{ current_coverage }}
+- **Technical Debt**: {{ current_debt }}
+- **Performance**: Target {{ performance_budget }}
+
+---
+
+*This project uses {{ language_display_name }} with Quaestor v{{ config_system_version }}*

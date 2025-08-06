@@ -195,6 +195,12 @@ output:
 **CRITICAL**: When creating specifications, use ACTUAL VALUES not placeholder templates.
 All values must be concrete and valid - no brackets, no placeholders, no template variables.
 
+**⚠️ FILE CREATION RULE**: Create exactly ONE specification file per request in `.quaestor/specs/draft/`.
+- Do NOT create multiple draft files
+- Do NOT create example files alongside the requested specification
+- Do NOT save intermediate attempts or alternative formats
+- If you need to revise, overwrite the single file rather than creating a new one
+
 ### ✅ CORRECT Approach - Use Real Values:
 ```yaml
 id: spec-refactor-001  # ✅ Actual ID, no brackets
@@ -255,7 +261,24 @@ description: [Detailed description]  # ❌ Template placeholder
    # NOT: spec/auth/001 or ../spec or [spec-type-001]
    ```
 
-### Complete Specification Example
+6. **Object Properties in Lists**: Always use separate lines
+   ```yaml
+   examples:
+     - username: john_doe      # ✅ Each property on its own line
+       password: SecurePass123
+       role: admin
+   # NOT: - username: john, password: pass  # ❌ Comma-separated will break YAML
+   ```
+
+7. **Strings with Colons**: Always quote them
+   ```yaml
+   given: "User config with coverage_threshold: 95"  # ✅ Quoted because of colon
+   result: "Status: active"                          # ✅ Quoted 
+   # NOT: given: User config with threshold: 95      # ❌ Unquoted colon breaks YAML
+   ```
+
+### Complete Specification Example (REFERENCE ONLY - DO NOT CREATE THIS FILE)
+**📚 This is a reference example to show the correct format. Do NOT save this example as a file.**
 ```yaml
 id: spec-auth-001
 title: User Authentication System
@@ -351,14 +374,16 @@ test_scenarios:
     when: Login endpoint is called
     then: JWT token is returned with user data
     examples:
-      - username: test@example.com, password: Test123!
+      - username: test@example.com
+        password: Test123!
   - name: Invalid password
     description: Login fails with wrong password
     given: Valid username but wrong password
     when: Login endpoint is called
     then: 401 error returned without user details
     examples:
-      - username: test@example.com, password: WrongPass
+      - username: test@example.com
+        password: WrongPass
 
 # Implementation guidance
 metadata:

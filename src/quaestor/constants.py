@@ -51,6 +51,7 @@ TEMPLATE_FILES = {
     "context.md": "CONTEXT.md",
     "architecture.md": "ARCHITECTURE.md",
     "specflow.md": "SPECFLOW.md",
+    "rules.md": "RULES.md",
 }
 
 # Template base path within assets

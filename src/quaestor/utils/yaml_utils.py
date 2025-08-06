@@ -2,6 +2,7 @@
 
 import json
 from datetime import datetime
+from enum import Enum
 from pathlib import Path
 from typing import Any
 
@@ -58,6 +59,19 @@ def datetime_representer(dumper, data: datetime) -> Any:
         YAML scalar node with ISO-formatted datetime string
     """
     return dumper.represent_scalar("tag:yaml.org,2002:str", data.isoformat())
+
+
+def enum_representer(dumper, data: Enum) -> Any:
+    """Custom YAML representer for enum objects.
+
+    Args:
+        dumper: YAML dumper instance
+        data: Enum object to represent
+
+    Returns:
+        YAML scalar node with enum value
+    """
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data.value)
 
 
 def register_datetime_representer() -> None:
@@ -130,8 +144,12 @@ def save_yaml(file_path: Path, data: dict[str, Any], create_dirs: bool = True) -
         # Try to use PyYAML if available
         import yaml
 
-        # Register datetime representer to handle datetime objects
+        # Register custom representers to handle special objects
         yaml.add_representer(datetime, datetime_representer)
+        yaml.add_representer(Enum, enum_representer)
+
+        # Note: ConfigModeEnum was removed as part of configuration simplification
+        # Enum handling is now done generically above
 
         with open(file_path, "w", encoding="utf-8") as f:
             yaml.safe_dump(data, f, default_flow_style=False, sort_keys=False)
