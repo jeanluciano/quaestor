@@ -33,24 +33,6 @@ app.add_typer(config_app, name="config", help="Configuration management commands
 # Add hook commands (hidden from main help)
 app.add_typer(hooks_app, name="hook", help="Claude hook commands (for internal use)")
 
-# Add automation subcommand if available
-try:
-    from quaestor.automation import app as automation_app
-
-    app.add_typer(automation_app, name="automation", help="Claude Code automation management")
-except ImportError:
-    # Automation module not available
-    pass
-
-# Add A1 integration if available
-try:
-    from quaestor.integrations import add_a1_to_cli
-
-    add_a1_to_cli(app)
-except ImportError:
-    # A1 integration not available
-    pass
-
 
 def main():
     """Entry point for the CLI."""

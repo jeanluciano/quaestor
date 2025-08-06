@@ -270,10 +270,13 @@ description: [Detailed description]  # ❌ Template placeholder
    # NOT: - username: john, password: pass  # ❌ Comma-separated will break YAML
    ```
 
-7. **Strings with Colons**: Always quote them
+7. **Strings with Special Characters**: Always quote properly
    ```yaml
    given: "User config with coverage_threshold: 95"  # ✅ Quoted because of colon
-   result: "Status: active"                          # ✅ Quoted 
+   result: "Status: active"                          # ✅ Quoted
+   contains: '--project (not --team)'                # ✅ Single quotes for strings with quotes
+   output: 'Shows "--project" in help'               # ✅ Single quotes when containing double quotes
+   # NOT: contains: "--project" not "--team"         # ❌ Mixing quotes breaks YAML
    # NOT: given: User config with threshold: 95      # ❌ Unquoted colon breaks YAML
    ```
 
@@ -384,6 +387,15 @@ test_scenarios:
     examples:
       - username: test@example.com
         password: WrongPass
+  - name: CLI help shows updated options
+    description: Help text displays new terminology
+    given: Command line interface
+    when: User requests help for init command
+    then: 'Help shows --project option instead of --team'
+    examples:
+      - command: quaestor init --help
+        output: 'Contains --project flag'
+        validates: 'Option renamed successfully'
 
 # Implementation guidance
 metadata:

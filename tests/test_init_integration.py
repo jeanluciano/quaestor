@@ -193,9 +193,8 @@ class TestInitIntegration:
             result = runner.invoke(app, ["init", "--mode", "team"])
 
         assert result.exit_code == 0
-        assert "Installing hook files:" in result.output
-        # Check that hooks section exists in output (hook count may vary)
-        assert "hook files" in result.output or "Installing hook files" in result.output
+        # Check that hooks are configured (uvx commands, no files to copy in team mode)
+        assert "Hooks configured to use uvx commands" in result.output or "hook" in result.output.lower()
 
         # Check that settings.json was created with hook configuration
         settings_file = temp_git_project / ".claude" / "settings.json"
@@ -210,9 +209,9 @@ class TestInitIntegration:
         settings_file = temp_git_project / ".claude" / "settings.json"
         settings_content = settings_file.read_text()
 
-        # Check for new hook structure
-        assert "session_context_loader.py" in settings_content
-        assert "todo_spec_progress.py" in settings_content
+        # Check for new hook structure - uvx commands
+        assert "session-context-loader" in settings_content
+        assert "todo-spec-progress" in settings_content
 
         # Should not have old paths
         assert "hooks/implementation_declaration.py" not in settings_content

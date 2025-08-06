@@ -57,6 +57,7 @@ def _init_personal_mode(target_dir: Path, force: bool):
     # Set up directories
     claude_dir = target_dir / ".claude"
     quaestor_dir = target_dir / QUAESTOR_DIR_NAME
+    hooks_dir = quaestor_dir / "hooks"
     manifest_path = quaestor_dir / "manifest.json"
 
     # Load or create manifest
@@ -97,6 +98,7 @@ def _init_personal_mode(target_dir: Path, force: bool):
     # Create directories
     claude_dir.mkdir(exist_ok=True)
     quaestor_dir.mkdir(exist_ok=True)
+    hooks_dir.mkdir(exist_ok=True)
     (claude_dir / "commands").mkdir(exist_ok=True)
     console.print(f"[green]Created .claude directory (personal mode) in {target_dir}[/green]")
 
@@ -116,6 +118,20 @@ def _init_personal_mode(target_dir: Path, force: bool):
         console.print("  [blue]✓[/blue] Created settings.local.json for hooks (uses uvx commands)")
     except Exception as e:
         console.print(f"  [yellow]⚠[/yellow] Could not create settings.local.json: {e}")
+
+    # Copy hook files to .quaestor/hooks for personal mode
+    console.print("\n[blue]Installing hook files:[/blue]")
+    hook_files = ["base.py", "session_context_loader.py", "todo_spec_progress.py"]
+    hooks_copied = 0
+    for hook_file in hook_files:
+        try:
+            hook_content = pkg_resources.read_text("quaestor.claude.hooks", hook_file)
+            (hooks_dir / hook_file).write_text(hook_content)
+            console.print(f"  [blue]✓[/blue] Installed {hook_file}")
+            hooks_copied += 1
+        except Exception as e:
+            console.print(f"  [yellow]⚠[/yellow] Could not install {hook_file}: {e}")
+    console.print(f"  [green]Installed {hooks_copied} hook files[/green]")
 
     # Copy system files to .quaestor directory (for manifest tracking)
     _copy_system_files(quaestor_dir, manifest, target_dir)
@@ -256,6 +272,7 @@ Please read the following files in order:
 @.quaestor/CONTEXT.md - Complete AI development context and rules
 @.quaestor/ARCHITECTURE.md - System design and structure (if available)
 @.quaestor/SPECFLOW.md
+@.quaestor/RULES.md
 @.quaestor/specs/active/ - Active specifications and implementation details
 <!-- QUAESTOR CONFIG END -->
 

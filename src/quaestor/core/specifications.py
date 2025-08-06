@@ -85,7 +85,7 @@ class Contract:
 
 
 @dataclass
-class TestScenario:
+class SpecTestScenario:
     """Test scenario for a specification."""
 
     name: str
@@ -110,8 +110,8 @@ class Specification:
     use_cases: list[str] = field(default_factory=list)
     contract: Contract = field(default_factory=Contract)
     acceptance_criteria: list[str] = field(default_factory=list)
-    test_scenarios: list[TestScenario] = field(default_factory=list)
-    dependencies: list[str] = field(default_factory=list)
+    test_scenarios: list[SpecTestScenario] = field(default_factory=list)
+    dependencies: dict[str, list[str]] = field(default_factory=lambda: {"requires": [], "blocks": [], "related": []})
     branch: str | None = None
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
@@ -809,7 +809,7 @@ class SpecificationManager:
         test_scenarios = []
         for ts_data in data.get("test_scenarios", []):
             test_scenarios.append(
-                TestScenario(
+                SpecTestScenario(
                     name=ts_data["name"],
                     description=ts_data["description"],
                     given=ts_data["given"],
@@ -831,7 +831,7 @@ class SpecificationManager:
             contract=contract,
             acceptance_criteria=data.get("acceptance_criteria", []),
             test_scenarios=test_scenarios,
-            dependencies=data.get("dependencies", []),
+            dependencies=data.get("dependencies", {"requires": [], "blocks": [], "related": []}),
             branch=data.get("branch"),
             created_at=self._parse_datetime(data.get("created_at")),
             updated_at=self._parse_datetime(data.get("updated_at")),

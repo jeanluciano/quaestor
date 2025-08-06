@@ -14,8 +14,8 @@ from quaestor.core.specifications import (
     SpecManifest,
     SpecPriority,
     SpecStatus,
+    SpecTestScenario,
     SpecType,
-    TestScenario,
 )
 
 
@@ -50,7 +50,7 @@ class TestSpecificationDataStructures:
 
     def test_test_scenario_creation(self):
         """Test TestScenario dataclass creation."""
-        scenario = TestScenario(
+        scenario = SpecTestScenario(
             name="Happy path test",
             description="Test successful operation",
             given="Valid input data",
@@ -384,7 +384,7 @@ class TestSpecificationSerialization:
             error_handling={"validation": "Return 400"},
         )
 
-        test_scenario = TestScenario(
+        test_scenario = SpecTestScenario(
             name="Happy path",
             description="Test successful execution",
             given="Valid input",
@@ -405,7 +405,7 @@ class TestSpecificationSerialization:
             contract=contract,
             acceptance_criteria=["Criterion 1", "Criterion 2"],
             test_scenarios=[test_scenario],
-            dependencies=["dep-001", "dep-002"],
+            dependencies={"requires": ["dep-001"], "blocks": [], "related": ["dep-002"]},
             branch="feature/test-branch",
             metadata={"author": "test", "version": "1.0"},
         )
@@ -559,7 +559,7 @@ class TestSpecificationErrorHandling:
             # Missing required fields
         }
 
-        with pytest.raises(KeyError):
+        with pytest.raises(ValueError, match="Schema validation failed"):
             spec_manager._deserialize_spec(incomplete_data)
 
     @patch("quaestor.utils.yaml_utils.load_yaml")
