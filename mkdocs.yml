@@ -88,9 +88,6 @@ nav:
     - Overview: hooks/overview.md
     - Specification Tracking: hooks/spec-tracking.md
     - Session Context Loader: hooks/session-context-loader.md
-    - Research Workflow Tracker: hooks/research-workflow-tracker.md
-    - Compliance Hooks: hooks/compliance.md
-    - File Change Tracker: hooks/file-change-tracker.md
 
 extra:
   social:
