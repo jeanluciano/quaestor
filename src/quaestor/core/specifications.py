@@ -4,15 +4,18 @@ This module implements the core specification-driven development functionality,
 allowing users to define, track, and manage specifications as first-class entities.
 """
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from functools import wraps
 from pathlib import Path
 from typing import Any
 
-from quaestor.utils.yaml_utils import load_yaml, save_yaml
+from quaestor.utils.yaml_utils import load_yaml, normalize_datetime, save_yaml
 
 from .folder_manager import FolderManager
+from .spec_schema import SpecificationSchema
 
 
 class SpecType(Enum):
@@ -43,6 +46,31 @@ class SpecPriority(Enum):
     HIGH = "high"
     MEDIUM = "medium"
     LOW = "low"
+
+
+def validate_spec_operation(func: Callable) -> Callable:
+    """Decorator for validating specification operations.
+
+    Provides error boundaries and validation for spec operations.
+    """
+
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        try:
+            return func(self, *args, **kwargs)
+        except (ValueError, TypeError) as e:
+            # Log the error with context
+            if hasattr(self, "logger"):
+                self.logger.error(f"Validation error in {func.__name__}: {e}")
+            # Re-raise with more context
+            raise ValueError(f"Specification validation failed in {func.__name__}: {e}") from e
+        except Exception as e:
+            # Catch unexpected errors
+            if hasattr(self, "logger"):
+                self.logger.error(f"Unexpected error in {func.__name__}: {e}", exc_info=True)
+            raise RuntimeError(f"Specification operation failed: {e}") from e
+
+    return wrapper
 
 
 @dataclass
@@ -176,6 +204,7 @@ class SpecificationManager:
             return save_yaml(self.manifest_path, manifest_data)
         return False
 
+    @validate_spec_operation
     def create_specification(
         self,
         title: str,
@@ -480,6 +509,145 @@ class SpecificationManager:
 
         return spec_id
 
+    def _parse_datetime(self, value: Any) -> datetime:
+        """Parse datetime value with robust error handling and validation.
+
+        Args:
+            value: DateTime value in various formats
+
+        Returns:
+            Parsed datetime object
+
+        Raises:
+            ValueError: If datetime cannot be parsed or is invalid
+            TypeError: If value type is not supported for datetime parsing
+        """
+        if value is None:
+            return datetime.now()
+
+        if isinstance(value, datetime):
+            # Validate datetime object is not corrupt
+            try:
+                _ = value.isoformat()  # Test serialization
+                return value
+            except (AttributeError, ValueError) as e:
+                raise ValueError(f"Corrupt datetime object: {e}")
+
+        if isinstance(value, str):
+            if not value.strip():
+                raise ValueError("Empty datetime string provided")
+
+            try:
+                # Handle common ISO format variations
+                test_value = value.strip()
+
+                # Handle 'Z' timezone suffix (Zulu time)
+                if test_value.endswith("Z"):
+                    test_value = test_value[:-1] + "+00:00"
+
+                # Handle timestamp formats without timezone info
+                elif "T" in test_value and "+" not in test_value and "Z" not in test_value:
+                    # Assume local time for naive timestamps
+                    pass
+
+                parsed_dt = datetime.fromisoformat(test_value)
+
+                # Validate parsed datetime is reasonable (not too far in past/future)
+                now = datetime.now()
+                min_year = 1900
+                max_year = now.year + 100
+
+                if parsed_dt.year < min_year or parsed_dt.year > max_year:
+                    raise ValueError(f"Datetime year {parsed_dt.year} outside reasonable range ({min_year}-{max_year})")
+
+                return parsed_dt
+
+            except ValueError as e:
+                # Provide more detailed error context
+                if "Invalid isoformat string" in str(e):
+                    raise ValueError(
+                        f"Invalid ISO datetime format '{value}'. Expected format: YYYY-MM-DDTHH:MM:SS[.ffffff][+HH:MM]"
+                    )
+                raise ValueError(f"Invalid datetime format '{value}': {e}")
+
+        # Handle other datetime-like objects with validation
+        if hasattr(value, "isoformat") and callable(value.isoformat):
+            try:
+                iso_str = value.isoformat()
+                return self._parse_datetime(iso_str)  # Recursive validation
+            except Exception as e:
+                raise ValueError(f"Failed to parse datetime-like object: {e}")
+
+        # Handle numeric timestamps (seconds since epoch)
+        if isinstance(value, (int, float)):
+            try:
+                # Validate timestamp is reasonable (between 1970 and ~2100)
+                if value < 0 or value > 4133980800:  # Year ~2100
+                    raise ValueError(f"Timestamp {value} outside reasonable range")
+                return datetime.fromtimestamp(value)
+            except (ValueError, OSError) as e:
+                raise ValueError(f"Invalid timestamp {value}: {e}")
+
+        raise TypeError(f"Cannot parse datetime from unsupported type {type(value).__name__}: {value}")
+
+    def _validate_datetime_consistency(self, spec: Specification) -> None:
+        """Validate datetime fields for consistency and prevent type mismatches.
+
+        Args:
+            spec: Specification to validate
+
+        Raises:
+            ValueError: If datetime validation fails
+            TypeError: If datetime types are inconsistent
+        """
+        # Ensure datetime fields are proper datetime objects
+        if not isinstance(spec.created_at, datetime):
+            raise TypeError(f"created_at must be datetime object, got {type(spec.created_at).__name__}")
+
+        if not isinstance(spec.updated_at, datetime):
+            raise TypeError(f"updated_at must be datetime object, got {type(spec.updated_at).__name__}")
+
+        # Logical validation: updated_at should not be before created_at
+        if spec.updated_at < spec.created_at:
+            raise ValueError(f"updated_at ({spec.updated_at}) cannot be before created_at ({spec.created_at})")
+
+        # Validate datetime objects can be properly serialized
+        try:
+            _ = normalize_datetime(spec.created_at)
+            _ = normalize_datetime(spec.updated_at)
+        except Exception as e:
+            raise ValueError(f"DateTime normalization failed: {e}")
+
+    def _validate_manifest_datetime_consistency(self, manifest: SpecManifest) -> None:
+        """Validate manifest datetime fields for consistency.
+
+        Args:
+            manifest: Manifest to validate
+
+        Raises:
+            ValueError: If datetime validation fails
+            TypeError: If datetime types are inconsistent
+        """
+        # Ensure datetime fields are proper datetime objects
+        if not isinstance(manifest.created_at, datetime):
+            raise TypeError(f"manifest.created_at must be datetime object, got {type(manifest.created_at).__name__}")
+
+        if not isinstance(manifest.updated_at, datetime):
+            raise TypeError(f"manifest.updated_at must be datetime object, got {type(manifest.updated_at).__name__}")
+
+        # Logical validation: updated_at should not be before created_at
+        if manifest.updated_at < manifest.created_at:
+            raise ValueError(
+                f"manifest updated_at ({manifest.updated_at}) cannot be before created_at ({manifest.created_at})"
+            )
+
+        # Validate datetime objects can be properly serialized
+        try:
+            _ = normalize_datetime(manifest.created_at)
+            _ = normalize_datetime(manifest.updated_at)
+        except Exception as e:
+            raise ValueError(f"Manifest datetime normalization failed: {e}")
+
     def _save_spec_file(self, spec: Specification) -> bool:
         """Save a specification to its file in the appropriate folder.
 
@@ -522,6 +690,7 @@ class SpecificationManager:
         spec_data = self._serialize_spec(spec)
         return save_yaml(spec_file, spec_data)
 
+    @validate_spec_operation
     def _serialize_spec(self, spec: Specification) -> dict[str, Any]:
         """Serialize a specification to dict.
 
@@ -530,7 +699,13 @@ class SpecificationManager:
 
         Returns:
             Serialized data
+
+        Raises:
+            ValueError: If datetime validation fails
+            TypeError: If datetime types are inconsistent
         """
+        # Validate datetime consistency before serialization
+        self._validate_datetime_consistency(spec)
         return {
             "id": spec.id,
             "title": spec.title,
@@ -561,11 +736,47 @@ class SpecificationManager:
             ],
             "dependencies": spec.dependencies,
             "branch": spec.branch,
-            "created_at": spec.created_at.isoformat(),
-            "updated_at": spec.updated_at.isoformat(),
+            "created_at": normalize_datetime(spec.created_at),
+            "updated_at": normalize_datetime(spec.updated_at),
             "metadata": spec.metadata,
         }
 
+    def _validate_spec_data(self, data: dict[str, Any]) -> None:
+        """Validate specification data before deserialization.
+
+        Args:
+            data: Specification data to validate
+
+        Raises:
+            ValueError: If validation fails
+        """
+        # Use schema validation first
+        is_valid, errors = SpecificationSchema.validate(data)
+        if not is_valid:
+            raise ValueError(f"Schema validation failed: {'; '.join(errors)}")
+
+        # Additional safety checks
+        spec_id = data.get("id", "")
+        if ".." in spec_id or "/" in spec_id or "\\" in spec_id:
+            raise ValueError(f"Spec ID contains invalid characters: {spec_id}")
+
+        # Validate enum values are actually valid for our enums
+        try:
+            SpecType(data["type"])
+        except (ValueError, KeyError):
+            raise ValueError(f"Invalid spec type: {data.get('type')}")
+
+        try:
+            SpecStatus(data["status"])
+        except (ValueError, KeyError):
+            raise ValueError(f"Invalid spec status: {data.get('status')}")
+
+        try:
+            SpecPriority(data["priority"])
+        except (ValueError, KeyError):
+            raise ValueError(f"Invalid spec priority: {data.get('priority')}")
+
+    @validate_spec_operation
     def _deserialize_spec(self, data: dict[str, Any]) -> Specification:
         """Deserialize a specification from dict.
 
@@ -574,7 +785,18 @@ class SpecificationManager:
 
         Returns:
             Specification object
+
+        Raises:
+            ValueError: If data is malformed or missing required fields
+            TypeError: If data types are incorrect
         """
+        # Validate spec data first
+        self._validate_spec_data(data)
+
+        # Extract validated enum values
+        spec_type = SpecType(data["type"])
+        spec_status = SpecStatus(data["status"])
+        spec_priority = SpecPriority(data["priority"])
         contract_data = data.get("contract", {})
         contract = Contract(
             inputs=contract_data.get("inputs", {}),
@@ -611,8 +833,8 @@ class SpecificationManager:
             test_scenarios=test_scenarios,
             dependencies=data.get("dependencies", []),
             branch=data.get("branch"),
-            created_at=datetime.fromisoformat(data["created_at"]),
-            updated_at=datetime.fromisoformat(data["updated_at"]),
+            created_at=self._parse_datetime(data.get("created_at")),
+            updated_at=self._parse_datetime(data.get("updated_at")),
             metadata=data.get("metadata", {}),
         )
 
@@ -624,15 +846,21 @@ class SpecificationManager:
 
         Returns:
             Serialized data
+
+        Raises:
+            ValueError: If datetime validation fails
+            TypeError: If datetime types are inconsistent
         """
+        # Validate datetime consistency before serialization
+        self._validate_manifest_datetime_consistency(manifest)
         return {
             "version": manifest.version,
             "specifications": {
                 spec_id: self._serialize_spec(spec) for spec_id, spec in manifest.specifications.items()
             },
             "branch_mapping": manifest.branch_mapping,
-            "created_at": manifest.created_at.isoformat(),
-            "updated_at": manifest.updated_at.isoformat(),
+            "created_at": normalize_datetime(manifest.created_at),
+            "updated_at": normalize_datetime(manifest.updated_at),
         }
 
     def _deserialize_manifest(self, data: dict[str, Any]) -> SpecManifest:
@@ -652,6 +880,6 @@ class SpecificationManager:
             version=data.get("version", "1.0"),
             specifications=specifications,
             branch_mapping=data.get("branch_mapping", {}),
-            created_at=datetime.fromisoformat(data["created_at"]),
-            updated_at=datetime.fromisoformat(data["updated_at"]),
+            created_at=self._parse_datetime(data.get("created_at")),
+            updated_at=self._parse_datetime(data.get("updated_at")),
         )

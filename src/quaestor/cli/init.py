@@ -108,24 +108,12 @@ def _init_personal_mode(target_dir: Path, force: bool):
     # Handle CLAUDE.md - same as team mode (in project root)
     _merge_claude_md(target_dir, use_rule_engine=False)
 
-    # Create settings.local.json for hooks configuration (personal mode)
+    # Create settings.local.json for hooks configuration using uvx
     settings_path = claude_dir / "settings.local.json"
     try:
-        settings_content = pkg_resources.read_text("quaestor.claude.hooks", "automation_base.json")
-
-        # Replace placeholders in the template
-        import sys
-
-        python_path = sys.executable
-        project_root = str(target_dir.absolute())
-        hooks_dir = str(quaestor_dir / "hooks")  # Personal mode: hooks in .quaestor/hooks
-
-        settings_content = settings_content.replace("{python_path}", python_path)
-        settings_content = settings_content.replace("{project_root}", project_root)
-        settings_content = settings_content.replace("{hooks_dir}", hooks_dir)
-
+        settings_content = pkg_resources.read_text("quaestor.claude.hooks", "settings_uvx.json")
         settings_path.write_text(settings_content)
-        console.print("  [blue]✓[/blue] Created settings.local.json for hooks configuration (not committed)")
+        console.print("  [blue]✓[/blue] Created settings.local.json for hooks (uses uvx commands)")
     except Exception as e:
         console.print(f"  [yellow]⚠[/yellow] Could not create settings.local.json: {e}")
 
@@ -221,21 +209,9 @@ def _init_team_mode(target_dir: Path, force: bool, contextual: bool = True):
     claude_dir.mkdir(exist_ok=True)
     settings_path = claude_dir / "settings.json"
     try:
-        settings_content = pkg_resources.read_text("quaestor.claude.hooks", "automation_base.json")
-
-        # Replace placeholders in the template
-        import sys
-
-        python_path = sys.executable
-        project_root = str(target_dir.absolute())
-        hooks_dir = str(claude_dir / "hooks")  # Team mode: hooks in .claude/hooks
-
-        settings_content = settings_content.replace("{python_path}", python_path)
-        settings_content = settings_content.replace("{project_root}", project_root)
-        settings_content = settings_content.replace("{hooks_dir}", hooks_dir)
-
+        settings_content = pkg_resources.read_text("quaestor.claude.hooks", "settings_uvx.json")
         settings_path.write_text(settings_content)
-        console.print("  [blue]✓[/blue] Created settings.json for hooks configuration")
+        console.print("  [blue]✓[/blue] Created settings.json for hooks (uses uvx commands)")
     except Exception as e:
         console.print(f"  [yellow]⚠[/yellow] Could not create settings.json: {e}")
 
@@ -417,32 +393,8 @@ def _init_common(target_dir: Path, force: bool, mode: str):
             console.print(f"  [yellow]⚠[/yellow] Could not install {cmd_file}: {e}")
 
     # Copy hook files
-    console.print("\n[blue]Installing hook files:[/blue]")
-
-    # Team mode: hooks in .claude/hooks, Personal mode: hooks in .quaestor/hooks
-    hooks_dir = target_dir / ".claude" / "hooks" if mode == "team" else quaestor_dir / "hooks"
-
-    # Create hooks directory
-    hooks_dir.mkdir(parents=True, exist_ok=True)
-
-    # Copy all hook files from claude/hooks (flat structure)
-    hooks_copied = 0
-    available_hooks = [
-        "base.py",
-        "session_context_loader.py",
-        "todo_spec_progress.py",
-    ]
-
-    for hook_file in available_hooks:
-        try:
-            hook_content = pkg_resources.read_text("quaestor.claude.hooks", hook_file)
-            (hooks_dir / hook_file).write_text(hook_content)
-            console.print(f"  [blue]✓[/blue] Installed {hook_file}")
-            hooks_copied += 1
-        except Exception as e:
-            console.print(f"  [yellow]⚠[/yellow] Could not install {hook_file}: {e}")
-
-    console.print(f"\n  [green]Installed {hooks_copied} hook files[/green]")
+    # No longer need to copy hook files - hooks are called via uvx commands
+    console.print("\n[blue]Hooks configured to use uvx commands (no files to copy)[/blue]")
 
     # Copy agent files for team mode
     if mode == "team":

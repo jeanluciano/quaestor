@@ -190,111 +190,181 @@ output:
 ## Specification Outputs
 
 <!-- AGENT:SPECIFICATION:START -->
-### Specification Template
+### IMPORTANT: Specification Creation Guidelines
+
+**CRITICAL**: When creating specifications, use ACTUAL VALUES not placeholder templates.
+All values must be concrete and valid - no brackets, no placeholders, no template variables.
+
+### ✅ CORRECT Approach - Use Real Values:
 ```yaml
-id: [spec-type-NNN]
-title: [Clear, descriptive title]
-type: [feature|bugfix|refactor|documentation|performance|security|testing]
-priority: [critical|high|medium|low]
+id: spec-refactor-001  # ✅ Actual ID, no brackets
+title: Improve error handling in API endpoints  # ✅ Real title
+type: refactor  # ✅ Valid enum value
 status: draft
+priority: high
 description: |
-  [Detailed description of what needs to be built]
-  [Include context and background]
-  [Be specific about scope]
+  Comprehensive refactoring of error handling across all API endpoints
+  to provide consistent error responses and better debugging information.
 rationale: |
-  [Why this specification is needed]
-  [What problem it solves]
-  [Value it delivers]
+  Current error handling is inconsistent, making debugging difficult
+  and providing poor user experience with cryptic error messages.
+```
+
+### ❌ WRONG Approach - Avoid Templates with Placeholders:
+```yaml
+id: [spec-type-NNN]  # ❌ Brackets will cause YAML parsing errors
+title: [Clear, descriptive title]  # ❌ Not a real value
+type: [feature|bugfix|refactor]  # ❌ Not a valid enum
+description: [Detailed description]  # ❌ Template placeholder
+```
+
+### Key Rules for Valid Specifications:
+
+1. **DateTime Fields**: Always use ISO format strings
+   ```yaml
+   created_at: "2024-01-10T10:30:00"  # ✅ ISO string format
+   updated_at: "2024-01-10T10:30:00"  # ✅ ISO string format
+   # NOT: datetime.now() or Date objects
+   ```
+
+2. **String Values with Special Characters**: Use quotes
+   ```yaml
+   description: "Feature: User authentication with JWT"  # ✅ Quoted due to colon
+   rationale: "Needed because: security requirements"  # ✅ Quoted
+   ```
+
+3. **Lists/Arrays**: Use proper YAML list syntax
+   ```yaml
+   acceptance_criteria:
+     - Complete error handling  # ✅ Real criterion
+     - User-friendly messages   # ✅ Actual requirement
+   # NOT: [criterion 1] or [TODO: add criteria]
+   ```
+
+4. **Enum Values**: Use exact valid values
+   ```yaml
+   type: feature     # ✅ Valid: feature|bugfix|refactor|documentation|performance|security|testing
+   status: draft     # ✅ Valid: draft|staged|active|completed
+   priority: high    # ✅ Valid: critical|high|medium|low
+   ```
+
+5. **IDs**: Use alphanumeric with hyphens only
+   ```yaml
+   id: spec-auth-001       # ✅ Valid format
+   id: feature-api-002     # ✅ Valid format
+   # NOT: spec/auth/001 or ../spec or [spec-type-001]
+   ```
+
+### Complete Specification Example
+```yaml
+id: spec-auth-001
+title: User Authentication System
+type: feature
+status: draft
+priority: high
+description: |
+  Implement JWT-based authentication system for the application
+  including login, logout, and session management capabilities.
+rationale: |
+  Current system lacks authentication, making it impossible to
+  secure user data and provide personalized experiences.
 
 # Dependencies and relationships
 dependencies:
-  requires: [spec-ids that must be completed first]
-  blocks: [spec-ids that depend on this]
-  related: [spec-ids that are related but independent]
+  requires: []  # Empty list if no dependencies
+  blocks: 
+    - spec-profile-002  # User profiles need auth first
+    - spec-api-003      # API security needs auth
+  related:
+    - spec-db-001       # Database schema includes user table
 
 # Risk assessment
 risks:
-  - description: [Risk description]
-    likelihood: [low|medium|high]
-    impact: [low|medium|high]
-    mitigation: [How to address this risk]
+  - description: Security vulnerabilities in JWT implementation
+    likelihood: medium
+    impact: high
+    mitigation: Use well-tested JWT library, security review
+  - description: Performance impact of token validation
+    likelihood: low
+    impact: medium
+    mitigation: Implement token caching strategy
 
 # Success metrics
 success_metrics:
-  - [Measurable outcome that indicates success]
-  - [Performance metric, user metric, or business metric]
-```
+  - 100% of endpoints properly secured
+  - Login response time under 200ms
+  - Zero security vulnerabilities in auth flow
 
-### Contract Definition
-```yaml
 contract:
   inputs:
-    [param_name]: 
-      type: [data type]
-      description: [what it represents]
-      validation: [constraints/rules]
-      example: [example value]
+    username: 
+      type: string
+      description: User's email or username
+      validation: Required, max 255 chars
+      example: user@example.com
+    password:
+      type: string
+      description: User's password
+      validation: Required, min 8 chars
+      example: SecurePass123!
   outputs:
-    [return_name]:
-      type: [data type]
-      description: [what it represents]
-      example: [example value]
+    token:
+      type: string
+      description: JWT access token
+      example: eyJhbGciOiJIUzI1NiIs...
+    user:
+      type: object
+      description: User profile data
+      example: "{id: 123, name: 'John Doe'}"
   behavior:
-    - [Rule 1: What the system must do]
-    - [Rule 2: Edge case handling]
-    - [Rule 3: State changes]
+    - Validate credentials against database
+    - Generate JWT with 24-hour expiration
+    - Log authentication attempts
+    - Rate limit login attempts
   constraints:
-    - [Performance requirements]
-    - [Security requirements]
-    - [Compatibility requirements]
+    - Passwords must be hashed with bcrypt
+    - Tokens must expire after 24 hours
+    - Support refresh token rotation
   error_handling:
-    [error_type]: 
-      when: [condition that triggers error]
-      response: [how system should respond]
-      recovery: [how to recover if possible]
-```
+    InvalidCredentials: 
+      when: Username/password incorrect
+      response: Return 401 with generic error message
+      recovery: Log attempt, increment failure counter
+    AccountLocked:
+      when: Too many failed attempts
+      response: Return 423 with lockout duration
+      recovery: Send unlock email to user
 
-### Acceptance Criteria
-- [ ] [Specific, measurable criterion]
-- [ ] [User-facing behavior criterion]
-- [ ] [Performance criterion]
-- [ ] [Error handling criterion]
-- [ ] [Test coverage requirement]
+# Acceptance criteria (use actual requirements)
+acceptance_criteria:
+  - Users can login with valid credentials
+  - Invalid credentials return appropriate errors
+  - JWT tokens expire after 24 hours
+  - Logout invalidates current session
+  - Rate limiting prevents brute force attacks
 
-### Non-Functional Requirements
-- **Performance**: [Response time, throughput requirements]
-- **Security**: [Authentication, authorization, data protection needs]
-- **Scalability**: [Expected load, growth considerations]
-- **Accessibility**: [WCAG compliance, keyboard navigation]
-- **Compatibility**: [Browser, device, API version support]
+# Test scenarios
+test_scenarios:
+  - name: Successful login
+    description: User logs in with valid credentials
+    given: Valid username and password
+    when: Login endpoint is called
+    then: JWT token is returned with user data
+    examples:
+      - username: test@example.com, password: Test123!
+  - name: Invalid password
+    description: Login fails with wrong password
+    given: Valid username but wrong password
+    when: Login endpoint is called
+    then: 401 error returned without user details
+    examples:
+      - username: test@example.com, password: WrongPass
 
-### Implementation Notes
-```yaml
-technical_guidance:
-  - [Suggested approach or pattern]
-  - [Existing code to reference]
-  - [Libraries or tools to consider]
-warnings:
-  - [Known gotchas or complexities]
-  - [Areas requiring special attention]
-```
-
-### Test Scenarios
-```gherkin
-Scenario: [Happy path scenario]
-  Given [initial state]
-  When [action taken]
-  Then [expected outcome]
-
-Scenario: [Error scenario]
-  Given [initial state with problem]
-  When [action taken]
-  Then [appropriate error handling]
-
-Scenario: [Edge case scenario]
-  Given [boundary condition]
-  When [action taken]
-  Then [correct behavior at boundary]
+# Implementation guidance
+metadata:
+  estimated_hours: 16
+  technical_notes: Use existing bcrypt utility for hashing
+  testing_notes: Include penetration testing for auth endpoints
 ```
 <!-- AGENT:SPECIFICATION:END -->
 

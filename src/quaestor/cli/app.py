@@ -3,6 +3,7 @@
 import typer
 from rich.console import Console
 
+from quaestor.cli.hooks import hooks_app
 from quaestor.cli.init import init_command
 from quaestor.cli.update import update_command
 
@@ -24,6 +25,9 @@ def callback():
 # Add commands to app
 app.command(name="init")(init_command)
 app.command(name="update")(update_command)
+
+# Add hook commands (hidden from main help)
+app.add_typer(hooks_app, name="hook", help="Claude hook commands (for internal use)")
 
 # Add automation subcommand if available
 try:

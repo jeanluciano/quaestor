@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "uvx --from . quaestor hook session-context-loader",
+            "command": "uvx --from quaestor quaestor hook session-context-loader",
             "description": "Load active specifications into session context"
           }
         ]
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "uvx --from . quaestor hook todo-spec-progress",
+            "command": "uvx --from quaestor quaestor hook todo-spec-progress",
             "description": "Update specification progress when TODOs are completed"
           }
         ]

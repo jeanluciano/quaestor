@@ -2,11 +2,36 @@
 
 ## Requirements
 
-- Python 3.8 or higher
-- Git (for branch management and hooks)
-- Claude Code (recommended for full integration)
+- Git (for version control)
+- Claude Code (for AI-assisted development)
+- Either:
+  - `uv` for uvx usage (recommended), or
+  - Python 3.12+ for traditional installation
 
-## Install via pip
+## Quick Start with uvx (Recommended)
+
+No installation required! Use `uvx` to run Quaestor directly:
+
+```bash
+# Initialize a project without installing Quaestor
+uvx quaestor init
+
+# Team mode
+uvx quaestor init --mode team
+
+# Update to latest version
+uvx quaestor update
+```
+
+This approach:
+- ✅ No Python dependencies in your project
+- ✅ Always uses the latest version
+- ✅ Hooks work via uvx commands
+- ✅ Clean project environment
+
+## Traditional Installation
+
+Install globally with pip:
 
 ```bash
 pip install quaestor
@@ -74,6 +99,52 @@ If slash commands don't work:
 1. Ensure you're in a Quaestor-initialized project
 2. Check that `.quaestor/` directory exists
 3. Verify Claude Code is properly configured
+
+## Migration for Existing Users
+
+If you have an existing Quaestor installation with Python hook files:
+
+### From Python Hooks to uvx Commands
+
+The new version uses `uvx` commands instead of Python files in `.claude/hooks/`:
+
+1. **Remove old hook files** (no longer needed):
+   ```bash
+   rm -rf .claude/hooks/*.py
+   ```
+
+2. **Update settings.json** to use uvx commands:
+   ```json
+   {
+     "hooks": {
+       "SessionStart": [{
+         "hooks": [{
+           "type": "command",
+           "command": "uvx --from quaestor quaestor hook session-context-loader"
+         }]
+       }],
+       "PostToolUse": [{
+         "matcher": "TodoWrite",
+         "hooks": [{
+           "type": "command",
+           "command": "uvx --from quaestor quaestor hook todo-spec-progress"
+         }]
+       }]
+     }
+   }
+   ```
+
+3. **Or simply re-run init** to update everything:
+   ```bash
+   uvx quaestor update
+   ```
+
+### Benefits of Migration
+
+- No Python files to maintain in your project
+- Hooks always use the latest Quaestor version
+- Cleaner project structure
+- Works without Python installed locally
 
 ## Next Steps
 

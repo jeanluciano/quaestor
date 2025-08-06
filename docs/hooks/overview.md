@@ -4,10 +4,11 @@ Quaestor's hook system provides automated triggers that execute at specific poin
 
 ## What are Hooks?
 
-Hooks are Python scripts that execute automatically when specific Claude Code events occur:
+Hooks are automated commands that execute when specific Claude Code events occur. With Quaestor's uvx-based system, hooks run without requiring any Python installation in your project:
 
 - **Session Events**: When a Claude session starts
 - **Tool Events**: When specific tools are used (like TodoWrite)
+- **Zero Dependencies**: Hooks execute via `uvx` - no local Quaestor installation needed
 
 ## Current Hooks
 
@@ -54,7 +55,7 @@ def on_todo_completed(todos):
 
 ## Hook Configuration
 
-Hooks are configured in `.claude/settings.json`:
+Hooks are configured in `.claude/settings.json` and execute via `uvx`:
 
 ```json
 {
@@ -64,7 +65,7 @@ Hooks are configured in `.claude/settings.json`:
         "hooks": [
           {
             "type": "command",
-            "command": "python hooks/session_context_loader.py",
+            "command": "uvx --from quaestor quaestor hook session-context-loader",
             "description": "Load active specifications into session context"
           }
         ]
@@ -76,7 +77,7 @@ Hooks are configured in `.claude/settings.json`:
         "hooks": [
           {
             "type": "command",
-            "command": "python hooks/todo_spec_progress.py",
+            "command": "uvx --from quaestor quaestor hook todo-spec-progress",
             "description": "Update specification progress when TODOs are completed"
           }
         ]
@@ -85,6 +86,13 @@ Hooks are configured in `.claude/settings.json`:
   }
 }
 ```
+
+### How uvx-based Hooks Work
+
+1. **No Installation Required**: Hooks run via `uvx` without installing Quaestor in your project
+2. **Always Up-to-Date**: Uses the latest published version of Quaestor
+3. **Project Context**: Hooks read your local `.quaestor/` files while running remotely
+4. **Clean Dependencies**: Your project stays free of Quaestor dependencies
 
 ## Hook Events
 
@@ -128,17 +136,23 @@ Triggered after specific tools are used:
 
 ## Installation
 
-Hooks are automatically installed during `quaestor init`:
+Hooks are automatically configured during initialization:
 
 ```bash
-# Team mode
-quaestor init --mode team
-# Hooks installed to: .quaestor/hooks/
+# Using uvx (recommended - no installation)
+uvx quaestor init
+# Creates .claude/settings.json with uvx commands
 
-# Personal mode  
+# Team mode
+uvx quaestor init --mode team
+# Creates shared .claude/settings.json
+
+# Traditional installation
+pip install quaestor
 quaestor init
-# Hooks installed to: .quaestor/hooks/
 ```
+
+**Note**: No hook files are copied to your project. Hooks run via `uvx` commands configured in `.claude/settings.json`.
 
 ## Customization
 
@@ -162,8 +176,9 @@ While the default hooks cover most needs, you can:
 
 ### Hooks Not Running
 1. Check `.claude/settings.json` exists and is valid JSON
-2. Verify Python path in hook commands
-3. Check hook files have execute permissions
+2. Verify `uvx` is installed (comes with `uv`)
+3. Check internet connection (uvx downloads Quaestor on first run)
+4. Try running manually: `echo '{}' | uvx --from quaestor quaestor hook session-context-loader`
 
 ### Progress Not Updating
 1. Ensure TODOs are marked as "completed" status

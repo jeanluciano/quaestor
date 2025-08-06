@@ -18,15 +18,25 @@
 
 ## Quick Start
 
+### Using uvx (Recommended - No Installation Required)
 ```bash
-# Install
-pip install quaestor
-
-# Personal mode (default) - local configuration
-quaestor init
+# Initialize Quaestor without installing it
+uvx quaestor init
 
 # Team mode - shared configuration
-quaestor init --mode team
+uvx quaestor init --mode team
+
+# Update to latest version
+uvx quaestor update
+```
+
+### Traditional Installation
+```bash
+# Install globally
+pip install quaestor
+
+# Initialize project
+quaestor init
 
 # Create your first specification
 /plan "User Authentication System"
@@ -89,6 +99,16 @@ quaestor init --mode team
 /review spec-auth-001
 # → Validates quality, moves to completed/ when done
 ```
+
+## Hook System
+
+Quaestor's hooks integrate seamlessly with Claude Code using `uvx`, requiring no local installation:
+
+- **Session Context Loader** - Automatically loads active specifications at session start
+- **Progress Tracker** - Updates specification progress when TODOs are completed
+- **No Python Required** - Hooks run via `uvx` without installing Quaestor in your project
+
+The hooks are configured in `.claude/settings.json` and execute Quaestor commands remotely via `uvx`.
 
 ## Documentation
 

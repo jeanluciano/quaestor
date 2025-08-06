@@ -1,12 +1,74 @@
 """YAML handling utilities with graceful fallbacks."""
 
 import json
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 from rich.console import Console
 
 console = Console()
+
+
+def normalize_datetime(value: Any) -> str:
+    """Normalize datetime value to ISO string format.
+
+    Args:
+        value: DateTime value in various formats (datetime, string, None)
+
+    Returns:
+        ISO-formatted datetime string
+
+    Raises:
+        ValueError: If datetime cannot be normalized
+    """
+    if value is None:
+        return datetime.now().isoformat()
+
+    if isinstance(value, datetime):
+        return value.isoformat()
+
+    if isinstance(value, str):
+        # Validate that string is a valid datetime
+        try:
+            # Handle Z suffix and other ISO variants
+            test_value = value
+            if test_value.endswith("Z"):
+                test_value = test_value[:-1] + "+00:00"
+            datetime.fromisoformat(test_value)
+            return value  # Return original string if valid
+        except ValueError as e:
+            raise ValueError(f"Invalid datetime string format '{value}': {e}")
+
+    # Handle other datetime-like objects
+    if hasattr(value, "isoformat"):
+        return value.isoformat()
+
+    raise ValueError(f"Cannot normalize datetime from {type(value).__name__}: {value}")
+
+
+def datetime_representer(dumper, data: datetime) -> Any:
+    """Custom YAML representer for datetime objects.
+
+    Args:
+        dumper: YAML dumper instance
+        data: DateTime object to represent
+
+    Returns:
+        YAML scalar node with ISO-formatted datetime string
+    """
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data.isoformat())
+
+
+def register_datetime_representer() -> None:
+    """Register the datetime representer with PyYAML dumper."""
+    try:
+        import yaml
+
+        yaml.add_representer(datetime, datetime_representer)
+    except ImportError:
+        # PyYAML not available, skip registration
+        pass
 
 
 def load_yaml(file_path: Path, default: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -67,6 +129,9 @@ def save_yaml(file_path: Path, data: dict[str, Any], create_dirs: bool = True) -
 
         # Try to use PyYAML if available
         import yaml
+
+        # Register datetime representer to handle datetime objects
+        yaml.add_representer(datetime, datetime_representer)
 
         with open(file_path, "w", encoding="utf-8") as f:
             yaml.safe_dump(data, f, default_flow_style=False, sort_keys=False)
