@@ -2,7 +2,7 @@
 name: workflow-coordinator
 description: MANDATORY workflow enforcer for ALL implementation requests. Automatically invoked to ensure Research→Plan→Implement workflow compliance.
 tools: Read, Write, TodoWrite, Task, Grep, Glob
-
+model: haiku
 activation:
   keywords: ["workflow", "coordinate", "phase", "transition", "orchestrate", "handoff"]
   context_patterns: ["**/research/**", "**/planning/**", "**/specs/**", "**/.quaestor/specs/**"]
@@ -124,7 +124,7 @@ handoff_to: reviewer/qa
 From: [source_agent]
 To: [target_agent]
 Phase: [current] → [next]
-Timestamp: [ISO 8601]
+
 
 ## Summary
 [What was accomplished in current phase]

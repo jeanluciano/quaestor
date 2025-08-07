@@ -1,7 +1,7 @@
 ---
 name: researcher
 description: Deep codebase exploration and pattern analysis specialist with advanced search strategies. Use for research tasks, understanding systems, mapping dependencies, and discovering hidden patterns.
-tools: Read, Grep, Glob, Task
+tools: Read, Grep, Glob, Task,
 model: opus
 color: blue
 activation:

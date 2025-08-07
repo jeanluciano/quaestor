@@ -5,6 +5,62 @@ All notable changes to Quaestor will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.3] - 2025-08-07
+
+### Added
+- **Speccer Agent** - New specialized agent for YAML specification generation
+  - Strict YAML validation and formatting
+  - Zero-tolerance for placeholders
+  - Automatic validation on file save
+  - Ensures all specs pass schema validation
+  
+- **Specification Validation CLI** - New `quaestor validate` command
+  - Validates specification YAML files against schema
+  - Checks required fields, enum values, and structure
+  - Provides detailed error messages for invalid specs
+  - Integrates with hooks for automatic validation
+
+- **Spec Validator Hook** - Automatic specification validation
+  - Runs on Write tool when saving `.quaestor/specs/*.yaml` files
+  - Blocks file save if validation fails
+  - Provides immediate feedback on YAML errors
+  - Configured in `.claude/settings.json`
+
+- **Rules Template** - New `.quaestor/RULES.md` template
+  - Language-specific development rules and standards
+  - Integrates with language configuration system
+  - Provides project-specific linting, testing, and formatting commands
+  - Dynamically populated based on detected language
+
+### Changed
+- **Template System** - Removed unused template files
+  - Removed `specflow.md` template (redundant with context.md)
+  - Removed `specification.md` template (replaced by speccer agent)
+  - Streamlined template structure for clarity
+
+- **Agent System** - Updated agent count from 12 to 13
+  - Added `speccer` agent to the specialized agent roster
+  - Enhanced agent orchestration for specification creation
+  - Improved planner agent YAML generation capabilities
+
+### Fixed
+- **Planner Agent** - Improved YAML generation
+  - Fixed issue with placeholder generation
+  - Ensures all generated specs use actual values
+  - Better integration with validation system
+
+- **Specification System** - Enhanced reliability
+  - Fixed YAML generation issues in specifications.py
+  - Improved error handling in spec creation
+  - Better integration with validation hooks
+
+### Improved
+- **Specification Workflow** - More robust spec creation
+  - Dedicated agent for YAML generation reduces errors
+  - Automatic validation prevents invalid specs
+  - Clear error messages for troubleshooting
+  - Streamlined spec creation process
+
 ## [0.6.2] - 2025-08-06
 
 ### Added
@@ -326,144 +382,3 @@ quaestor init --force
 - Better separation of personal vs shared project files
 - More flexible command customization options
 
-## [0.3.43] - 2025-01-12
-
-### Changed
-- **BREAKING**: Replaced `milestone-commit` command with two separate commands:
-  - `auto-commit`: Automatically creates atomic commits for individual completed TODO items
-  - `milestone-pr`: Creates pull requests for completed milestones
-- Updated workflow to support one commit per task instead of batch commits
-- All commits now follow conventional commit specification
-
-### Added
-- New `auto-commit` command for atomic commits per TODO completion
-- New `milestone-pr` command for creating comprehensive PRs
-- Auto-commit trigger hook that runs after TodoWrite operations
-- Automatic conventional commit message generation
-- Intelligent file staging based on TODO context
-
-### Improved
-- Better separation of concerns: commits for items, PRs for milestones
-- Cleaner git history with atomic, focused commits
-- Enhanced PR descriptions with all milestone commits included
-- Updated help documentation to reflect new workflow
-
-## [0.3.42] - 2025-01-12
-
-### Major Improvements
-
-#### 🔧 Claude Code Integration Fixes
-- Fixed hooks format to match new Claude Code requirements
-- Updated hooks location from .claude/settings/claude_code_hooks.json to .claude/settings.json
-- Changed matcher format from object to string patterns
-
-#### 📋 Comprehensive Milestone Tracking
-- Added 7 new hooks for complete workflow compliance
-- Enhanced update-memory.py with intelligent milestone detection
-- Added mandatory milestone awareness to task command
-- Created RULES.md with enforcement guidelines
-
-#### 🧪 Workflow Validation System
-- New comprehensive-compliance-check.py for full system validation
-- Enhanced workflow state tracking
-- Multi-layer compliance verification
-- Automatic milestone progress detection
-
-#### 📚 Documentation Updates
-- Simplified README while maintaining accuracy (50% reduction)
-- Enhanced task command documentation
-- Added critical rules for milestone tracking
-
-### New Hooks Added
-- track-research.py - Research phase tracking
-- track-implementation.py - Implementation phase tracking  
-- pre-implementation-declaration.py - Mandatory milestone declaration
-- todo-milestone-connector.py - Links todos to milestones
-- file-change-tracker.py - Detects untracked changes
-- milestone-validator.py - Validates compliance
-- comprehensive-compliance-check.py - Full system validation
-
-### Fixed
-- Fixed hooks generation bug with Jinja2 templates
-- Fixed all ruff linting issues (36 errors resolved)
-- Fixed bare except clauses and missing newlines in hook scripts
-- Fixed hook configuration format to match Claude Code documentation
-
-## [0.3.3] - 2024-07-11
-
-### Fixed
-- Various bug fixes and improvements
-
-## [0.3.0] - 2024-07-10
-
-### Added
-- Non-intrusive CLAUDE.md integration that preserves user content
-- Smart merging capability for CLAUDE.md with clear config sections
-- QUAESTOR_CLAUDE.md as the main framework file (stored in .quaestor/)
-- CLAUDE_INCLUDE.md template for minimal user-facing config
-- `constants.py` module to centralize configuration values
-- Version headers to all template files for better tracking
-
-### Changed
-- CLAUDE.md is now categorized as USER_EDITABLE (never overwritten)
-- Reorganized template files into `templates/` directory
-- Improved project structure for better maintainability
-- Enhanced README with focus on quick usage and technical transparency
-- Updated file categorization to respect user customizations
-
-### Removed
-- Redundant `pytest.ini` file (configuration now in `pyproject.toml`)
-- Development file `main.py`
-- Build artifacts from version control
-
-### Breaking Changes
-- CLAUDE.md is no longer replaced during init - existing content is preserved
-- Full framework instructions moved to .quaestor/QUAESTOR_CLAUDE.md
-
-## [0.2.4] - 2024-01-10
-
-### Added
-- Intelligent update system with file manifest tracking
-- Smart updater that preserves user customizations
-- Update command with `--check`, `--backup`, and `--force` options
-- File categorization system (SYSTEM, USER_EDITABLE, COMMAND, TEMPLATE)
-- Version tracking in file headers
-- Comprehensive test coverage for update functionality
-
-### Fixed
-- Version mismatch in `__init__.py`
-- Update logic to prevent overwriting user modifications
-
-## [0.2.3] - 2024-01-09
-
-### Fixed
-- Added missing `milestone-commit.md` to command files list
-
-## [0.2.2] - 2024-01-09
-
-### Added
-- Claude Code hooks integration for workflow automation
-- Hooks modules for enforcement, automation, and intelligence
-- Automated milestone commit workflow
-
-## [0.2.1] - 2024-01-08
-
-### Fixed
-- Milestone status detection in MEMORY.md converter
-
-## [0.2.0] - 2024-01-08
-
-### Added
-- Workflow automation with milestone-commit command
-- AI-optimized markdown format converters
-- Enhanced MEMORY.md tracking
-
-## [0.1.0] - 2024-01-01
-
-### Added
-- Initial release of Quaestor
-- Core CLI with `init` command
-- CLAUDE.md and RULES.md templates
-- Command templates for project management
-- Basic project structure initialization
-- Integration with Claude AI assistant configuration

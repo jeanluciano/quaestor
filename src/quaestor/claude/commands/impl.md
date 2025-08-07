@@ -3,10 +3,10 @@ allowed-tools: [Read, Write, Edit, MultiEdit, Bash, Glob, Grep, TodoWrite, Task]
 description: "Execute production-quality implementation with specification-driven orchestration"
 
 agent-strategy:
-  complexity > 0.7: [architect, implementer]
-  security_keywords: [security, qa]
-  multi_file: [researcher, refactorer]
-  testing_required: [qa, implementer]
+  multi_file_changes: "Use the researcher agent to map dependencies"
+  system_design: "Use the architect agent to design the solution"
+  security_features: "Use the security agent to review implementation"
+  test_creation: "Use the qa agent to ensure quality coverage"
 ---
 
 # /impl - Intelligent Implementation Command
@@ -14,23 +14,17 @@ agent-strategy:
 ## Purpose
 Execute production-quality features with auto-detected language standards, intelligent tool orchestration, and specification integration.
 
-## Usage
-```
-/impl "implement user authentication system"
-/impl [description] [--strategy systematic|agile|focused] [--parallel]
-```
-
 ## Auto-Intelligence
 
 ### Project Detection
 - **Language**: Auto-detect → Python|Rust|JS|Generic standards
-- **Complexity**: Assess scope → Single|Multi-file|System-wide
-- **Persona**: Activate based on keywords → architect|frontend|backend|security
+- **Scope**: Assess changes → Single-file|Multi-file|System-wide
+- **Context**: Identify task requirements → architecture|security|testing|refactoring
 
 ### Execution Strategy
-- **Systematic**: Complex architecture (>0.7 complexity)
-- **Agile**: Feature development (0.3-0.7 complexity)  
-- **Focused**: Bug fixes (<0.3 complexity)
+- **System-wide**: Comprehensive planning with multiple agent coordination
+- **Feature Development**: Iterative implementation with testing  
+- **Bug Fixes**: Focused resolution with validation
 
 ## Execution
 
@@ -43,11 +37,11 @@ The workflow-coordinator will:
 - Coordinate the transition from planning to implementation
 
 Then follow the coordinator's guidance to:
-- **Use the implementer agent** to build features according to the specification
-- **Use the architect agent** for system design decisions (complexity > 0.7)
-- **Use the security agent** when implementing auth, encryption, or access control
-- **Use the qa agent** to create tests alongside implementation
-- **Use the refactorer agent** for multi-file changes requiring consistency
+- **Use the implementer agent to** build features according to the specification
+- **Use the architect agent to** design system architecture when needed
+- **Use the security agent to** review auth, encryption, or access control implementation
+- **Use the qa agent to** create comprehensive tests alongside implementation
+- **Use the refactorer agent to** ensure consistency across multiple files
 
 ## Workflow: Research → Plan → Implement → Validate
 
@@ -66,7 +60,7 @@ Then follow the coordinator's guidance to:
 **Research Protocol:**
 - Analyze codebase patterns & conventions
 - Identify dependencies & integration points
-- Assess complexity → tool selection strategy
+- Determine required agents based on task requirements
 
 ### Phase 2: Planning & Approval 📋
 **Present detailed implementation strategy:**
@@ -78,19 +72,19 @@ Then follow the coordinator's guidance to:
 **MANDATORY: Get approval before proceeding**
 
 ### Phase 3: Implementation ⚡
-**Intelligent Orchestration with Quaestor Agents:**
-- **Multi-file ops** → Spawn @researcher and @implementer agents in parallel
-- **Complex refactoring** → @architect designs, then @refactorer executes
-- **Test writing** → @qa agent handles test creation and coverage
-- **Security concerns** → @security agent reviews sensitive code
-- **Documentation** → @documenter updates docs concurrently
+**Claude Code Sub-agent Orchestration:**
+- **Multi-file operations** → Use the researcher agent to map dependencies, then use the implementer agent to execute changes
+- **System refactoring** → Use the architect agent to design the solution, then use the refactorer agent to implement consistently
+- **Test creation** → Use the qa agent to create comprehensive test coverage
+- **Security implementation** → Use the security agent to review and validate sensitive code
+- **Documentation updates** → Use the implementer agent to update docs alongside code
 
-**Automatic Agent Selection:**
-Based on task analysis, Quaestor automatically spawns specialized agents:
-- High complexity (>0.7) → architect + implementer collaboration
-- Security keywords detected → security agent joins the team
-- Multiple files affected → researcher maps dependencies first
-- Tests needed → qa agent ensures quality coverage
+**Task-Based Agent Selection:**
+Select agents based on specific task requirements:
+- **System architecture changes** → Use the architect agent to design, then use the implementer agent to build
+- **Security-sensitive features** → Use the security agent to define requirements, then use the implementer agent to build securely
+- **Multi-file refactoring** → Use the researcher agent to analyze impact, then use the refactorer agent to update consistently
+- **Quality assurance** → Use the qa agent to create tests and validate implementation
 
 **Quality Cycle** (every 3 edits):
 ```
@@ -112,18 +106,33 @@ Execute → Validate → Fix (if ❌) → Continue
 - ✅ Documentation complete
 - ✅ Specification status updated
 
-## Complexity Management
+## Task Management & Agent Coordination
 
-**Auto-Stop Triggers:**
-- Function >50 lines → refactor prompt
-- Nesting depth >3 → simplification required
-- Circular dependencies → architecture review
-- Performance implications unclear → measurement required
+**Code Quality Checkpoints:**
+- Function exceeds 50 lines → Use the refactorer agent to break into smaller functions
+- Nesting depth exceeds 3 → Use the refactorer agent to simplify logic
+- Circular dependencies detected → Use the architect agent to review design
+- Performance implications unclear → Use the implementer agent to add measurements
 
-**Intelligent Delegation:**
-- **>7 directories** → `--parallel-dirs` auto-enabled
-- **>50 files** → Multi-agent file delegation
-- **Multiple domains** → Specialized agent per domain
+**Agent Chaining for Complex Tasks:**
+- **Large-scale changes** → Chain agents: Use the researcher agent to analyze, then use the architect agent to design, then use the implementer agent to build
+- **Cross-domain features** → Parallel coordination: Use multiple specialized agents concurrently
+- **Security-critical paths** → Sequential validation: Use the implementer agent to build, then use the security agent to audit, then use the qa agent to test
+
+**Example Agent Chains:**
+```yaml
+Authentication Feature:
+  1. Use the architect agent to design the auth flow
+  2. Use the security agent to define security requirements
+  3. Use the implementer agent to build the feature
+  4. Use the qa agent to create security tests
+  
+API Refactoring:
+  1. Use the researcher agent to map all API endpoints
+  2. Use the architect agent to design the new structure
+  3. Use the refactorer agent to update consistently
+  4. Use the qa agent to validate backwards compatibility
+```
 
 ## Specification Integration
 

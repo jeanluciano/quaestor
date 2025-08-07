@@ -94,7 +94,6 @@ class TestInitIntegration:
         # Check template files created
         assert (temp_git_project / ".quaestor" / "CONTEXT.md").exists()
         assert (temp_git_project / ".quaestor" / "ARCHITECTURE.md").exists()
-        assert (temp_git_project / ".quaestor" / "SPECFLOW.md").exists()
 
     def test_init_with_existing_config(self, runner, project_with_config):
         """Test initialization with existing command configuration."""

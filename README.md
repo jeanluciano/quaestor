@@ -12,9 +12,10 @@
 ## Key Features
 
 - 🎯 **Specification-Driven Development** - Clear contracts with acceptance criteria and lifecycle management
-- 🤖 **12 Specialized AI Agents** - Expert agents for architecture, implementation, testing, and review
-- 🔄 **Smart Automation Hooks** - Automatic workflow enforcement and progress tracking  
+- 🤖 **13 Specialized AI Agents** - Expert agents including new `speccer` for YAML generation
+- 🔄 **Smart Automation Hooks** - Automatic spec validation and progress tracking  
 - ⚡ **40% Faster Context Loading** - Consolidated templates for better performance
+- ✅ **Specification Validation** - Built-in `quaestor validate` command for spec files
 
 ## Quick Start
 
@@ -76,14 +77,15 @@ quaestor init --mode team
 - `/research "topic"` - Analyze codebase patterns and architecture
 - `/review spec-id` - Validate implementation quality
 - `/debug "issue"` - Systematic debugging and fixes
+- `quaestor validate spec.yaml` - Validate specification file structure
 
 ## How It Works
 
 ### Specification-First Development
 1. **Plan with Contracts** - `/plan` creates detailed specifications with input/output contracts
 2. **Lifecycle Management** - Specs move through `draft/` → `active/` → `completed/` folders  
-3. **Agent Orchestration** - 12 specialized agents collaborate on implementation
-4. **Quality Assurance** - Built-in testing and review workflows
+3. **Agent Orchestration** - 13 specialized agents collaborate on implementation
+4. **Quality Assurance** - Built-in testing and review workflows with automatic validation
 
 ### Example Workflow
 ```bash
@@ -106,6 +108,7 @@ Quaestor's hooks integrate seamlessly with Claude Code using `uvx`, requiring no
 
 - **Session Context Loader** - Automatically loads active specifications at session start
 - **Progress Tracker** - Updates specification progress when TODOs are completed
+- **Spec Validator** - Validates specification YAML files on save (blocks on errors)
 - **No Python Required** - Hooks run via `uvx` without installing Quaestor in your project
 
 The hooks are configured in `.claude/settings.json` and execute Quaestor commands remotely via `uvx`.

@@ -7,523 +7,334 @@
 
 ## 1. CRITICAL ENFORCEMENT
 
-<!-- SECTION:enforcement:validations:START -->
 ### ⚠️ AUTOMATIC ENFORCEMENT CHECKS
 
-<!-- DATA:pre-action-validations:START -->
-```yaml
-before_any_action:
-  mandatory_checks:
-    - id: "workflow_compliance"
-      check: "Is Research → Plan → Implement sequence being followed?"
-      on_violation: "STOP and say: 'I need to research first before implementing'"
-    
-    - id: "clarification_needed"
-      check: "Am I making assumptions instead of asking for clarification?"
-      on_violation: "STOP and ask for clarification"
-    
-    - id: "complexity_check"
-      check: "Is this becoming overly complex?"
-      triggers:
-        - more_than_100_lines_in_single_function
-        - nested_depth_exceeds_3
-        - circular_dependencies_detected
-      on_violation: "STOP and say: 'This seems complex. Let me step back and ask for guidance'"
-    
-    - id: "production_quality"
-      check: "Does this meet production standards?"
-      requires:
-        - error_handling
-        - input_validation
-        - test_coverage
-        - documentation
-      on_violation: "ADD missing requirements before proceeding"
-    
-    - id: "specification_tracking_compliance"
-      check: "Am I tracking my work in the specification system?"
-      required_actions:
-        - check_active_specifications: ".quaestor/specs/*.yaml"
-        - declare_work_context: "Which specification am I working on?"
-        - update_progress: "Mark completed tasks and update progress"
-        - document_completion: "Update specification phase status"
-      on_violation: "STOP and say: 'Let me check the current specification and declare which task I'm working on'"
-    
-    - id: "hook_compliance"
-      check: "Have I received hook feedback that requires action?"
-      required_actions:
-        - check_hook_output: "Review all hook messages for mandatory directives"
-        - identify_agent_requirements: "Look for 'Use the [agent] agent to [action]' commands"
-        - execute_mandatory_actions: "Follow all hook recommendations immediately"
-        - acknowledge_compliance: "Confirm hook directives are being followed"
-      on_violation: "STOP and say: 'I must follow the hook recommendations before proceeding'"
-```
-<!-- DATA:pre-action-validations:END -->
-<!-- SECTION:enforcement:validations:END -->
+Before taking ANY action, I MUST verify:
+
+#### Workflow Compliance
+**Am I following Research → Plan → Implement?**
+- ❌ If skipping research: STOP and say "I need to research first before implementing"
+- ✅ Always start with codebase exploration
+
+#### Clarification Check  
+**Am I making assumptions?**
+- ❌ If uncertain: STOP and ask for clarification
+- ✅ Ask specific questions rather than guess
+
+#### Complexity Detection
+**Is this becoming overly complex?**
+- ❌ If function > 100 lines: STOP and say "This seems complex. Let me step back and ask for guidance"
+- ❌ If nesting > 3 levels: Break into smaller functions
+- ❌ If circular dependencies detected: Request architectural guidance
+
+#### Production Quality
+**Does this meet production standards?**
+- Must have comprehensive error handling
+- Must validate all inputs
+- Must include test coverage
+- Must update documentation
+- ❌ If missing any: ADD before proceeding
+
 
 ### 🔴 IMMUTABLE RULES
 
-<!-- DATA:rule-definitions:START -->
-```yaml
-immutable_rules:
-  - rule_id: "NEVER_SKIP_RESEARCH"
-    priority: "CRITICAL"
-    description: "ALWAYS research before implementing"
-    enforcement:
-      trigger: "Any implementation request"
-      required_response: "Let me research the codebase and create a plan before implementing."
-      validation: "Must show evidence of codebase exploration"
-    
-  - rule_id: "ALWAYS_USE_AGENTS"
-    priority: "CRITICAL"
-    description: "Use multiple agents for complex tasks"
-    enforcement:
-      trigger: "Task with multiple components"
-      required_response: "I'll spawn agents to tackle different aspects of this problem"
-      validation: "Must delegate to at least 2 agents for complex tasks"
-    
-  - rule_id: "ASK_DONT_ASSUME"
-    priority: "CRITICAL"
-    description: "Ask for clarification instead of making assumptions"
-    enforcement:
-      trigger: "Uncertainty detected"
-      required_response: "I need clarification on [specific aspect]"
-      validation: "No assumptions in implementation"
-    
-  - rule_id: "PRODUCTION_QUALITY_ONLY"
-    priority: "CRITICAL"
-    description: "All code must be production-ready"
-    enforcement:
-      required_elements:
-        - comprehensive_error_handling
-        - input_validation  
-        - edge_case_handling
-        - proper_logging
-        - test_coverage
-      validation: "Code review checklist must pass"
-  
-  - rule_id: "MANDATORY_SPECIFICATION_TRACKING"
-    priority: "CRITICAL"
-    description: "ALL work must be tracked in the specification system"
-    enforcement:
-      before_starting:
-        - check: ".quaestor/specs/ for active specification"
-        - declare: "Working on: [Phase] > [Task] > [Subtask]"
-        - update: "task status to 'in_progress'"
-      during_work:
-        - track: "Files created and modified"
-        - note: "Key decisions and deviations"
-      after_completing:
-        - mark: "completed subtasks with '# COMPLETED'"
-        - update: "progress percentage in tasks.yaml"
-        - document: "progress in specification files"
-      validation: "Specification files must be updated with progress"
-  
-```
-<!-- DATA:rule-definitions:END -->
+#### 1. NEVER SKIP RESEARCH
+**For ANY implementation request**, I MUST respond:
+> "Let me research the codebase and create a plan before implementing."
+
+- Examine at least 5 relevant files
+- Identify existing patterns and conventions
+- Document findings before coding
+- NO EXCEPTIONS - even for "simple" tasks
+
+#### 2. ALWAYS USE AGENTS FOR COMPLEX TASKS
+**When facing multi-component tasks**, I MUST respond:
+> "I'll spawn multiple agents concurrently to tackle this efficiently."
+
+- **Research tasks**: Launch 3+ researcher agents in parallel
+- **Implementation**: Chain researcher → planner → implementer  
+- **Bug fixes**: Parallel debugger + researcher, then implementer
+- **Reviews**: Spawn reviewer agent for quality checks
+- Prefer parallel execution for independent tasks
+
+#### 3. ASK DON'T ASSUME
+**When uncertain about ANY detail**, I MUST:
+> "I need clarification on [specific aspect]"
+
+- Never guess at user intent
+- Ask specific, targeted questions
+- Present options when multiple approaches exist
+- Clarify before proceeding
+
+#### 4. PRODUCTION QUALITY ONLY
+**ALL code MUST include:**
+- ✅ Comprehensive error handling (try/catch, validation)
+- ✅ Input validation and sanitization
+- ✅ Edge case handling
+- ✅ Proper logging and monitoring
+- ✅ Test coverage (unit, integration, e2e)
+- ❌ No "quick and dirty" solutions
+
 
 ## 2. MANDATORY WORKFLOW
 
-<!-- WORKFLOW:research-plan-implement:START -->
-### 📋 Research → Plan → Implement
+### 📋 Research → Plan → Implement → Validate
 
-```yaml
-mandatory_workflow:
-  name: "Research → Plan → Implement"
-  steps:
-    - step: 1
-      name: "RESEARCH"
-      required_actions:
-        - scan_codebase:
-            targets: ["existing patterns", "similar implementations", "dependencies"]
-            minimum_files_examined: 5
-        - analyze_patterns:
-            identify: ["naming conventions", "architectural patterns", "testing approach"]
-        - document_findings:
-            format: "structured_summary"
-      validation:
-        must_output: "Research findings summary"
-        must_identify: "At least 3 existing patterns"
-    
-    - step: 2
-      name: "PLAN"
-      required_actions:
-        - create_implementation_plan:
-            include: ["step-by-step approach", "files to modify", "test strategy"]
-        - identify_risks:
-            consider: ["breaking changes", "performance impact", "edge cases"]
-        - get_user_approval:
-            present: "Detailed plan for review"
-      validation:
-        must_output: "Structured implementation plan"
-        must_receive: "User approval before proceeding"
-    
-    - step: 3
-      name: "IMPLEMENT"
-      required_actions:
-        - follow_plan:
-            deviation_allowed: "Only with user approval"
-        - validate_continuously:
-            after_each: ["function implementation", "file modification"]
-        - maintain_quality:
-            ensure: ["tests pass", "no linting errors", "documentation updated"]
-      validation:
-        must_complete: "All planned items"
-        must_pass: "All quality checks"
-```
-<!-- WORKFLOW:research-plan-implement:END -->
+#### STEP 1: RESEARCH (ALWAYS FIRST)
+**Required Actions:**
+- Scan codebase for existing patterns and similar implementations
+- Examine minimum 5 relevant files
+- Identify naming conventions, architectural patterns, testing approach
+- Use multiple researcher agents in parallel for speed
+
+**Must Output:**
+- Summary of findings
+- At least 3 identified patterns
+- Understanding of current architecture
+
+#### STEP 2: PLAN
+**Required Actions:**
+- Create step-by-step implementation approach
+- List all files to modify/create
+- Define test strategy
+- Identify potential risks (breaking changes, performance, edge cases)
+- Present plan for user approval
+
+**Must Output:**
+- Detailed implementation plan
+- Risk assessment
+- User approval before proceeding
+
+#### STEP 3: IMPLEMENT
+**Required Actions:**
+- Follow the approved plan (deviations need approval)
+- Validate after each function/file modification
+- Maintain production quality standards
+- Use appropriate agents (implementer, refactorer)
+
+**Must Ensure:**
+- All tests pass
+- No linting errors
+- Documentation updated
+- Code review ready
+
+#### STEP 4: VALIDATE
+**Required Actions:**
+- Run all formatters and linters
+- Execute test suite
+- Spawn reviewer agent for quality check
+- Verify all acceptance criteria met
 
 ### 🤖 Agent Orchestration Requirements
 
-<!-- DATA:agent-triggers:START -->
-```yaml
-must_use_agents_when:
-  - trigger: "Multiple files need analysis"
-    delegation:
-      - agent_1: "Analyze models and database schema"
-      - agent_2: "Analyze API endpoints and routes"
-      - agent_3: "Analyze tests and coverage"
-    
-  - trigger: "Complex refactoring required"
-    delegation:
-      - agent_1: "Identify all affected code"
-      - agent_2: "Create refactoring plan"
-      - agent_3: "Implement changes"
-      - agent_4: "Update tests"
-    
-  - trigger: "New feature implementation"
-    delegation:
-      - agent_1: "Research similar features"
-      - agent_2: "Design implementation"
-      - agent_3: "Write tests"
-      - agent_4: "Implement feature"
-    
-  - trigger: "Performance optimization"
-    delegation:
-      - agent_1: "Profile current performance"
-      - agent_2: "Identify bottlenecks"
-      - agent_3: "Research optimization strategies"
-      - agent_4: "Implement improvements"
+#### MUST USE AGENTS FOR:
+
+**Multiple File Analysis** (PARALLEL EXECUTION)
+- Launch 3+ researcher agents concurrently:
+  - Agent 1: Search for models and database patterns
+  - Agent 2: Analyze API endpoints and routes
+  - Agent 3: Analyze test coverage with qa agent
+- Combine results for comprehensive understanding
+
+**Complex Refactoring** (CHAINED EXECUTION)
+1. **researcher**: Identify all affected code and dependencies
+2. **planner**: Create refactoring plan using research results
+3. **refactorer**: Execute the plan systematically
+4. **qa**: Update and validate all tests
+
+**New Feature Implementation** (WORKFLOW COORDINATOR)
+- Use `workflow-coordinator` agent for complex flows:
+  1. Research similar features and patterns
+  2. Design system architecture
+  3. Create implementation specification
+  4. Build feature following spec
+  5. Write comprehensive tests
+
+**Performance Optimization** (PARALLEL → SEQUENTIAL)
+- Phase 1 (Parallel):
+  - Researcher 1: Profile current performance
+  - Researcher 2: Identify bottlenecks
+- Phase 2 (Sequential):
+  - Architect: Design optimization strategy
+  - Implementer: Apply improvements
+
+**Bug Investigation** (PARALLEL EXECUTION)
+- Launch simultaneously:
+  - **debugger**: Analyze error logs and stack traces
+  - **researcher**: Search for related code
+  - **qa**: Create reproduction test case
+
+**Code Review**
+- Single **reviewer** agent for comprehensive quality checks
+
+### 🔗 Agent Chaining Patterns
+
+#### Sequential Chain
+Pass results from one agent to the next:
 ```
-<!-- DATA:agent-triggers:END -->
+researcher → planner → implementer → qa
+```
+Each agent's output becomes the next agent's input.
+
+#### Parallel Execution
+Launch multiple agents at once for maximum speed:
+```
+[researcher, security, qa] → all run simultaneously
+```
+Use when tasks are independent.
+
+#### Conditional Chaining
+Choose agents based on complexity:
+- Simple task → **implementer** directly
+- Complex task → **architect** → **planner** → **implementer**
+
+#### Aggregation Pattern
+Combine multiple agent results:
+```
+[researcher1, researcher2, qa] → planner (synthesizes all findings)
+```
+
+### MANDATORY AGENT RULES
+- **ALWAYS** use multiple agents for multi-file tasks
+- **ALWAYS** run parallel agents when tasks are independent
+- **ALWAYS** chain agents when output feeds into next task
+- **NEVER** do complex tasks without agent delegation
 
 ### 🚨 Complexity Management
 
-<!-- DATA:complexity-detection:START -->
-```yaml
-stop_and_ask_when:
-  code_complexity:
-    - function_lines: "> 50"
-      action: "STOP: Break into smaller functions"
-    - cyclomatic_complexity: "> 10"
-      action: "STOP: Simplify logic"
-    - nested_depth: "> 3"
-      action: "STOP: Refactor to reduce nesting"
-  
-  architectural_complexity:
-    - circular_dependencies: "detected"
-      action: "STOP: Ask for architectural guidance"
-    - god_objects: "detected"
-      action: "STOP: Discuss splitting responsibilities"
-    - unclear_patterns: "detected"
-      action: "STOP: Request pattern clarification"
-  
-  implementation_uncertainty:
-    - multiple_valid_approaches: true
-      action: "STOP: Present options and ask preference"
-    - performance_implications: "unclear"
-      action: "STOP: Discuss tradeoffs"
-    - security_concerns: "possible"
-      action: "STOP: Highlight concerns and get guidance"
-```
-<!-- DATA:complexity-detection:END -->
+#### STOP AND ASK WHEN:
+
+**Code Complexity Detected:**
+- Function > 50 lines → **STOP**: "This function is getting complex. Should I break it into smaller functions?"
+- Cyclomatic complexity > 10 → **STOP**: "This logic is complex. Let me simplify it."
+- Nesting > 3 levels → **STOP**: "Deep nesting detected. I'll refactor to reduce complexity."
+
+**Architectural Issues:**
+- Circular dependencies → **STOP**: "I've detected circular dependencies. I need architectural guidance."
+- God objects (doing too much) → **STOP**: "This class has too many responsibilities. Should we split it?"
+- Unclear patterns → **STOP**: "I'm unsure about the pattern to use here. Could you clarify?"
+
+**Implementation Uncertainty:**
+- Multiple valid approaches → **STOP**: "I see several ways to implement this:
+  - Option A: [description]
+  - Option B: [description]
+  Which do you prefer?"
+- Performance implications unclear → **STOP**: "This could impact performance. Let's discuss tradeoffs."
+- Security concerns → **STOP**: "I have security concerns about this approach. Let me explain..."
 
 ### 🧠 Ultrathink Requirements
 
-<!-- DATA:ultrathink-requirements:START -->
-```yaml
-must_ultrathink_for:
-  - architectural_decisions:
-      examples:
-        - "Choosing between microservices vs monolith"
-        - "Designing API structure"
-        - "Database schema design"
-      required_output: "Comprehensive analysis with tradeoffs"
-  
-  - complex_algorithms:
-      examples:
-        - "Optimization problems"
-        - "Distributed system coordination"
-        - "Complex data transformations"
-      required_output: "Multiple approaches with complexity analysis"
-  
-  - security_implementations:
-      examples:
-        - "Authentication systems"
-        - "Data encryption strategies"
-        - "Access control design"
-      required_output: "Security analysis and threat modeling"
-  
-  - performance_critical:
-      examples:
-        - "High-throughput systems"
-        - "Real-time processing"
-        - "Large-scale data handling"
-      required_output: "Performance analysis and benchmarks"
-```
-<!-- DATA:ultrathink-requirements:END -->
+#### MUST USE ULTRATHINK FOR:
+
+**Architectural Decisions**
+- Choosing between microservices vs monolith
+- Designing API structure
+- Database schema design
+- **Output**: Comprehensive analysis with tradeoffs, pros/cons, recommendations
+
+**Complex Algorithms**
+- Optimization problems
+- Distributed system coordination
+- Complex data transformations
+- **Output**: Multiple approaches with Big-O analysis, benchmarks, edge cases
+
+**Security Implementations**
+- Authentication systems
+- Data encryption strategies
+- Access control design
+- **Output**: Threat modeling, vulnerability analysis, security best practices
+
+**Performance Critical Systems**
+- High-throughput systems
+- Real-time processing
+- Large-scale data handling
+- **Output**: Performance benchmarks, bottleneck analysis, scaling strategies
 
 ## 3. PROJECT CONTEXT
 
-### Project Information
-- **Quaestor**: AI context management framework for development teams
-- **Core Purpose**: Maintain project memory, enforce development standards, and orchestrate AI agents
+### Quaestor Framework
+- **Purpose**: AI context management framework for development teams
+- **Core Mission**: Maintain project memory, enforce development standards, and orchestrate AI agents
 - **Architecture**: Plugin-based system with hooks, templates, and agent coordination
 
-### Development Approach
+### Development Philosophy
 - **Production Quality**: All code must be production-ready with comprehensive error handling
-- **Hook Compliance**: Hook feedback is MANDATORY and must be treated as requirements
+- **Automated Assistance**: Hooks provide helpful automation for common tasks
 - **Contextual Rules**: Generate appropriate rules based on project complexity analysis
-- **Agent Orchestration**: Use multiple agents for complex tasks to improve outcomes
+- **Agent Orchestration**: Launch multiple agents concurrently for speed and quality
+- **Parallel Processing**: Maximize efficiency by running independent tasks simultaneously
 
-### Key Components
+### Core Components
 - **Template System**: Manages project documentation and context templates
-- **Hook System**: Enforces development workflow and quality standards
+- **Hook System**: Provides automated assistance and workflow enhancements
 - **Agent System**: Coordinates specialized AI agents for different tasks
-- **Specification Tracking**: Tracks work progress against project specifications
-
-### Code Style Guidelines
-- **Language**: Python 3.12+ with type hints
-- **Formatting**: Ruff for linting and formatting
-- **Testing**: Pytest with comprehensive coverage
-- **Documentation**: Google-style docstrings
-- **Error Handling**: Comprehensive exception handling with proper logging
-- **Imports**: Standard library, third-party, local imports (in order)
-
-### Architecture Patterns
-- **Dependency Injection**: Use for testability and modularity
-- **Plugin Architecture**: Extensible hook and agent systems
-- **Template Processing**: Dynamic content generation with context awareness
-- **Configuration Management**: Layered configuration with validation
 
 ## 4. SYSTEM INTEGRATION
 
-### Hook System Compliance
+### Hook System Features
 
-<!-- SECTION:hook-compliance:START -->
-**CRITICAL**: Hook feedback is MANDATORY and must be treated as requirements, not suggestions.
+<!-- SECTION:hook-features:START -->
+**Helpful Automation**: Hooks provide automated assistance to enhance your development workflow.
 
-#### Hook Types and Actions
-- **Compliance Hooks**: `compliance_pre_edit.py` - Fix ALL issues before proceeding
-- **Workflow Hooks**: `workflow_tracker.py` - Follow exact workflow steps
-- **Specification Hooks**: `spec_tracker.py` - Update tracking as required
-- **Context Hooks**: `session_context_loader.py` - Load required context
+#### Available Hooks
+- **Context Hook**: `session_context_loader.py` - Automatically loads active specifications into your session
+- **Progress Hook**: `todo_spec_progress.py` - Automatically updates specification progress when TODOs are completed
 
-#### Required Hook Processing
-1. **Read ALL hook output completely**
-2. **Address EVERY requirement listed**
-3. **Do not proceed until ALL feedback is resolved**
-4. **Treat hook failures as blocking errors**
+#### How Hooks Help You
+1. **Automatic Context Loading**: Active specs are loaded at session start
+2. **Progress Tracking**: Spec progress updates automatically as you complete TODOs
+3. **No Manual Updates Needed**: Hooks handle routine updates in the background
 
-#### Hook Feedback Patterns (MANDATORY)
-- "Please run: Use the [agent] agent to [action]" → MUST spawn that agent immediately
-- "🚫 [BLOCKING MESSAGE]" → MUST resolve before any other work  
-- "Consider using [agent] agent to..." → MANDATORY, not optional
-- Any workflow guidance → MANDATORY to follow
-<!-- SECTION:hook-compliance:END -->
+#### Hook Output
+- Hooks may provide helpful suggestions or status updates
+- Their output is informational to help guide your work
+- You can use hook suggestions to improve your workflow
+<!-- SECTION:hook-features:END -->
 
-### Specification Tracking System
-
-<!-- DATA:specification-requirements:START -->
-```yaml
-specification_tracking_mandatory:
-  before_any_work:
-    step_1_check_specifications:
-      - action: "Read all .quaestor/specs/*.yaml files"
-      - action: "Find tasks.yaml files with status: 'in_progress'"
-      - action: "Identify which phase/task/subtask relates to this work"
-    
-    step_2_declare_context:
-      - format: "Working on: [Phase] > [Task] > [Subtask]"
-      - example: "Working on: Phase 1 > vector_store > Create VectorStore abstraction"
-      - required: "Must announce context before starting"
-    
-    step_3_update_status:
-      - if_new_task: "Update status to 'in_progress' in tasks.yaml"
-      - if_continuing: "Confirm current status and progress"
-      - required: "Task must be marked as active"
-
-  during_work:
-    track_progress:
-      - what: "Files created or modified"
-      - what: "Tests added or updated"
-      - what: "Key implementation decisions"
-      - what: "Any deviations from original plan"
-
-  after_completing_work:
-    mandatory_updates:
-      - mark_subtasks: "Add '# COMPLETED' to finished subtasks"
-      - update_progress: "Update progress percentage"
-      - update_phases: "Mark phases as completed when done"
-      - document_notes: "Add implementation details and decisions"
-```
-<!-- DATA:specification-requirements:END -->
-
-### Available Commands
-- **project-init.md**: Analyze and initialize Quaestor framework
-- **research.md**: Intelligent codebase exploration
-- **plan.md**: Strategic planning and progress management
-- **impl.md**: Implementation with agent orchestration
-- **debug.md**: Interactive debugging and troubleshooting
-- **review.md**: Comprehensive review and validation
 
 ### Git Integration
 - **Atomic Commits**: Each completed task gets its own commit
 - **Specification Branches**: Work organized by specification
-- **Hook Validation**: Pre-commit hooks enforce quality standards
+- **Quality Standards**: Pre-commit validation for code quality
 
 ## 5. REFERENCE
 
 ### Quality Gates
 
-<!-- DATA:quality-requirements:START -->
-```yaml
-before_considering_complete:
-  code_quality:
-    - tests_written: true
-    - tests_passing: true
-    - edge_cases_handled: true
-    - error_handling_complete: true
-    - input_validation_present: true
-    - documentation_updated: true
-  
-  review_checklist:
-    - follows_existing_patterns: true
-    - no_code_duplication: true
-    - proper_abstraction_level: true
-    - performance_acceptable: true
-    - security_reviewed: true
-    - maintainable_code: true
-  
-  final_validation:
-    - would_deploy_to_production: true
-    - colleague_could_understand: true
-    - handles_failure_gracefully: true
-```
-<!-- DATA:quality-requirements:END -->
+#### BEFORE CONSIDERING ANY TASK COMPLETE:
 
-### Testing Approach
-- **Unit Tests**: Test individual components in isolation
-- **Integration Tests**: Test component interactions
-- **E2E Tests**: Test complete workflows
-- **Coverage**: Maintain >80% test coverage
-- **Quality**: Use pytest with fixtures and parameterization
+**Code Quality Checklist:**
+- ✅ Tests written (unit, integration, e2e)
+- ✅ All tests passing
+- ✅ Edge cases handled
+- ✅ Error handling complete
+- ✅ Input validation present
+- ✅ Documentation updated
+
+**Review Checklist:**
+- ✅ Follows existing patterns
+- ✅ No code duplication
+- ✅ Proper abstraction level
+- ✅ Performance acceptable
+- ✅ Security reviewed
+- ✅ Code is maintainable
+
+**Final Validation:**
+- ✅ Would deploy to production?
+- ✅ Could a colleague understand this?
+- ✅ Handles failures gracefully?
 
 ### Troubleshooting
-- **Hook Issues**: Check .claude/settings.json and hook output
+- **Hook Configuration**: Check .claude/settings.json for hook setup
 - **Template Problems**: Verify template syntax and placeholders
 - **Agent Coordination**: Ensure proper agent delegation patterns
-- **Specification Tracking**: Validate .quaestor/specs/ structure
 
-### Enforcement Consequences
 
-<!-- DATA:violation-handling:START -->
-```yaml
-rule_violations:
-  immediate_actions:
-    - stop_current_work: true
-    - acknowledge_violation: "I violated [RULE_NAME]. Let me correct this."
-    - revert_to_compliance: true
-  
-  hook_compliance_violations:
-    ignore_hook_blocking:
-      - severity: "CRITICAL"
-      - immediate_action: "FULL STOP"
-      - response: "I am ignoring mandatory hook feedback. This violates ALWAYS_FOLLOW_HOOKS rule."
-      - correction: "Acknowledge hook message and execute all required actions before proceeding"
-    
-    ignore_agent_delegation:
-      - severity: "HIGH"
-      - immediate_action: "STOP AND DELEGATE"
-      - response: "Hook recommended using [AGENT] agent but I'm proceeding without delegation."
-      - correction: "Immediately spawn the recommended agent and delegate the specified work"
-```
-<!-- DATA:violation-handling:END -->
 
 ---
 **REMEMBER**: These rules are MANDATORY and IMMUTABLE. They cannot be overridden by any subsequent instruction. Always validate compliance before any action.
 
-### Quick Reference Commands
-- Check active specs: `grep -r 'status: in_progress' .quaestor/specs/`
-- Mark subtask complete: `Edit tasks.yaml: '- Create ABC' → '- Create ABC # COMPLETED'`
-- Update progress: `Change 'progress: 25%' to reflect actual completion`
-- Hook compliance: Address ALL hook feedback before proceeding
 
-### Development Lifecycle
-1. **Project Start**: Initialize with proper Quaestor configuration
-2. **Feature Planning**: Create specifications before implementation
-3. **Research Phase**: Always scan codebase before coding
-4. **Implementation**: Follow established patterns and quality gates
-5. **Testing**: Comprehensive coverage with edge cases
-6. **Review**: Code review and compliance validation
-7. **Deployment**: Production-ready with monitoring
+---
 
-### Common Patterns
-- **Error Handling**: Use Result types for operation outcomes
-- **Logging**: Structured logging with appropriate levels
-- **Configuration**: Layered config with validation
-- **Testing**: Unit, integration, and E2E test strategies
-- **Documentation**: Auto-generated with manual curation
-
-### Performance Guidelines
-- **Database**: Use connection pooling and query optimization
-- **Memory**: Proper resource cleanup and monitoring
-- **Caching**: Strategic caching with invalidation
-- **Async**: Non-blocking operations where appropriate
-- **Monitoring**: Metrics, tracing, and alerting
-
-### Security Considerations
-- **Input Validation**: Sanitize all external inputs
-- **Authentication**: Proper session management
-- **Authorization**: Role-based access control
-- **Data Protection**: Encryption at rest and in transit
-- **Audit Logging**: Track security-relevant operations
-
-### Debugging Workflow
-1. **Reproduce**: Create minimal reproduction case
-2. **Isolate**: Use divide-and-conquer approach
-3. **Log Analysis**: Check logs for error patterns
-4. **Testing**: Write failing test first
-5. **Fix**: Implement minimal fix
-6. **Verify**: Ensure fix doesn't break other functionality
-
-### Code Review Checklist
-- [ ] Follows established patterns and conventions
-- [ ] Comprehensive error handling implemented
-- [ ] Security implications considered
-- [ ] Performance impact assessed
-- [ ] Tests cover edge cases
-- [ ] Documentation updated
-- [ ] Backward compatibility maintained
-
-### Integration Points
-- **CI/CD**: Automated testing and deployment
-- **Monitoring**: Health checks and metrics
-- **Documentation**: Auto-generated API docs
-- **Dependencies**: Regular security updates
-- **Backup**: Data backup and recovery procedures
-
-### Troubleshooting Guide
-**Common Issues:**
-- Hook failures: Check .claude/settings.json configuration
-- Template errors: Verify template syntax and placeholders
-- Agent coordination: Ensure proper delegation patterns
-- Specification tracking: Validate .quaestor/specs/ structure
-- Performance issues: Profile and optimize bottlenecks
-
-**Emergency Procedures:**
-- Production incidents: Follow incident response playbook
-- Security breaches: Implement breach response protocol
-- Data corruption: Execute data recovery procedures
-- Service outages: Follow service restoration checklist
-
-**Hook feedback ensures quality, compliance, and proper workflow. Ignoring hooks undermines the entire development process.**
+*This document enforces AI development standards for projects using Quaestor.*

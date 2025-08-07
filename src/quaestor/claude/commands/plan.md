@@ -3,7 +3,7 @@ allowed-tools: [Read, Edit, MultiEdit, Write, Bash, Grep, Glob, LS, Task, TodoWr
 description: "Specification-driven planning, project management, and progress tracking with multi-agent orchestration"
 
 agent-strategy:
-  specification_design: planner
+  specification_design: [planner, speccer]  # Chain: planner analyzes, speccer generates YAML
   system_design: architect
   project_planning: architect
   spec_breakdown: [planner, architect, implementer]
@@ -41,8 +41,9 @@ Mode Detection:
 
 ### Agent Orchestration
 ```yaml
-Specification Design:
-  - planner: Create specs with contracts
+Specification Design (Chained):
+  - planner: Analyze requirements and create planning data
+  - speccer: Transform planning data into valid YAML specification
   - architect: Validate technical approach
   - implementer: Estimate complexity
   
@@ -65,19 +66,23 @@ Strategic Analysis:
 
 ### Agent-Driven Execution
 
-**FIRST, use the workflow-coordinator agent to validate workflow state and coordinate the planning phase.**
+⚠️ **CRITICAL: FOR DEFAULT MODE (CREATING SPECIFICATIONS):**
+1. **SKIP workflow-coordinator** - Not needed for spec creation
+2. **DIRECTLY CHAIN**: planner → speccer agents
+3. **planner agent**: Analyzes requirements and outputs structured planning data
+4. **speccer agent**: Receives planning data and generates valid YAML specification
 
-The workflow-coordinator will:
-- Verify research phase has been completed (minimum files examined)
-- Check for existing specifications and their status
-- Ensure we're ready to move to planning phase
-- Coordinate the transition from research to planning
-
-Then based on the mode:
-- **Default mode**: Use the planner agent to create specifications
+**Workflow by Mode:**
+- **Default mode (no args or with title)**: 
+  - **IMMEDIATE ACTION**: Chain planner → speccer agents
+  - **NO WORKFLOW COORDINATOR NEEDED**
+  - planner analyzes requirements → outputs planning data
+  - speccer receives planning data → generates YAML specification
+  
 - **--analyze mode**: Use architect, researcher, and security agents for analysis
 - **--architecture mode**: Use the architect agent with security and implementer support
 - **--status mode**: Use the researcher agent to analyze project status
+- **--complete mode**: Use workflow-coordinator to validate completion readiness
 
 ### Folder Management Integration
 **Automatic folder-based specification lifecycle:**
@@ -91,7 +96,6 @@ On First Run:
     created: YYYY-MM-DD
     specifications: []
     ```
-  - Migrate existing flat specifications to appropriate folders
   - Update manifest with specification entries
 
 Folder Operations:
@@ -109,7 +113,11 @@ Specification Context:
 ### Specification Creation (Default Mode) 🎯
 **Create new specifications with contracts and acceptance criteria:**
 
-**Use the planner agent to create the specification with proper contracts and acceptance criteria.**
+⚠️ **MANDATORY AGENT CHAIN FOR SPEC CREATION:**
+1. **planner agent** (FIRST): Analyzes requirements and outputs structured planning data
+2. **speccer agent** (SECOND): Receives planning data from planner and generates valid YAML specification
+
+**DO NOT USE workflow-coordinator for spec creation - go directly to planner → speccer chain**
 ```yaml
 Data Collection (Parallel):
   - Folder statistics: draft/active/completed counts via FolderManager
@@ -233,9 +241,28 @@ Archive Generation:
 ```
 
 
-## Specification Creation Workflow (--spec)
+## Specification Creation Workflow (--spec or default)
 
-**Use the planner agent to create the specification with proper contracts and acceptance criteria.**
+⚠️ **CRITICAL: THIS IS THE REQUIRED WORKFLOW FOR CREATING SPECIFICATIONS**
+
+**MANDATORY Agent Chain (NO workflow-coordinator):**
+```yaml
+Agent Chain:
+  Step 1 - Planning (ALWAYS FIRST):
+    agent: planner
+    input: User requirements and context  
+    output: Structured planning data (YAML format)
+    
+  Step 2 - Generation (RECEIVES PLANNER OUTPUT):
+    agent: speccer
+    input: Planning data from planner (passed directly)
+    output: Valid YAML specification in draft/ folder
+    
+IMPORTANT: 
+  - DO NOT use workflow-coordinator for spec creation
+  - ALWAYS chain planner → speccer in that exact order
+  - The planner's output becomes the speccer's input
+```
 
 ### Initial Setup
 ```yaml

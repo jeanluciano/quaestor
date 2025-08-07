@@ -2,7 +2,7 @@
 name: architect
 description: System design and architecture specialist
 tools: Read, Write, Grep, Glob, TodoWrite, Task
-model: sonnet
+model: opus
 color: yellow
 
 activation:

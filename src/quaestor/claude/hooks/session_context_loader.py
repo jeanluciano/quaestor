@@ -144,9 +144,9 @@ class SessionContextLoaderHook(BaseHook):
         content = []
 
         # Calculate detailed progress
-        progress = spec.calculate_progress()
         criteria_completed = sum(1 for c in spec.acceptance_criteria if "✓" in c or "completed" in c.lower())
         criteria_total = len(spec.acceptance_criteria)
+        progress = (criteria_completed / criteria_total * 100) if criteria_total > 0 else 0
 
         # Enhanced progress display with tree structure
         progress_bar = self._create_progress_bar(progress)

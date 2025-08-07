@@ -1,69 +1,187 @@
 # Configuration
 
-Quaestor uses a combination of configuration files and environment variables to customize its behavior for your project and team preferences.
+Quaestor uses a layered configuration system that adapts to your project's language and allows customization at multiple levels.
+
+## Configuration System Overview
+
+Quaestor's configuration follows a 5-layer precedence system, where each layer can override settings from previous layers:
+
+1. **Built-in Defaults** - Core defaults embedded in Quaestor
+2. **Base Language Config** - Language-specific defaults from `languages.yaml`
+3. **Project Config** - Project-specific settings in `.quaestor/config.yaml`
+4. **Project Language Override** - Language overrides in `.quaestor/languages.yaml`
+5. **Runtime Config** - Command-line arguments and environment variables
 
 ## Configuration Files
 
-### Project Configuration (`.quaestor/`)
+### Core Configuration (`.quaestor/config.yaml`)
 
-When you initialize Quaestor in a project, it creates a `.quaestor/` directory with several configuration files:
+The main configuration file for your project:
 
-#### `manifest.json`
-Tracks installed files and versions:
-```json
-{
-  "version": "1.0.0",
-  "install_date": "2024-01-15T10:30:00Z",
-  "mode": "team",
-  "files": {
-    "RULES.md": "abc123...",
-    "QUAESTOR_CLAUDE.md": "def456..."
-  }
-}
+```yaml
+version: "1.0"
+hooks:
+  enabled: true
+  strict_mode: false  # When true, hook failures block operations
 ```
 
-#### Language Configuration
-Quaestor automatically detects your project type and applies appropriate configurations from `languages.yaml`:
+### Language Configuration (`.quaestor/languages.yaml`)
 
-- **Python**: Uses ruff for linting/formatting, pytest for testing
-- **JavaScript/TypeScript**: Uses ESLint and Prettier
-- **Rust**: Uses cargo clippy and rustfmt
-- **Go**: Uses golangci-lint and go fmt
+Customize language-specific settings for your project:
 
-## Claude Integration Settings
-
-### Team Settings (`.claude/settings.json`)
-Shared settings for the entire team:
-
-```json
-{
-  "project_standards": {
-    "min_test_coverage": 80,
-    "max_file_length": 500,
-    "required_quality_gates": ["lint", "test", "security"]
-  },
-  "workflow_rules": {
-    "require_specifications": true,
-    "branch_naming": "feat/{spec-id}-{description}"
-  }
-}
+```yaml
+version: "1.0"
+languages:
+  python:
+    # Testing configuration
+    test_command: "pytest -xvs"
+    test_directory: "tests"
+    test_framework: "pytest"
+    coverage_threshold: 80
+    
+    # Linting and formatting
+    lint_command: "ruff check"
+    format_command: "ruff format"
+    
+    # Type checking
+    type_check_command: "mypy src/"
+    
+    # Import style
+    import_style: "absolute"
+    
+    # Documentation
+    docstring_style: "google"
+    
+    # Build and packaging
+    build_command: "python -m build"
+    package_manager: "pip"
+    
+    # Performance targets
+    performance_target: "10ms"
+    
+    # File patterns
+    source_directories: ["src", "lib"]
+    test_file_pattern: "test_*.py"
+    
+  typescript:
+    test_command: "npm test"
+    lint_command: "eslint . --fix"
+    format_command: "prettier --write ."
+    build_command: "npm run build"
+    package_manager: "npm"
+    
+  rust:
+    test_command: "cargo test"
+    lint_command: "cargo clippy"
+    format_command: "cargo fmt"
+    build_command: "cargo build --release"
 ```
 
-### Personal Settings (`.claude/settings.local.json`)
-Personal overrides (gitignored):
+## CLI Configuration Commands
 
-```json
-{
-  "agent_preferences": {
-    "complexity_threshold": 0.5,
-    "preferred_agents": ["implementer", "qa"]
-  },
-  "command_behavior": {
-    "impl": {
-      "auto_test": true
-    }
-  }
-}
+Quaestor provides CLI commands for managing configuration:
+
+### View Configuration
+```bash
+# Show all configuration layers
+quaestor config show
+
+# Show specific configuration value
+quaestor config get python.test_command
+
+# Show configuration for a specific language
+quaestor config show --language python
+```
+
+### Modify Configuration
+```bash
+# Set a configuration value
+quaestor config set python.coverage_threshold 90
+
+# Reset configuration to defaults
+quaestor config reset
+
+# Reset specific language configuration
+quaestor config reset --language python
+```
+
+### Validate Configuration
+```bash
+# Validate all configuration files
+quaestor config validate
+
+# Initialize missing configuration files
+quaestor config init
+```
+
+## Installation Modes
+
+### Project Mode (Default)
+Best for shared repositories:
+- Files installed in `.quaestor/` directory
+- Configuration committed to repository
+- Consistent setup across team
+
+```bash
+quaestor init --project
+```
+
+### Personal Mode
+Best for individual use:
+- Files installed in `.claude/` directory
+- Personal preferences preserved
+- Works on individual projects
+
+```bash
+quaestor init --personal
+```
+
+## Language Detection
+
+Quaestor automatically detects your project's primary language based on:
+
+1. **Manifest files**: `package.json`, `Cargo.toml`, `pyproject.toml`, `go.mod`
+2. **Configuration files**: `.python-version`, `tsconfig.json`, `rustfmt.toml`
+3. **File extensions**: Most common extension in source directories
+4. **Directory structure**: Presence of language-specific directories
+
+### Supported Languages
+
+- **Python**: Full support with pytest, ruff, mypy
+- **TypeScript/JavaScript**: ESLint, Prettier, Jest/Vitest
+- **Rust**: Cargo, clippy, rustfmt
+- **Go**: go test, golangci-lint, gofmt
+- **Java**: Maven/Gradle, JUnit
+- **C++**: CMake, clang-format
+- **Ruby**: RSpec, RuboCop
+- **Swift**: XCTest, SwiftLint
+
+## Configuration Precedence
+
+Settings are applied in order (later overrides earlier):
+
+1. **Built-in Defaults** - Core Quaestor defaults
+2. **Base Language Config** - From Quaestor's `languages.yaml`
+3. **Project Config** - Your `.quaestor/config.yaml`
+4. **Project Language Config** - Your `.quaestor/languages.yaml`
+5. **Runtime Arguments** - CLI flags and environment variables
+
+### Example: Test Command Resolution
+
+```yaml
+# 1. Built-in default
+test_command: "echo 'No test command configured'"
+
+# 2. Base language config (Quaestor's languages.yaml)
+python:
+  test_command: "pytest"
+
+# 3. Project language config (your .quaestor/languages.yaml)
+python:
+  test_command: "pytest -xvs --cov=src"
+
+# 4. Runtime override
+quaestor test --command "pytest -xvs --timeout=10"
 ```
 
 ## Environment Variables
@@ -72,154 +190,116 @@ Personal overrides (gitignored):
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `QUAESTOR_MODE` | Installation mode: "personal" or "team" | "team" |
-| `QUAESTOR_DEBUG` | Enable debug logging | false |
-| `QUAESTOR_HOOK_DEBUG` | Debug hook execution | false |
+| `QUAESTOR_CONFIG_PATH` | Path to config directory | `.quaestor` |
+| `QUAESTOR_DEBUG` | Enable debug logging | `false` |
+| `QUAESTOR_HOOKS_ENABLED` | Enable/disable hooks | `true` |
+| `QUAESTOR_STRICT_MODE` | Make hook failures blocking | `false` |
 
-### Performance Tuning
+### Language Override
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `QUAESTOR_AGENT_TIMEOUT` | Agent execution timeout (seconds) | 30 |
-| `QUAESTOR_PARALLEL_AGENTS` | Max parallel agent execution | 4 |
-
-### Feature Flags
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `QUAESTOR_EXPERIMENTAL` | Enable experimental features | false |
-| `QUAESTOR_DISABLE_HOOKS` | Disable all hooks | false |
-| `QUAESTOR_DISABLE_AUTO_FIX` | Disable automatic fixes | false |
-
-## Installation Modes
-
-### Team Mode (Default)
-Best for shared repositories:
-- Files installed in `.quaestor/` directory
-- Configuration committed to repository
-- Consistent setup across team
+You can override language detection:
 
 ```bash
-quaestor init
+export QUAESTOR_LANGUAGE=typescript
 ```
 
-### Personal Mode
-Best for individual use:
-- Global installation in `~/.quaestor/`
-- Personal preferences preserved
-- Works across all projects
+## Advanced Configuration
 
-```bash
-quaestor init personal
+### Custom Language Configuration
+
+Add support for additional languages or tools:
+
+```yaml
+# .quaestor/languages.yaml
+version: "1.0"
+languages:
+  custom_lang:
+    test_command: "custom-test-runner"
+    lint_command: "custom-linter"
+    format_command: "custom-formatter"
+    # Add any custom fields needed by your templates
+    custom_field: "custom_value"
 ```
 
-## Configuration Precedence
+### Template Variables
 
-Settings are applied in order (later overrides earlier):
+All language configuration fields are available as template variables:
 
-1. **Built-in Defaults**
-2. **Language Configuration** (`languages.yaml`)
-3. **Team Settings** (`.claude/settings.json`)
-4. **Personal Settings** (`.claude/settings.local.json`)
-5. **Environment Variables**
-6. **Command Arguments**
-
-## Common Configurations
-
-### For New Users
-Start with gentle guidance:
-
-```json
-{
-  "agent_preferences": {
-    "complexity_threshold": 0.3
-  },
-  "hook_settings": {
-    "complexity_monitor": {
-      "blocking": false
-    }
-  }
-}
+```markdown
+<!-- In templates like RULES.md -->
+## Testing
+Run tests with: `{{ test_command }}`
+Coverage threshold: {{ coverage_threshold }}%
 ```
 
-### For Power Users
-More control, less automation:
+### Validation Rules
 
-```json
-{
-  "agent_preferences": {
-    "complexity_threshold": 0.8,
-    "parallel_execution": true
-  },
-  "command_behavior": {
-    "impl": {
-      "auto_test": false
-    }
-  }
-}
-```
+Configuration validation includes:
 
-### For Teams
-Enforce standards:
+- **Type checking**: Ensures correct data types
+- **Range validation**: Coverage thresholds must be 0-100
+- **Command validation**: Warns if commands aren't found in PATH
+- **Deprecation warnings**: Alerts for outdated configuration
 
-```json
-{
-  "project_standards": {
-    "min_test_coverage": 90,
-    "required_quality_gates": ["lint", "test", "security", "docs"]
-  },
-  "workflow_rules": {
-    "require_specifications": true,
-    "require_pr_review": true
-  }
-}
-```
+## Migration from Older Versions
 
-## Updating Configuration
+### From v0.5.x or earlier
 
-### Check Current Settings
-```bash
-# View active configuration
-cat .claude/settings.json
-cat .claude/settings.local.json
+1. Run `quaestor update` to migrate configuration automatically
+2. Review `.quaestor/config.yaml` for new structure
+3. Move language customizations to `.quaestor/languages.yaml`
 
-# Check environment
-env | grep QUAESTOR
-```
+### Deprecated Configuration
 
-### Update Team Settings
-Edit `.claude/settings.json` and commit:
-```bash
-git add .claude/settings.json
-git commit -m "chore: update team quality standards"
-```
+The following configuration options have been removed:
 
-### Update Personal Settings
-Edit `.claude/settings.local.json` (won't be committed):
-```bash
-# This file is gitignored
-echo '{"agent_preferences": {"complexity_threshold": 0.4}}' > .claude/settings.local.json
-```
+- `quality` block - Use language-specific settings instead
+- `workflow` block - Now handled by hooks
+- `mode` enum - Use `--personal` or `--project` flags
+- `commands` block - Commands are now in `.claude/commands/`
 
 ## Troubleshooting
 
-### Settings Not Taking Effect
-1. Check precedence order - later settings override earlier
-2. Verify JSON syntax is valid
-3. Restart Claude Code session
-4. Check for typos in setting names
+### Configuration Not Taking Effect
 
-### Reset to Defaults
+1. Check precedence order with `quaestor config show`
+2. Validate syntax with `quaestor config validate`
+3. Ensure you're in the correct directory
+4. Check for typos in configuration keys
+
+### Reset Configuration
+
 ```bash
-# Remove all personal overrides
-rm .claude/settings.local.json
+# Reset all configuration to defaults
+quaestor config reset
 
-# Reset team settings
-git checkout .claude/settings.json
+# Reset specific language
+quaestor config reset --language python
+
+# Reinitialize configuration files
+quaestor config init
 ```
+
+### Debug Configuration Loading
+
+```bash
+# Show configuration with source information
+QUAESTOR_DEBUG=true quaestor config show
+
+# Validate configuration with detailed output
+quaestor config validate --verbose
+```
+
+## Best Practices
+
+1. **Commit `.quaestor/config.yaml`** - Share project settings with team
+2. **Customize `.quaestor/languages.yaml`** - Override language defaults for your project
+3. **Use `quaestor config validate`** - Check configuration before committing
+4. **Document custom settings** - Add comments explaining non-standard configuration
+5. **Start with defaults** - Only override what you need to change
 
 ## Next Steps
 
-- Learn about [Claude Agents](../agents/overview.md)
-- Explore [Hooks & Automation](../hooks/overview.md)
-- Read about [Specification-Driven Development](../specs/overview.md)
+- Learn about [Hooks System](../hooks/overview.md)
+- Explore [Specification-Driven Development](../specs/overview.md)
+- Read about [Claude Integration](../claude/overview.md)

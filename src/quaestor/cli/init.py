@@ -271,7 +271,6 @@ def _merge_claude_md(target_dir: Path, use_rule_engine: bool = False) -> bool:
 Please read the following files in order:
 @.quaestor/CONTEXT.md - Complete AI development context and rules
 @.quaestor/ARCHITECTURE.md - System design and structure (if available)
-@.quaestor/SPECFLOW.md
 @.quaestor/RULES.md
 @.quaestor/specs/active/ - Active specifications and implementation details
 <!-- QUAESTOR CONFIG END -->
@@ -431,6 +430,7 @@ def _init_common(target_dir: Path, force: bool, mode: str):
             "researcher.md",
             "reviewer.md",
             "security.md",
+            "speccer.md",
             "workflow-coordinator.md",
         ]
 
