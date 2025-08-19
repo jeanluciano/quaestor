@@ -1,0 +1,4 @@
+# Include .claude directories for installation
+recursive-include .claude *.md
+include .claude/agents/*.md
+include .claude/commands/*.md

@@ -1,29 +1,54 @@
-"""Core business logic for Quaestor.
+"""Shared utilities for Quaestor."""
 
-This module contains the fundamental business logic components:
-- Project analysis and metadata management
-- Template processing and generation
-- Configuration management
-"""
-
-from quaestor.core.config_manager import ConfigManager, get_config_manager
-from quaestor.core.project_analysis import ProjectAnalyzer
-from quaestor.core.project_metadata import (
-    FileManifest,
-    FileType,
-    categorize_file,
-    extract_version_from_content,
+from quaestor.core.file_utils import (
+    clean_empty_directories,
+    copy_file_with_processing,
+    create_directory,
+    find_project_root,
+    get_file_size_summary,
+    safe_read_text,
+    safe_write_text,
+    update_gitignore,
 )
-from quaestor.core.template_engine import get_project_data, process_template
+from quaestor.core.project_detection import (
+    detect_project_type,
+    get_project_complexity_indicators,
+    get_project_files_by_type,
+    is_test_file,
+)
+from quaestor.core.yaml_utils import (
+    YAMLConfig,
+    convert_json_to_yaml,
+    extract_yaml_section,
+    load_yaml,
+    merge_yaml_configs,
+    save_yaml,
+    update_yaml_section,
+    validate_yaml_schema,
+)
 
 __all__ = [
-    "ConfigManager",
-    "get_config_manager",
-    "ProjectAnalyzer",
-    "FileManifest",
-    "FileType",
-    "categorize_file",
-    "extract_version_from_content",
-    "get_project_data",
-    "process_template",
+    # Project detection
+    "detect_project_type",
+    "get_project_complexity_indicators",
+    "get_project_files_by_type",
+    "is_test_file",
+    # File utilities
+    "create_directory",
+    "safe_write_text",
+    "safe_read_text",
+    "update_gitignore",
+    "copy_file_with_processing",
+    "find_project_root",
+    "clean_empty_directories",
+    "get_file_size_summary",
+    # YAML utilities
+    "load_yaml",
+    "save_yaml",
+    "validate_yaml_schema",
+    "merge_yaml_configs",
+    "extract_yaml_section",
+    "update_yaml_section",
+    "convert_json_to_yaml",
+    "YAMLConfig",
 ]

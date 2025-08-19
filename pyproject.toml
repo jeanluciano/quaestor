@@ -54,12 +54,8 @@ packages = [
     "quaestor", 
     "quaestor.core", 
     "quaestor.cli",
-    "quaestor.utils",
     "quaestor.claude",
-    "quaestor.claude.hooks",
-    "quaestor.claude.agents",
-    "quaestor.claude.commands",
-    "quaestor.claude.templates"
+    "quaestor.claude.hooks"
 ]
 package-dir = {"" = "src"}
 
@@ -68,9 +64,7 @@ quaestor = [
     "*.md",
     "claude/hooks/*.py",
     "claude/hooks/*.json",
-    "claude/agents/*.md",
-    "claude/commands/*.md",
-    "claude/templates/*.md",
+    "claude/*.md",
     "core/*.yaml",
 ]
 

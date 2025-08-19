@@ -9,7 +9,7 @@ from rich.console import Console
 from rich.panel import Panel
 
 from quaestor.core.spec_schema import SpecificationSchema
-from quaestor.utils.yaml_utils import load_yaml
+from quaestor.core.yaml_utils import load_yaml
 
 app = typer.Typer(help="Validate Quaestor specification files")
 console = Console()

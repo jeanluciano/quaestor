@@ -12,7 +12,7 @@ from functools import wraps
 from pathlib import Path
 from typing import Any
 
-from quaestor.utils.yaml_utils import load_yaml, normalize_datetime, save_yaml
+from quaestor.core.yaml_utils import load_yaml, normalize_datetime, save_yaml
 
 from .folder_manager import FolderManager
 from .spec_schema import SpecificationSchema

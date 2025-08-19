@@ -10,7 +10,7 @@ from rich.console import Console
 from quaestor.claude.hooks.session_context_loader import SessionContextLoaderHook
 from quaestor.claude.hooks.todo_spec_progress import TodoSpecProgressHook
 from quaestor.core.spec_schema import SpecificationSchema
-from quaestor.utils.yaml_utils import load_yaml
+from quaestor.core.yaml_utils import load_yaml
 
 console = Console()
 

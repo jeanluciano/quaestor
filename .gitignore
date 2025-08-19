@@ -49,7 +49,3 @@ test_project/
 hook_test.log
 examples/
 .pypirc
-
-
-.claude/
-

@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from quaestor.utils import detect_project_type, get_project_complexity_indicators, load_yaml
+from quaestor.core import detect_project_type, get_project_complexity_indicators, load_yaml
 
 from .config_manager import get_config_manager
 from .config_schemas import LanguageConfig

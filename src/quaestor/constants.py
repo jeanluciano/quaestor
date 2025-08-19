@@ -21,7 +21,7 @@ DEPRECATED_COMMANDS = [
 ]
 
 # File categorization for update logic
-SYSTEM_FILES = ["CONTEXT.md", "hooks.json"]
+SYSTEM_FILES = ["AGENT.md", "hooks.json"]
 USER_EDITABLE_FILES = ["ARCHITECTURE.md", "MANIFEST.yaml", "CLAUDE.md"]
 
 # Version extraction patterns
@@ -38,7 +38,7 @@ QUAESTOR_DIR_NAME = ".quaestor"
 
 # File mappings for init command
 INIT_FILES = {
-    "CONTEXT.md": f"{QUAESTOR_DIR_NAME}/CONTEXT.md",  # Source -> Target
+    "AGENT.md": f"{QUAESTOR_DIR_NAME}/AGENT.md",  # Source -> Target
 }
 
 # Quaestor config markers for CLAUDE.md
@@ -48,10 +48,10 @@ QUAESTOR_CONFIG_END = "<!-- QUAESTOR CONFIG END -->"
 
 # Template file mappings (actual filename -> output filename)
 TEMPLATE_FILES = {
-    "context.md": "CONTEXT.md",
+    "agent.md": "AGENT.md",
     "architecture.md": "ARCHITECTURE.md",
     "rules.md": "RULES.md",
 }
 
 # Template base path within assets
-TEMPLATE_BASE_PATH = "quaestor.claude.templates"
+TEMPLATE_BASE_PATH = "quaestor.claude"

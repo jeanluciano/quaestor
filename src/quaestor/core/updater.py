@@ -61,7 +61,7 @@ class QuaestorUpdater:
 
         # Define files to manage in one place to ensure consistency
         self.QUAESTOR_FILES = [
-            ("templates/context.md", self.quaestor_dir / "CONTEXT.md"),
+            ("templates/agent.md", self.quaestor_dir / "AGENT.md"),
             ("templates/architecture.md", self.quaestor_dir / "ARCHITECTURE.md"),
         ]
 
@@ -95,6 +95,7 @@ class QuaestorUpdater:
         # Check each file type
         self._check_quaestor_files(updates)
         self._check_command_files(updates)
+        self._check_agent_files(updates)
 
         if show_diff:
             self._display_update_preview(updates)
@@ -130,12 +131,42 @@ class QuaestorUpdater:
 
     def _check_command_files(self, updates: dict[str, Any]):
         """Check command files in ~/.claude/commands."""
-        command_files = COMMAND_FILES
+        # Get source commands directory
+        current_file = Path(__file__)
+        project_root = current_file.parent.parent.parent  # Go up from src/quaestor/core/updater.py
+        source_commands_dir = project_root / ".claude" / "commands"
 
-        for cmd_file in command_files:
-            target_path = self.claude_commands_dir / cmd_file
-            if not target_path.exists():
-                updates["files"]["add"].append((f"commands/{cmd_file}", FileType.COMMAND.value))
+        # Check all command files in source
+        if source_commands_dir.exists():
+            for cmd_file in source_commands_dir.glob("*.md"):
+                target_path = self.claude_commands_dir / cmd_file.name
+                if not target_path.exists():
+                    updates["files"]["add"].append((f"commands/{cmd_file.name}", FileType.COMMAND.value))
+        else:
+            # Fallback to constant if directory not found
+            for cmd_file in COMMAND_FILES:
+                target_path = self.claude_commands_dir / cmd_file
+                if not target_path.exists():
+                    updates["files"]["add"].append((f"commands/{cmd_file}", FileType.COMMAND.value))
+
+    def _check_agent_files(self, updates: dict[str, Any]):
+        """Check agent files in .claude/agents (team mode only)."""
+        # Only check agents if .claude/agents directory exists (team mode)
+        local_agents_dir = self.target_dir / ".claude" / "agents"
+        if not local_agents_dir.exists():
+            return  # Not in team mode, skip agent checks
+
+        # Get source agents directory
+        current_file = Path(__file__)
+        project_root = current_file.parent.parent.parent  # Go up from src/quaestor/core/updater.py
+        source_agents_dir = project_root / ".claude" / "agents"
+
+        # Check all agent files in source
+        if source_agents_dir.exists():
+            for agent_file in source_agents_dir.glob("*.md"):
+                target_path = local_agents_dir / agent_file.name
+                if not target_path.exists():
+                    updates["files"]["add"].append((f".claude/agents/{agent_file.name}", FileType.COMMAND.value))
 
     def _detect_installed_version(self) -> str | None:
         """Try to detect the installed version from existing files.
@@ -143,8 +174,8 @@ class QuaestorUpdater:
         Returns:
             Version string or None if not detectable
         """
-        # Try to read version from CONTEXT.md which should have version info
-        version_file = self.quaestor_dir / "CONTEXT.md"
+        # Try to read version from AGENT.md which should have version info
+        version_file = self.quaestor_dir / "AGENT.md"
         if version_file.exists():
             try:
                 content = version_file.read_text()
@@ -242,6 +273,7 @@ class QuaestorUpdater:
         # Update files
         self._update_quaestor_files(result, force, dry_run)
         self._update_command_files(result, dry_run)
+        self._update_agent_files(result, dry_run)
         self._update_claude_md_include(result, dry_run)
 
         # Save manifest
@@ -294,9 +326,7 @@ class QuaestorUpdater:
             try:
                 # Read new content
                 if resource_name.startswith("templates/"):
-                    new_content = pkg_resources.read_text(
-                        "quaestor.claude.templates", resource_name.replace("templates/", "")
-                    )
+                    new_content = pkg_resources.read_text("quaestor.claude", resource_name.replace("templates/", ""))
                 else:
                     new_content = pkg_resources.read_text("quaestor", resource_name)
 
@@ -327,22 +357,65 @@ class QuaestorUpdater:
 
     def _update_command_files(self, result: UpdateResult, dry_run: bool):
         """Update command files in ~/.claude/commands."""
-        command_files = COMMAND_FILES
+        # Get source commands directory
+        current_file = Path(__file__)
+        project_root = current_file.parent.parent.parent  # Go up from src/quaestor/core/updater.py
+        source_commands_dir = project_root / ".claude" / "commands"
 
-        for cmd_file in command_files:
-            target_path = self.claude_commands_dir / cmd_file
+        if source_commands_dir.exists():
+            # Copy all command files from source
+            for cmd_file in source_commands_dir.glob("*.md"):
+                target_path = self.claude_commands_dir / cmd_file.name
+                try:
+                    # Commands are always safe to update/add
+                    if not target_path.exists():
+                        if not dry_run:
+                            content = cmd_file.read_text()
+                            self.claude_commands_dir.mkdir(parents=True, exist_ok=True)
+                            target_path.write_text(content)
+                        result.added.append(f"commands/{cmd_file.name}")
+                except Exception as e:
+                    result.failed.append((f"commands/{cmd_file.name}", str(e)))
+        else:
+            # Fallback to package resources
+            for cmd_file in COMMAND_FILES:
+                target_path = self.claude_commands_dir / cmd_file
+                try:
+                    # Commands are always safe to update/add
+                    if not target_path.exists():
+                        if not dry_run:
+                            content = pkg_resources.read_text("quaestor.claude.commands", cmd_file)
+                            self.claude_commands_dir.mkdir(parents=True, exist_ok=True)
+                            target_path.write_text(content)
+                        result.added.append(f"commands/{cmd_file}")
+                except Exception as e:
+                    result.failed.append((f"commands/{cmd_file}", str(e)))
 
-            try:
-                # Commands are always safe to update/add
-                if not target_path.exists():
-                    if not dry_run:
-                        content = pkg_resources.read_text("quaestor.claude.commands", cmd_file)
-                        self.claude_commands_dir.mkdir(parents=True, exist_ok=True)
-                        target_path.write_text(content)
-                    result.added.append(f"commands/{cmd_file}")
+    def _update_agent_files(self, result: UpdateResult, dry_run: bool):
+        """Update agent files in .claude/agents (team mode only)."""
+        # Only update agents if .claude/agents directory exists (team mode)
+        local_agents_dir = self.target_dir / ".claude" / "agents"
+        if not local_agents_dir.exists():
+            return  # Not in team mode, skip agent updates
 
-            except Exception as e:
-                result.failed.append((f"commands/{cmd_file}", str(e)))
+        # Get source agents directory
+        current_file = Path(__file__)
+        project_root = current_file.parent.parent.parent  # Go up from src/quaestor/core/updater.py
+        source_agents_dir = project_root / ".claude" / "agents"
+
+        if source_agents_dir.exists():
+            # Copy all agent files from source
+            for agent_file in source_agents_dir.glob("*.md"):
+                target_path = local_agents_dir / agent_file.name
+                try:
+                    # Agents are always safe to update/add
+                    if not target_path.exists():
+                        if not dry_run:
+                            content = agent_file.read_text()
+                            target_path.write_text(content)
+                        result.added.append(f".claude/agents/{agent_file.name}")
+                except Exception as e:
+                    result.failed.append((f".claude/agents/{agent_file.name}", str(e)))
 
     def _update_claude_md_include(self, result: UpdateResult, dry_run: bool):
         """Update CLAUDE.md include section if needed."""
@@ -363,7 +436,7 @@ class QuaestorUpdater:
             # Get latest include template
             import importlib.resources as pkg_resources
 
-            include_content = pkg_resources.read_text("quaestor.claude.templates", "include.md")
+            include_content = pkg_resources.read_text("quaestor.claude", "include.md")
 
             # Extract config section from template
             config_start_idx = include_content.find(QUAESTOR_CONFIG_START)

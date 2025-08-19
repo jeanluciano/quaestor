@@ -16,10 +16,10 @@ from quaestor.constants import (
     TEMPLATE_BASE_PATH,
     TEMPLATE_FILES,
 )
+from quaestor.core import update_gitignore
 from quaestor.core.project_metadata import FileManifest, FileType, extract_version_from_content
 from quaestor.core.template_engine import get_project_data, process_template
 from quaestor.core.updater import QuaestorUpdater, print_update_result
-from quaestor.utils import update_gitignore
 
 console = Console()
 
@@ -262,14 +262,14 @@ def _merge_claude_md(target_dir: Path, use_rule_engine: bool = False) -> bool:
     try:
         # Get the include template
         try:
-            include_content = pkg_resources.read_text("quaestor.claude.templates", "include.md")
+            include_content = pkg_resources.read_text("quaestor.claude", "include.md")
         except Exception:
             # Fallback if template is missing
             include_content = """<!-- QUAESTOR CONFIG START -->
 [!IMPORTANT]
 **Claude:** This project uses Quaestor for AI context management.
 Please read the following files in order:
-@.quaestor/CONTEXT.md - Complete AI development context and rules
+@.quaestor/AGENT.md - Complete AI development context and rules
 @.quaestor/ARCHITECTURE.md - System design and structure (if available)
 @.quaestor/RULES.md
 @.quaestor/specs/active/ - Active specifications and implementation details
@@ -329,18 +329,18 @@ Please read the following files in order:
 
 def _copy_system_files(quaestor_dir: Path, manifest: FileManifest, target_dir: Path):
     """Copy system files to .quaestor directory."""
-    # Copy CLAUDE_CONTEXT.md (consolidated template)
+    # Copy AGENT.md (consolidated template)
     try:
-        context_content = pkg_resources.read_text("quaestor.claude.templates", "context.md")
-        context_path = quaestor_dir / "CONTEXT.md"
+        context_content = pkg_resources.read_text("quaestor.claude", "agent.md")
+        context_path = quaestor_dir / "AGENT.md"
         context_path.write_text(context_content)
 
         # Track in manifest
         version = extract_version_from_content(context_content) or "1.0"
         manifest.track_file(context_path, FileType.SYSTEM, version, target_dir)
-        console.print("  [blue]✓[/blue] Copied CLAUDE_CONTEXT.md")
+        console.print("  [blue]✓[/blue] Copied AGENT.md")
     except Exception as e:
-        console.print(f"  [yellow]⚠[/yellow] Could not copy CLAUDE_CONTEXT.md: {e}")
+        console.print(f"  [yellow]⚠[/yellow] Could not copy AGENT.md: {e}")
 
 
 def _init_common(target_dir: Path, force: bool, mode: str):
@@ -393,20 +393,43 @@ def _init_common(target_dir: Path, force: bool, mode: str):
         commands_dir.mkdir(parents=True, exist_ok=True)
         console.print("Installing to .claude/commands (project commands)")
 
+    # Get the source commands directory
+    # In a uv workspace or development mode, the source is relative to this file
+    current_file = Path(__file__)
+    project_root = current_file.parent.parent.parent.parent  # Go up from src/quaestor/cli/init.py
+    source_commands_dir = project_root / ".claude" / "commands"
+
+    # Fallback: try to find from package location
+    if not source_commands_dir.exists():
+        import quaestor
+
+        package_dir = Path(quaestor.__file__).parent.parent
+        source_commands_dir = package_dir / ".claude" / "commands"
+
     # Copy command files directly without configuration processing
     commands_copied = 0
 
-    for cmd_file in COMMAND_FILES:
-        try:
-            # Read command content directly from package
-            cmd_content = pkg_resources.read_text("quaestor.claude.commands", cmd_file)
-
-            console.print(f"  [blue]✓[/blue] Installed {cmd_file}")
-
-            (commands_dir / cmd_file).write_text(cmd_content)
-            commands_copied += 1
-        except Exception as e:
-            console.print(f"  [yellow]⚠[/yellow] Could not install {cmd_file}: {e}")
+    if source_commands_dir.exists():
+        # Copy all command files from .claude/commands
+        for cmd_file in source_commands_dir.glob("*.md"):
+            try:
+                cmd_content = cmd_file.read_text()
+                (commands_dir / cmd_file.name).write_text(cmd_content)
+                console.print(f"  [blue]✓[/blue] Installed {cmd_file.name}")
+                commands_copied += 1
+            except Exception as e:
+                console.print(f"  [yellow]⚠[/yellow] Could not install {cmd_file.name}: {e}")
+    else:
+        # Fallback to using package resources if directory not found
+        for cmd_file in COMMAND_FILES:
+            try:
+                # Read command content directly from package
+                cmd_content = pkg_resources.read_text("quaestor.claude.commands", cmd_file)
+                (commands_dir / cmd_file).write_text(cmd_content)
+                console.print(f"  [blue]✓[/blue] Installed {cmd_file} (from package)")
+                commands_copied += 1
+            except Exception as e:
+                console.print(f"  [yellow]⚠[/yellow] Could not install {cmd_file}: {e}")
 
     # Copy hook files
     # No longer need to copy hook files - hooks are called via uvx commands
@@ -419,30 +442,32 @@ def _init_common(target_dir: Path, force: bool, mode: str):
         agents_dir = target_dir / ".claude" / "agents"
         agents_dir.mkdir(parents=True, exist_ok=True)
 
-        # List of available agents
-        available_agents = [
-            "architect.md",
-            "debugger.md",
-            "implementer.md",
-            "planner.md",
-            "qa.md",
-            "refactorer.md",
-            "researcher.md",
-            "reviewer.md",
-            "security.md",
-            "speccer.md",
-            "workflow-coordinator.md",
-        ]
+        # Get the source agents directory
+        # In a uv workspace or development mode, the source is relative to this file
+        current_file = Path(__file__)
+        project_root = current_file.parent.parent.parent.parent  # Go up from src/quaestor/cli/init.py
+        source_agents_dir = project_root / ".claude" / "agents"
+
+        # Fallback: try to find from package location
+        if not source_agents_dir.exists():
+            import quaestor
+
+            package_dir = Path(quaestor.__file__).parent.parent
+            source_agents_dir = package_dir / ".claude" / "agents"
 
         agents_copied = 0
-        for agent_file in available_agents:
-            try:
-                agent_content = pkg_resources.read_text("quaestor.claude.agents", agent_file)
-                (agents_dir / agent_file).write_text(agent_content)
-                console.print(f"  [blue]✓[/blue] Installed {agent_file}")
-                agents_copied += 1
-            except Exception as e:
-                console.print(f"  [yellow]⚠[/yellow] Could not install {agent_file}: {e}")
+        if source_agents_dir.exists():
+            # Copy all agent files from .claude/agents
+            for agent_file in source_agents_dir.glob("*.md"):
+                try:
+                    agent_content = agent_file.read_text()
+                    (agents_dir / agent_file.name).write_text(agent_content)
+                    console.print(f"  [blue]✓[/blue] Installed {agent_file.name}")
+                    agents_copied += 1
+                except Exception as e:
+                    console.print(f"  [yellow]⚠[/yellow] Could not install {agent_file.name}: {e}")
+        else:
+            console.print(f"  [red]✗[/red] Source agents directory not found at {source_agents_dir}")
 
         console.print(f"\n  [green]Installed {agents_copied} agent files[/green]")
 
