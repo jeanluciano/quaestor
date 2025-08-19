@@ -11,6 +11,8 @@ agent-strategy:
 
 # /impl - Intelligent Implementation Command
 
+ARGUMENTS: $SPEC_ID_OR_DESCRIPTION
+
 ## Purpose
 Execute production-quality features with auto-detected language standards, intelligent tool orchestration, and specification integration.
 

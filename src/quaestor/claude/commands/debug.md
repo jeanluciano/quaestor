@@ -11,6 +11,8 @@ agent-strategy:
 
 # /debug - Intelligent Troubleshooting & Fixing
 
+ARGUMENTS: $ERROR_OR_ISSUE
+
 ## Purpose
 Investigate issues, fix bugs, optimize performance, and troubleshoot problems with specialized debugging agents. Focuses on root cause analysis and systematic problem resolution.
 

@@ -12,6 +12,8 @@ agent-strategy:
 
 # /research - Intelligent Discovery & Understanding
 
+ARGUMENTS: $QUERY
+
 ## Purpose
 Explore, search, and analyze codebases to understand context, patterns, and dependencies before making changes. Leverages specialized agents for comprehensive exploration.
 

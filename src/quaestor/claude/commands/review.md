@@ -11,6 +11,8 @@ agent-strategy:
 
 # /review - Comprehensive Review & Ship
 
+ARGUMENTS: $OPTIONS
+
 ## Purpose
 Final quality validation, intelligent commit generation, and PR creation. Combines thorough code review, automated fixes, commit organization, and shipping preparation with multi-agent expertise.
 

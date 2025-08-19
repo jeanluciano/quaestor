@@ -10,6 +10,8 @@ agent-strategy:
 
 # /project-init - Intelligent Project Initialization
 
+ARGUMENTS: $OPTIONS
+
 ## Purpose
 Analyze project architecture, detect frameworks and patterns, then generate intelligent Quaestor setup with auto-populated documentation.
 

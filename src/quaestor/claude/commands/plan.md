@@ -13,6 +13,8 @@ agent-strategy:
 
 # /plan - Specification-Driven Planning & Progress Management
 
+ARGUMENTS: $DESCRIPTION
+
 ## Purpose
 Design specifications, plan work through spec-driven development, manage projects, track progress, and make strategic decisions. Combines specification management with progress visualization and architectural planning.
 
@@ -31,12 +33,11 @@ Design specifications, plan work through spec-driven development, manage project
 ### Multi-Mode Planning
 ```yaml
 Mode Detection:
-  - No args → Specification creation wizard (creates in draft/)
-  - With title → Create spec with given title
-  - --complete → Completion validation
-  - --analyze → Strategic analysis
-  - --architecture → System design planning
-  - --status → Show specification status dashboard
+  - No args or with $DESCRIPTION → Specification creation wizard (creates in draft/)
+  - $DESCRIPTION contains "--complete" → Completion validation
+  - $DESCRIPTION contains "--analyze" → Strategic analysis  
+  - $DESCRIPTION contains "--architecture" → System design planning
+  - $DESCRIPTION contains "--status" → Show specification status dashboard
 ```
 
 ### Agent Orchestration
@@ -69,20 +70,20 @@ Strategic Analysis:
 ⚠️ **CRITICAL: FOR DEFAULT MODE (CREATING SPECIFICATIONS):**
 1. **SKIP workflow-coordinator** - Not needed for spec creation
 2. **DIRECTLY CHAIN**: planner → speccer agents
-3. **planner agent**: Analyzes requirements and outputs structured planning data
+3. **planner agent**: Analyzes requirements from $DESCRIPTION and outputs structured planning data
 4. **speccer agent**: Receives planning data and generates valid YAML specification
 
-**Workflow by Mode:**
-- **Default mode (no args or with title)**: 
+**Workflow by Mode (based on $DESCRIPTION content):**
+- **Default mode (no flags in $DESCRIPTION)**: 
   - **IMMEDIATE ACTION**: Chain planner → speccer agents
   - **NO WORKFLOW COORDINATOR NEEDED**
-  - planner analyzes requirements → outputs planning data
+  - planner analyzes $DESCRIPTION as requirements → outputs planning data
   - speccer receives planning data → generates YAML specification
   
-- **--analyze mode**: Use architect, researcher, and security agents for analysis
-- **--architecture mode**: Use the architect agent with security and implementer support
-- **--status mode**: Use the researcher agent to analyze project status
-- **--complete mode**: Use workflow-coordinator to validate completion readiness
+- **$DESCRIPTION contains "--analyze"**: Use architect, researcher, and security agents for analysis
+- **$DESCRIPTION contains "--architecture"**: Use the architect agent with security and implementer support
+- **$DESCRIPTION contains "--status"**: Use the researcher agent to analyze project status
+- **$DESCRIPTION contains "--complete"**: Use workflow-coordinator to validate completion readiness
 
 ### Folder Management Integration
 **Automatic folder-based specification lifecycle:**

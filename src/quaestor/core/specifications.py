@@ -810,11 +810,11 @@ class SpecificationManager:
         for ts_data in data.get("test_scenarios", []):
             test_scenarios.append(
                 SpecTestScenario(
-                    name=ts_data["name"],
-                    description=ts_data["description"],
-                    given=ts_data["given"],
-                    when=ts_data["when"],
-                    then=ts_data["then"],
+                    name=ts_data.get("name", ""),
+                    description=ts_data.get("description", ""),
+                    given=ts_data.get("given", ""),
+                    when=ts_data.get("when", ""),
+                    then=ts_data.get("then", ""),
                     examples=ts_data.get("examples", []),
                 )
             )
