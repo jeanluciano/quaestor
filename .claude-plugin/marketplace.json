@@ -9,32 +9,20 @@
   "plugins": [
     {
       "name": "quaestor",
-      "description": "Complete specification-driven development framework for Claude Code",
-      "version": "0.1.0",
+      "description": "Skills-first specification-driven development - automatic spec creation, lifecycle management, progress tracking, and PR generation with Agent Skills",
+      "version": "1.0.0",
       "author": {
         "name": "Quaestor Project",
         "url": "https://github.com/jeanluciano/quaestor"
       },
       "source": "./src/quaestor",
-      "features": [
-        "Session context loading with active specifications",
-        "8 slash commands: /plan, /impl, /research, /review, /debug, /project-init",
-        "14 specialized agents for planning, implementation, and review",
-        "Zero external dependencies (Python stdlib only)",
-        "Cross-platform support (macOS, Linux, Windows)"
-      ],
-      "requirements": {
-        "claude-code": ">=0.4.0",
-        "python": ">=3.7"
-      },
       "keywords": [
         "specifications",
         "planning",
         "implementation",
-        "development-workflow",
-        "agents",
-        "code-review",
-        "testing"
+        "agent-skills",
+        "workflow",
+        "code-review"
       ]
     }
   ]
