@@ -21,7 +21,7 @@ if platform.system() != "Windows":
 else:
     import msvcrt
 
-from ..utils.file_utils import create_directory
+from .file_utils import create_directory
 
 logger = logging.getLogger(__name__)
 
@@ -243,7 +243,7 @@ class FolderManager:
                 # Find all YAML files in base path (flat structure)
                 flat_specs = [
                     f
-                    for f in self.base_path.glob("*.yaml")
+                    for f in self.base_path.glob("*.md")
                     if f.is_file() and not any(f.parent.name == folder for folder in self.FOLDER_NAMES.values())
                 ]
 
@@ -283,7 +283,7 @@ class FolderManager:
         Returns:
             Tuple of (limit_ok, list_of_active_specs)
         """
-        active_specs = list((self.base_path / "active").glob("*.yaml"))
+        active_specs = list((self.base_path / "active").glob("*.md"))
         return len(active_specs) < self.MAX_ACTIVE_SPECS, [s.name for s in active_specs]
 
     def get_folder_statistics(self) -> dict[str, int]:
@@ -303,7 +303,7 @@ class FolderManager:
         folder_path = self.base_path / folder
         if not folder_path.exists():
             return 0
-        return len(list(folder_path.glob("*.yaml")))
+        return len(list(folder_path.glob("*.md")))
 
     def _determine_spec_status(self, spec_path: Path) -> str:
         """

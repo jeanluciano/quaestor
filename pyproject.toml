@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "quaestor"
-version = "0.6.3"
-description = "AI-assisted development context management tool for maintaining consistency and productivity"
+version = "1.0.0"
+description = "Skills-first specification-driven development - automatic spec creation, lifecycle management, progress tracking, and PR generation"
 authors = [{name = "Jean Luciano", email = "jeanluciano@example.com"}]
 license = "MIT"
 readme = "README.md"
@@ -51,20 +51,24 @@ dev = [
 
 [tool.setuptools]
 packages = [
-    "quaestor", 
-    "quaestor.core", 
+    "quaestor",
+    "quaestor.core",
     "quaestor.cli",
-    "quaestor.claude",
-    "quaestor.claude.hooks"
+    "quaestor.hooks",
+    "quaestor.agents",
+    "quaestor.commands",
+    "quaestor.skills"
 ]
 package-dir = {"" = "src"}
 
 [tool.setuptools.package-data]
 quaestor = [
     "*.md",
-    "claude/hooks/*.py",
-    "claude/hooks/*.json",
-    "claude/*.md",
+    "hooks/*.py",
+    "hooks/*.json",
+    "agents/*.md",
+    "commands/*.md",
+    "skills/*/*.md",
     "core/*.yaml",
 ]
 

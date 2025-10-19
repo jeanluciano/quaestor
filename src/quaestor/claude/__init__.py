@@ -1,1 +1,0 @@
-"""Claude integration for Quaestor."""

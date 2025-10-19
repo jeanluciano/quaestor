@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(python3 -m pytest -x)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(uv run pytest tests/test_cli.py -v)",
+      "Bash(uv run pytest tests/test_markdown_spec.py -v)"
     ],
     "deny": []
   }

@@ -44,7 +44,6 @@ Use the Spec Manager when:
 
 The Spec Manager integrates with:
 - `/plan` command for creation
-- `todo_spec_progress.py` hook for automatic progress tracking
 - TODO system for task management
 - Git for PR creation
 - Session context for specification visibility

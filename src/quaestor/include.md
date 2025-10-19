@@ -4,6 +4,7 @@
 Please read the following files in order:
 @.quaestor/AGENT.md - Complete AI development context and rules
 @.quaestor/ARCHITECTURE.md - System design and structure (if available)
+@.quaestor/RULES.md
 @.quaestor/specs/active/ - Active specifications and implementation details
 <!-- QUAESTOR CONFIG END -->
 

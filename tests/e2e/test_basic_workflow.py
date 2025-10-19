@@ -44,44 +44,32 @@ def quaestor_command():
 class TestBasicWorkflow:
     """Test basic Quaestor workflows end-to-end."""
 
-    def test_team_mode_full_workflow(self, temp_git_repo, quaestor_command):
-        """Test complete team mode workflow."""
-        # 1. Initialize in team mode
+    def test_init_workflow(self, temp_git_repo, quaestor_command):
+        """Test complete initialization workflow."""
+        # 1. Initialize
         result = subprocess.run(
-            [quaestor_command, "init", "--mode", "team"]
-            if isinstance(quaestor_command, str)
-            else quaestor_command + ["init", "--mode", "team"],
+            [quaestor_command, "init"] if isinstance(quaestor_command, str) else quaestor_command + ["init"],
             cwd=temp_git_repo,
             capture_output=True,
             text=True,
         )
         assert result.returncode == 0
-        assert "Team mode initialization complete!" in result.stdout
+        assert "Initialization complete!" in result.stdout
 
         # 2. Verify directory structure
-        assert (temp_git_repo / ".claude").exists()
-        assert (temp_git_repo / ".claude" / "commands").exists()
-        assert (temp_git_repo / ".claude" / "settings.json").exists()
         assert (temp_git_repo / ".quaestor").exists()
-        # Note: hooks are now in src/quaestor/claude/hooks, not .quaestor/hooks
-        # MEMORY.md was removed in favor of active specifications
-        assert (temp_git_repo / ".quaestor" / "CONTEXT.md").exists()
+        assert (temp_git_repo / ".quaestor" / "AGENT.md").exists()
+        assert (temp_git_repo / ".quaestor" / "ARCHITECTURE.md").exists()
+        assert (temp_git_repo / ".quaestor" / "RULES.md").exists()
         assert (temp_git_repo / "CLAUDE.md").exists()
 
-        # 4. Test update command
-        result = subprocess.run(
-            [quaestor_command, "update", "--force"]
-            if isinstance(quaestor_command, str)
-            else quaestor_command + ["update", "--force"],
-            cwd=temp_git_repo,
-            capture_output=True,
-            text=True,
-        )
-        assert result.returncode == 0
-        # Check for successful update indicators
-        assert any(phrase in result.stdout.lower() for phrase in ["up to date", "update complete", "added"])
+        # 3. Verify specs directory structure
+        assert (temp_git_repo / ".quaestor" / "specs" / "draft").exists()
+        assert (temp_git_repo / ".quaestor" / "specs" / "active").exists()
+        assert (temp_git_repo / ".quaestor" / "specs" / "completed").exists()
+        assert (temp_git_repo / ".quaestor" / "specs" / "archived").exists()
 
-        # 5. Test that main commands exist
+        # 4. Test that main commands exist
         result = subprocess.run(
             [quaestor_command, "--help"] if isinstance(quaestor_command, str) else quaestor_command + ["--help"],
             cwd=temp_git_repo,
@@ -90,44 +78,42 @@ class TestBasicWorkflow:
         )
         assert result.returncode == 0
         assert "init" in result.stdout
-        assert "update" in result.stdout
 
-    def test_personal_mode_workflow(self, temp_git_repo, quaestor_command):
-        """Test personal mode workflow."""
-        # 1. Initialize in personal mode
+    def test_reinitialize_with_force(self, temp_git_repo, quaestor_command):
+        """Test reinitializing with --force flag."""
+        # 1. Initialize first time
         result = subprocess.run(
-            [quaestor_command, "init", "--mode", "personal"]
-            if isinstance(quaestor_command, str)
-            else quaestor_command + ["init", "--mode", "personal"],
+            [quaestor_command, "init"] if isinstance(quaestor_command, str) else quaestor_command + ["init"],
             cwd=temp_git_repo,
             capture_output=True,
             text=True,
         )
         assert result.returncode == 0
-        assert "Personal mode initialization complete!" in result.stdout
 
-        # 2. Verify structure
-        assert (temp_git_repo / ".claude").exists()
-        assert (temp_git_repo / ".claude" / "settings.local.json").exists()
-        assert (temp_git_repo / ".quaestor").exists()
+        # 2. Try to initialize again without force
+        result = subprocess.run(
+            [quaestor_command, "init"] if isinstance(quaestor_command, str) else quaestor_command + ["init"],
+            cwd=temp_git_repo,
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 1
+        assert "already initialized" in result.stdout
 
-        # Note: Commands are installed to user's home ~/.claude/commands in personal mode
-        # We can't easily test this in e2e without affecting the real home directory
+        # 3. Initialize with --force
+        result = subprocess.run(
+            [quaestor_command, "init", "--force"]
+            if isinstance(quaestor_command, str)
+            else quaestor_command + ["init", "--force"],
+            cwd=temp_git_repo,
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0
+        assert "Initialization complete!" in result.stdout
 
-        # 3. Check gitignore was updated
-        gitignore = temp_git_repo / ".gitignore"
-        assert gitignore.exists()
-        gitignore_content = gitignore.read_text()
-        assert ".quaestor/" in gitignore_content
-        assert ".claude/settings.local.json" in gitignore_content
-
-    # Configure command has been removed
-    # def test_command_configuration_workflow(self, temp_git_repo, quaestor_command):
-    #     """Test command configuration workflow."""
-    #     pass
-
-    def test_automation_workflow(self, temp_git_repo, quaestor_command):
-        """Test basic workflow without automation command."""
+    def test_basic_workflow(self, temp_git_repo, quaestor_command):
+        """Test basic initialization workflow."""
         # 1. Create some Python files
         src_dir = temp_git_repo / "src"
         src_dir.mkdir()
@@ -151,14 +137,10 @@ if __name__ == "__main__":
         )
         assert result.returncode == 0
 
-        # 3. Verify hooks were set up correctly
-        claude_settings = temp_git_repo / ".claude" / "settings.json"
-        if not claude_settings.exists():
-            claude_settings = temp_git_repo / ".claude" / "settings.local.json"
-
-        # Just verify initialization completed successfully
+        # 3. Verify initialization completed successfully
         assert (temp_git_repo / ".quaestor").exists()
-        # MEMORY.md was removed in favor of active specifications
+        assert (temp_git_repo / ".quaestor" / "AGENT.md").exists()
+        assert (temp_git_repo / "CLAUDE.md").exists()
 
 
 class TestErrorHandling:
@@ -173,7 +155,7 @@ class TestErrorHandling:
                 capture_output=True,
                 text=True,
             )
-            # Should still succeed but may show warning
+            # Should still succeed
             assert result.returncode == 0
 
     def test_double_init_handling(self, temp_git_repo, quaestor_command):
@@ -193,29 +175,15 @@ class TestErrorHandling:
             capture_output=True,
             text=True,
         )
-        assert "already exists" in result.stdout or "Checking for updates" in result.stdout
-
-    def test_invalid_mode(self, temp_git_repo, quaestor_command):
-        """Test invalid mode handling."""
-        result = subprocess.run(
-            [quaestor_command, "init", "--mode", "invalid"]
-            if isinstance(quaestor_command, str)
-            else quaestor_command + ["init", "--mode", "invalid"],
-            cwd=temp_git_repo,
-            capture_output=True,
-            text=True,
-        )
-        assert result.returncode != 0
-        assert (
-            "invalid" in result.stdout.lower() or "invalid" in result.stderr.lower() or "error" in result.stderr.lower()
-        )
+        assert result.returncode == 1
+        assert "already initialized" in result.stdout
 
 
 class TestHookIntegration:
-    """Test hook integration scenarios."""
+    """Test initialization integration scenarios."""
 
-    def test_hooks_installed_correctly(self, temp_git_repo, quaestor_command):
-        """Test that hooks are installed with correct structure."""
+    def test_initialization_structure(self, temp_git_repo, quaestor_command):
+        """Test that initialization creates correct structure."""
         # Initialize
         subprocess.run(
             [quaestor_command, "init"] if isinstance(quaestor_command, str) else quaestor_command + ["init"],
@@ -229,9 +197,9 @@ class TestHookIntegration:
         assert quaestor_dir.exists()
 
         # Check for critical files
-        # MEMORY.md was removed in favor of active specifications
-        assert (quaestor_dir / "CONTEXT.md").exists()
+        assert (quaestor_dir / "AGENT.md").exists()
+        assert (quaestor_dir / "ARCHITECTURE.md").exists()
+        assert (quaestor_dir / "RULES.md").exists()
 
-        # Check claude directory structure
-        claude_dir = temp_git_repo / ".claude"
-        assert claude_dir.exists()
+        # Check CLAUDE.md in project root
+        assert (temp_git_repo / "CLAUDE.md").exists()

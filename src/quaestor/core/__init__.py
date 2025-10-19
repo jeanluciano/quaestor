@@ -16,16 +16,8 @@ from quaestor.core.project_detection import (
     get_project_files_by_type,
     is_test_file,
 )
-from quaestor.core.yaml_utils import (
-    YAMLConfig,
-    convert_json_to_yaml,
-    extract_yaml_section,
-    load_yaml,
-    merge_yaml_configs,
-    save_yaml,
-    update_yaml_section,
-    validate_yaml_schema,
-)
+
+# YAML utils removed - using Markdown specs now
 
 __all__ = [
     # Project detection
@@ -42,13 +34,4 @@ __all__ = [
     "find_project_root",
     "clean_empty_directories",
     "get_file_size_summary",
-    # YAML utilities
-    "load_yaml",
-    "save_yaml",
-    "validate_yaml_schema",
-    "merge_yaml_configs",
-    "extract_yaml_section",
-    "update_yaml_section",
-    "convert_json_to_yaml",
-    "YAMLConfig",
 ]

@@ -2,32 +2,24 @@
 
 ## Requirements
 
-- Git (for version control)
 - Claude Code (for AI-assisted development)
-- Either:
-  - `uv` for uvx usage (recommended), or
-  - Python 3.12+ for traditional installation
+- Git (for version control)
 
-## Quick Start with uvx (Recommended)
+That's it! No Python installation needed.
 
-No installation required! Use `uvx` to run Quaestor directly:
+## Quick Start (Recommended)
 
-```bash
-# Initialize a project without installing Quaestor
-uvx quaestor init
+**Quaestor v1.0 uses Agent Skills** - zero installation, just add the plugin!
 
-# Team mode
-uvx quaestor init --mode team
+1. Install the Quaestor plugin from Claude Code marketplace
+2. In Claude Code, run: `/quaestor:project-init`
+3. Start planning: `/quaestor:plan "User Authentication"`
 
-# Update to latest version
-uvx quaestor update
-```
-
-This approach:
-- ✅ No Python dependencies in your project
-- ✅ Always uses the latest version
-- ✅ Hooks work via uvx commands
-- ✅ Clean project environment
+**What you get:**
+- ✅ **Agent Skills** - Auto-activating capabilities for spec management
+- ✅ **No CLI needed** - Everything works through Claude Code
+- ✅ **No dependencies** - Pure markdown specifications
+- ✅ **Zero config** - Just describe features, get specs
 
 ## Traditional Installation
 
@@ -55,11 +47,18 @@ quaestor --version
 
 ## Claude Code Integration
 
-Quaestor is designed to work seamlessly with Claude Code. To set up the integration:
+Quaestor is designed to work seamlessly with Claude Code:
 
-1. Install Claude Code following the [official documentation](https://docs.anthropic.com/en/docs/claude-code)
-2. Initialize Quaestor in your project (see [Quick Start](quickstart.md))
-3. The slash commands (`/plan`, `/impl`, etc.) will be automatically available
+1. Install the Quaestor plugin from the Claude Code marketplace
+2. In Claude Code, run: `/quaestor:project-init` to set up your project
+3. All slash commands are automatically available via the plugin
+
+The plugin provides:
+- **Commands**: `/quaestor:plan`, `/quaestor:impl`, `/quaestor:research`, `/quaestor:review`, `/quaestor:debug`, `/quaestor:project-init`
+- **Agents**: Specialized agents for planning, implementation, debugging, etc.
+- **Hooks**: Automated context loading and specification tracking
+
+**No CLI commands needed!** Everything works through Claude Code slash commands.
 
 ## Optional Dependencies
 
@@ -100,51 +99,28 @@ If slash commands don't work:
 2. Check that `.quaestor/` directory exists
 3. Verify Claude Code is properly configured
 
-## Migration for Existing Users
+## What Gets Created
 
-If you have an existing Quaestor installation with Python hook files:
+When you run `/quaestor:project-init` in Claude Code, it creates:
 
-### From Python Hooks to uvx Commands
+```
+your-project/
+├── .quaestor/
+│   ├── AGENT.md          # AI development context and rules
+│   ├── ARCHITECTURE.md   # System design documentation
+│   ├── RULES.md          # Language-specific guidelines (auto-generated!)
+│   └── specs/            # Specification directories
+│       ├── draft/        # Draft specifications
+│       ├── active/       # Active specifications
+│       ├── completed/    # Completed specifications
+│       └── archived/     # Archived specifications
+└── CLAUDE.md             # Main entry point with Quaestor config
+```
 
-The new version uses `uvx` commands instead of Python files in `.claude/hooks/`:
-
-1. **Remove old hook files** (no longer needed):
-   ```bash
-   rm -rf .claude/hooks/*.py
-   ```
-
-2. **Update settings.json** to use uvx commands:
-   ```json
-   {
-     "hooks": {
-       "SessionStart": [{
-         "hooks": [{
-           "type": "command",
-           "command": "uvx --from quaestor quaestor hook session-context-loader"
-         }]
-       }],
-       "PostToolUse": [{
-         "matcher": "TodoWrite",
-         "hooks": [{
-           "type": "command",
-           "command": "uvx --from quaestor quaestor hook todo-spec-progress"
-         }]
-       }]
-     }
-   }
-   ```
-
-3. **Or simply re-run init** to update everything:
-   ```bash
-   uvx quaestor update
-   ```
-
-### Benefits of Migration
-
-- No Python files to maintain in your project
-- Hooks always use the latest Quaestor version
-- Cleaner project structure
-- Works without Python installed locally
+**Key Features:**
+- ✅ **RULES.md** auto-generated with your detected language commands (pytest, ruff, etc.)
+- ✅ **Edit `.quaestor/RULES.md` directly** to customize (no config files needed!)
+- ✅ Commands, agents, and hooks provided by the Claude Code plugin
 
 ## Next Steps
 

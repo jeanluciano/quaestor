@@ -34,18 +34,6 @@ def on_session_start():
 - Performance monitoring
 - Supports both SessionStart and PostCompact events
 
-### 🎯 TODO-Based Specification Progress
-Automatically tracks specification progress through TODO completion:
-
-```python
-# .quaestor/hooks/todo_spec_progress.py
-def on_todo_completed(todos):
-    """Update specification progress when TODOs are completed."""
-    - Match completed TODOs to specification criteria
-    - Update YAML files automatically
-    - Add progress notes
-    - Calculate completion percentage
-```
 
 **Features:**
 - Zero manual intervention required
@@ -55,44 +43,17 @@ def on_todo_completed(todos):
 
 ## Hook Configuration
 
-Hooks are configured in `.claude/settings.json` and execute via `uvx`:
+Hooks are provided by the Quaestor Claude Code plugin and automatically configured when you:
 
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uvx --from quaestor quaestor hook session-context-loader",
-            "description": "Load active specifications into session context"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "TodoWrite",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uvx --from quaestor quaestor hook todo-spec-progress",
-            "description": "Update specification progress when TODOs are completed"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
+1. Install the Quaestor plugin from Claude Code marketplace
+2. Initialize your project with `uvx quaestor init`
 
-### How uvx-based Hooks Work
+### How Plugin-based Hooks Work
 
-1. **No Installation Required**: Hooks run via `uvx` without installing Quaestor in your project
-2. **Always Up-to-Date**: Uses the latest published version of Quaestor
-3. **Project Context**: Hooks read your local `.quaestor/` files while running remotely
-4. **Clean Dependencies**: Your project stays free of Quaestor dependencies
+1. **No Manual Configuration**: Hooks are part of the plugin, not your project files
+2. **Always Up-to-Date**: Plugin updates bring the latest hook improvements
+3. **Project Context**: Hooks read your local `.quaestor/` files for context
+4. **Zero Maintenance**: No files to update or maintain in your repository
 
 ## Hook Events
 
@@ -112,7 +73,7 @@ Triggered after specific tools are used:
 1. **Session Starts**: The session context loader displays your active specifications
 2. **You Work**: Create TODOs that relate to specification criteria
 3. **Complete TODOs**: Mark TODOs as completed as you work
-4. **Automatic Updates**: The todo_spec_progress hook updates specifications
+4. **Manual Updates**: Update specifications manually as needed
 5. **See Progress**: Next session shows updated progress
 
 ## Benefits
@@ -136,62 +97,44 @@ Triggered after specific tools are used:
 
 ## Installation
 
-Hooks are automatically configured during initialization:
+Hooks are automatically available when you:
 
 ```bash
-# Using uvx (recommended - no installation)
+# 1. Install the Quaestor plugin from Claude Code marketplace
+
+# 2. Initialize your project
 uvx quaestor init
-# Creates .claude/settings.json with uvx commands
-
-# Team mode
-uvx quaestor init --mode team
-# Creates shared .claude/settings.json
-
-# Traditional installation
-pip install quaestor
-quaestor init
 ```
 
-**Note**: No hook files are copied to your project. Hooks run via `uvx` commands configured in `.claude/settings.json`.
+**Note**: Hooks are provided by the Quaestor Claude Code plugin, not stored in your project directory.
 
 ## Customization
 
-While the default hooks cover most needs, you can:
+The default hooks are designed to work well for most projects. Hook behavior can be customized through:
 
-1. **Adjust Performance Target**:
-   ```python
-   self.performance_target_ms = 100  # Allow more time for larger projects
-   ```
-
-2. **Customize Progress Display**:
-   ```python
-   # In session_context_loader.py
-   self.show_completed_criteria = False  # Hide completed items
-   ```
-
-3. **Add Custom Hooks**:
-   Create new hooks by following the pattern in `base.py`
+1. **Specification Structure**: Organize specs in `.quaestor/specs/` to control what's loaded
+2. **Project Configuration**: Use `.quaestor/AGENT.md` and `.quaestor/RULES.md` to guide behavior
+3. **Future Plugin Settings**: Customization options coming in future plugin releases
 
 ## Troubleshooting
 
 ### Hooks Not Running
-1. Check `.claude/settings.json` exists and is valid JSON
-2. Verify `uvx` is installed (comes with `uv`)
-3. Check internet connection (uvx downloads Quaestor on first run)
-4. Try running manually: `echo '{}' | uvx --from quaestor quaestor hook session-context-loader`
+1. Verify the Quaestor plugin is installed in Claude Code
+2. Check that `.quaestor/` directory exists in your project
+3. Ensure you've run `uvx quaestor init` in your project
+4. Restart Claude Code to reload the plugin
 
-### Progress Not Updating
-1. Ensure TODOs are marked as "completed" status
-2. Check TODO content relates to specification criteria
-3. Verify specification is in "ACTIVE" status
+### Context Not Loading
+1. Verify `.quaestor/AGENT.md` exists
+2. Check that active specifications are in `.quaestor/specs/active/`
+3. Ensure specification files are valid Markdown
 
 ### Performance Issues
-1. Check session_context_loader.py logs for timing
-2. Reduce number of active specifications
-3. Consider disabling visual progress bars
+1. Reduce number of active specifications (move some to draft or archive)
+2. Keep specifications focused and concise
+3. Report persistent issues to the Quaestor GitHub repository
 
 ## Next Steps
 
 - Learn about [Session Context Loading](session-context-loader.md)
-- Understand [Specification Progress Tracking](spec-tracking.md)
 - Explore the [Specification Workflow](../specs/workflow.md)

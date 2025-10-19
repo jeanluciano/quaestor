@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{python_path} {hooks_dir}/session_context_loader.py",
+            "description": "Load active specifications into session context"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": []
+  }
+}

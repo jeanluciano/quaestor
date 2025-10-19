@@ -1,21 +1,22 @@
-"""Comprehensive tests for the specifications module."""
+"""Tests for the simplified specifications module."""
 
-import tempfile
 from datetime import datetime
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 
 from quaestor.core.specifications import (
     Contract,
     Specification,
-    SpecificationManager,
-    SpecManifest,
     SpecPriority,
     SpecStatus,
     SpecTestScenario,
     SpecType,
+    find_specs_in_folder,
+    get_spec_progress,
+    load_spec_from_file,
+    move_spec_between_folders,
+    save_spec_to_file,
 )
 
 
@@ -88,605 +89,263 @@ class TestSpecificationDataStructures:
         assert isinstance(spec.created_at, datetime)
         assert isinstance(spec.updated_at, datetime)
 
-    def test_spec_manifest_creation(self):
-        """Test SpecManifest dataclass creation."""
-        manifest = SpecManifest()
 
-        assert manifest.version == "1.0"
-        assert manifest.specifications == {}
-        assert manifest.branch_mapping == {}
-        assert isinstance(manifest.created_at, datetime)
-        assert isinstance(manifest.updated_at, datetime)
+class TestSpecificationUtilities:
+    """Test specification utility functions."""
 
+    def test_load_spec_from_file_success(self, tmp_path):
+        """Test loading a specification from a Markdown file."""
+        spec_content = """---
+id: spec-test-001
+type: feature
+status: active
+priority: high
+---
 
-class TestSpecificationManager:
-    """Test SpecificationManager functionality."""
+# Test Specification
 
-    @pytest.fixture
-    def temp_project(self):
-        """Create temporary project directory."""
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            project_dir = Path(tmp_dir)
-            yield project_dir
+## Description
+A test specification for loading.
 
-    @pytest.fixture
-    def spec_manager(self, temp_project):
-        """Create SpecificationManager instance."""
-        return SpecificationManager(temp_project)
+## Acceptance Criteria
+- [ ] Criterion 1
+- [x] Criterion 2
+- [ ] Criterion 3
+"""
+        spec_path = tmp_path / "spec-test-001.md"
+        spec_path.write_text(spec_content)
 
-    def test_init_creates_directories(self, temp_project):
-        """Test that initialization creates necessary directories."""
-        manager = SpecificationManager(temp_project)
+        spec = load_spec_from_file(spec_path)
 
-        assert manager.project_dir == temp_project
-        assert manager.specs_dir.exists()
-        assert manager.specs_dir == temp_project / ".quaestor" / "specs"
-        assert manager.manifest_path == manager.specs_dir / "manifest.yaml"
-
-    def test_load_manifest_empty_project(self, spec_manager):
-        """Test loading manifest from empty project."""
-        manifest = spec_manager.load_manifest()
-
-        assert isinstance(manifest, SpecManifest)
-        assert manifest.version == "1.0"
-        assert manifest.specifications == {}
-        assert manifest.branch_mapping == {}
-
-    def test_create_specification(self, spec_manager):
-        """Test creating a new specification."""
-        spec = spec_manager.create_specification(
-            title="Test Feature",
-            spec_type=SpecType.FEATURE,
-            description="A test feature implementation",
-            rationale="Needed to validate specification system",
-            priority=SpecPriority.HIGH,
-        )
-
-        assert spec.id.startswith("feat-")
-        assert spec.title == "Test Feature"
+        assert spec is not None
+        assert spec.id == "spec-test-001"
         assert spec.type == SpecType.FEATURE
-        assert spec.status == SpecStatus.DRAFT
+        assert spec.status == SpecStatus.ACTIVE
         assert spec.priority == SpecPriority.HIGH
-        assert spec.description == "A test feature implementation"
-        assert spec.rationale == "Needed to validate specification system"
+        assert spec.title == "Test Specification"
 
-        # Verify it's in the manifest
-        manifest = spec_manager.load_manifest()
-        assert spec.id in manifest.specifications
+    def test_load_spec_from_file_not_found(self, tmp_path):
+        """Test loading a non-existent specification."""
+        spec_path = tmp_path / "nonexistent.md"
 
-    def test_get_specification(self, spec_manager):
-        """Test retrieving a specification by ID."""
-        # Create a specification
-        spec = spec_manager.create_specification(
-            title="Get Test",
-            spec_type=SpecType.BUGFIX,
-            description="Test retrieval",
-            rationale="Testing get functionality",
+        spec = load_spec_from_file(spec_path)
+
+        assert spec is None
+
+    def test_load_spec_from_file_invalid_content(self, tmp_path):
+        """Test loading an invalid specification file."""
+        spec_path = tmp_path / "invalid.md"
+        spec_path.write_text("This is not a valid spec")
+
+        spec = load_spec_from_file(spec_path)
+
+        assert spec is None  # Parser handles errors gracefully
+
+    def test_save_spec_to_file(self, tmp_path):
+        """Test saving a specification to a Markdown file."""
+        spec = Specification(
+            id="spec-save-001",
+            title="Save Test",
+            type=SpecType.FEATURE,
+            status=SpecStatus.DRAFT,
+            priority=SpecPriority.MEDIUM,
+            description="Test saving specification",
+            rationale="For testing save functionality",
         )
 
-        # Retrieve it
-        retrieved = spec_manager.get_specification(spec.id)
+        spec_path = tmp_path / "spec-save-001.md"
+        save_spec_to_file(spec, spec_path)
 
-        assert retrieved is not None
-        assert retrieved.id == spec.id
-        assert retrieved.title == "Get Test"
-        assert retrieved.type == SpecType.BUGFIX
+        assert spec_path.exists()
+        content = spec_path.read_text()
+        assert "id: spec-save-001" in content
+        assert "type: feature" in content
+        assert "# Save Test" in content
 
-    def test_get_nonexistent_specification(self, spec_manager):
-        """Test retrieving non-existent specification."""
-        result = spec_manager.get_specification("nonexistent-id")
-        assert result is None
+    def test_find_specs_in_folder(self, tmp_path):
+        """Test finding all specifications in a folder."""
+        # Create test specs
+        for i in range(3):
+            spec_content = f"""---
+id: spec-test-{i:03d}
+type: feature
+status: active
+priority: medium
+---
 
-    def test_update_specification(self, spec_manager):
-        """Test updating a specification."""
-        # Create initial spec
-        spec = spec_manager.create_specification(
-            title="Original Title",
-            spec_type=SpecType.FEATURE,
-            description="Original description",
-            rationale="Original rationale",
-        )
-        original_updated_at = spec.updated_at
+# Test Spec {i}
 
-        # Update it
-        updates = {
-            "title": "Updated Title",
-            "description": "Updated description",
-            "status": SpecStatus.STAGED,
-        }
-        updated_spec = spec_manager.update_specification(spec.id, updates)
+## Description
+Test specification {i}
+"""
+            (tmp_path / f"spec-test-{i:03d}.md").write_text(spec_content)
 
-        assert updated_spec is not None
-        assert updated_spec.title == "Updated Title"
-        assert updated_spec.description == "Updated description"
-        assert updated_spec.status == SpecStatus.STAGED
-        assert updated_spec.updated_at > original_updated_at
+        # Also create a non-spec file
+        (tmp_path / "README.md").write_text("# README")
 
-    def test_update_nonexistent_specification(self, spec_manager):
-        """Test updating non-existent specification."""
-        result = spec_manager.update_specification("nonexistent-id", {"title": "New"})
-        assert result is None
+        spec_paths = find_specs_in_folder(tmp_path)
 
-    def test_link_spec_to_branch(self, spec_manager):
-        """Test linking specification to git branch."""
-        spec = spec_manager.create_specification(
-            title="Branch Test",
-            spec_type=SpecType.FEATURE,
-            description="Test branch linking",
-            rationale="Testing branch functionality",
-        )
+        assert len(spec_paths) == 3
+        # Returns list of Path objects
+        assert all(isinstance(p, Path) for p in spec_paths)
+        spec_names = {p.stem for p in spec_paths}
+        assert spec_names == {"spec-test-000", "spec-test-001", "spec-test-002"}
 
-        # Link to branch
-        success = spec_manager.link_spec_to_branch(spec.id, "feature/branch-test")
+    def test_find_specs_in_empty_folder(self, tmp_path):
+        """Test finding specs in an empty folder."""
+        specs = find_specs_in_folder(tmp_path)
+
+        assert specs == []
+
+    def test_move_spec_between_folders(self, tmp_path):
+        """Test moving a specification between folders."""
+        # Create source and destination folders
+        draft_folder = tmp_path / "draft"
+        active_folder = tmp_path / "active"
+        draft_folder.mkdir()
+        active_folder.mkdir()
+
+        # Create a spec in draft
+        spec_content = """---
+id: spec-move-001
+type: feature
+status: draft
+priority: high
+---
+
+# Move Test
+
+## Description
+Test moving specification
+"""
+        spec_path = draft_folder / "spec-move-001.md"
+        spec_path.write_text(spec_content)
+
+        # Move the spec (returns bool)
+        success = move_spec_between_folders(spec_id="spec-move-001", from_folder=draft_folder, to_folder=active_folder)
 
         assert success is True
+        assert (active_folder / "spec-move-001.md").exists()
+        assert not spec_path.exists()
 
-        # Verify updates
-        updated_spec = spec_manager.get_specification(spec.id)
-        assert updated_spec.branch == "feature/branch-test"
-        assert updated_spec.status == SpecStatus.ACTIVE
+    def test_move_spec_nonexistent(self, tmp_path):
+        """Test moving a non-existent specification."""
+        draft_folder = tmp_path / "draft"
+        active_folder = tmp_path / "active"
+        draft_folder.mkdir()
+        active_folder.mkdir()
 
-        # Verify branch mapping
-        manifest = spec_manager.load_manifest()
-        assert manifest.branch_mapping["feature/branch-test"] == spec.id
+        success = move_spec_between_folders(spec_id="nonexistent", from_folder=draft_folder, to_folder=active_folder)
 
-    def test_link_nonexistent_spec_to_branch(self, spec_manager):
-        """Test linking non-existent spec to branch."""
-        success = spec_manager.link_spec_to_branch("nonexistent-id", "test-branch")
         assert success is False
 
-    def test_get_spec_by_branch(self, spec_manager):
-        """Test retrieving specification by branch."""
-        spec = spec_manager.create_specification(
-            title="Branch Retrieval Test",
-            spec_type=SpecType.REFACTOR,
-            description="Test branch retrieval",
-            rationale="Testing branch-based lookup",
-        )
+    def test_get_spec_progress(self, tmp_path):
+        """Test getting specification progress from checkboxes."""
+        spec_content = """---
+id: spec-progress-001
+type: feature
+status: active
+priority: high
+---
 
-        # Link to branch
-        spec_manager.link_spec_to_branch(spec.id, "refactor/test-branch")
+# Progress Test
 
-        # Retrieve by branch
-        retrieved = spec_manager.get_spec_by_branch("refactor/test-branch")
+## Acceptance Criteria
+- [x] Completed criterion 1
+- [x] Completed criterion 2
+- [ ] Incomplete criterion 3
+- [ ] Incomplete criterion 4
+- [x] Completed criterion 5
 
-        assert retrieved is not None
-        assert retrieved.id == spec.id
-        assert retrieved.title == "Branch Retrieval Test"
+## Test Scenarios
+- [x] Test 1 done
+- [ ] Test 2 pending
+"""
+        spec_path = tmp_path / "spec-progress-001.md"
+        spec_path.write_text(spec_content)
 
-    def test_get_spec_by_nonexistent_branch(self, spec_manager):
-        """Test retrieving spec by non-existent branch."""
-        result = spec_manager.get_spec_by_branch("nonexistent-branch")
-        assert result is None
+        progress = get_spec_progress(spec_path)
 
-    def test_list_specifications(self, spec_manager):
-        """Test listing specifications with filters."""
-        # Create multiple specifications
-        spec1 = spec_manager.create_specification(
-            title="Critical Feature",
-            spec_type=SpecType.FEATURE,
-            description="Critical feature",
-            rationale="High priority",
+        assert progress is not None
+        # 3 completed out of 5 in acceptance criteria + 1 completed out of 2 in test scenarios = 4/7 total
+        assert progress.total == 7
+        assert progress.completed == 4
+        assert progress.completion_percentage == pytest.approx(57.14, abs=0.1)
+
+    def test_get_spec_progress_nonexistent(self, tmp_path):
+        """Test getting progress for non-existent spec."""
+        progress = get_spec_progress(tmp_path / "nonexistent.md")
+
+        assert progress is None
+
+    def test_get_spec_progress_no_checkboxes(self, tmp_path):
+        """Test getting progress with no checkboxes."""
+        spec_content = """---
+id: spec-no-progress-001
+type: feature
+status: active
+priority: high
+---
+
+# No Progress Test
+
+## Description
+This spec has no checkboxes.
+"""
+        spec_path = tmp_path / "spec-no-progress-001.md"
+        spec_path.write_text(spec_content)
+
+        progress = get_spec_progress(spec_path)
+
+        assert progress is not None
+        assert progress.total == 0
+        assert progress.completed == 0
+        # No tasks means 100% complete (nothing to do)
+        assert progress.completion_percentage == 100.0
+
+
+class TestSpecificationEdgeCases:
+    """Test edge cases in specification handling."""
+
+    def test_spec_with_missing_optional_fields(self, tmp_path):
+        """Test loading spec with only required fields."""
+        spec_content = """---
+id: spec-minimal-001
+type: feature
+---
+
+# Minimal Spec
+"""
+        spec_path = tmp_path / "spec-minimal-001.md"
+        spec_path.write_text(spec_content)
+
+        spec = load_spec_from_file(spec_path)
+
+        assert spec is not None
+        assert spec.id == "spec-minimal-001"
+        assert spec.status == SpecStatus.DRAFT  # default
+        assert spec.priority == SpecPriority.MEDIUM  # default
+
+    def test_save_and_load_roundtrip(self, tmp_path):
+        """Test that saving and loading a spec preserves data."""
+        original_spec = Specification(
+            id="spec-roundtrip-001",
+            title="Roundtrip Test",
+            type=SpecType.BUGFIX,
+            status=SpecStatus.ACTIVE,
             priority=SpecPriority.CRITICAL,
+            description="Test roundtrip preservation",
+            rationale="Ensure no data loss",
         )
 
-        spec2 = spec_manager.create_specification(
-            title="Bug Fix",
-            spec_type=SpecType.BUGFIX,
-            description="Fix a bug",
-            rationale="Bug needs fixing",
-            priority=SpecPriority.HIGH,
-        )
-
-        _spec3 = spec_manager.create_specification(
-            title="Documentation",
-            spec_type=SpecType.DOCUMENTATION,
-            description="Update docs",
-            rationale="Docs outdated",
-            priority=SpecPriority.LOW,
-        )
-
-        # Update one to staged status
-        spec_manager.update_specification(spec2.id, {"status": SpecStatus.STAGED})
-
-        # Test all specifications
-        all_specs = spec_manager.list_specifications()
-        assert len(all_specs) == 3
-
-        # Test filter by status
-        draft_specs = spec_manager.list_specifications(status=SpecStatus.DRAFT)
-        assert len(draft_specs) == 2
-
-        staged_specs = spec_manager.list_specifications(status=SpecStatus.STAGED)
-        assert len(staged_specs) == 1
-        assert staged_specs[0].id == spec2.id
-
-        # Test filter by type
-        feature_specs = spec_manager.list_specifications(spec_type=SpecType.FEATURE)
-        assert len(feature_specs) == 1
-        assert feature_specs[0].id == spec1.id
-
-        # Test filter by priority
-        critical_specs = spec_manager.list_specifications(priority=SpecPriority.CRITICAL)
-        assert len(critical_specs) == 1
-        assert critical_specs[0].id == spec1.id
-
-        # Test sorting (critical should come first)
-        assert all_specs[0].priority == SpecPriority.CRITICAL
-
-    def test_generate_spec_id_uniqueness(self, spec_manager):
-        """Test that spec ID generation ensures uniqueness."""
-        # Create two specs with same title
-        spec1 = spec_manager.create_specification(
-            title="Duplicate Title",
-            spec_type=SpecType.FEATURE,
-            description="First spec",
-            rationale="First rationale",
-        )
-
-        spec2 = spec_manager.create_specification(
-            title="Duplicate Title",
-            spec_type=SpecType.FEATURE,
-            description="Second spec",
-            rationale="Second rationale",
-        )
-
-        assert spec1.id != spec2.id
-        assert spec1.id.startswith("feat-duplicate-title")
-        assert spec2.id.startswith("feat-duplicate-title")
-        assert spec2.id.endswith("-1")  # Should have counter suffix
-
-    def test_spec_id_prefixes(self, spec_manager):
-        """Test that different spec types get correct ID prefixes."""
-        test_cases = [
-            (SpecType.FEATURE, "feat-"),
-            (SpecType.BUGFIX, "fix-"),
-            (SpecType.REFACTOR, "refactor-"),
-            (SpecType.DOCUMENTATION, "docs-"),
-            (SpecType.PERFORMANCE, "perf-"),
-            (SpecType.SECURITY, "sec-"),
-            (SpecType.TESTING, "test-"),
-        ]
-
-        for spec_type, expected_prefix in test_cases:
-            spec = spec_manager.create_specification(
-                title="Test Spec",
-                spec_type=spec_type,
-                description="Test description",
-                rationale="Test rationale",
-            )
-            assert spec.id.startswith(expected_prefix)
-
-
-class TestSpecificationSerialization:
-    """Test specification serialization and deserialization."""
-
-    @pytest.fixture
-    def temp_project(self):
-        """Create temporary project directory."""
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            project_dir = Path(tmp_dir)
-            yield project_dir
-
-    @pytest.fixture
-    def spec_manager(self, temp_project):
-        """Create SpecificationManager instance."""
-        return SpecificationManager(temp_project)
-
-    @pytest.fixture
-    def sample_spec(self):
-        """Create a sample specification with all fields."""
-        contract = Contract(
-            inputs={"param1": "string", "param2": "int"},
-            outputs={"result": "dict"},
-            behavior=["Validate inputs", "Process data"],
-            constraints=["Performance < 100ms"],
-            error_handling={"validation": "Return 400"},
-        )
-
-        test_scenario = SpecTestScenario(
-            name="Happy path",
-            description="Test successful execution",
-            given="Valid input",
-            when="Function called",
-            then="Returns result",
-            examples=[{"input": "test", "output": "success"}],
-        )
-
-        return Specification(
-            id="feat-test-001",
-            title="Test Specification",
-            type=SpecType.FEATURE,
-            status=SpecStatus.STAGED,
-            priority=SpecPriority.HIGH,
-            description="A comprehensive test specification",
-            rationale="Testing serialization functionality",
-            use_cases=["Use case 1", "Use case 2"],
-            contract=contract,
-            acceptance_criteria=["Criterion 1", "Criterion 2"],
-            test_scenarios=[test_scenario],
-            dependencies={"requires": ["dep-001"], "blocks": [], "related": ["dep-002"]},
-            branch="feature/test-branch",
-            metadata={"author": "test", "version": "1.0"},
-        )
-
-    def test_spec_serialization_roundtrip(self, spec_manager, sample_spec):
-        """Test that specification serialization preserves all data."""
-        # Serialize
-        serialized = spec_manager._serialize_spec(sample_spec)
-
-        # Deserialize
-        deserialized = spec_manager._deserialize_spec(serialized)
-
-        # Verify all fields are preserved
-        assert deserialized.id == sample_spec.id
-        assert deserialized.title == sample_spec.title
-        assert deserialized.type == sample_spec.type
-        assert deserialized.status == sample_spec.status
-        assert deserialized.priority == sample_spec.priority
-        assert deserialized.description == sample_spec.description
-        assert deserialized.rationale == sample_spec.rationale
-        assert deserialized.use_cases == sample_spec.use_cases
-        assert deserialized.acceptance_criteria == sample_spec.acceptance_criteria
-        assert deserialized.dependencies == sample_spec.dependencies
-        assert deserialized.branch == sample_spec.branch
-        assert deserialized.metadata == sample_spec.metadata
-
-        # Verify contract
-        assert deserialized.contract.inputs == sample_spec.contract.inputs
-        assert deserialized.contract.outputs == sample_spec.contract.outputs
-        assert deserialized.contract.behavior == sample_spec.contract.behavior
-        assert deserialized.contract.constraints == sample_spec.contract.constraints
-        assert deserialized.contract.error_handling == sample_spec.contract.error_handling
-
-        # Verify test scenarios
-        assert len(deserialized.test_scenarios) == 1
-        ts = deserialized.test_scenarios[0]
-        orig_ts = sample_spec.test_scenarios[0]
-        assert ts.name == orig_ts.name
-        assert ts.description == orig_ts.description
-        assert ts.given == orig_ts.given
-        assert ts.when == orig_ts.when
-        assert ts.then == orig_ts.then
-        assert ts.examples == orig_ts.examples
-
-    def test_manifest_serialization_roundtrip(self, spec_manager, sample_spec):
-        """Test that manifest serialization preserves all data."""
-        # Create manifest with spec
-        manifest = SpecManifest(
-            version="2.0",
-            specifications={"feat-test-001": sample_spec},
-            branch_mapping={"feature/test": "feat-test-001"},
-        )
-
-        # Serialize
-        serialized = spec_manager._serialize_manifest(manifest)
-
-        # Deserialize
-        deserialized = spec_manager._deserialize_manifest(serialized)
-
-        # Verify manifest fields
-        assert deserialized.version == "2.0"
-        assert len(deserialized.specifications) == 1
-        assert "feat-test-001" in deserialized.specifications
-        assert deserialized.branch_mapping == {"feature/test": "feat-test-001"}
-
-        # Verify contained spec
-        spec = deserialized.specifications["feat-test-001"]
-        assert spec.id == sample_spec.id
-        assert spec.title == sample_spec.title
-
-    def test_file_persistence(self, spec_manager):
-        """Test that specifications persist to files correctly."""
-        # Create specification
-        spec = spec_manager.create_specification(
-            title="Persistence Test",
-            spec_type=SpecType.FEATURE,
-            description="Test file persistence",
-            rationale="Validate file I/O",
-        )
-
-        # Verify spec file exists in the draft folder (default status)
-        spec_file = spec_manager.specs_dir / "draft" / f"{spec.id}.yaml"
-        assert spec_file.exists()
-
-        # Verify manifest file exists
-        assert spec_manager.manifest_path.exists()
-
-        # Create new manager instance to test loading
-        new_manager = SpecificationManager(spec_manager.project_dir)
-        loaded_spec = new_manager.get_specification(spec.id)
+        spec_path = tmp_path / "spec-roundtrip-001.md"
+        save_spec_to_file(original_spec, spec_path)
+        loaded_spec = load_spec_from_file(spec_path)
 
         assert loaded_spec is not None
-        assert loaded_spec.title == "Persistence Test"
-        assert loaded_spec.type == SpecType.FEATURE
-
-
-class TestSpecificationErrorHandling:
-    """Test error handling and edge cases."""
-
-    @pytest.fixture
-    def temp_project(self):
-        """Create temporary project directory."""
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            project_dir = Path(tmp_dir)
-            yield project_dir
-
-    @pytest.fixture
-    def spec_manager(self, temp_project):
-        """Create SpecificationManager instance."""
-        return SpecificationManager(temp_project)
-
-    def test_invalid_datetime_deserialization(self, spec_manager):
-        """Test handling of invalid datetime strings."""
-        invalid_data = {
-            "id": "test-001",
-            "title": "Test",
-            "type": "feature",
-            "status": "draft",
-            "priority": "medium",
-            "description": "Test",
-            "rationale": "Test",
-            "created_at": "invalid-datetime",
-            "updated_at": "2024-01-01T12:00:00",
-        }
-
-        with pytest.raises(ValueError):
-            spec_manager._deserialize_spec(invalid_data)
-
-    def test_invalid_enum_values(self, spec_manager):
-        """Test handling of invalid enum values."""
-        invalid_data = {
-            "id": "test-001",
-            "title": "Test",
-            "type": "invalid_type",  # Invalid enum value
-            "status": "draft",
-            "priority": "medium",
-            "description": "Test",
-            "rationale": "Test",
-            "created_at": "2024-01-01T12:00:00",
-            "updated_at": "2024-01-01T12:00:00",
-        }
-
-        with pytest.raises(ValueError):
-            spec_manager._deserialize_spec(invalid_data)
-
-    def test_missing_required_fields(self, spec_manager):
-        """Test handling of missing required fields."""
-        incomplete_data = {
-            "id": "test-001",
-            "title": "Test",
-            # Missing required fields
-        }
-
-        with pytest.raises(ValueError, match="Schema validation failed"):
-            spec_manager._deserialize_spec(incomplete_data)
-
-    @patch("quaestor.utils.yaml_utils.load_yaml")
-    def test_yaml_loading_error_handling(self, mock_load_yaml, spec_manager):
-        """Test handling of YAML loading errors."""
-        mock_load_yaml.side_effect = Exception("YAML parsing error")
-
-        # Should handle error gracefully and return empty manifest
-        manifest = spec_manager.load_manifest()
-        assert isinstance(manifest, SpecManifest)
-        assert manifest.specifications == {}
-
-    @patch("quaestor.utils.yaml_utils.save_yaml")
-    def test_yaml_saving_error_handling(self, mock_save_yaml, spec_manager):
-        """Test handling of YAML saving errors."""
-        mock_save_yaml.return_value = False
-
-        # Create a spec
-        _spec = spec_manager.create_specification(
-            title="Save Error Test",
-            spec_type=SpecType.FEATURE,
-            description="Test save error handling",
-            rationale="Testing error scenarios",
-        )
-
-        # This should handle the save error gracefully
-        # The exact behavior depends on implementation requirements
-
-    def test_update_with_invalid_attributes(self, spec_manager):
-        """Test updating specification with invalid attributes."""
-        spec = spec_manager.create_specification(
-            title="Update Test",
-            spec_type=SpecType.FEATURE,
-            description="Test updates",
-            rationale="Testing updates",
-        )
-
-        # Try to update with invalid attribute
-        updates = {
-            "invalid_attribute": "some value",
-            "title": "Valid Update",
-        }
-
-        updated_spec = spec_manager.update_specification(spec.id, updates)
-
-        # Should update valid attributes and ignore invalid ones
-        assert updated_spec.title == "Valid Update"
-        assert not hasattr(updated_spec, "invalid_attribute")
-
-
-class TestSpecificationIntegration:
-    """Test integration with broader system."""
-
-    @pytest.fixture
-    def temp_project(self):
-        """Create temporary project directory."""
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            project_dir = Path(tmp_dir)
-            yield project_dir
-
-    def test_concurrent_access_simulation(self, temp_project):
-        """Test concurrent access to specifications (basic simulation)."""
-        # Create two manager instances
-        manager1 = SpecificationManager(temp_project)
-        manager2 = SpecificationManager(temp_project)
-
-        # Create specs from both managers
-        spec1 = manager1.create_specification(
-            title="Concurrent Test 1",
-            spec_type=SpecType.FEATURE,
-            description="First concurrent spec",
-            rationale="Testing concurrency",
-        )
-
-        spec2 = manager2.create_specification(
-            title="Concurrent Test 2",
-            spec_type=SpecType.BUGFIX,
-            description="Second concurrent spec",
-            rationale="Testing concurrency",
-        )
-
-        # Both should be able to see each other's specs
-        assert manager1.get_specification(spec2.id) is not None
-        assert manager2.get_specification(spec1.id) is not None
-
-    def test_workflow_simulation(self, temp_project):
-        """Test a complete specification workflow."""
-        manager = SpecificationManager(temp_project)
-
-        # 1. Create specification
-        spec = manager.create_specification(
-            title="Workflow Test Feature",
-            spec_type=SpecType.FEATURE,
-            description="Test complete workflow",
-            rationale="Validate end-to-end process",
-            priority=SpecPriority.HIGH,
-        )
-        assert spec.status == SpecStatus.DRAFT
-
-        # 2. Approve specification
-        manager.update_specification(
-            spec.id,
-            {
-                "status": SpecStatus.STAGED,
-                "use_cases": ["Use case 1", "Use case 2"],
-                "acceptance_criteria": ["AC1", "AC2"],
-            },
-        )
-
-        # 3. Link to branch and start implementation
-        manager.link_spec_to_branch(spec.id, "feature/workflow-test")
-        updated_spec = manager.get_specification(spec.id)
-        assert updated_spec.status == SpecStatus.ACTIVE
-        assert updated_spec.branch == "feature/workflow-test"
-
-        # 4. Mark as implemented
-        manager.update_specification(spec.id, {"status": SpecStatus.COMPLETED})
-
-        # 5. Mark as tested
-        manager.update_specification(spec.id, {"status": SpecStatus.COMPLETED})
-
-        # 6. Mark as deployed
-        final_spec = manager.update_specification(spec.id, {"status": SpecStatus.COMPLETED})
-
-        assert final_spec.status == SpecStatus.COMPLETED
-
-        # Verify we can retrieve by branch
-        branch_spec = manager.get_spec_by_branch("feature/workflow-test")
-        assert branch_spec.id == spec.id
-        assert branch_spec.status == SpecStatus.COMPLETED
+        assert loaded_spec.id == original_spec.id
+        assert loaded_spec.title == original_spec.title
+        assert loaded_spec.type == original_spec.type
+        assert loaded_spec.status == original_spec.status
+        assert loaded_spec.priority == original_spec.priority
+        assert loaded_spec.description == original_spec.description

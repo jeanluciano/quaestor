@@ -8,7 +8,7 @@ from pydantic import ValidationError
 from rich.console import Console
 
 from quaestor.core.project_detection import detect_project_type
-from quaestor.core.yaml_utils import load_yaml, merge_yaml_configs, save_yaml
+from quaestor.core.yaml_config import load_yaml, merge_yaml_configs, save_yaml
 
 from .config_schemas import (
     ConfigurationLayer,

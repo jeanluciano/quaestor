@@ -1,0 +1,9 @@
+{
+  "name": "quaestor",
+  "version": "1.0.0",
+  "description": "Skills-first specification-driven development - automatic spec creation, lifecycle management, progress tracking, and PR generation. Includes /plan, /impl, /research, /review commands with context-triggered Agent Skills.",
+  "author": {
+    "name": "Quaestor Project",
+    "url": "https://github.com/jeanluciano/quaestor"
+  }
+}
