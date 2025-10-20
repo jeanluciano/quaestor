@@ -50,7 +50,7 @@ class TestTemplateCopying:
 
         from quaestor.constants import TEMPLATE_FILES
 
-        for template_name in TEMPLATE_FILES.keys():
+        for template_name in TEMPLATE_FILES:
             try:
                 content = pkg_resources.read_text("quaestor", template_name)
                 assert len(content) > 0, f"Template file {template_name} is empty"

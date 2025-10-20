@@ -29,12 +29,12 @@ class TestMarkdownSpecParser:
             created_at: 2024-01-15T10:00:00Z
             updated_at: 2024-01-15T10:00:00Z
             ---
-            
+
             # Test Specification
-            
+
             ## Description
             This is a test specification.
-            
+
             ## Rationale
             We need this for testing.
         """).strip()
@@ -61,51 +61,51 @@ class TestMarkdownSpecParser:
             updated_at: 2024-01-16T14:30:00Z
             branch: feat/auth
             ---
-            
+
             # User Authentication System
-            
+
             ## Description
             Implement secure user authentication with JWT tokens.
-            
+
             ## Rationale
             Modern applications require robust authentication.
-            
+
             ## Dependencies
             - **Requires**: database-setup, crypto-lib
             - **Blocks**: user-profile, permissions
             - **Related**: session-management
-            
+
             ## Contract
-            
+
             ### Inputs
             - `username` (string): User email or username
             - `password` (string): User password
-            
+
             ### Outputs
             - `token` (string): JWT access token
             - `refresh_token` (string): Refresh token
-            
+
             ### Behavior
             - Validate credentials against database
             - Generate JWT with 24h expiration
-            
+
             ### Constraints
             - Password must be at least 8 characters
             - Tokens must use RS256 algorithm
-            
+
             ## Acceptance Criteria
             - [x] Users can login with valid credentials
             - [ ] Invalid credentials return 401 error
             - [x] Passwords are securely hashed
             - [ ] Tokens expire after 24 hours
-            
+
             ## Test Scenarios
-            
+
             ### Successful Login
             **Given**: Valid user credentials
             **When**: Login endpoint is called
             **Then**: JWT token is returned
-            
+
             ### Invalid Password
             **Given**: Valid username, invalid password
             **When**: Login endpoint is called
@@ -147,7 +147,7 @@ class TestMarkdownSpecParser:
         """Test error handling for missing frontmatter."""
         content = dedent("""
             # Test Specification
-            
+
             ## Description
             This has no frontmatter.
         """).strip()
@@ -200,7 +200,7 @@ class TestMarkdownSpecParser:
             status: draft
             priority: low
             ---
-            
+
             # Test Specification
         """).strip()
 
@@ -222,15 +222,15 @@ class TestMarkdownSpecParser:
             status: draft
             priority: medium
             ---
-            
+
             # Complex Feature
-            
+
             ## Description
             This is a multiline description.
             It spans multiple lines.
-            
+
             And even has paragraphs.
-            
+
             ## Rationale
             Line 1 of rationale.
             Line 2 of rationale.
@@ -300,9 +300,9 @@ class TestMarkdownSpecParser:
             status: draft
             priority: high
             ---
-            
+
             # Test
-            
+
             ## Dependencies
             - **Requires**: spec-001, spec-002
             - **Blocks**: spec-003
@@ -326,9 +326,9 @@ class TestMarkdownSpecParser:
             status: active
             priority: high
             ---
-            
+
             # Test
-            
+
             ## Acceptance Criteria
             - [x] First criterion (completed)
             - [ ] Second criterion (pending)
@@ -520,48 +520,48 @@ class TestMarkdownSpecPerformance:
             created_at: 2024-01-15T10:00:00Z
             updated_at: 2024-01-15T10:00:00Z
             ---
-            
+
             # Performance Test Specification
-            
+
             ## Description
             This is a longer description to test parsing performance.
             It contains multiple lines and paragraphs.
-            
+
             The parser should handle this efficiently.
-            
+
             ## Rationale
             Performance testing is critical for production systems.
-            
+
             ## Dependencies
             - **Requires**: spec-001, spec-002, spec-003
             - **Blocks**: spec-004, spec-005
             - **Related**: spec-006, spec-007, spec-008, spec-009
-            
+
             ## Contract
-            
+
             ### Inputs
             - `param1` (string): First parameter
             - `param2` (integer): Second parameter
             - `param3` (boolean): Third parameter
-            
+
             ### Outputs
             - `result` (object): Result object
             - `status` (string): Status message
-            
+
             ## Acceptance Criteria
             - [ ] Criterion 1
             - [ ] Criterion 2
             - [ ] Criterion 3
             - [ ] Criterion 4
             - [ ] Criterion 5
-            
+
             ## Test Scenarios
-            
+
             ### Scenario 1
             **Given**: Setup condition
             **When**: Action taken
             **Then**: Expected result
-            
+
             ### Scenario 2
             **Given**: Another setup
             **When**: Different action
