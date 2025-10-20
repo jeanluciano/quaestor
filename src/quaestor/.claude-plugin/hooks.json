@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 -m quaestor.hooks.session_context_loader",
+            "command": "python3 -m quaestor.scripts.hook_session_context_loader",
             "timeout": 30
           }
         ]
@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 -m quaestor.hooks.spec_validator \"${file_path}\"",
+            "command": "python3 -m quaestor.scripts.hook_spec_validator \"${file_path}\"",
             "block_on_failure": true,
             "timeout": 10
           }

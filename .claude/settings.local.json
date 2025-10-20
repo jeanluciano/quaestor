@@ -7,5 +7,27 @@
       "Bash(uv run pytest tests/test_markdown_spec.py -v)"
     ],
     "deny": []
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run .claude/hooks/session_context_loader.py"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run .claude/hooks/session_context_loader.py"
+          }
+        ]
+      }
+    ]
   }
 }

@@ -18,13 +18,24 @@ Complete specification-driven development framework for Claude Code.
 ### 🎯 Session Context Loading
 Automatically loads active specifications at session start.
 
-### 📋 Slash Commands (8 commands)
+### 📋 Slash Commands (3 commands)
 - `/plan` - Create and manage specifications
-- `/impl` - Execute specification-driven implementation
 - `/research` - Intelligent codebase exploration
-- `/review` - Comprehensive code review with PR creation
 - `/debug` - Interactive debugging assistance
-- `/project-init` - Initialize Quaestor in new projects
+
+### 🎓 Skills (12 skills)
+- `project-initialization` - Intelligent project setup with framework detection
+- `implementation-workflow` - Production-quality implementation with agent orchestration
+- `review-and-ship` - Comprehensive review, validation, commit generation, and PR creation
+- `spec-writing` - Specification creation
+- `spec-management` - Spec lifecycle management
+- `pr-generation` - Pull request generation
+- `architecture-patterns` - Architecture design patterns
+- `code-quality` - SOLID principles and linting
+- `security-audit` - Security patterns and OWASP guidelines
+- `testing-strategy` - Test pyramid and pytest patterns
+- `performance-optimization` - Caching and profiling
+- `debugging-workflow` - Systematic debugging
 
 ### 🤖 Specialized Agents (14 agents)
 - `planner` - Strategic planning
@@ -49,7 +60,10 @@ Automatically loads active specifications at session start.
 
 Initialize in your project:
 ```bash
-/project-init
+# Just ask Claude to set up the project
+"Initialize Quaestor in this project"
+# or
+"Set up Quaestor with intelligent project analysis"
 ```
 
 Create a specification:
@@ -57,14 +71,18 @@ Create a specification:
 /plan "Add user authentication"
 ```
 
-Implement it:
+Implement it (uses implementation-workflow skill automatically):
 ```bash
-/impl
+"Implement spec-feature-001"
+# or natural language:
+"Build the user authentication feature"
 ```
 
 Review your work:
 ```bash
-/review
+"Review my changes"
+# or
+"Create a PR for this feature"
 ```
 
 ## Documentation

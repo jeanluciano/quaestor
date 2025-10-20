@@ -52,24 +52,22 @@ dev = [
 [tool.setuptools]
 packages = [
     "quaestor",
-    "quaestor.core",
-    "quaestor.cli",
-    "quaestor.hooks",
     "quaestor.agents",
     "quaestor.commands",
-    "quaestor.skills"
+    "quaestor.scripts",
+    "quaestor.skills",
 ]
 package-dir = {"" = "src"}
+include-package-data = true
 
 [tool.setuptools.package-data]
 quaestor = [
     "*.md",
-    "hooks/*.py",
-    "hooks/*.json",
+    "*.yaml",
     "agents/*.md",
     "commands/*.md",
     "skills/*/*.md",
-    "core/*.yaml",
+    "scripts/*.py",
 ]
 
 [tool.pytest.ini_options]

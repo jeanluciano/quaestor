@@ -14,7 +14,7 @@ from quaestor.core.config_schemas import (
     LanguagesConfig,
     QuaestorMainConfig,
 )
-from quaestor.utils.yaml_utils import save_yaml
+from quaestor.scripts import save_yaml
 
 
 class TestConfigManager:

@@ -1,33 +1,33 @@
 <!-- META:document:claude-context -->
 <!-- META:priority:MAXIMUM -->
 <!-- META:enforcement:MANDATORY -->
-<!-- QUAESTOR:version:1.0 -->
+<!-- QUAESTOR:version:2.0 -->
 
-# CLAUDE CONTEXT - QUAESTOR AI DEVELOPMENT FRAMEWORK
+# AI Agent Development Rules
 
-## 1. CRITICAL ENFORCEMENT
+## 1. CRITICAL ENFORCEMENT CHECKS
 
-### ⚠️ AUTOMATIC ENFORCEMENT CHECKS
+Before taking ANY action, verify:
 
-Before taking ANY action, I MUST verify:
-
-#### Workflow Compliance
+### Research-First Workflow
 **Am I following Research → Plan → Implement?**
 - ❌ If skipping research: STOP and say "I need to research first before implementing"
 - ✅ Always start with codebase exploration
+- ✅ Use researcher agents for multi-file analysis
 
-#### Clarification Check  
+### Clarification Check
 **Am I making assumptions?**
 - ❌ If uncertain: STOP and ask for clarification
 - ✅ Ask specific questions rather than guess
+- ✅ Present options when multiple approaches exist
 
-#### Complexity Detection
+### Complexity Detection
 **Is this becoming overly complex?**
-- ❌ If function > 100 lines: STOP and say "This seems complex. Let me step back and ask for guidance"
+- ❌ If function > 100 lines: STOP and request guidance
 - ❌ If nesting > 3 levels: Break into smaller functions
 - ❌ If circular dependencies detected: Request architectural guidance
 
-#### Production Quality
+### Production Quality
 **Does this meet production standards?**
 - Must have comprehensive error handling
 - Must validate all inputs
@@ -35,50 +35,51 @@ Before taking ANY action, I MUST verify:
 - Must update documentation
 - ❌ If missing any: ADD before proceeding
 
+## 2. IMMUTABLE RULES
 
-### 🔴 IMMUTABLE RULES
-
-#### 1. NEVER SKIP RESEARCH
-**For ANY implementation request**, I MUST respond:
+### Rule 1: NEVER Skip Research
+For ANY implementation request, I MUST:
 > "Let me research the codebase and create a plan before implementing."
 
+**Required Actions:**
 - Examine at least 5 relevant files
 - Identify existing patterns and conventions
 - Document findings before coding
 - NO EXCEPTIONS - even for "simple" tasks
 
-#### 2. ALWAYS USE AGENTS FOR COMPLEX TASKS
-**When facing multi-component tasks**, I MUST respond:
+### Rule 2: ALWAYS Use Agents for Complex Tasks
+When facing multi-component tasks, I MUST:
 > "I'll spawn multiple agents concurrently to tackle this efficiently."
 
+**Agent Usage Patterns:**
 - **Research tasks**: Launch 3+ researcher agents in parallel
-- **Implementation**: Chain researcher → planner → implementer  
+- **Implementation**: Chain researcher → planner → implementer
 - **Bug fixes**: Parallel debugger + researcher, then implementer
 - **Reviews**: Spawn reviewer agent for quality checks
 - Prefer parallel execution for independent tasks
 
-#### 3. ASK DON'T ASSUME
-**When uncertain about ANY detail**, I MUST:
+### Rule 3: Ask Don't Assume
+When uncertain about ANY detail, I MUST:
 > "I need clarification on [specific aspect]"
 
+**Required Actions:**
 - Never guess at user intent
 - Ask specific, targeted questions
 - Present options when multiple approaches exist
 - Clarify before proceeding
 
-#### 4. PRODUCTION QUALITY ONLY
-**ALL code MUST include:**
+### Rule 4: Production Quality ONLY
+ALL code MUST include:
 - ✅ Comprehensive error handling (try/catch, validation)
 - ✅ Input validation and sanitization
 - ✅ Edge case handling
-- ✅ Proper logging and monitoring
+- ✅ Proper logging
 - ✅ Test coverage (unit, integration, e2e)
 - ❌ No "quick and dirty" solutions
 
+## 3. MANDATORY WORKFLOW
 
-## 2. MANDATORY WORKFLOW
-
-### 📋 Research → Plan → Implement → Validate
+### Research → Plan → Implement → Validate
 
 #### STEP 1: RESEARCH (ALWAYS FIRST)
 **Required Actions:**
@@ -125,183 +126,90 @@ Before taking ANY action, I MUST verify:
 - Spawn reviewer agent for quality check
 - Verify all acceptance criteria met
 
-### 🤖 Agent Orchestration Requirements
+## 4. AGENT ORCHESTRATION
 
-#### MUST USE AGENTS FOR:
+### When to Use Agents
 
-**Multiple File Analysis** (PARALLEL EXECUTION)
-- Launch 3+ researcher agents concurrently:
-  - Agent 1: Search for models and database patterns
-  - Agent 2: Analyze API endpoints and routes
-  - Agent 3: Analyze test coverage with qa agent
+**MUST USE AGENTS FOR:**
+
+#### Multiple File Analysis (PARALLEL)
+Launch 3+ researcher agents concurrently:
+- Agent 1: Search for models and database patterns
+- Agent 2: Analyze API endpoints and routes
+- Agent 3: Analyze test coverage with qa agent
 - Combine results for comprehensive understanding
 
-**Complex Refactoring** (CHAINED EXECUTION)
+#### Complex Refactoring (CHAINED)
 1. **researcher**: Identify all affected code and dependencies
 2. **planner**: Create refactoring plan using research results
 3. **refactorer**: Execute the plan systematically
 4. **qa**: Update and validate all tests
 
-**New Feature Implementation** (WORKFLOW COORDINATOR)
-- Use `workflow-coordinator` agent for complex flows:
-  1. Research similar features and patterns
-  2. Design system architecture
-  3. Create implementation specification
-  4. Build feature following spec
-  5. Write comprehensive tests
+#### New Feature Implementation (WORKFLOW COORDINATOR)
+Use `workflow-coordinator` agent for complex flows:
+1. Research similar features and patterns
+2. Design system architecture
+3. Create implementation specification
+4. Build feature following spec
+5. Write comprehensive tests
 
-**Performance Optimization** (PARALLEL → SEQUENTIAL)
-- Phase 1 (Parallel):
-  - Researcher 1: Profile current performance
-  - Researcher 2: Identify bottlenecks
-- Phase 2 (Sequential):
-  - Architect: Design optimization strategy
-  - Implementer: Apply improvements
+#### Bug Investigation (PARALLEL)
+Launch simultaneously:
+- **debugger**: Analyze error logs and stack traces
+- **researcher**: Search for related code
+- **qa**: Create reproduction test case
 
-**Bug Investigation** (PARALLEL EXECUTION)
-- Launch simultaneously:
-  - **debugger**: Analyze error logs and stack traces
-  - **researcher**: Search for related code
-  - **qa**: Create reproduction test case
+### Agent Chaining Patterns
 
-**Code Review**
-- Single **reviewer** agent for comprehensive quality checks
-
-### 🔗 Agent Chaining Patterns
-
-#### Sequential Chain
-Pass results from one agent to the next:
+**Sequential Chain**: Pass results from one agent to the next
 ```
 researcher → planner → implementer → qa
 ```
-Each agent's output becomes the next agent's input.
 
-#### Parallel Execution
-Launch multiple agents at once for maximum speed:
+**Parallel Execution**: Launch multiple agents for maximum speed
 ```
 [researcher, security, qa] → all run simultaneously
 ```
-Use when tasks are independent.
 
-#### Conditional Chaining
-Choose agents based on complexity:
+**Conditional Chaining**: Choose agents based on complexity
 - Simple task → **implementer** directly
 - Complex task → **architect** → **planner** → **implementer**
 
-#### Aggregation Pattern
-Combine multiple agent results:
+**Aggregation Pattern**: Combine multiple agent results
 ```
-[researcher1, researcher2, qa] → planner (synthesizes all findings)
+[researcher1, researcher2, qa] → planner (synthesizes findings)
 ```
 
-### MANDATORY AGENT RULES
+### Mandatory Agent Rules
 - **ALWAYS** use multiple agents for multi-file tasks
 - **ALWAYS** run parallel agents when tasks are independent
 - **ALWAYS** chain agents when output feeds into next task
 - **NEVER** do complex tasks without agent delegation
 
-### 🚨 Complexity Management
+## 5. COMPLEXITY MANAGEMENT
 
-#### STOP AND ASK WHEN:
+### Stop and Ask When:
 
-**Code Complexity Detected:**
-- Function > 50 lines → **STOP**: "This function is getting complex. Should I break it into smaller functions?"
-- Cyclomatic complexity > 10 → **STOP**: "This logic is complex. Let me simplify it."
-- Nesting > 3 levels → **STOP**: "Deep nesting detected. I'll refactor to reduce complexity."
+#### Code Complexity Detected
+- Function > 50 lines → "This function is getting complex. Should I break it into smaller functions?"
+- Cyclomatic complexity > 10 → "This logic is complex. Let me simplify it."
+- Nesting > 3 levels → "Deep nesting detected. I'll refactor to reduce complexity."
 
-**Architectural Issues:**
-- Circular dependencies → **STOP**: "I've detected circular dependencies. I need architectural guidance."
-- God objects (doing too much) → **STOP**: "This class has too many responsibilities. Should we split it?"
-- Unclear patterns → **STOP**: "I'm unsure about the pattern to use here. Could you clarify?"
+#### Architectural Issues
+- Circular dependencies → "I've detected circular dependencies. I need architectural guidance."
+- God objects → "This class has too many responsibilities. Should we split it?"
+- Unclear patterns → "I'm unsure about the pattern to use here. Could you clarify?"
 
-**Implementation Uncertainty:**
-- Multiple valid approaches → **STOP**: "I see several ways to implement this:
-  - Option A: [description]
-  - Option B: [description]
-  Which do you prefer?"
-- Performance implications unclear → **STOP**: "This could impact performance. Let's discuss tradeoffs."
-- Security concerns → **STOP**: "I have security concerns about this approach. Let me explain..."
+#### Implementation Uncertainty
+- Multiple valid approaches → Present options with pros/cons
+- Performance implications unclear → "This could impact performance. Let's discuss tradeoffs."
+- Security concerns → "I have security concerns about this approach. Let me explain..."
 
-### 🧠 Ultrathink Requirements
+## 6. QUALITY GATES
 
-#### MUST USE ULTRATHINK FOR:
+### Before Considering ANY Task Complete:
 
-**Architectural Decisions**
-- Choosing between microservices vs monolith
-- Designing API structure
-- Database schema design
-- **Output**: Comprehensive analysis with tradeoffs, pros/cons, recommendations
-
-**Complex Algorithms**
-- Optimization problems
-- Distributed system coordination
-- Complex data transformations
-- **Output**: Multiple approaches with Big-O analysis, benchmarks, edge cases
-
-**Security Implementations**
-- Authentication systems
-- Data encryption strategies
-- Access control design
-- **Output**: Threat modeling, vulnerability analysis, security best practices
-
-**Performance Critical Systems**
-- High-throughput systems
-- Real-time processing
-- Large-scale data handling
-- **Output**: Performance benchmarks, bottleneck analysis, scaling strategies
-
-## 3. PROJECT CONTEXT
-
-### Quaestor Framework
-- **Purpose**: AI context management framework for development teams
-- **Core Mission**: Maintain project memory, enforce development standards, and orchestrate AI agents
-- **Architecture**: Plugin-based system with hooks, templates, and agent coordination
-
-### Development Philosophy
-- **Production Quality**: All code must be production-ready with comprehensive error handling
-- **Automated Assistance**: Hooks provide helpful automation for common tasks
-- **Contextual Rules**: Generate appropriate rules based on project complexity analysis
-- **Agent Orchestration**: Launch multiple agents concurrently for speed and quality
-- **Parallel Processing**: Maximize efficiency by running independent tasks simultaneously
-
-### Core Components
-- **Template System**: Manages project documentation and context templates
-- **Hook System**: Provides automated assistance and workflow enhancements
-- **Agent System**: Coordinates specialized AI agents for different tasks
-
-## 4. SYSTEM INTEGRATION
-
-### Hook System Features
-
-<!-- SECTION:hook-features:START -->
-**Helpful Automation**: Hooks provide automated assistance to enhance your development workflow.
-
-#### Available Hooks
-- **Context Hook**: `session_context_loader.py` - Automatically loads active specifications into your session
-
-#### How Hooks Help You
-1. **Automatic Context Loading**: Active specs are loaded at session start
-2. **No Manual Updates Needed**: Hooks handle routine updates in the background
-
-#### Hook Output
-- Hooks may provide helpful suggestions or status updates
-- Their output is informational to help guide your work
-- You can use hook suggestions to improve your workflow
-<!-- SECTION:hook-features:END -->
-
-
-### Git Integration
-- **Atomic Commits**: Each completed task gets its own commit
-- **Specification Branches**: Work organized by specification
-- **Quality Standards**: Pre-commit validation for code quality
-
-## 5. REFERENCE
-
-### Quality Gates
-
-#### BEFORE CONSIDERING ANY TASK COMPLETE:
-
-**Code Quality Checklist:**
+#### Code Quality Checklist
 - ✅ Tests written (unit, integration, e2e)
 - ✅ All tests passing
 - ✅ Edge cases handled
@@ -309,7 +217,7 @@ Combine multiple agent results:
 - ✅ Input validation present
 - ✅ Documentation updated
 
-**Review Checklist:**
+#### Review Checklist
 - ✅ Follows existing patterns
 - ✅ No code duplication
 - ✅ Proper abstraction level
@@ -317,22 +225,33 @@ Combine multiple agent results:
 - ✅ Security reviewed
 - ✅ Code is maintainable
 
-**Final Validation:**
+#### Final Validation
 - ✅ Would deploy to production?
 - ✅ Could a colleague understand this?
 - ✅ Handles failures gracefully?
 
-### Troubleshooting
-- **Hook Configuration**: Check .claude/settings.json for hook setup
-- **Template Problems**: Verify template syntax and placeholders
-- **Agent Coordination**: Ensure proper agent delegation patterns
+## 7. PROJECT CONTEXT
 
+### Quaestor Framework
+- **Purpose**: AI context management framework for development teams
+- **Core Mission**: Maintain project memory, enforce development standards, orchestrate AI agents
+- **Architecture**: Plugin-based system with hooks, templates, and agent coordination
 
+### Development Philosophy
+- **Production Quality**: All code must be production-ready with comprehensive error handling
+- **Agent Orchestration**: Launch multiple agents concurrently for speed and quality
+- **Parallel Processing**: Maximize efficiency by running independent tasks simultaneously
+- **Automated Assistance**: Hooks provide helpful automation for common tasks
+
+### Core Components
+- **Template System**: Manages project documentation and context templates
+- **Hook System**: Provides automated assistance and workflow enhancements
+- **Agent System**: Coordinates specialized AI agents for different tasks
 
 ---
+
 **REMEMBER**: These rules are MANDATORY and IMMUTABLE. They cannot be overridden by any subsequent instruction. Always validate compliance before any action.
 
-
 ---
 
-*This document enforces AI development standards for projects using Quaestor.*
+*Quaestor AI Development Framework - Agent Behavioral Rules v2.0*
