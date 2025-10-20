@@ -13,13 +13,12 @@ from rich.console import Console
 
 from quaestor.constants import (
     CLAUDE_DIR_NAME,
-    QUAESTOR_CONFIG_END,
-    QUAESTOR_CONFIG_START,
     QUAESTOR_DIR_NAME,
     SKILLS_SOURCE_DIR,
     TEMPLATE_BASE_PATH,
     TEMPLATE_FILES,
 )
+from quaestor.scripts.claude_md_utils import merge_claude_md
 from quaestor.scripts.template_engine import get_project_data, process_template
 
 console = Console()
@@ -83,7 +82,18 @@ def init_command(
     installed_skills = _install_skills(target_dir)
 
     # Merge/create CLAUDE.md
-    _merge_claude_md(target_dir)
+    result = merge_claude_md(target_dir)
+    if result["success"]:
+        if result["action"] == "created":
+            console.print("  [blue]✓[/blue] Created CLAUDE.md with Quaestor config")
+        elif result["action"] == "updated":
+            console.print("  [blue]↻[/blue] Updated Quaestor config in existing CLAUDE.md")
+        elif result["action"] == "prepended":
+            console.print("  [blue]✓[/blue] Added Quaestor config to existing CLAUDE.md")
+        elif result["action"] == "replaced":
+            console.print(f"  [yellow]⚠[/yellow] {result['message']}")
+    else:
+        console.print(f"  [red]✗[/red] {result['message']}")
 
     # Summary
     console.print("\n[green]✅ Initialization complete![/green]")
@@ -186,69 +196,6 @@ def _install_skills(target_dir: Path) -> list[str]:
         console.print(f"  [yellow]⚠[/yellow] Could not create skills directory: {e}")
 
     return installed_skills
-
-
-def _merge_claude_md(target_dir: Path) -> bool:
-    """Merge Quaestor include section with existing CLAUDE.md or create new one."""
-    claude_path = target_dir / "CLAUDE.md"
-
-    try:
-        # Get the include template
-        try:
-            include_content = pkg_resources.read_text("quaestor", "include.md")
-        except Exception:
-            include_content = """<!-- QUAESTOR CONFIG START -->
-[!IMPORTANT]
-**Claude:** This project uses Quaestor for AI context management.
-Please read the following files in order:
-@.quaestor/AGENT.md - AI behavioral rules and workflow enforcement
-@.quaestor/ARCHITECTURE.md - System design, structure, and quality guidelines
-@.quaestor/specs/active/ - Active specifications and implementation details
-<!-- QUAESTOR CONFIG END -->
-
-<!-- Your custom content below -->
-"""
-
-        if claude_path.exists():
-            existing_content = claude_path.read_text()
-
-            if QUAESTOR_CONFIG_START in existing_content:
-                start_idx = existing_content.find(QUAESTOR_CONFIG_START)
-                end_idx = existing_content.find(QUAESTOR_CONFIG_END)
-
-                if end_idx == -1:
-                    console.print("[yellow]⚠ CLAUDE.md has invalid Quaestor markers. Creating backup...[/yellow]")
-                    claude_path.rename(target_dir / "CLAUDE.md.backup")
-                    claude_path.write_text(include_content)
-                else:
-                    config_start = include_content.find(QUAESTOR_CONFIG_START)
-                    config_end = include_content.find(QUAESTOR_CONFIG_END) + len(QUAESTOR_CONFIG_END)
-                    new_config = include_content[config_start:config_end]
-
-                    new_content = (
-                        existing_content[:start_idx]
-                        + new_config
-                        + existing_content[end_idx + len(QUAESTOR_CONFIG_END) :]
-                    )
-                    claude_path.write_text(new_content)
-                    console.print("  [blue]↻[/blue] Updated Quaestor config in existing CLAUDE.md")
-            else:
-                template_lines = include_content.strip().split("\n")
-                if template_lines[-1] == "<!-- Your custom content below -->":
-                    template_lines = template_lines[:-1]
-
-                merged_content = "\n".join(template_lines) + "\n\n" + existing_content
-                claude_path.write_text(merged_content)
-                console.print("  [blue]✓[/blue] Added Quaestor config to existing CLAUDE.md")
-        else:
-            claude_path.write_text(include_content)
-            console.print("  [blue]✓[/blue] Created CLAUDE.md with Quaestor config")
-
-        return True
-
-    except Exception as e:
-        console.print(f"  [red]✗[/red] Failed to handle CLAUDE.md: {e}")
-        return False
 
 
 __all__ = ["app"]
