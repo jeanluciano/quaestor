@@ -1,7 +1,7 @@
 {
   "name": "quaestor-official",
   "description": "Official Quaestor plugin marketplace for specification-driven development",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.1",
   "owner": {
     "name": "Quaestor Project",
     "url": "https://github.com/jeanluciano/quaestor"
@@ -10,7 +10,7 @@
     {
       "name": "quaestor",
       "description": "Skills-first specification-driven development - automatic spec creation, lifecycle management, progress tracking, and PR generation with Agent Skills",
-      "version": "1.0.0",
+      "version": "1.0.0-beta.1",
       "author": {
         "name": "Quaestor Project",
         "url": "https://github.com/jeanluciano/quaestor"

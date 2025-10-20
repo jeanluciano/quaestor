@@ -5,6 +5,73 @@ All notable changes to Quaestor will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-beta.1] - 2025-01-20
+
+### Changed
+- **Complete Architecture Modernization** - Transformed into minimal Claude Code plugin
+  - Positioned as "minimal Claude Code plugin for specification-driven development"
+  - Added design principles: Zen, Engineer as Driver, Light Spec-Driven
+  - Consolidated to 7 Skills from previous multi-skill architecture
+  - Removed hooks system entirely (no longer part of architecture)
+  - Simplified to 3 slash commands: `/plan`, `/implement`, `/research`
+  - Removed team/personal mode distinction (project-level only)
+  - Removed uvx init modes
+
+- **Skills-First Architecture** - Complete rewrite to Skills-based system
+  - `spec-driven-development` - Create and manage specifications with lifecycle
+  - `implementation-workflow` - Implement features with quality gates
+  - `review-and-ship` - Code review, auto-fix, and PR generation
+  - `debugging-workflow` - Systematic bug investigation
+  - `security-audit` - Security analysis and vulnerability detection
+  - `performance-optimization` - Performance profiling and optimization
+  - `project-initialization` - Auto-detecting project setup
+
+- **Sub-Agent System** - Agents now internal to Skills
+  - 10 specialized sub-agents: architect, debugger, implementer, planner, qa, refactorer, researcher, reviewer, security, workflow-coordinator
+  - Skills automatically orchestrate sub-agents (users don't invoke directly)
+  - Removed compliance-enforcer and spec-manager agents
+
+- **Installation as Claude Code Plugin**
+  - Primary installation via marketplace: `/plugin marketplace add jeanluciano/quaestor`
+  - Plugin install: `/plugin install quaestor:quaestor`
+  - Secondary pip/uv installation for project-level use
+  - See [Claude Code plugins documentation](https://docs.claude.com/en/docs/claude-code/plugins)
+
+### Removed
+- **Hooks System** - Completely removed
+  - Deleted all hook files and documentation
+  - Removed hook configuration from settings
+  - Removed session context loader and spec validator hooks
+
+- **Outdated Commands** - Streamlined command set
+  - Removed `/debug`, `/review`, `/project-init` commands
+  - Commands now provided by Skills
+
+- **Deprecated Skills** - Consolidated to 7 focused Skills
+  - Removed `spec-writing`, `spec-management`, `pr-generation` (merged into `spec-driven-development` and `review-and-ship`)
+  - Removed `architecture-patterns`, `code-quality`, `testing-strategy` (capabilities integrated into remaining Skills)
+
+### Documentation
+- **Complete Documentation Rewrite** - Aligned with new architecture
+  - Updated README.md with minimal plugin positioning
+  - Removed hooks documentation entirely
+  - Updated all command documentation
+  - Rewrote Skills overview with current 7 Skills
+  - Updated agents documentation to clarify sub-agent role
+  - Fixed all installation instructions to use marketplace commands
+  - Updated mkdocs.yml navigation structure
+  - Maintained factual, technical tone throughout (no marketing language)
+
+### Fixed
+- Plugin marketplace installation instructions now correct
+- Plugin.json description updated to reflect 7 Skills (was incorrectly showing 12)
+- Commands in plugin.json updated to `/plan, /implement, /research`
+
+### Development Status
+- Changed from Alpha to Beta
+- Version: 1.0.0-beta.1 (not ready for full 1.0 release)
+- Development Status classifier: Beta
+
 ## [0.6.3] - 2025-08-07
 
 ### Added
