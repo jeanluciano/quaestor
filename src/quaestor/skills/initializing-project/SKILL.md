@@ -1,10 +1,10 @@
 ---
-name: Project Initialization
+name: Initializing Project
 description: Intelligent project analysis with auto-framework detection and adaptive setup. Use when user wants to initialize Quaestor, setup a new project, or analyze existing project structure.
 allowed-tools: [Read, Bash, Glob, Grep, Edit, Write, Task, TodoWrite]
 ---
 
-# Project Initialization
+# Initializing Project
 
 I help you intelligently initialize Quaestor in your project with automatic framework detection, architecture analysis, and customized documentation generation.
 

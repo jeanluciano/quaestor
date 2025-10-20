@@ -1,10 +1,10 @@
 ---
-name: Spec-Driven Development
+name: Managing Specifications
 description: Create, manage, and track specifications through their full lifecycle from draft to completion. Use when user wants to plan features, create specs, check progress, activate work, or complete specifications.
 allowed-tools: [Write, Read, Edit, Bash, Glob, Grep]
 ---
 
-# Spec-Driven Development
+# Managing Specifications
 
 I help you work with specifications: creating new specs from requirements, managing their lifecycle (draft → active → completed), and tracking progress automatically.
 
@@ -141,10 +141,10 @@ When you need more details:
 
 Once you have specifications:
 1. **Activate a spec**: "Activate spec-feature-001"
-2. **Implement it**: Use `/impl spec-feature-001` or implementation-workflow skill
+2. **Implement it**: Use `/impl spec-feature-001` or implementing-features skill
 3. **Track progress**: "What's the status?" or "Show active specs"
 4. **Complete it**: "Complete spec-feature-001" when all criteria checked
-5. **Ship it**: Use review-and-ship skill to create PR
+5. **Ship it**: Use reviewing-and-shipping skill to create PR
 
 ---
 

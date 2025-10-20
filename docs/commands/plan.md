@@ -1,6 +1,6 @@
 # /plan Command
 
-The `/plan` command activates the spec-driven-development skill to create lightweight specifications from requirements. It transforms ideas into actionable specs with acceptance criteria.
+The `/plan` command activates the managing-specifications skill to create lightweight specifications from requirements. It transforms ideas into actionable specs with acceptance criteria.
 
 ## Overview
 
@@ -32,7 +32,7 @@ You can also use natural language to manage specs:
 "Complete spec-auth-001"
 ```
 
-The spec-driven-development skill handles lifecycle management automatically.
+The managing-specifications skill handles lifecycle management automatically.
 
 ## Specification Structure
 

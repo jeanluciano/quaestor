@@ -1,10 +1,10 @@
 ---
-name: Implementation Workflow
+name: Implementing Features
 description: Execute specification-driven implementation with automatic quality gates, multi-agent orchestration, and progress tracking. Use when building features from specs, fixing bugs with test coverage, or refactoring with validation.
 allowed-tools: [Read, Write, Edit, MultiEdit, Bash, Glob, Grep, TodoWrite, Task]
 ---
 
-# Implementation Workflow
+# Implementing Features
 
 I help you execute production-quality implementations with auto-detected language standards, intelligent agent orchestration, and specification integration.
 

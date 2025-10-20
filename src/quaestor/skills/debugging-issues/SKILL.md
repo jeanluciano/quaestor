@@ -1,9 +1,9 @@
 ---
-name: Debugging Workflow
+name: Debugging Issues
 description: Systematically debug issues with reproduction steps, error analysis, hypothesis testing, and root cause fixes. Use when investigating bugs, analyzing production incidents, or troubleshooting unexpected behavior.
 ---
 
-# Debugging Workflow
+# Debugging Issues
 
 ## Purpose
 Provides systematic approaches to debugging, troubleshooting techniques, and error analysis strategies.

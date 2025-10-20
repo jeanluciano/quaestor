@@ -1,9 +1,9 @@
 ---
-name: Security Audit
+name: Security Auditing
 description: Audit security with vulnerability scanning, input validation checks, and auth/authz review against OWASP Top 10. Use when implementing authentication, reviewing security-sensitive code, or conducting security audits.
 ---
 
-# Security Audit
+# Security Auditing
 
 ## Purpose
 Provides security best practices, patterns, and checklists for ensuring secure code implementation.

@@ -1,10 +1,10 @@
 ---
-name: Review and Ship
+name: Reviewing and Shipping
 description: Validate quality with multi-agent review, auto-fix issues, generate organized commits, and create PRs with rich context. Use after completing features to ensure quality gates pass and ship confidently.
 allowed-tools: [Read, Edit, MultiEdit, Bash, Grep, Glob, TodoWrite, Task]
 ---
 
-# Review and Ship
+# Reviewing and Shipping
 
 I help you ship code confidently: validate quality, fix issues, generate commits, review with agents, and create pull requests.
 
@@ -242,7 +242,7 @@ Me:
 ## Next Steps After Using
 
 - PR created → Wait for team review
-- Quality issues found → Use implementation-workflow to fix
+- Quality issues found → Use implementing-features to fix
 - Want to iterate → Make changes, run me again
 
 ---

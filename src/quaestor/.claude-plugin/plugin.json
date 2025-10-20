@@ -1,7 +1,7 @@
 {
   "name": "quaestor",
   "version": "1.0.0-beta.1",
-  "description": "Skills-first specification-driven development framework with 7 agent skills for planning, implementation, review, and shipping. Natural language activation with intelligent agent orchestration. Includes /plan, /implement, /research commands plus spec-driven-development, implementation-workflow, and review-and-ship skills.",
+  "description": "Skills-first specification-driven development framework with 7 agent skills for planning, implementation, review, and shipping. Natural language activation with intelligent agent orchestration. Includes /plan, /implement, /research commands plus managing-specifications, implementing-features, and reviewing-and-shipping skills.",
   "author": {
     "name": "Quaestor Project",
     "url": "https://github.com/jeanluciano/quaestor"

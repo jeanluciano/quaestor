@@ -12,13 +12,13 @@ Quaestor provides Skills and slash commands for structured development workflows
 ## What's Included
 
 ### 7 Skills (Auto-Activating)
-- `spec-driven-development` - Create and manage specifications
-- `implementation-workflow` - Implement features with quality gates
-- `review-and-ship` - Code review and PR generation
-- `debugging-workflow` - Systematic bug investigation
-- `security-audit` - Security analysis and vulnerability detection
-- `performance-optimization` - Performance profiling and optimization
-- `project-initialization` - Setup Quaestor in any project
+- `managing-specifications` - Create and manage specifications
+- `implementing-features` - Implement features with quality gates
+- `reviewing-and-shipping` - Code review and PR generation
+- `debugging-issues` - Systematic bug investigation
+- `security-auditing` - Security analysis and vulnerability detection
+- `optimizing-performance` - Performance profiling and optimization
+- `initializing-project` - Setup Quaestor in any project
 
 ### 3 Slash Commands
 - `/plan` - Create specifications
@@ -50,9 +50,9 @@ Quaestor provides Skills and slash commands for structured development workflows
 ```
 
 Skills activate automatically based on what you're doing:
-- "Show my active specs" → spec-driven-development skill
-- "Debug the login failure" → debugging-workflow skill
-- "Review this code for security issues" → security-audit skill
+- "Show my active specs" → managing-specifications skill
+- "Debug the login failure" → debugging-issues skill
+- "Review this code for security issues" → security-auditing skill
 
 ## How It Works
 
@@ -72,9 +72,9 @@ Specs live in `.quaestor/specs/` and move through folders as they progress:
 
 ### Skills
 Skills are auto-activating workflows that trigger based on context. You don't invoke them directly - just describe what you want:
-- Want to plan? Say "create a spec for X" → spec-driven-development activates
-- Want to implement? Use `/implement spec-id` → implementation-workflow activates
-- Want to ship? Say "create a PR" → review-and-ship activates
+- Want to plan? Say "create a spec for X" → managing-specifications activates
+- Want to implement? Use `/implement spec-id` → implementing-features activates
+- Want to ship? Say "create a PR" → reviewing-and-shipping activates
 
 ## Getting Started
 

@@ -88,9 +88,9 @@ Quaestor includes 10 specialized sub-agents used internally by Skills:
 
 Sub-agents are invoked internally by Skills using the Task tool. You don't call them directly - Skills handle all agent orchestration.
 
-### Example: implementation-workflow Skill
+### Example: implementing-features Skill
 
-When you use `/implement`, the implementation-workflow skill automatically:
+When you use `/implement`, the implementing-features skill automatically:
 
 1. Uses **researcher** to analyze existing code patterns
 2. Uses **architect** to design the technical approach
@@ -98,9 +98,9 @@ When you use `/implement`, the implementation-workflow skill automatically:
 4. Uses **qa** to create comprehensive tests
 5. Uses **reviewer** to validate code quality
 
-### Example: debugging-workflow Skill
+### Example: debugging-issues Skill
 
-When you say "debug the login issue", the debugging-workflow skill:
+When you say "debug the login issue", the debugging-issues skill:
 
 1. Uses **debugger** to perform root cause analysis
 2. Uses **implementer** to fix the issue

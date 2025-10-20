@@ -17,14 +17,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Removed team/personal mode distinction (project-level only)
   - Removed uvx init modes
 
-- **Skills-First Architecture** - Complete rewrite to Skills-based system
-  - `spec-driven-development` - Create and manage specifications with lifecycle
-  - `implementation-workflow` - Implement features with quality gates
-  - `review-and-ship` - Code review, auto-fix, and PR generation
-  - `debugging-workflow` - Systematic bug investigation
-  - `security-audit` - Security analysis and vulnerability detection
-  - `performance-optimization` - Performance profiling and optimization
-  - `project-initialization` - Auto-detecting project setup
+- **Skills-First Architecture** - Complete rewrite to Skills-based system with gerund-form names
+  - `managing-specifications` - Create and manage specifications with lifecycle
+  - `implementing-features` - Implement features with quality gates
+  - `reviewing-and-shipping` - Code review, auto-fix, and PR generation
+  - `debugging-issues` - Systematic bug investigation
+  - `security-auditing` - Security analysis and vulnerability detection
+  - `optimizing-performance` - Performance profiling and optimization
+  - `initializing-project` - Auto-detecting project setup
 
 - **Sub-Agent System** - Agents now internal to Skills
   - 10 specialized sub-agents: architect, debugger, implementer, planner, qa, refactorer, researcher, reviewer, security, workflow-coordinator
@@ -48,7 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Commands now provided by Skills
 
 - **Deprecated Skills** - Consolidated to 7 focused Skills
-  - Removed `spec-writing`, `spec-management`, `pr-generation` (merged into `spec-driven-development` and `review-and-ship`)
+  - Removed `spec-writing`, `spec-management`, `pr-generation` (merged into `spec-driven-development` and `reviewing-and-shipping`)
   - Removed `architecture-patterns`, `code-quality`, `testing-strategy` (capabilities integrated into remaining Skills)
 
 ### Documentation

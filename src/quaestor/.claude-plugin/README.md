@@ -23,19 +23,14 @@ Automatically loads active specifications at session start.
 - `/research` - Intelligent codebase exploration
 - `/debug` - Interactive debugging assistance
 
-### 🎓 Skills (12 skills)
-- `project-initialization` - Intelligent project setup with framework detection
-- `implementation-workflow` - Production-quality implementation with agent orchestration
-- `review-and-ship` - Comprehensive review, validation, commit generation, and PR creation
-- `spec-writing` - Specification creation
-- `spec-management` - Spec lifecycle management
-- `pr-generation` - Pull request generation
-- `architecture-patterns` - Architecture design patterns
-- `code-quality` - SOLID principles and linting
-- `security-audit` - Security patterns and OWASP guidelines
-- `testing-strategy` - Test pyramid and pytest patterns
-- `performance-optimization` - Caching and profiling
-- `debugging-workflow` - Systematic debugging
+### 🎓 Skills (7 skills)
+- `managing-specifications` - Create and manage specifications with lifecycle
+- `implementing-features` - Production-quality implementation with agent orchestration
+- `reviewing-and-shipping` - Comprehensive review, validation, commit generation, and PR creation
+- `debugging-issues` - Systematic debugging
+- `security-auditing` - Security patterns and OWASP guidelines
+- `optimizing-performance` - Caching and profiling
+- `initializing-project` - Intelligent project setup with framework detection
 
 ### 🤖 Specialized Agents (14 agents)
 - `planner` - Strategic planning
@@ -71,7 +66,7 @@ Create a specification:
 /plan "Add user authentication"
 ```
 
-Implement it (uses implementation-workflow skill automatically):
+Implement it (uses implementing-features skill automatically):
 ```bash
 "Implement spec-feature-001"
 # or natural language:

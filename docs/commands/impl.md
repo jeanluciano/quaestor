@@ -1,10 +1,10 @@
 # /implement Command
 
-The `/implement` command activates the implementation-workflow skill to turn specifications into working code with quality gates and automatic progress tracking.
+The `/implement` command activates the implementing-features skill to turn specifications into working code with quality gates and automatic progress tracking.
 
 ## Overview
 
-The implementation-workflow skill:
+The implementing-features skill:
 - Loads specifications and requirements
 - Guides implementation with quality checks
 - Tracks progress via TODOs
@@ -35,7 +35,7 @@ If no specification exists, the skill will create one first, then proceed with i
 
 ## Implementation Workflow
 
-The implementation-workflow skill coordinates multiple sub-agents internally:
+The implementing-features skill coordinates multiple sub-agents internally:
 
 **Research Phase:**
 - Analyzes existing codebase patterns

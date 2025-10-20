@@ -1,6 +1,6 @@
 ---
 allowed-tools: [Read, Write, Edit, MultiEdit, Bash, Grep, Glob, TodoWrite, Task, Skill]
-description: "Execute specification-driven implementation with the implementation-workflow skill"
+description: "Execute specification-driven implementation with the implementing-features skill"
 ---
 
 # /implement - Specification-Driven Implementation
@@ -8,7 +8,7 @@ description: "Execute specification-driven implementation with the implementatio
 ARGUMENTS: $SPEC_ID_OR_DESCRIPTION
 
 ## Purpose
-Invoke the implementation-workflow skill interactively to implement features following the complete specification-driven development process.
+Invoke the implementing-features skill interactively to implement features following the complete specification-driven development process.
 
 ## Usage
 ```bash
@@ -40,7 +40,7 @@ I will ask clarifying questions to ensure you're in control:
 
 ## What This Does
 
-This command is a direct entry point to the **implementation-workflow** skill, which provides:
+This command is a direct entry point to the **implementing-features** skill, which provides:
 
 1. **Specification-First Development**
    - Loads or creates specifications
@@ -113,7 +113,7 @@ User: /implement spec-auth-001
 
 🎯 Starting implementation workflow...
 
-[Skill invoked: implementation-workflow]
+[Skill invoked: implementing-features]
 
 📝 Creating TODO list for tracking...
 ✓ Loaded implementation patterns
@@ -126,11 +126,11 @@ Let's start with criterion 1: Login endpoint...
 ## Skill Integration
 
 This command loads and follows:
-- `@skills/implementation-workflow/SKILL.md` - Main workflow
-- `@skills/implementation-workflow/SPECS.md` - Spec handling
-- `@skills/implementation-workflow/QUALITY.md` - Quality standards
-- `@skills/implementation-workflow/WORKFLOW.md` - Step-by-step process
-- `@skills/implementation-workflow/AGENTS.md` - When to use agents
+- `@skills/implementing-features/SKILL.md` - Main workflow
+- `@skills/implementing-features/SPECS.md` - Spec handling
+- `@skills/implementing-features/QUALITY.md` - Quality standards
+- `@skills/implementing-features/WORKFLOW.md` - Step-by-step process
+- `@skills/implementing-features/AGENTS.md` - When to use agents
 
 ## Arguments
 
@@ -161,4 +161,4 @@ Implementation is complete when:
 - ✅ Specification moved to completed
 
 ---
-*This command invokes the implementation-workflow skill for structured, quality-focused development*
+*This command invokes the implementing-features skill for structured, quality-focused development*
