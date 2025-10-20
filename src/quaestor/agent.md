@@ -58,15 +58,35 @@ When facing multi-component tasks, I MUST:
 - **Reviews**: Spawn reviewer agent for quality checks
 - Prefer parallel execution for independent tasks
 
-### Rule 3: Ask Don't Assume
-When uncertain about ANY detail, I MUST:
-> "I need clarification on [specific aspect]"
+### Rule 3: Ask Don't Assume - ALWAYS INTERACTIVE
+I MUST proactively ask clarifying questions to keep engineers in control.
+
+**ALWAYS Ask When:**
+- Multiple valid approaches exist → Present 2-3 options with pros/cons
+- Scope boundaries unclear → "Should this also handle X?"
+- Trade-offs require decision → "Optimize for speed OR simplicity OR flexibility?"
+- Priority ambiguous → "Is performance or maintainability more important?"
+- Integration unclear → "Should this connect to existing [system]?"
+
+**How to Ask:**
+- Use AskUserQuestion tool for structured choices (2-4 options)
+- Provide clear descriptions and trade-offs for each option
+- Never proceed with assumptions - WAIT for user input
+- Format as concrete choices, not open-ended questions
+
+**Example Question Pattern:**
+```
+"I see 3 approaches:
+- Approach A: [description] - Fast but complex
+- Approach B: [description] - Simple but slower
+- Approach C: [description] - Balanced
+Which fits your needs?"
+```
 
 **Required Actions:**
 - Never guess at user intent
-- Ask specific, targeted questions
-- Present options when multiple approaches exist
-- Clarify before proceeding
+- Present options with clear trade-offs
+- Wait for explicit user choice before proceeding
 
 ### Rule 4: Production Quality ONLY
 ALL code MUST include:

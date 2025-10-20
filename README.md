@@ -1,131 +1,131 @@
 # Quaestor
 
-> 🏛️ Context management for AI-assisted development
+> A minimal Claude Code plugin for specification-driven development
 
 [![PyPI Version](https://img.shields.io/pypi/v/quaestor.svg)](https://pypi.org/project/quaestor/)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://jeanluciano.github.io/quaestor)
 
-**Quaestor** transforms AI-assisted development through **specification-driven workflows**, Agent Skills automation, intelligent agent orchestration, and streamlined context management for Claude Code.
+Quaestor is a Claude Code plugin that provides Skills and slash commands for specification-driven development. Write lightweight specs, implement with context, ship with confidence.
 
-## Key Features
+**Design Principles:**
+- **Zen** - Minimal surface area, maximum utility
+- **Engineer as Driver** - You make decisions, Quaestor provides structure
+- **Light Spec-Driven** - Just enough specification to stay aligned
 
-- 🎯 **Specification-Driven Development** - Clear contracts with acceptance criteria and automatic lifecycle management
-- ✨ **Agent Skills** - Auto-activating capabilities for spec creation, progress tracking, and PR generation
-- 🤖 **10 Specialized AI Agents** - Expert agents for research, planning, implementation, and review
-- 📁 **Folder-Based State** - Draft/active/completed folders as source of truth (no complex tracking)
-- 🔄 **Smart Automation Hooks** - Automatic spec progress tracking via Claude Code hooks
+## What's Included
+
+**7 Skills** (auto-activate based on context):
+- `spec-driven-development` - Create and manage specifications
+- `implementation-workflow` - Implement features with quality gates
+- `review-and-ship` - Code review and PR generation
+- `debugging-workflow` - Systematic bug investigation
+- `security-audit` - Security analysis and vulnerability detection
+- `performance-optimization` - Performance profiling and optimization
+- `project-initialization` - Setup Quaestor in any project
+
+**3 Slash Commands:**
+- `/plan` - Create specifications
+- `/implement` - Implement specs with tracking
+- `/research` - Explore codebase patterns
+
+**Spec Lifecycle:**
+- Folder-based state: `draft/` → `active/` → `completed/`
+- Automatic progress tracking via checkboxes
+- Max 3 active specs (enforced)
+
+## Installation
+
+### As a Claude Code Plugin (Recommended)
+
+First, add the Quaestor marketplace:
+```bash
+/plugin marketplace add jeanluciano/quaestor
+```
+
+Then install the plugin:
+```bash
+/plugin install quaestor:quaestor
+```
+
+See [Claude Code plugins documentation](https://docs.claude.com/en/docs/claude-code/plugins) for details.
+
+### Via pip/uv (Project-Level)
+
+For project-level installation:
+```bash
+pip install quaestor
+# or
+uv pip install quaestor
+```
+
+Then initialize in your project:
+```bash
+quaestor init
+```
 
 ## Quick Start
 
-### Using uvx (Recommended - No Installation Required)
 ```bash
-# Initialize Quaestor without installing it
-uvx quaestor init
+# Install the plugin
+claude plugins install quaestor
 
-# Team mode - shared configuration
-uvx quaestor init --mode team
+# In Claude Code, create a spec
+/plan "User authentication with JWT"
 
-# Update to latest version
-uvx quaestor update
+# Implement it
+/implement spec-auth-001
+
+# Ship it
+"Create a pull request for spec-auth-001"
 ```
 
-### Traditional Installation
-```bash
-# Install globally
-pip install quaestor
-
-# Initialize project
-quaestor init
-
-# Create specification (Skills handle it automatically!)
-/plan "User Authentication System"
-
-# Implement the specification
-/impl spec-auth-001
-
-# Check progress (Skills calculate automatically!)
-"What's the status of my specs?"
-```
-
-## Project Modes
-
-### Personal Mode (Default)
-Perfect for individual projects:
-```bash
-quaestor init
-```
-- Commands installed globally in `~/.claude/commands/`
-- Local settings in `.claude/settings.local.json` (not committed)
-- Project files in `.quaestor/` (gitignored)
-- CLAUDE.md with project-specific context
-
-### Team Mode
-For shared projects with consistent standards:
-```bash
-quaestor init --mode team
-```
-- Commands in `.claude/commands/` (committed, shared with team)
-- Settings in `.claude/settings.json` (committed)
-- Project files in `.quaestor/` (committed)
-- CLAUDE.md with team standards and context
-
-**Key Difference**: Personal mode keeps configuration local, Team mode shares everything with the team.
-
-## Core Commands
-
-- `/plan "Feature Name"` - Create specification with clear contracts (Spec Writing Skill)
-- `/impl spec-id` - Implement according to specification
-- `/research "topic"` - Analyze codebase patterns and architecture
-- `/review spec-id` - Validate implementation quality
-
-## Natural Language Commands (Agent Skills)
-
-Just talk to Claude naturally - Skills activate automatically:
-- "Create a spec for user authentication" - Creates specification
-- "What's the status of my specs?" - Shows progress dashboard
-- "Activate spec-feature-001" - Moves spec to active
-- "Complete spec-feature-001" - Moves spec to completed
-- "Create a pull request" - Generates and submits PR
+Skills activate automatically based on what you're doing. Just describe what you want in natural language:
+- "Show my active specs" → spec-driven-development skill
+- "Debug the login failure" → debugging-workflow skill
+- "Review this code for security issues" → security-audit skill
 
 ## How It Works
 
-### Specification-First Development
-1. **Plan with Contracts** - `/plan` creates detailed specifications with input/output contracts (Spec Writing Skill)
-2. **Automatic Lifecycle** - Agent Skills move specs through `draft/` → `active/` → `completed/` folders
-3. **Agent Orchestration** - 10 specialized agents collaborate on implementation
-4. **Progress Tracking** - Skills calculate progress from checkbox completion
-5. **Quality Assurance** - Built-in testing and review workflows
+### Specifications
+Create lightweight specifications that define:
+- What you're building (title and description)
+- Why you're building it (motivation)
+- What success looks like (acceptance criteria as checkboxes)
 
-### Example Workflow
-```bash
-# 1. Create specification (Spec Writing Skill activates)
-/plan "JWT Authentication API"
-# → Creates spec-auth-001.md in draft/ folder
-
-# 2. Activate and implement
-"Activate spec-auth-001"  # Spec Management Skill moves to active/
-/impl spec-auth-001       # Implementer agent builds feature
-
-# 3. Check progress (Spec Management Skill calculates)
-"What's the status?"
-# → "spec-auth-001: 80% complete (4/5 criteria)"
-
-# 4. Complete and create PR (Skills handle transitions)
-"Complete spec-auth-001"     # Moves to completed/
-"Create a pull request"      # PR Generation Skill creates GitHub PR
+Specs live in `.quaestor/specs/` and move through folders as they progress:
+```
+.quaestor/specs/
+├── draft/      # Planned work
+├── active/     # In progress (max 3)
+└── completed/  # Finished
 ```
 
-## Hook System
+### Skills
+Skills are auto-activating workflows that trigger based on context. You don't invoke them directly - just describe what you want:
+- Want to plan? Say "create a spec for X" → spec-driven-development activates
+- Want to implement? Use `/implement spec-id` → implementation-workflow activates
+- Want to ship? Say "create a PR" → review-and-ship activates
 
-Quaestor's hooks integrate seamlessly with Claude Code using `uvx`, requiring no local installation:
+### Example Session
+```bash
+# Create a spec
+/plan "Add rate limiting to API endpoints"
+# → spec-feature-042.md created in draft/
 
-- **Session Context Loader** - Automatically loads active specifications at session start
-- **Progress Tracker** - Updates specification progress when TODOs are completed (syncs with Skills)
-- **No Python Required** - Hooks run via `uvx` without installing Quaestor in your project
+# Start implementing
+/implement spec-feature-042
+# → Skills guide you through implementation with quality checks
 
-The hooks are configured in `.claude/settings.json` and work alongside Agent Skills for complete automation.
+# Check progress
+"What's the status of spec-feature-042?"
+# → "spec-feature-042: 3/5 criteria complete (60%)"
+
+# Ship it
+"Create a pull request for spec-feature-042"
+# → PR created with spec context included
+```
 
 ## Documentation
 

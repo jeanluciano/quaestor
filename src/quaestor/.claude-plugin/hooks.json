@@ -1,30 +1,4 @@
 {
   "description": "Quaestor plugin hooks for specification management",
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 -m quaestor.scripts.hook_session_context_loader",
-            "timeout": 30
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write",
-        "path_filter": ".*\\.quaestor/specs/.*\\.md$",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 -m quaestor.scripts.hook_spec_validator \"${file_path}\"",
-            "block_on_failure": true,
-            "timeout": 10
-          }
-        ]
-      }
-    ]
-  }
+  "hooks": {}
 }

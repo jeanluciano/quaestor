@@ -1,451 +1,97 @@
-# Language-Specific Quality Standards
+# Quality Standards - Language Dispatch
 
-This file describes quality gates, validation commands, and standards for different programming languages.
+This file provides an overview of quality standards and directs you to language-specific quality gates.
 
-## Quality Gate Overview
+## When to Load This File
 
-**All Implementations Must Pass:**
-- ✅ Linting (0 errors, warnings acceptable with justification)
+- User asks: "What are the quality standards?"
+- Need overview of validation approach
+- Choosing which language file to load
+
+## Quality Philosophy
+
+**All implementations must pass these gates:**
+- ✅ Linting (0 errors, warnings with justification)
 - ✅ Formatting (consistent code style)
 - ✅ Tests (all passing, appropriate coverage)
-- ✅ Type checking (if applicable to language)
-- ✅ Documentation (comprehensive and up-to-date)
+- ✅ Type checking (if language supports it)
+- ✅ Documentation (comprehensive and current)
 
----
+## Language-Specific Standards
 
-## Python Standards
+**Load the appropriate file based on detected project language:**
 
-### Validation Commands
+### Python Projects
+**When to load:** `pyproject.toml`, `requirements.txt`, or `*.py` files detected
 
+**Load:** `@languages/PYTHON.md`
+
+**Quick commands:**
 ```bash
-# Linting
-ruff check . --fix
-
-# Formatting
-ruff format .
-
-# Tests
-pytest -v
-
-# Type Checking
-mypy . --ignore-missing-imports
-
-# Coverage
-pytest --cov --cov-report=html
-
-# Full Validation Pipeline
 ruff check . && ruff format . && mypy . && pytest
 ```
 
-### Required Standards
-
-```yaml
-Code Style:
-  - Line length: 120 characters (configurable)
-  - Imports: Sorted with isort style
-  - Docstrings: Google or NumPy style
-  - Type hints: Everywhere (functions, methods, variables)
-
-Testing:
-  - Framework: pytest
-  - Coverage: >= 80%
-  - Test files: test_*.py or *_test.py
-  - Fixtures: Prefer pytest fixtures over setup/teardown
-  - Assertions: Use pytest assertions, not unittest
-
-Documentation:
-  - All modules: Docstring with purpose
-  - All classes: Docstring with attributes
-  - All functions: Docstring with args, returns, raises
-  - Complex logic: Inline comments for clarity
-
-Error Handling:
-  - Use specific exceptions (not bare except)
-  - Custom exceptions for domain errors
-  - Proper exception chaining
-  - Clean resource management (context managers)
-```
-
-### Python Quality Checklist
-
-**Before Declaring Complete:**
-- [ ] All functions have type hints
-- [ ] All functions have docstrings (Google/NumPy style)
-- [ ] No linting errors (`ruff check .`)
-- [ ] Code formatted consistently (`ruff format .`)
-- [ ] Type checking passes (`mypy .`)
-- [ ] All tests pass (`pytest`)
-- [ ] Test coverage >= 80%
-- [ ] No bare except clauses
-- [ ] Proper exception handling
-- [ ] Resources properly managed
-
 ---
 
-## Rust Standards
+### Rust Projects
+**When to load:** `Cargo.toml` or `*.rs` files detected
 
-### Validation Commands
+**Load:** `@languages/RUST.md`
 
+**Quick commands:**
 ```bash
-# Linting
-cargo clippy -- -D warnings
-
-# Formatting
-cargo fmt
-
-# Tests
-cargo test
-
-# Type Checking (implicit)
-cargo check
-
-# Documentation
-cargo doc --no-deps --open
-
-# Full Validation Pipeline
 cargo clippy -- -D warnings && cargo fmt --check && cargo test
 ```
 
-### Required Standards
-
-```yaml
-Code Style:
-  - Follow: Rust API guidelines
-  - Formatting: rustfmt (automatic)
-  - Naming: snake_case for functions, PascalCase for types
-  - Modules: Clear separation of concerns
-
-Testing:
-  - Framework: Built-in test framework
-  - Coverage: >= 75%
-  - Unit tests: In same file with #[cfg(test)]
-  - Integration tests: In tests/ directory
-  - Doc tests: In documentation examples
-
-Documentation:
-  - All public items: /// documentation
-  - Modules: //! module-level docs
-  - Examples: Working examples in docs
-  - Safety: Document unsafe blocks thoroughly
-
-Error Handling:
-  - Use Result<T, E> for fallible operations
-  - Use Option<T> for optional values
-  - No .unwrap() in production code
-  - Custom error types with thiserror or anyhow
-  - Proper error context with context/wrap_err
-```
-
-### Rust Quality Checklist
-
-**Before Declaring Complete:**
-- [ ] No clippy warnings (`cargo clippy -- -D warnings`)
-- [ ] Code formatted (`cargo fmt --check`)
-- [ ] All tests pass (`cargo test`)
-- [ ] No unwrap() calls in production code
-- [ ] Result<T, E> used for all fallible operations
-- [ ] All public items documented
-- [ ] Examples in documentation tested
-- [ ] Unsafe blocks documented with safety comments
-- [ ] Proper error types defined
-- [ ] Resource cleanup handled (Drop trait if needed)
-
 ---
 
-## JavaScript/TypeScript Standards
+### JavaScript/TypeScript Projects
+**When to load:** `package.json`, `tsconfig.json`, or `*.js`/`*.ts` files detected
 
-### Validation Commands
+**Load:** `@languages/JAVASCRIPT.md`
 
-**JavaScript:**
+**Quick commands:**
 ```bash
-# Linting
-npx eslint . --fix
+# TypeScript
+npx eslint . && npx prettier --check . && npx tsc --noEmit && npm test
 
-# Formatting
-npx prettier --write .
-
-# Tests
-npm test
-
-# Full Validation Pipeline
+# JavaScript
 npx eslint . && npx prettier --check . && npm test
 ```
 
-**TypeScript:**
-```bash
-# Linting
-npx eslint . --fix
-
-# Formatting
-npx prettier --write .
-
-# Type Checking
-npx tsc --noEmit
-
-# Tests
-npm test
-
-# Full Validation Pipeline
-npx eslint . && npx prettier --check . && npx tsc --noEmit && npm test
-```
-
-### Required Standards
-
-```yaml
-Code Style:
-  - Line length: 100-120 characters
-  - Semicolons: Consistent (prefer with)
-  - Quotes: Single or double (consistent)
-  - Trailing commas: Always in multiline
-
-Testing:
-  - Framework: Jest, Mocha, or Vitest
-  - Coverage: >= 80%
-  - Test files: *.test.js, *.spec.js
-  - Mocking: Prefer dependency injection
-  - Async: Use async/await, not callbacks
-
-Documentation:
-  - JSDoc for all exported functions
-  - README for packages
-  - Type definitions (TypeScript or JSDoc)
-  - API documentation for libraries
-
-TypeScript Specific:
-  - Strict mode enabled
-  - No 'any' types (use 'unknown' if needed)
-  - Proper interface/type definitions
-  - Generic types where appropriate
-  - Discriminated unions for state
-
-Error Handling:
-  - Try/catch for async operations
-  - Error boundaries (React)
-  - Proper promise handling
-  - No unhandled promise rejections
-```
-
-### JavaScript/TypeScript Quality Checklist
-
-**Before Declaring Complete:**
-- [ ] No linting errors (`eslint .`)
-- [ ] Code formatted (`prettier --check .`)
-- [ ] Type checking passes (TS: `tsc --noEmit`)
-- [ ] All tests pass (`npm test`)
-- [ ] Test coverage >= 80%
-- [ ] No 'any' types (TypeScript)
-- [ ] All exported functions have JSDoc
-- [ ] Async operations properly handled
-- [ ] Error boundaries implemented (React)
-- [ ] No console.log in production code
-
 ---
 
-## Go Standards
+### Go Projects
+**When to load:** `go.mod` or `*.go` files detected
 
-### Validation Commands
+**Load:** `@languages/GO.md`
 
+**Quick commands:**
 ```bash
-# Linting
-golangci-lint run
-
-# Formatting
-gofmt -w .
-# OR
-go fmt ./...
-
-# Tests
-go test ./...
-
-# Coverage
-go test -cover ./...
-
-# Race Detection
-go test -race ./...
-
-# Full Validation Pipeline
 gofmt -w . && golangci-lint run && go test ./...
 ```
 
-### Required Standards
+---
 
-```yaml
-Code Style:
-  - Follow: Effective Go guidelines
-  - Formatting: gofmt (automatic)
-  - Naming: MixedCaps, not snake_case
-  - Package names: Short, concise, lowercase
+### Other Languages
+**When to load:** No specific language detected, or unsupported language (PHP, Ruby, C++, C#, Java, etc.)
 
-Testing:
-  - Framework: Built-in testing package
-  - Coverage: >= 75%
-  - Test files: *_test.go
-  - Table-driven tests: Prefer for multiple cases
-  - Benchmarks: Include for performance-critical code
+**Load:** `@languages/GENERIC.md`
 
-Documentation:
-  - Package: Package-level doc comment
-  - Exported: All exported items documented
-  - Examples: Provide examples for complex APIs
-  - README: Clear usage instructions
-
-Error Handling:
-  - Return errors, don't panic
-  - Use errors.New or fmt.Errorf
-  - Wrap errors with context (errors.Wrap)
-  - Check all errors explicitly
-  - No ignored errors (use _ = explicitly)
-```
-
-### Go Quality Checklist
-
-**Before Declaring Complete:**
-- [ ] Code formatted (`gofmt` or `go fmt`)
-- [ ] No linting issues (`golangci-lint run`)
-- [ ] All tests pass (`go test ./...`)
-- [ ] No race conditions (`go test -race ./...`)
-- [ ] Test coverage >= 75%
-- [ ] All exported items documented
-- [ ] All errors checked explicitly
-- [ ] No panics in library code
-- [ ] Proper error wrapping with context
-- [ ] Resource cleanup with defer
+**Provides:** General quality principles applicable across languages
 
 ---
 
-## Generic Language Standards
+## Progressive Loading Pattern
 
-**For languages not specifically covered above, apply these general standards:**
+**Don't load all language files!** Only load the relevant one:
 
-### General Quality Gates
+1. **Detect project language** (from file extensions, config files)
+2. **Load specific standards** for that language only
+3. **Apply language-specific validation** commands
+4. **Fallback to generic** if language not covered
 
-```yaml
-Syntax & Structure:
-  - Valid syntax (runs without parse errors)
-  - Consistent indentation (2 or 4 spaces)
-  - Clear variable naming
-  - Functions <= 50 lines (guideline)
-  - Nesting depth <= 3 levels
-
-Testing:
-  - Unit tests for core functionality
-  - Integration tests for workflows
-  - Edge case coverage
-  - Error path testing
-  - Reasonable coverage (>= 70%)
-
-Documentation:
-  - README with setup instructions
-  - Function/method documentation
-  - Complex algorithms explained
-  - API documentation (if library)
-  - Usage examples
-
-Error Handling:
-  - Proper exception/error handling
-  - No swallowed errors
-  - Meaningful error messages
-  - Graceful failure modes
-  - Resource cleanup
-
-Code Quality:
-  - No code duplication
-  - Clear separation of concerns
-  - Meaningful names
-  - Single responsibility principle
-  - No magic numbers/strings
-```
-
-### Generic Quality Checklist
-
-**Before Declaring Complete:**
-- [ ] Code runs without errors
-- [ ] All tests pass
-- [ ] Documentation complete
-- [ ] Error handling in place
-- [ ] No obvious code smells
-- [ ] Functions reasonably sized
-- [ ] Clear variable names
-- [ ] No TODO comments left
-- [ ] Resources properly managed
-- [ ] Code reviewed for clarity
-
----
-
-## Cross-Language Quality Principles
-
-### SOLID Principles
-
-**Apply regardless of language:**
-
-```yaml
-Single Responsibility:
-  - Each class/module has one reason to change
-  - Clear, focused purpose
-  - Avoid "god objects"
-
-Open/Closed:
-  - Open for extension, closed for modification
-  - Use interfaces/traits for extensibility
-  - Avoid modifying working code
-
-Liskov Substitution:
-  - Subtypes must be substitutable for base types
-  - Honor contracts in inheritance
-  - Avoid breaking parent behavior
-
-Interface Segregation:
-  - Many specific interfaces > one general interface
-  - Clients shouldn't depend on unused methods
-  - Keep interfaces focused
-
-Dependency Inversion:
-  - Depend on abstractions, not concretions
-  - High-level modules independent of low-level
-  - Use dependency injection
-```
-
-### Code Smell Detection
-
-**Watch for these issues:**
-
-```yaml
-Long Methods:
-  - Threshold: > 50 lines
-  - Action: Extract smaller methods
-  - Tool: Refactorer agent
-
-Deep Nesting:
-  - Threshold: > 3 levels
-  - Action: Flatten with early returns
-  - Tool: Refactorer agent
-
-Duplicate Code:
-  - Detection: Similar code blocks
-  - Action: Extract to shared function
-  - Tool: Refactorer agent
-
-Large Classes:
-  - Threshold: > 300 lines
-  - Action: Split responsibilities
-  - Tool: Architect + Refactorer agents
-
-Magic Numbers:
-  - Detection: Unexplained constants
-  - Action: Named constants
-  - Tool: Implementer agent
-
-Poor Naming:
-  - Detection: Unclear variable names
-  - Action: Rename to be descriptive
-  - Tool: Refactorer agent
-```
-
----
-
-## Quality Enforcement
-
-### Continuous Validation
+## Continuous Validation
 
 **Every 3 Edits:**
 ```yaml
@@ -459,9 +105,9 @@ Checkpoint:
   5. Continue implementation
 ```
 
-### Pre-Completion Validation
+## Pre-Completion Validation
 
-**Before Declaring Complete:**
+**Before marking work complete:**
 ```yaml
 Full Quality Suite:
   1. Run full test suite
@@ -477,19 +123,78 @@ Full Quality Suite:
     - Only complete when all pass
 ```
 
-### Post-Implementation Review
+## Quality Enforcement Strategy
 
-**After Implementation Complete:**
 ```yaml
-Final Review:
-  - Code review checklist
-  - Security review (if applicable)
-  - Performance review (if concerns)
-  - Documentation completeness
-  - Specification alignment
-  - Ready for PR review
+Detect Language:
+  - Check for language-specific files (pyproject.toml, Cargo.toml, etc.)
+  - Identify from file extensions
+  - User can override if auto-detection fails
+
+Load Standards:
+  - Load @languages/PYTHON.md for Python
+  - Load @languages/RUST.md for Rust
+  - Load @languages/JAVASCRIPT.md for JS/TS
+  - Load @languages/GO.md for Go
+  - Load @languages/GENERIC.md for others
+
+Apply Validation:
+  - Run language-specific commands
+  - Check against language-specific standards
+  - Enforce coverage requirements
+  - Validate documentation completeness
+
+Report Results:
+  - Clear pass/fail for each gate
+  - Specific error messages
+  - Actionable fix suggestions
+```
+
+## When Standards Apply
+
+**During Implementation:**
+- After every 3 edits (checkpoint validation)
+- Before declaring task complete (full validation)
+- When explicitly requested by user
+
+**Quality Gates Must Pass:**
+- To move from implementation → review phase
+- To mark specification acceptance criteria complete
+- Before creating pull request
+
+## Cross-Language Principles
+
+**These apply regardless of language:**
+
+```yaml
+SOLID Principles:
+  - Single Responsibility
+  - Open/Closed
+  - Liskov Substitution
+  - Interface Segregation
+  - Dependency Inversion
+
+Code Quality:
+  - No duplication
+  - Clear naming
+  - Reasonable function size (<= 50 lines guideline)
+  - Low nesting depth (<= 3 levels)
+  - Proper error handling
+
+Testing:
+  - Unit tests for business logic
+  - Integration tests for workflows
+  - Edge case coverage
+  - Error path coverage
+  - Reasonable coverage targets
+
+Documentation:
+  - README for setup
+  - API documentation
+  - Complex logic explained
+  - Usage examples
 ```
 
 ---
 
-*Comprehensive quality standards for production-ready implementation across multiple languages*
+*Load language-specific files for detailed standards - avoid loading all language contexts unnecessarily*

@@ -1,6 +1,6 @@
 ---
 name: Implementation Workflow
-description: Execute production-quality implementation with specification-driven development. Use when implementing features, fixing bugs, or building new functionality.
+description: Execute specification-driven implementation with automatic quality gates, multi-agent orchestration, and progress tracking. Use when building features from specs, fixing bugs with test coverage, or refactoring with validation.
 allowed-tools: [Read, Write, Edit, MultiEdit, Bash, Glob, Grep, TodoWrite, Task]
 ---
 
@@ -73,10 +73,11 @@ Execute → Validate → Fix (if ❌) → Continue
 
 ### Phase 4: Validation & Completion ✅
 
-**Language-Specific Standards:**
-- **Python:** `ruff check . && ruff format . && pytest`
-- **Rust:** `cargo clippy -- -D warnings && cargo fmt && cargo test`
-- **JS/TS:** `npx eslint . --fix && npx prettier --write . && npm test`
+**Quality Validation:**
+1. Detect project language (Python, Rust, JS/TS, Go, or Generic)
+2. Load language-specific standards from @QUALITY.md
+3. Run validation pipeline for detected language
+4. Fix any issues and re-validate
 
 **Completion Criteria:**
 - ✅ All tests passing
@@ -85,7 +86,12 @@ Execute → Validate → Fix (if ❌) → Continue
 - ✅ Documentation complete
 - ✅ Specification status updated
 
-**See @QUALITY.md for language-specific standards**
+**See @QUALITY.md for dispatch to language-specific standards:**
+- `@languages/PYTHON.md` - Python projects
+- `@languages/RUST.md` - Rust projects
+- `@languages/JAVASCRIPT.md` - JS/TS projects
+- `@languages/GO.md` - Go projects
+- `@languages/GENERIC.md` - Other languages
 
 ## Auto-Intelligence
 

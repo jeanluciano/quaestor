@@ -1,70 +1,80 @@
 # Quaestor
 
-**Context management for AI-assisted development**
+**A minimal Claude Code plugin for specification-driven development**
 
-Quaestor is a powerful framework that enhances AI-assisted development by providing structured context management, specification-driven workflows, and intelligent automation hooks. It transforms how you work with AI coding assistants like Claude Code.
+Quaestor provides Skills and slash commands for structured development workflows. Write lightweight specs, implement with context, ship with confidence.
 
-## Key Features
+**Design Principles:**
+- **Zen** - Minimal surface area, maximum utility
+- **Engineer as Driver** - You make decisions, Quaestor provides structure
+- **Light Spec-Driven** - Just enough specification to stay aligned
 
-### 🤖 Intelligent Agent System
-- Specialized AI agents for different development phases
-- Context-aware agent suggestions based on project state
-- Seamless integration with Claude Code
+## What's Included
 
-### 🔄 Smart Automation Hooks
-- Enforce specification-driven workflows
-- Automatic progress tracking and specification updates
-- Quality gates and compliance checking
+### 7 Skills (Auto-Activating)
+- `spec-driven-development` - Create and manage specifications
+- `implementation-workflow` - Implement features with quality gates
+- `review-and-ship` - Code review and PR generation
+- `debugging-workflow` - Systematic bug investigation
+- `security-audit` - Security analysis and vulnerability detection
+- `performance-optimization` - Performance profiling and optimization
+- `project-initialization` - Setup Quaestor in any project
 
-### 🎯 Specification-Driven Development
-- Create detailed specifications with contracts, acceptance criteria, and test scenarios
-- Automatic branch-to-specification linking
-- Progress tracking through specification status
+### 3 Slash Commands
+- `/plan` - Create specifications
+- `/implement` - Implement specs with tracking
+- `/research` - Explore codebase patterns
 
-### 📊 Progress Management
-- Visual progress dashboards
-- Progress tracking through specification completion
-- Memory management for project context
+### Spec Lifecycle
+- Folder-based state: `draft/` → `active/` → `completed/`
+- Automatic progress tracking via checkboxes
+- Max 3 active specs (enforced)
 
 ## Quick Start
 
 ```bash
-# Install Quaestor
-pip install quaestor
+# Add the marketplace
+/plugin marketplace add jeanluciano/quaestor
 
-# Initialize in your project
-quaestor init
+# Install the plugin
+/plugin install quaestor:quaestor
 
-# Create your first specification
-/plan --spec "User Authentication System"
+# In Claude Code, create a spec
+/plan "User authentication with JWT"
 
-# Implement according to the specification
-/impl "implement user login"
+# Implement it
+/implement spec-auth-001
+
+# Ship it
+"Create a pull request for spec-auth-001"
 ```
 
-## Architecture
+Skills activate automatically based on what you're doing:
+- "Show my active specs" → spec-driven-development skill
+- "Debug the login failure" → debugging-workflow skill
+- "Review this code for security issues" → security-audit skill
 
-Quaestor consists of several integrated components:
+## How It Works
 
-- **Core Specification System**: Manages specifications as first-class entities
-- **Agent Framework**: Provides specialized AI agents for different workflows
-- **Hook System**: Enforces workflows and tracks progress automatically
-- **Command Interface**: Slash commands for Claude Code integration
-- **Memory Management**: Maintains project context and progress
+### Specifications
+Create lightweight specifications that define:
+- What you're building (title and description)
+- Why you're building it (motivation)
+- What success looks like (acceptance criteria as checkboxes)
 
-## Why Quaestor?
+Specs live in `.quaestor/specs/` and move through folders as they progress:
+```
+.quaestor/specs/
+├── draft/      # Planned work
+├── active/     # In progress (max 3)
+└── completed/  # Finished
+```
 
-Traditional AI-assisted development often lacks structure, leading to:
-- Unclear requirements and scope creep
-- Inconsistent implementation patterns
-- Poor progress tracking
-- Difficulty maintaining context across sessions
-
-Quaestor solves these problems by providing:
-- **Clear Contracts**: Specifications define exact inputs, outputs, and behavior
-- **Systematic Workflows**: Enforced development processes
-- **Automatic Tracking**: Progress tracked without manual intervention
-- **Context Preservation**: Project memory maintained across sessions
+### Skills
+Skills are auto-activating workflows that trigger based on context. You don't invoke them directly - just describe what you want:
+- Want to plan? Say "create a spec for X" → spec-driven-development activates
+- Want to implement? Use `/implement spec-id` → implementation-workflow activates
+- Want to ship? Say "create a PR" → review-and-ship activates
 
 ## Getting Started
 

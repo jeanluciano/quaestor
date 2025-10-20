@@ -1,5 +1,5 @@
 site_name: Quaestor
-site_description: Context management for AI-assisted development
+site_description: A minimal Claude Code plugin for specification-driven development
 site_author: Jean Luciano
 site_url: https://jeanluciano.github.io/quaestor
 
@@ -59,35 +59,28 @@ nav:
     - Installation: getting-started/installation.md
     - Quick Start: getting-started/quickstart.md
     - Configuration: getting-started/configuration.md
+  - Skills:
+    - Overview: skills/overview.md
+  - Commands:
+    - /plan: commands/plan.md
+    - /implement: commands/impl.md
+    - /research: commands/research.md
   - Specification-Driven Development:
     - Overview: specs/overview.md
     - Creating Specifications: specs/creating.md
     - Implementation Workflow: specs/workflow.md
-  - Commands:
-    - /plan: commands/plan.md
-    - /impl: commands/impl.md
-    - /research: commands/research.md
-    - /review: commands/review.md
-    - /debug: commands/debug.md
-    - /project-init: commands/project-init.md
-  - Agents:
+  - Sub-Agents:
     - Overview: agents/overview.md
-    - Planner Agent: agents/planner.md
-    - Architect Agent: agents/architect.md
-    - Implementer Agent: agents/implementer.md
-    - QA Agent: agents/qa.md
-    - Researcher Agent: agents/researcher.md
-    - Security Agent: agents/security.md
-    - Reviewer Agent: agents/reviewer.md
-    - Debugger Agent: agents/debugger.md
-    - Refactorer Agent: agents/refactorer.md
-    - Compliance Enforcer: agents/compliance-enforcer.md
-    - Spec Manager: agents/spec-manager.md
+    - Planner: agents/planner.md
+    - Architect: agents/architect.md
+    - Implementer: agents/implementer.md
+    - QA: agents/qa.md
+    - Researcher: agents/researcher.md
+    - Security: agents/security.md
+    - Reviewer: agents/reviewer.md
+    - Debugger: agents/debugger.md
+    - Refactorer: agents/refactorer.md
     - Workflow Coordinator: agents/workflow-coordinator.md
-  - Hooks & Automation:
-    - Overview: hooks/overview.md
-    - Specification Tracking: hooks/spec-tracking.md
-    - Session Context Loader: hooks/session-context-loader.md
 
 extra:
   social:

@@ -2,36 +2,49 @@
 
 ## Requirements
 
-- Claude Code (for AI-assisted development)
+- Claude Code
 - Git (for version control)
 
-That's it! No Python installation needed.
+## Installation Methods
 
-## Quick Start (Recommended)
+### As a Claude Code Plugin (Recommended)
 
-**Quaestor v1.0 uses Agent Skills** - zero installation, just add the plugin!
+First, add the Quaestor marketplace:
+```bash
+/plugin marketplace add jeanluciano/quaestor
+```
 
-1. Install the Quaestor plugin from Claude Code marketplace
-2. In Claude Code, run: `/quaestor:project-init`
-3. Start planning: `/quaestor:plan "User Authentication"`
+Then install the plugin:
+```bash
+/plugin install quaestor:quaestor
+```
+
+See [Claude Code plugins documentation](https://docs.claude.com/en/docs/claude-code/plugins) for details.
 
 **What you get:**
-- ✅ **Agent Skills** - Auto-activating capabilities for spec management
-- ✅ **No CLI needed** - Everything works through Claude Code
-- ✅ **No dependencies** - Pure markdown specifications
-- ✅ **Zero config** - Just describe features, get specs
+- 7 auto-activating Skills
+- 3 slash commands (/plan, /implement, /research)
+- Folder-based spec management
+- No Python installation required
 
-## Traditional Installation
+### Via pip/uv (Project-Level)
 
-Install globally with pip:
+For project-level installation:
 
 ```bash
 pip install quaestor
+# or
+uv pip install quaestor
 ```
 
-## Install from Source
+Then initialize in your project:
+```bash
+quaestor init
+```
 
-For development or latest features:
+### Install from Source
+
+For development:
 
 ```bash
 git clone https://github.com/jeanluciano/quaestor.git
@@ -45,40 +58,25 @@ pip install -e .
 quaestor --version
 ```
 
-## Claude Code Integration
+## What Gets Created
 
-Quaestor is designed to work seamlessly with Claude Code:
+When you initialize Quaestor (via plugin or `quaestor init`), it creates:
 
-1. Install the Quaestor plugin from the Claude Code marketplace
-2. In Claude Code, run: `/quaestor:project-init` to set up your project
-3. All slash commands are automatically available via the plugin
-
-The plugin provides:
-- **Commands**: `/quaestor:plan`, `/quaestor:impl`, `/quaestor:research`, `/quaestor:review`, `/quaestor:debug`, `/quaestor:project-init`
-- **Agents**: Specialized agents for planning, implementation, debugging, etc.
-- **Hooks**: Automated context loading and specification tracking
-
-**No CLI commands needed!** Everything works through Claude Code slash commands.
-
-## Optional Dependencies
-
-For enhanced functionality, you may want to install:
-
-```bash
-# For GitHub integration
-pip install gh
-
-# For advanced YAML processing
-pip install ruamel.yaml
-
-# For rich console output
-pip install rich
 ```
+your-project/
+├── .quaestor/
+│   └── specs/            # Specification directories
+│       ├── draft/        # Planned work
+│       ├── active/       # In progress (max 3)
+│       └── completed/    # Finished work
+```
+
+The plugin provides Skills and slash commands - no additional configuration needed.
 
 ## Troubleshooting
 
 ### Permission Issues
-If you encounter permission issues during installation:
+If you encounter permission issues during pip installation:
 
 ```bash
 pip install --user quaestor
@@ -91,36 +89,6 @@ Make sure your Python scripts directory is in your PATH:
 # Add to your shell profile (.bashrc, .zshrc, etc.)
 export PATH="$HOME/.local/bin:$PATH"
 ```
-
-### Claude Code Integration Issues
-If slash commands don't work:
-
-1. Ensure you're in a Quaestor-initialized project
-2. Check that `.quaestor/` directory exists
-3. Verify Claude Code is properly configured
-
-## What Gets Created
-
-When you run `/quaestor:project-init` in Claude Code, it creates:
-
-```
-your-project/
-├── .quaestor/
-│   ├── AGENT.md          # AI development context and rules
-│   ├── ARCHITECTURE.md   # System design documentation
-│   ├── RULES.md          # Language-specific guidelines (auto-generated!)
-│   └── specs/            # Specification directories
-│       ├── draft/        # Draft specifications
-│       ├── active/       # Active specifications
-│       ├── completed/    # Completed specifications
-│       └── archived/     # Archived specifications
-└── CLAUDE.md             # Main entry point with Quaestor config
-```
-
-**Key Features:**
-- ✅ **RULES.md** auto-generated with your detected language commands (pytest, ruff, etc.)
-- ✅ **Edit `.quaestor/RULES.md` directly** to customize (no config files needed!)
-- ✅ Commands, agents, and hooks provided by the Claude Code plugin
 
 ## Next Steps
 

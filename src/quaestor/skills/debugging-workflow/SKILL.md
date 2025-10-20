@@ -1,6 +1,6 @@
 ---
 name: Debugging Workflow
-description: Systematic debugging approaches, troubleshooting techniques, and error analysis. Use when investigating bugs, analyzing errors, or troubleshooting system issues.
+description: Systematically debug issues with reproduction steps, error analysis, hypothesis testing, and root cause fixes. Use when investigating bugs, analyzing production incidents, or troubleshooting unexpected behavior.
 ---
 
 # Debugging Workflow

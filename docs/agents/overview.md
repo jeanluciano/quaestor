@@ -1,156 +1,128 @@
 # Agents Overview
 
-Quaestor's agent system provides specialized AI assistants that can be invoked through Claude Code to handle specific aspects of software development. Each agent has deep expertise in its domain and can work independently or collaborate with other agents.
+Quaestor uses specialized sub-agents internally within Skills to handle specific development tasks. These agents are not invoked directly - instead, Skills automatically delegate to the appropriate agents based on the task at hand.
 
-## What are Agents?
+## What are Sub-Agents?
 
-Agents are specialized AI personalities with:
+Sub-agents are specialized AI assistants with:
 - **Domain Expertise**: Deep knowledge in specific areas (architecture, testing, security, etc.)
 - **Focused Tools**: Access to only the tools they need
 - **Quality Standards**: Specific criteria for their domain
-- **Collaboration Ability**: Can work with other agents
+- **Automatic Invocation**: Called by Skills, not by users directly
 
-## Core Agent Categories
+## Available Sub-Agents
 
-### 🏗️ Development Agents
+Quaestor includes 10 specialized sub-agents used internally by Skills:
 
-#### [Architect](architect.md)
-System design and architecture specialist
+### 🏗️ Development Sub-Agents
+
+**architect** - System design and architecture specialist
 - Design patterns and system architecture
 - API design and contracts
 - Technology selection and trade-offs
 - Component boundaries and data flow
 
-#### [Implementer](implementer.md)
-Feature development and code writing specialist
+**implementer** - Feature development and code writing specialist
 - Writing production-quality code
 - Following established patterns
 - Implementing specifications
 - Creating new components
 
-#### [Refactorer](refactorer.md)
-Code improvement and refactoring specialist
+**refactorer** - Code improvement and refactoring specialist
 - Identifying code smells
 - Applying design patterns
 - Performance optimization
 - Safe refactoring techniques
 
-### 🧪 Quality Assurance Agents
+### 🧪 Quality Assurance Sub-Agents
 
-#### [QA](qa.md)
-Testing and quality assurance specialist
+**qa** - Testing and quality assurance specialist
 - Comprehensive test design
 - Coverage analysis
 - Edge case identification
 - Test framework expertise
 
-#### Debugger
-Expert debugging specialist
+**debugger** - Expert debugging specialist
 - Root cause analysis
 - Performance profiling
 - Systematic debugging
 - Bug fix validation
 
-#### Reviewer
-Code review specialist
+**reviewer** - Code review specialist
 - Quality assessment
 - Security review
 - Best practices enforcement
 - Architectural consistency
 
-### 🔍 Research & Analysis Agents
+### 🔍 Research & Analysis Sub-Agents
 
-#### [Researcher](researcher.md)
-Enhanced codebase analysis specialist (consolidated with former Explorer capabilities)
+**researcher** - Codebase analysis specialist
 - Pattern analysis and system mapping
 - Dependency mapping and hidden relationships
 - Usage discovery and impact assessment
 - Architecture visualization and documentation generation
 
-### 🛡️ Security & Compliance
+### 🛡️ Security Sub-Agent
 
-#### Security
-Security analysis specialist
+**security** - Security analysis specialist
 - Vulnerability detection
 - Threat modeling
 - Secure coding practices
 - Security pattern implementation
 
-#### Compliance Enforcer
-Quaestor compliance specialist
-- Rule enforcement
-- Automated remediation
-- Progress tracking
-- Documentation standards
+### 📊 Planning & Coordination Sub-Agents
 
-### 📊 Planning & Coordination
-
-#### [Planner](planner.md)
-Specification design specialist
+**planner** - Specification design specialist
 - Creating specifications
 - Use case analysis
 - Acceptance criteria
 - Project planning
 
-#### Progress Tracker
-Progress tracking specialist
-- Specification lifecycle
-- PR creation
-- Progress reporting
-- Phase completion
-
-#### Workflow Coordinator
-Workflow orchestration specialist
+**workflow-coordinator** - Workflow orchestration specialist
 - Phase transitions
 - Agent coordination
 - Context preservation
 - State management
 
-## Agent Invocation
+## How Sub-Agents Work
 
-### Using Claude Code
+Sub-agents are invoked internally by Skills using the Task tool. You don't call them directly - Skills handle all agent orchestration.
 
-Agents are invoked through the Task tool:
+### Example: implementation-workflow Skill
 
-```python
-# Direct invocation
-Task(
-    subagent_type="architect",
-    description="Design authentication system",
-    prompt="Design a JWT-based authentication system with refresh tokens..."
-)
-```
+When you use `/implement`, the implementation-workflow skill automatically:
 
-### Automatic Selection
+1. Uses **researcher** to analyze existing code patterns
+2. Uses **architect** to design the technical approach
+3. Uses **implementer** to write production code
+4. Uses **qa** to create comprehensive tests
+5. Uses **reviewer** to validate code quality
 
-Commands like `/impl` automatically select appropriate agents:
+### Example: debugging-workflow Skill
 
-```python
-/impl "add user authentication"
-# Automatically uses: architect → implementer → qa
-```
+When you say "debug the login issue", the debugging-workflow skill:
+
+1. Uses **debugger** to perform root cause analysis
+2. Uses **implementer** to fix the issue
+3. Uses **qa** to create regression tests
 
 ## Agent Collaboration Patterns
 
-### Sequential Execution
-Agents work in order, passing context:
+Skills orchestrate agents in various patterns:
 
+**Sequential Execution** - Agents work in order, passing context:
 ```
 researcher → architect → implementer → qa → reviewer
 ```
 
-### Parallel Execution
-Independent agents work simultaneously:
-
+**Parallel Execution** - Independent agents work simultaneously:
 ```
 ┌─ researcher: analyze patterns
-├─ security: scan vulnerabilities  
+├─ security: scan vulnerabilities
 └─ architect: design system
 ```
 
-### Conditional Execution
-Agents triggered based on findings:
-
+**Conditional Execution** - Agents triggered based on findings:
 ```
 if (complexity > 0.7):
     use architect
@@ -158,64 +130,22 @@ if (security_keywords):
     use security
 ```
 
-## Best Practices
+## Sub-Agent Specializations
 
-### 1. Let Commands Choose Agents
-Commands like `/impl` and `/review` know which agents to use:
-```bash
-/impl "complex feature"  # Automatically uses multiple agents
-```
-
-### 2. Provide Clear Context
-Give agents specific, detailed instructions:
-```python
-# Good
-Task(subagent_type="architect", 
-     prompt="Design REST API for user management with JWT auth, 
-             considering scalability for 100k users")
-
-# Too vague
-Task(subagent_type="architect", 
-     prompt="Design API")
-```
-
-### 3. Use Agent Strengths
-Each agent excels at specific tasks:
-- **Architect**: System design, not implementation details
-- **Implementer**: Writing code, not designing systems
-- **QA**: Testing strategies, not fixing bugs
-
-### 4. Chain Agents Appropriately
-Common successful patterns:
-- **Feature Development**: architect → implementer → qa
-- **Bug Fixing**: debugger → implementer → qa
-- **Refactoring**: researcher → refactorer → qa
-- **Security Review**: security → implementer (for fixes)
-
-## Agent Configuration
-
-Agents respect your project settings:
-
-```json
-{
-  "agent_preferences": {
-    "preferred_agents": ["implementer", "qa"],
-    "complexity_threshold": 0.5,
-    "parallel_execution": true
-  }
-}
-```
-
-## Performance Considerations
-
-- **Timeout**: Default 30 seconds per agent
-- **Parallel Limit**: Max 4 agents simultaneously
-- **Context Size**: Agents share context efficiently
-- **Fallback**: Graceful degradation on failures
+Each sub-agent excels at specific tasks:
+- **architect**: System design, not implementation details
+- **implementer**: Writing code, not designing systems
+- **qa**: Testing strategies, not fixing bugs
+- **debugger**: Root cause analysis, not feature development
+- **reviewer**: Code quality assessment, not implementation
+- **researcher**: Codebase analysis, not code writing
+- **security**: Vulnerability detection, not general review
+- **planner**: Specification creation, not implementation
+- **refactorer**: Code improvement, not new features
+- **workflow-coordinator**: Process orchestration, not technical work
 
 ## Next Steps
 
-- Explore individual [agent documentation](planner.md)
-- Learn about [Commands](../commands/plan.md) that use agents
-- Understand [Hooks](../hooks/overview.md) that coordinate agents
+- Learn about [Skills](../skills/overview.md) that orchestrate agents
+- Explore [Commands](../commands/plan.md) that activate Skills
 - Read about [Specification-Driven Development](../specs/overview.md)

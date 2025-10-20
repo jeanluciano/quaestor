@@ -1,6 +1,6 @@
 ---
 name: Security Audit
-description: Comprehensive security patterns, vulnerability scanning, and input validation. Use when analyzing security implications, implementing authentication/authorization, or reviewing code for security issues.
+description: Audit security with vulnerability scanning, input validation checks, and auth/authz review against OWASP Top 10. Use when implementing authentication, reviewing security-sensitive code, or conducting security audits.
 ---
 
 # Security Audit

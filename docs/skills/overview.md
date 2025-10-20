@@ -1,68 +1,116 @@
-# Agent Skills Overview
+# Skills Overview
 
-Quaestor v1.0 introduces **Agent Skills** - auto-activating capabilities that handle specification management without manual invocation.
+Quaestor provides **Skills** - auto-activating workflows that handle specific development tasks. Skills trigger automatically based on context and orchestrate sub-agents internally.
 
-## What are Agent Skills?
+## What are Skills?
 
-Agent Skills are specialized capabilities that Claude automatically uses based on your natural language requests. You don't need to know they exist - they just work!
+Skills are specialized workflows that:
+- Activate automatically based on keywords and context
+- Orchestrate multiple sub-agents internally
+- Provide focused capabilities for specific tasks
+- Work through natural language - no manual invocation needed
 
-### Traditional Approach (Pre-v1.0)
-```
-User: "Create a spec for user auth"
-You: Manually invoke planner agent → speccer agent → save file
-```
+## Available Skills
 
-### Skills Approach (v1.0+)
-```
-User: "Create a spec for user auth"
-Claude: ✅ Spec Writing Skill activates automatically
-Result: Spec created in .quaestor/specs/draft/
-```
+Quaestor includes 7 Skills:
 
-## Quaestor's Skills
-
-### 1. Spec Writing Skill
-**Auto-activates when:** User describes features/fixes, mentions "create spec", "plan feature"
+### 1. spec-driven-development
+**Activates when:** Creating specs, checking status, managing lifecycle
 
 **What it does:**
-- Asks clarifying questions
-- Generates Markdown specifications
-- Saves to `.quaestor/specs/draft/`
-- No manual file creation needed
-
-**Example triggers:**
-- "I want to add user authentication"
-- "Create a spec for API rate limiting"
-- "Plan a bug fix for memory leak"
-
-### 2. Spec Management Skill
-**Auto-activates when:** User mentions "spec status", "activate", "complete", "progress"
-
-**What it does:**
-- Tracks progress from checkbox completion
-- Moves specs between draft/active/completed
+- Creates specifications from requirements
+- Manages spec lifecycle (draft → active → completed)
+- Tracks progress from checkboxes
 - Enforces 3-active-spec limit
-- Calculates completion percentages
 
 **Example triggers:**
-- "What's the status of my specs?"
+- "Create a spec for user authentication"
+- "Show my active specs"
 - "Activate spec-feature-001"
-- "Complete spec-feature-002"
-- "Show me active specifications"
+- "Complete spec-auth-001"
 
-### 3. PR Generation Skill
-**Auto-activates when:** User mentions "create pr", "pull request", "submit for review"
+### 2. implementation-workflow
+**Activates when:** Using `/implement` or implementing features
 
 **What it does:**
-- Reads completed specifications
-- Generates comprehensive PR descriptions
-- Creates GitHub PRs via `gh` CLI
-- Includes acceptance criteria and test info
+- Loads specifications and requirements
+- Coordinates research, architecture, implementation, testing, review
+- Tracks progress via TODOs
+- Runs tests and validates criteria
 
 **Example triggers:**
-- "Create a pull request"
-- "Make a PR for spec-feature-001"
-- "Submit this for review"
+- `/implement spec-auth-001`
+- `/implement "Add rate limiting"`
+
+### 3. review-and-ship
+**Activates when:** Creating PRs, shipping work
+
+**What it does:**
+- Validates code quality
+- Checks test coverage
+- Auto-fixes issues
+- Generates commit messages
+- Creates GitHub PRs with context
+
+**Example triggers:**
+- "Create a pull request for spec-feature-001"
+- "Ship this code"
+- "Review and create PR"
+
+### 4. debugging-workflow
+**Activates when:** Debugging issues, investigating errors
+
+**What it does:**
+- Systematic root cause analysis
+- Error reproduction steps
+- Hypothesis testing
+- Fix implementation with tests
+
+**Example triggers:**
+- "Debug the login failure"
+- "Investigate why the API is slow"
+- "Fix the memory leak"
+
+### 5. security-audit
+**Activates when:** Security analysis, vulnerability detection
+
+**What it does:**
+- Scans for vulnerabilities
+- OWASP Top 10 checking
+- Authentication/authorization review
+- Input validation analysis
+
+**Example triggers:**
+- "Review this code for security issues"
+- "Audit authentication security"
+- "Check for SQL injection"
+
+### 6. performance-optimization
+**Activates when:** Performance improvements, profiling
+
+**What it does:**
+- Profiles code execution
+- Identifies bottlenecks
+- Implements caching strategies
+- Database query optimization
+
+**Example triggers:**
+- "Optimize database queries"
+- "Profile the API endpoint"
+- "Improve response time"
+
+### 7. project-initialization
+**Activates when:** Setting up Quaestor in projects
+
+**What it does:**
+- Auto-detects project framework
+- Creates `.quaestor/specs/` structure
+- Configures appropriate settings
+- Adaptive setup based on project type
+
+**Example triggers:**
+- "Initialize Quaestor"
+- "Setup this project"
 
 ## How Skills Work
 
@@ -74,7 +122,7 @@ User says: "What's the status of spec-auth-001?"
 
 Behind the scenes:
 1. Claude detects keywords: "status", "spec"
-2. Spec Management Skill activates
+2. spec-driven-development skill activates
 3. Reads .quaestor/specs/ folders
 4. Calculates progress from checkboxes
 5. Reports status to user
@@ -82,156 +130,91 @@ Behind the scenes:
 You see: "spec-auth-001: 80% complete (4/5 criteria)"
 ```
 
+### Sub-Agent Orchestration
+Skills coordinate multiple sub-agents internally:
+
+**Example: implementation-workflow**
+```
+/implement spec-auth-001
+
+Skill orchestrates:
+1. researcher → analyze existing patterns
+2. architect → design approach
+3. implementer → write code
+4. qa → create tests
+5. reviewer → validate quality
+```
+
+You don't call agents directly - Skills handle all orchestration.
+
 ### Tool Restrictions
-Skills have limited tool access for safety:
+Skills have controlled tool access for safety:
 
-- **Spec Writing**: Can Write, Read, Glob (creates files)
-- **Spec Management**: Can Read, Edit, Bash, Grep, Glob (manages lifecycle)
-- **PR Generation**: Can Read, Bash (reads specs, runs gh CLI)
-
-### Progressive Disclosure
-Skills only load what they need:
-
-```
-spec-management/
-├── SKILL.md           # Always loaded (core instructions)
-├── lifecycle.md       # Loaded when needed (detailed state info)
-└── progress.md        # Loaded when calculating progress
-```
-
-This keeps context usage low.
+- `spec-driven-development`: Write, Read, Edit, Bash, Glob, Grep
+- `implementation-workflow`: All tools (full implementation capability)
+- `review-and-ship`: Read, Write, Edit, Bash, Grep, Glob
+- `debugging-workflow`: Read, Edit, MultiEdit, Bash, Grep, Glob
+- `security-audit`: Read, Grep, Glob, Bash, Task, WebSearch
+- `performance-optimization`: Read, Edit, Bash, Grep, Glob, Task
+- `project-initialization`: Read, Write, Edit, Glob, Grep
 
 ## Benefits
 
-### For Users
-- **Zero learning curve** - Just describe what you want
-- **No manual coordination** - Skills activate automatically
-- **Natural language** - Talk normally, not in commands
-- **Always available** - Installed with plugin
+**For Users:**
+- Zero learning curve - just describe what you want
+- No manual coordination - skills activate automatically
+- Natural language interface
+- Always available via plugin
 
-### For Developers
-- **Maintainable** - Skills are markdown files, easy to update
-- **Composable** - Skills can work together
-- **Discoverable** - Users can read SKILL.md to understand
-- **Safe** - Tool restrictions prevent accidental damage
+**For Development:**
+- Maintainable - skills are markdown files
+- Composable - skills can work together
+- Safe - tool restrictions prevent accidents
+- Discoverable - users can read SKILL.md files
 
-## Customization
+## Skills vs Sub-Agents
 
-Skills are just markdown files - you can customize them!
+| Feature | Skills | Sub-Agents |
+|---------|--------|-----------|
+| **Activation** | Automatic (keyword-triggered) | Internal (skill-invoked) |
+| **Invocation** | Natural language | Task tool by skills |
+| **Purpose** | Workflow orchestration | Specialized technical work |
+| **Tool access** | Restricted by allowed-tools | Determined by skill |
+| **User interaction** | Direct | Indirect (via skills) |
 
-### View a Skill
-```bash
-cat src/quaestor/skills/spec-writing/SKILL.md
+**Key difference:** You interact with Skills, Skills orchestrate sub-agents.
+
+## Complete Workflow Example
+
 ```
+1. User: "Create a spec for user authentication"
+   → spec-driven-development: Creates spec in draft/
 
-### Modify a Skill
-Edit the SKILL.md file to change behavior:
-- Update trigger keywords in description
-- Modify instructions
-- Add examples
-- Change tool permissions
+2. User: "Activate spec-auth-001"
+   → spec-driven-development: Moves to active/
 
-### Create Your Own
-Follow the same structure:
-
-```markdown
----
-name: Your Skill Name
-description: What it does and when to use it
-allowed-tools: [Read, Write, Grep]
----
-
-# Your Skill Name
-
-## When to Use Me
-[Trigger conditions]
-
-## Instructions
-[Step-by-step guide]
-```
-
-## Comparison with Agents
-
-| Feature | Agent Skills | Traditional Agents |
-|---------|-------------|-------------------|
-| **Activation** | Automatic (model-invoked) | Manual (user-invoked) |
-| **Invocation** | Natural language triggers | Explicit Task tool call |
-| **Use case** | Context-triggered capabilities | Complex multi-step workflows |
-| **Tool access** | Restricted by allowed-tools | Full access |
-| **Learning curve** | Zero - just talk | Need to know when to invoke |
-
-### When to Use Each
-
-**Use Skills for:**
-- Spec management (create, track, complete)
-- PR generation
-- Status checking
-- File operations with clear triggers
-
-**Use Agents for:**
-- Complex research (multi-file analysis)
-- Architectural design (deep thinking)
-- Implementation (multi-step coding)
-- Debugging (investigation workflows)
-
-## Migration from v0.x
-
-If you're upgrading from Quaestor v0.x:
-
-### What Changed
-- ❌ Removed: `quaestor spec` CLI commands
-- ❌ Removed: spec-manager and speccer agents
-- ❌ Removed: manifest.json tracking
-- ✅ Added: 3 Agent Skills
-- ✅ Simplified: specifications.py (944→261 lines)
-- ✅ Simplified: /plan command (522→336 lines)
-
-### What Stayed the Same
-- ✅ Folder structure: draft/active/completed
-- ✅ Markdown specifications
-- ✅ Checkbox progress tracking
-- ✅ Other agents (researcher, architect, etc.)
-
-### Migration Steps
-1. Update to v1.0.0
-2. Existing specs work as-is (no conversion needed)
-3. Use natural language instead of CLI commands:
-   - Old: `quaestor spec activate spec-001`
-   - New: "activate spec-001"
-
-## Examples
-
-### Complete Workflow
-```
-1. User: "I want to add user authentication"
-   → Spec Writing Skill: Creates spec in draft/
-
-2. User: "Activate spec-feature-001"
-   → Spec Management Skill: Moves to active/
-
-3. User: "/impl spec-feature-001"
-   → Implementation happens, checkboxes marked
+3. User: "/implement spec-auth-001"
+   → implementation-workflow: Orchestrates research/design/code/test/review
 
 4. User: "What's the progress?"
-   → Spec Management Skill: "80% complete (4/5 criteria)"
+   → spec-driven-development: "80% complete (4/5 criteria)"
 
-5. User: "Complete spec-feature-001"
-   → Spec Management Skill: Moves to completed/
+5. User: "Complete spec-auth-001"
+   → spec-driven-development: Moves to completed/
 
 6. User: "Create a pull request"
-   → PR Generation Skill: Creates GitHub PR
+   → review-and-ship: Validates quality and creates GitHub PR
 ```
 
-### All Natural Language
-No commands to memorize - just describe what you want!
+All natural language - no commands to memorize!
 
 ## Learn More
 
-- [Spec Writing Skill](./spec-writing.md) - Details on spec creation
-- [Spec Management Skill](./spec-management.md) - Lifecycle management
-- [PR Generation Skill](./pr-generation.md) - Pull request automation
-- [Claude Code Skills Docs](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview) - Official documentation
+- [/plan Command](../commands/plan.md) - Activates spec-driven-development
+- [/implement Command](../commands/implement.md) - Activates implementation-workflow
+- [Sub-Agents](../agents/overview.md) - Internal agents orchestrated by skills
+- [Specification-Driven Development](../specs/overview.md) - Core workflow
 
 ---
 
-*Agent Skills make Quaestor effortless - just describe what you want, and it happens automatically!*
+*Skills make Quaestor effortless - describe what you want, and it happens automatically.*

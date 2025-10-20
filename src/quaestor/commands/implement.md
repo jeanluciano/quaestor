@@ -22,6 +22,22 @@ Invoke the implementation-workflow skill interactively to implement features fol
 /implement --resume
 ```
 
+## Interactive Decision-Making
+
+I will ask clarifying questions to ensure you're in control:
+
+**Before Implementation:**
+- **Approach Selection**: When multiple valid approaches exist, I'll present 2-3 options with pros/cons for you to choose
+- **Scope Boundaries**: I'll confirm what's included/excluded from this implementation
+- **Trade-offs**: You'll decide priorities like speed vs simplicity, flexibility vs constraints
+- **Integration**: You'll choose how this connects to existing systems
+
+**During Planning:**
+- I'll present an implementation plan and WAIT for your approval before coding
+- You can request changes or alternative approaches
+
+**You maintain explicit control over key technical decisions.**
+
 ## What This Does
 
 This command is a direct entry point to the **implementation-workflow** skill, which provides:

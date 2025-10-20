@@ -97,7 +97,61 @@ Required Agents:
 
 ---
 
-## Phase 2: Planning & Approval 📋
+## Phase 2: Clarification & Decision 🤔
+
+### MANDATORY: Ask User to Make Key Decisions
+
+**After research, identify decisions user must make BEFORE planning:**
+
+#### 1. Approach Selection (when 2+ valid options exist)
+```
+Use AskUserQuestion tool:
+- Present 2-3 architectural approaches
+- Include pros/cons and trade-offs for each
+- Explain complexity and maintenance implications
+- Wait for user to choose before proceeding
+```
+
+**Example:**
+- Approach A: REST API - Simple, widely understood, but less efficient
+- Approach B: GraphQL - Flexible queries, but steeper learning curve
+- Approach C: gRPC - High performance, but requires protobuf setup
+
+#### 2. Scope Boundaries
+```
+Ask clarifying questions:
+- "Should this also handle [related feature]?"
+- "Include [edge case scenario]?"
+- "Support [additional requirement]?"
+```
+
+**Example:** "Should user authentication also include password reset functionality, or handle that separately?"
+
+#### 3. Priority Trade-offs
+```
+When trade-offs exist, ask user to decide:
+- "Optimize for speed OR memory efficiency?"
+- "Prioritize simplicity OR flexibility?"
+- "Focus on performance OR maintainability?"
+```
+
+**Example:** "This can be implemented for speed (caching, more memory) or simplicity (no cache, easier to maintain). Which priority?"
+
+#### 4. Integration Decisions
+```
+Clarify connections to existing systems:
+- "Integrate with existing [system] OR standalone?"
+- "Use [library A] OR [library B]?"
+- "Follow [pattern X] OR [pattern Y]?"
+```
+
+**Example:** "Should this use the existing Redis cache or create a new in-memory cache?"
+
+**Only proceed to planning after user has made these decisions.**
+
+---
+
+## Phase 3: Planning & Approval 📋
 
 ### Present Implementation Strategy
 
@@ -180,7 +234,7 @@ Approval phrases:
 
 ---
 
-## Phase 3: Implementation ⚡
+## Phase 4: Implementation ⚡
 
 ### Agent-Orchestrated Development
 
@@ -279,7 +333,7 @@ Pattern:
 
 ---
 
-## Phase 4: Validation & Completion ✅
+## Phase 5: Validation & Completion ✅
 
 ### Language-Specific Validation
 

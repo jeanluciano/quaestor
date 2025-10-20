@@ -1,6 +1,6 @@
 ---
 name: Performance Optimization
-description: Performance patterns, caching strategies, profiling, and optimization techniques. Use when analyzing performance bottlenecks, implementing caching, or optimizing database queries.
+description: Optimize performance with profiling, caching strategies, database query optimization, and bottleneck analysis. Use when improving response times, implementing caching layers, or scaling for high load.
 ---
 
 # Performance Optimization

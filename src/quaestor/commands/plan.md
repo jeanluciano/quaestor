@@ -17,6 +17,19 @@ Routes planning requests to specialized skills for specification creation and li
 /plan --status          # Show dashboard (delegates to spec-management skill)
 ```
 
+## Interactive Specification Creation
+
+The planning process is interactive - I'll ask clarifying questions to ensure the specification matches your intent:
+
+**What I'll Ask About:**
+- **Type & Scope**: What kind of work (feature/bugfix/refactor) and boundaries
+- **Approach**: If multiple valid approaches exist, you choose which direction
+- **Priorities**: Trade-offs between speed, simplicity, flexibility, maintainability
+- **Dependencies**: What must be done first, what this blocks
+- **Success Criteria**: How we'll know this is complete
+
+**You'll make key decisions through structured questions before I generate the specification.**
+
 ## Execution
 
 This command is a lightweight router that delegates to appropriate skills based on the request:
