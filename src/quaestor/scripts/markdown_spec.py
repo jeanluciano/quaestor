@@ -502,6 +502,7 @@ class MarkdownSpecParser:
         """Parse test scenarios."""
         scenarios = []
         current_scenario = None
+        current_field = None  # Track which field we're accumulating
 
         for line in content.split("\n"):
             line = line.strip()
@@ -515,20 +516,47 @@ class MarkdownSpecParser:
                 # Start new scenario
                 name = line.replace("###", "").strip()
                 current_scenario = {"name": name}
+                current_field = None
             elif current_scenario:
-                # Parse Given/When/Then
-                if line.startswith("**Given**:"):
-                    current_scenario["given"] = line.replace("**Given**:", "").strip()
-                elif line.startswith("**When**:"):
-                    current_scenario["when"] = line.replace("**When**:", "").strip()
-                elif line.startswith("**Then**:"):
-                    current_scenario["then"] = line.replace("**Then**:", "").strip()
+                # Parse Given/When/Then - support both **Given**: and **Given:**
+                if line.startswith("**Given**:") or line.startswith("**Given:**"):
+                    text = line.replace("**Given**:", "").replace("**Given:**", "").strip()
+                    current_scenario["given"] = text
+                    current_field = "given" if not text else None
+                elif line.startswith("**When**:") or line.startswith("**When:**"):
+                    text = line.replace("**When**:", "").replace("**When:**", "").strip()
+                    current_scenario["when"] = text
+                    current_field = "when" if not text else None
+                elif line.startswith("**Then**:") or line.startswith("**Then:**"):
+                    text = line.replace("**Then**:", "").replace("**Then:**", "").strip()
+                    current_scenario["then"] = text
+                    current_field = "then" if not text else None
+                elif line.startswith("**Examples**:") or line.startswith("**Examples:**"):
+                    current_field = None  # Stop accumulating
+                elif current_field and line:
+                    # Continue accumulating multi-line content for given/when/then
+                    if line.startswith("-"):
+                        # List item
+                        current_scenario[current_field] += "\n" + line
+                    elif not line.startswith("**"):
+                        # Regular continuation
+                        current_scenario[current_field] += " " + line
                 elif line and "description" not in current_scenario and "given" not in current_scenario:
                     current_scenario["description"] = line
 
         # Save last scenario
         if current_scenario:
+            # Ensure description exists (required field)
+            if "description" not in current_scenario:
+                current_scenario["description"] = ""
             scenarios.append(current_scenario)
+
+        # Ensure all scenarios have required fields
+        for scenario in scenarios:
+            scenario.setdefault("description", "")
+            scenario.setdefault("given", "")
+            scenario.setdefault("when", "")
+            scenario.setdefault("then", "")
 
         return scenarios
 

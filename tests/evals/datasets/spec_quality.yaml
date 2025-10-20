@@ -1,0 +1,85 @@
+name: spec_quality
+description: |
+  REFERENCE DATASET - Example test cases for specification quality evaluation.
+
+  NOTE: This file is kept for reference only. The actual tests use real specification
+  files from fixtures (see conftest.py). This dataset shows examples of test cases
+  that could be used with subprocess-based skill execution (Level 2 integration).
+
+  Tests various types of requests: simple features, complex features, bugfixes, refactorings, and ambiguous requests.
+
+cases:
+  - name: simple_feature
+    input_data:
+      request: "Add a dark mode toggle to the settings page"
+      context: "We have a settings page with various user preferences"
+      priority: "medium"
+    expected_output:
+      type: "feature"
+      status: "draft"
+      has_acceptance_criteria: true
+      has_test_scenarios: true
+    metadata:
+      complexity: "simple"
+      estimated_time: "2-4 hours"
+
+  - name: complex_feature
+    input_data:
+      request: |
+        Implement a comprehensive evaluation framework using Pydantic AI evals for testing
+        our skills, commands, and agents. Should support datasets, custom evaluators, and
+        CI/CD integration.
+      context: "Project uses Pydantic 2.0+, pytest, and has existing test fixtures"
+      priority: "high"
+    expected_output:
+      type: "feature"
+      status: "draft"
+      has_acceptance_criteria: true
+      has_test_scenarios: true
+      has_contract: true
+    metadata:
+      complexity: "complex"
+      estimated_time: "40-80 hours"
+
+  - name: bugfix
+    input_data:
+      request: |
+        Fix the issue where specifications are not properly parsing task progress
+        when checkboxes are in nested lists
+      context: "MarkdownSpecParser in markdown_spec.py handles checkbox counting"
+      priority: "high"
+    expected_output:
+      type: "bugfix"
+      status: "draft"
+      has_acceptance_criteria: true
+      has_test_scenarios: true
+    metadata:
+      complexity: "simple"
+      estimated_time: "2-4 hours"
+
+  - name: refactor
+    input_data:
+      request: |
+        Refactor the specification dataclasses to use Pydantic BaseModels for better
+        validation and serialization
+      context: "Current implementation uses @dataclass in specifications.py"
+      priority: "medium"
+    expected_output:
+      type: "refactor"
+      status: "draft"
+      has_acceptance_criteria: true
+      has_test_scenarios: true
+    metadata:
+      complexity: "medium"
+      estimated_time: "8-16 hours"
+
+  - name: ambiguous_request
+    input_data:
+      request: "Make the app better and faster"
+      context: "General purpose CLI application"
+      priority: "low"
+    expected_output:
+      status: "draft"
+    metadata:
+      complexity: "ambiguous"
+      note: "Should result in clarifying questions or specific improvements"

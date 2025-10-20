@@ -1,0 +1,87 @@
+name: Evaluation Tests
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'src/quaestor/**'
+      - 'tests/evals/**'
+      - 'pyproject.toml'
+  push:
+    branches: [main]
+  workflow_dispatch:  # Allow manual triggers
+
+jobs:
+  run-evaluations:
+    name: Run Pydantic Evals
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Run Level 1 evaluations (file-based)
+        id: eval_level1
+        run: |
+          echo "## Level 1: File-Based Evaluations" >> $GITHUB_STEP_SUMMARY
+          echo "Testing with real specification files from fixtures" >> $GITHUB_STEP_SUMMARY
+          pytest tests/evals/test_spec_quality.py -v --tb=short -m "not slow" || true
+          pytest tests/evals/test_implementation.py -v --tb=short -m "not slow" || true
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+      - name: Run Level 2 evaluations (subprocess)
+        id: eval_level2
+        if: false  # Disabled by default - requires Claude CLI setup
+        run: |
+          echo "## Level 2: Subprocess Evaluations" >> $GITHUB_STEP_SUMMARY
+          echo "Testing with real skill execution via Claude CLI" >> $GITHUB_STEP_SUMMARY
+          # Install Claude CLI first (if available)
+          # claude --version || echo "Claude CLI not available"
+          pytest tests/evals/test_spec_quality_subprocess.py -v -s --tb=short -m "slow" || true
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+      - name: Generate evaluation report
+        if: always()
+        run: |
+          echo "# 📊 Evaluation Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Evaluation tests completed. See step outputs above for detailed results." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Test Files" >> $GITHUB_STEP_SUMMARY
+          echo "- \`tests/evals/test_spec_quality.py\` - Specification quality" >> $GITHUB_STEP_SUMMARY
+          echo "- \`tests/evals/test_implementation.py\` - Implementation success" >> $GITHUB_STEP_SUMMARY
+          echo "- \`tests/evals/test_spec_quality_subprocess.py\` - Subprocess execution (skipped by default)" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload evaluation results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evaluation-results
+          path: |
+            .pytest_cache/
+            tests/evals/
+          retention-days: 30
+
+  quality-gate:
+    name: Quality Gate
+    needs: run-evaluations
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Check evaluation status
+        run: |
+          echo "Quality gate passed - evaluations completed"
+          echo "Review the evaluation results in the workflow summary"

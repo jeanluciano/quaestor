@@ -1,0 +1,119 @@
+name: implementation_success
+description: |
+  REFERENCE DATASET - Example test cases for implementation success evaluation.
+
+  NOTE: This file is kept for reference only. The actual tests use real specification
+  files and track progress on active specs (see conftest.py fixtures). This dataset
+  shows examples that could be used with subprocess-based skill execution (Level 2).
+
+  Tests whether implementations complete acceptance criteria, have passing tests, and modify appropriate files.
+
+cases:
+  - name: simple_feature_implementation
+    input_data:
+      spec_id: "spec-20250101-120000"
+      spec_title: "Add dark mode toggle to settings"
+      acceptance_criteria:
+        - "Settings page has dark mode toggle switch"
+        - "Toggle persists across sessions"
+        - "Dark mode CSS applied when enabled"
+        - "Tests verify toggle functionality"
+      test_scenarios:
+        - name: "toggle_dark_mode"
+          description: "User can toggle dark mode on and off"
+          given: "User is on settings page"
+          when: "User clicks dark mode toggle"
+          then: "Dark mode is enabled and CSS applied"
+          examples: []
+      codebase_context: "React app with settings component"
+    expected_output:
+      tests_passing: true
+      progress_percentage: 100.0
+      acceptance_criteria_met_count: 4
+    metadata:
+      complexity: "simple"
+      expected_files: 3
+
+  - name: complex_feature_implementation
+    input_data:
+      spec_id: "spec-20250101-130000"
+      spec_title: "Implement evaluation framework with Pydantic evals"
+      acceptance_criteria:
+        - "pydantic-evals added to dependencies"
+        - "Evaluation models defined with Pydantic"
+        - "Test suite for spec quality created"
+        - "Test suite for implementation success created"
+        - "CI/CD integration configured"
+        - "Documentation written"
+      test_scenarios:
+        - name: "run_spec_quality_eval"
+          description: "Spec quality evaluation runs successfully"
+          given: "Evaluation framework installed"
+          when: "pytest tests/evals/test_spec_quality.py is run"
+          then: "Tests execute and produce evaluation results"
+          examples: []
+        - name: "run_implementation_eval"
+          description: "Implementation evaluation runs successfully"
+          given: "Evaluation framework installed"
+          when: "pytest tests/evals/test_implementation.py is run"
+          then: "Tests execute and produce evaluation results"
+          examples: []
+      codebase_context: "Python project with pytest and pydantic 2.0+"
+    expected_output:
+      tests_passing: true
+      progress_percentage: 100.0
+      acceptance_criteria_met_count: 6
+    metadata:
+      complexity: "complex"
+      expected_files: 10
+
+  - name: bugfix_implementation
+    input_data:
+      spec_id: "spec-20250101-140000"
+      spec_title: "Fix checkbox parsing in nested lists"
+      acceptance_criteria:
+        - "MarkdownSpecParser correctly counts nested checkboxes"
+        - "Task progress accurate for nested lists"
+        - "Existing tests still pass"
+        - "New test added for nested checkbox scenario"
+      test_scenarios:
+        - name: "parse_nested_checkboxes"
+          description: "Parser handles nested checkbox lists"
+          given: "Markdown with nested checkbox lists"
+          when: "MarkdownSpecParser.parse() is called"
+          then: "All checkboxes counted correctly"
+          examples: []
+      codebase_context: "Python module: markdown_spec.py"
+    expected_output:
+      tests_passing: true
+      progress_percentage: 100.0
+      acceptance_criteria_met_count: 4
+    metadata:
+      complexity: "simple"
+      expected_files: 2
+
+  - name: refactor_implementation
+    input_data:
+      spec_id: "spec-20250101-150000"
+      spec_title: "Refactor dataclasses to Pydantic BaseModels"
+      acceptance_criteria:
+        - "Specification class converted to Pydantic BaseModel"
+        - "All dataclass fields migrated with validators"
+        - "Backward compatibility maintained"
+        - "Existing tests pass with new models"
+        - "Validation errors raised for invalid data"
+      test_scenarios:
+        - name: "validate_specification_model"
+          description: "Pydantic validates specification data"
+          given: "Invalid specification data"
+          when: "SpecificationModel is instantiated"
+          then: "ValidationError is raised"
+          examples: []
+      codebase_context: "Python module: specifications.py"
+    expected_output:
+      tests_passing: true
+      progress_percentage: 100.0
+      acceptance_criteria_met_count: 5
+    metadata:
+      complexity: "medium"
+      expected_files: 3

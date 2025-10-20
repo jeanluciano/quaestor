@@ -1,0 +1,66 @@
+name: e2e_workflow
+description: |
+  REFERENCE DATASET - Example test cases for end-to-end workflow evaluation.
+
+  NOTE: This file is kept for reference only. E2E workflow tests require actual skill
+  execution via /plan and /implement commands. This dataset shows examples that could
+  be used with subprocess-based CLI execution (Level 2 integration).
+
+  Tests complete workflows from simple features to complex multi-component implementations.
+
+cases:
+  - name: simple_feature_e2e
+    input_data:
+      user_request: "Add a dark mode toggle to the settings page that persists across sessions"
+      expected_outcome: |
+        Settings page has a working dark mode toggle that saves preference and applies
+        dark mode styling when enabled
+      estimated_hours: 4
+    expected_output:
+      spec_created: true
+      implementation_completed: true
+      tests_passing: true
+      acceptance_criteria_met: true
+      success: true
+    metadata:
+      complexity: "simple"
+      type: "feature"
+
+  - name: bugfix_e2e
+    input_data:
+      user_request: |
+        Fix the bug where task progress is not calculated correctly when checkboxes are
+        in nested lists. The parser should count all checkboxes regardless of nesting level.
+      expected_outcome: |
+        MarkdownSpecParser correctly counts all checkboxes in nested lists, task progress
+        shows accurate percentages, and tests verify the fix
+      estimated_hours: 3
+    expected_output:
+      spec_created: true
+      implementation_completed: true
+      tests_passing: true
+      acceptance_criteria_met: true
+      success: true
+    metadata:
+      complexity: "medium"
+      type: "bugfix"
+
+  - name: complex_feature_e2e
+    input_data:
+      user_request: |
+        Implement a lightweight evaluation framework using Pydantic AI evals. Need 2-3
+        evaluations: specification quality, implementation success, and end-to-end workflow.
+        Should integrate with CI/CD and have proper documentation.
+      expected_outcome: |
+        Working evaluation framework with 3 test suites, datasets for each, GitHub Actions
+        integration, and documentation. All tests run successfully.
+      estimated_hours: 56  # 8 days at 7 hours per day
+    expected_output:
+      spec_created: true
+      implementation_completed: true
+      tests_passing: true
+      acceptance_criteria_met: true
+      success: true
+    metadata:
+      complexity: "complex"
+      type: "feature"

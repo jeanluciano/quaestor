@@ -47,7 +47,11 @@ dev = [
     "pre-commit>=3.5.0",
     "psutil>=7.0.0",
     "pytest-asyncio>=1.1.0",
+    "pydantic-ai[openai]>=0.0.47",
 ]
+
+# Note: pydantic-ai includes pydantic-evals for evaluation framework
+# Level 2 integration: Subprocess-based skill execution with async polling
 
 [tool.setuptools]
 packages = [
