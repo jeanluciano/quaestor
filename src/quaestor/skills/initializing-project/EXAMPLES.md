@@ -67,18 +67,6 @@ User: "Proceed with detected setup"
 - .quaestor/ARCHITECTURE.md (with Python quality standards)
 - CLAUDE.md (main entry point)
 
-**Installed Skills (10):**
-- architecture-patterns
-- code-quality
-- debugging-workflow
-- performance-optimization
-- security-audit
-- testing-strategy
-- spec-writing
-- spec-management
-- pr-generation
-- project-initialization
-
 **Directory Structure:**
 - .quaestor/specs/draft/
 - .quaestor/specs/active/
@@ -211,9 +199,6 @@ User: "No, proceed"
 - Coverage threshold set to >= 90%
 - Stricter ESLint configuration documented
 
-**Installed Skills (10):**
-[Same 10 skills as Python example]
-
 **Next Steps:**
 1. Review .quaestor/ARCHITECTURE.md - your customizations are in Section 3
 2. Run your first quality check: `npm run lint && npm test`
@@ -314,9 +299,6 @@ User: "Yes, perfect"
 - 85% coverage target configured
 - Property-based testing noted
 
-**Installed Skills (10):**
-[Same 10 skills]
-
 **Next Steps:**
 1. Review .quaestor/ARCHITECTURE.md Section 2 - your architecture is documented
 2. Your custom testing strategy is in Section 5
@@ -392,10 +374,7 @@ User: "Start with minimal setup"
 
 3. Return anytime to re-analyze:
    - "Analyze my project" to update configuration
-   - Skills remain available for guidance
-
-**Installed Skills (10):**
-[Same 10 skills - including architecture-patterns for guidance]
+   - All skills remain available via plugin/CLI
 
 **Minimal Structure Created:**
 - .quaestor/specs/draft/

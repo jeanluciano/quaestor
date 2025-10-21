@@ -200,87 +200,13 @@ with open(output_path, "w") as f:
 - **Testing Framework**: cargo test
 ```
 
-## Skills Installation
+## Skills Availability
 
-### Installation Process
+All Quaestor skills are available via:
+- **Plugin installation**: Skills loaded from the plugin package
+- **CLI installation** (`uvx quaestor`): Skills loaded from the installed package
 
-```yaml
-skills_installation:
-  source_directory: "src/quaestor/skills/"
-  target_directory: ".claude/skills/"
-
-  steps:
-    1. Create target directory: "mkdir -p .claude/skills"
-    2. Iterate through source skills
-    3. Copy each skill directory to target
-    4. Verify SKILL.md exists in each
-    5. Report installed skills to user
-```
-
-### Skills Installed
-
-```yaml
-skills_list:
-  - name: architecture-patterns
-    purpose: "MVC, DDD, Microservices, Clean Architecture examples"
-
-  - name: code-quality
-    purpose: "SOLID principles, linting patterns, code review checklists"
-
-  - name: debugging-workflow
-    purpose: "Systematic debugging approaches"
-
-  - name: performance-optimization
-    purpose: "Caching strategies, profiling techniques"
-
-  - name: security-audit
-    purpose: "OWASP guidelines, authentication patterns"
-
-  - name: testing-strategy
-    purpose: "Test pyramid, pytest patterns, coverage guidelines"
-
-  - name: spec-writing
-    purpose: "Create specifications from requirements"
-
-  - name: spec-management
-    purpose: "Manage specification lifecycle"
-
-  - name: pr-generation
-    purpose: "Generate pull requests from completed specs"
-
-  - name: project-initialization
-    purpose: "This skill - intelligent project setup"
-```
-
-### Installation Code Example
-
-```python
-from pathlib import Path
-import shutil
-
-def install_skills(project_root: Path):
-    """Install all Quaestor skills to project."""
-    source_dir = Path("src/quaestor/skills")
-    target_dir = project_root / ".claude" / "skills"
-
-    # Create target directory
-    target_dir.mkdir(parents=True, exist_ok=True)
-
-    installed = []
-    for skill_dir in source_dir.iterdir():
-        if skill_dir.is_dir():
-            skill_name = skill_dir.name
-            skill_file = skill_dir / "SKILL.md"
-
-            if skill_file.exists():
-                # Copy skill directory
-                target_skill_dir = target_dir / skill_name
-                shutil.copytree(skill_dir, target_skill_dir, dirs_exist_ok=True)
-                installed.append(skill_name)
-                print(f"✓ Installed {skill_name}")
-
-    return installed
-```
+Skills are NOT copied to the project directory. They remain in the plugin/package and are accessed directly by Claude Code.
 
 ## CLAUDE.md Merging
 

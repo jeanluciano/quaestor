@@ -110,8 +110,8 @@ def init_command(
 
     console.print("\n[blue]Next steps:[/blue]")
     console.print("  • All commands available via Quaestor plugin (/plan, /impl, /research, etc.)")
-    console.print("  • Use /project-init for intelligent project analysis")
-    console.print("  • Use /plan to create specifications")
+    console.print("  • Use initializing-project skill for intelligent project analysis")
+    console.print("  • Use managing-specifications skill to create specifications")
     console.print("  • Review and customize documentation in .quaestor/")
 
 

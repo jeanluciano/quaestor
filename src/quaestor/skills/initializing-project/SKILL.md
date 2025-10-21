@@ -45,9 +45,8 @@ I detect your project's language, load language-specific configurations, and gen
 - AGENT.md (AI behavioral rules)
 - ARCHITECTURE.md (with your language's quality standards)
 - CLAUDE.md (main entry point)
-- Install 10 skills to `.claude/skills/`
 
-**See @TEMPLATES.md for document templates, variable mappings, and skills installation**
+**See @TEMPLATES.md for document templates and variable mappings**
 
 ### Phase 3: User Validation ✅ **[MANDATORY]**
 
@@ -78,7 +77,6 @@ After successful initialization:
 ### 1. Review and Customize Documentation
 - `.quaestor/AGENT.md` - AI behavioral rules
 - `.quaestor/ARCHITECTURE.md` - Architecture and quality standards (edit Section 3 to customize commands)
-- `.claude/skills/` - 10 installed skills for detailed patterns
 
 ### 2. Start Development
 - Create specifications: "Create a spec for [feature]" or use spec-writing skill
@@ -87,7 +85,7 @@ After successful initialization:
 - Review: "Review my changes and create a PR" or use `/review` command
 
 ### 3. Available Skills
-After initialization, 10 skills are ready: architecture-patterns, code-quality, debugging-workflow, performance-optimization, security-audit, testing-strategy, spec-writing, spec-management, pr-generation, and project-initialization (me!)
+All Quaestor skills are available via the plugin or CLI installation. Skills are loaded from the plugin/package and accessed directly by Claude Code.
 
 **See @TEMPLATES.md for customization details and @EXAMPLES.md for complete workflows**
 
@@ -96,7 +94,6 @@ After initialization, 10 skills are ready: architecture-patterns, code-quality, 
 - ✅ Framework and architecture accurately detected
 - ✅ USER VALIDATION COMPLETED (mandatory)
 - ✅ ARCHITECTURE.md generated with language-specific quality standards
-- ✅ Skills installed to `.claude/skills/`
 - ✅ Directory structure created
 - ✅ Project ready for specification-driven development
 
