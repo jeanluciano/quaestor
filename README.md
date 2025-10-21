@@ -41,13 +41,14 @@ Quaestor is a Claude Code plugin that provides Skills and slash commands for spe
 
 ### As a Claude Code Plugin (Recommended)
 
-First, add the Quaestor marketplace:
+Install directly from the marketplace:
 ```bash
-/plugin marketplace add jeanluciano/quaestor
+/plugin install quaestor@quaestor-official
 ```
 
-Then install the plugin:
+Alternatively, you can add the marketplace and install separately:
 ```bash
+/plugin marketplace add jeanluciano/quaestor
 /plugin install quaestor:quaestor
 ```
 
@@ -71,9 +72,9 @@ quaestor init
 
 ```bash
 # Install the plugin
-claude plugins install quaestor
+/plugin install quaestor@quaestor-official
 
-# In Claude Code, create a spec
+# Create a spec
 /plan "User authentication with JWT"
 
 # Implement it
