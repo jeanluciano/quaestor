@@ -59,7 +59,13 @@ I present my analysis and **MUST** get your approval before proceeding. You'll s
 
 ### Phase 4: Setup Completion 🚀
 
-After your approval, I create the directory structure, generate all documentation, install skills, and provide next steps.
+After your approval, I create the directory structure, generate all documentation, install skills, configure status bar integration, and provide next steps.
+
+**Status Bar Setup:**
+- Install Claude Code status bar integration for active spec tracking
+- Run: `python3 src/quaestor/scripts/install_statusbar.py`
+- Configures `.claude/settings.json` to display active specs with progress
+- Status bar format: `🎯 spec-feature-001 (60%)` or `📋 No active spec`
 
 ## Error Handling
 
@@ -95,6 +101,7 @@ All Quaestor skills are available via the plugin or CLI installation. Skills are
 - ✅ USER VALIDATION COMPLETED (mandatory)
 - ✅ ARCHITECTURE.md generated with language-specific quality standards
 - ✅ Directory structure created
+- ✅ Status bar integration installed (displays active specs)
 - ✅ Project ready for specification-driven development
 
 **See @EXAMPLES.md for complete initialization walkthroughs**

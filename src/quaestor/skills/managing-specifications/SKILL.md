@@ -88,7 +88,6 @@ You: "Add user authentication"
 Me: I'll ask 3-5 questions
 Me: Create spec-feature-001.md in draft/
 ```
-
 ### Managing Existing Specs
 
 **Common operations**:

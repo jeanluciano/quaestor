@@ -73,6 +73,11 @@ User: "Proceed with detected setup"
 - .quaestor/specs/completed/
 - .quaestor/specs/archived/
 
+**Status Bar Integration:**
+✅ Installed Claude Code status bar
+- Displays active specs with progress in status bar
+- Format: 🎯 spec-feature-001 (60%)
+
 **Next Steps:**
 1. Review .quaestor/ARCHITECTURE.md Section 3 to customize commands
 2. Create your first specification: "Create a spec for..."
