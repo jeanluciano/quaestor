@@ -1,5 +1,8 @@
 # Quaestor
 
+[![Run in Smithery](https://smithery.ai/badge/skills/jeanluciano)](https://smithery.ai/skills?ns=jeanluciano&utm_source=github&utm_medium=badge)
+
+
 > A minimal Claude Code plugin for specification-driven development
 
 [![PyPI Version](https://img.shields.io/pypi/v/quaestor.svg)](https://pypi.org/project/quaestor/)
